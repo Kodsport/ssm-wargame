@@ -109,6 +109,12 @@ components:
         - {}
         - {}
         title: pwnme bla bla
+      required:
+      - id
+      - title
+      - description
+      - score
+      - published
     SsmChallengeResponseCollection:
       type: array
       items:

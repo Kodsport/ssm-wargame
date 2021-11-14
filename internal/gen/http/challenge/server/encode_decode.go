@@ -32,11 +32,11 @@ func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWri
 // *challengeviews.SsmChallengeView.
 func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengeviews.SsmChallengeView) *SsmChallengeResponse {
 	res := &SsmChallengeResponse{
-		ID:          v.ID,
-		Title:       v.Title,
-		Description: v.Description,
-		Score:       v.Score,
-		Published:   v.Published,
+		ID:          *v.ID,
+		Title:       *v.Title,
+		Description: *v.Description,
+		Score:       *v.Score,
+		Published:   *v.Published,
 	}
 	if v.Services != nil {
 		res.Services = make([]*ChallengeServiceResponse, len(v.Services))

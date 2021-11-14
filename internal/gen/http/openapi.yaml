@@ -121,3 +121,9 @@ definitions:
       - {}
       - {}
       title: pwnme bla bla
+    required:
+    - id
+    - title
+    - description
+    - score
+    - published

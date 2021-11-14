@@ -17,11 +17,11 @@ type SsmChallengeResponseCollection []*SsmChallengeResponse
 
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
-	ID          *string                     `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Title       *string                     `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
-	Description *string                     `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	Score       *int                        `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-	Published   *bool                       `form:"published,omitempty" json:"published,omitempty" xml:"published,omitempty"`
+	ID          string                      `form:"id" json:"id" xml:"id"`
+	Title       string                      `form:"title" json:"title" xml:"title"`
+	Description string                      `form:"description" json:"description" xml:"description"`
+	Score       int                         `form:"score" json:"score" xml:"score"`
+	Published   bool                        `form:"published" json:"published" xml:"published"`
 	Services    []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
 	Files       []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 }

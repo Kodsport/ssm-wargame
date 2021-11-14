@@ -1,0 +1,8 @@
+version: 1
+packages:
+  - path: "internal/db"
+    name: "db"
+    engine: "postgresql"
+    schema: "migrations/"
+    queries: "internal/queries/challenge.sql"
+    sql_package: "pgx/v4"

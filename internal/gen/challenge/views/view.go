@@ -98,6 +98,21 @@ func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err 
 // ValidateSsmChallengeView runs the validations defined on SsmChallengeView
 // using the "default" view.
 func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "result"))
+	}
+	if result.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "result"))
+	}
+	if result.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
+	}
+	if result.Published == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("published", "result"))
+	}
 	if result.Score != nil {
 		if *result.Score < 0 {
 			err = goa.MergeErrors(err, goa.InvalidRangeError("result.score", *result.Score, 0, true))

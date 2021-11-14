@@ -35,11 +35,11 @@ type SsmChallengeCollection []*SsmChallenge
 
 // A Wargame challenge
 type SsmChallenge struct {
-	ID          *string
-	Title       *string
-	Description *string
-	Score       *int
-	Published   *bool
+	ID          string
+	Title       string
+	Description string
+	Score       int
+	Published   bool
 	Services    []*ChallengeService
 	Files       []*ChallengeFiles
 }
@@ -87,12 +87,21 @@ func newSsmChallengeCollectionView(res SsmChallengeCollection) challengeviews.Ss
 // newSsmChallenge converts projected type SsmChallenge to service type
 // SsmChallenge.
 func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
-	res := &SsmChallenge{
-		ID:          vres.ID,
-		Title:       vres.Title,
-		Description: vres.Description,
-		Score:       vres.Score,
-		Published:   vres.Published,
+	res := &SsmChallenge{}
+	if vres.ID != nil {
+		res.ID = *vres.ID
+	}
+	if vres.Title != nil {
+		res.Title = *vres.Title
+	}
+	if vres.Description != nil {
+		res.Description = *vres.Description
+	}
+	if vres.Score != nil {
+		res.Score = *vres.Score
+	}
+	if vres.Published != nil {
+		res.Published = *vres.Published
 	}
 	if vres.Services != nil {
 		res.Services = make([]*ChallengeService, len(vres.Services))
@@ -113,11 +122,11 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 // SsmChallengeView using the "default" view.
 func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 	vres := &challengeviews.SsmChallengeView{
-		ID:          res.ID,
-		Title:       res.Title,
-		Description: res.Description,
-		Score:       res.Score,
-		Published:   res.Published,
+		ID:          &res.ID,
+		Title:       &res.Title,
+		Description: &res.Description,
+		Score:       &res.Score,
+		Published:   &res.Published,
 	}
 	if res.Services != nil {
 		vres.Services = make([]*challengeviews.ChallengeServiceView, len(res.Services))

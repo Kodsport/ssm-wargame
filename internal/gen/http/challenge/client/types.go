@@ -49,6 +49,21 @@ func NewListChallengesSsmChallengeCollectionOK(body ListChallengesResponseBody) 
 // ValidateSsmChallengeResponse runs the validations defined on
 // SsmChallengeResponse
 func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	if body.Published == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("published", "body"))
+	}
 	if body.Score != nil {
 		if *body.Score < 0 {
 			err = goa.MergeErrors(err, goa.InvalidRangeError("body.score", *body.Score, 0, true))

@@ -40,6 +40,8 @@ var Challenge = ResultType("application/vnd.ssm.challenge", func() {
 		})
 		Attribute("services", ArrayOf(ChallengeService))
 		Attribute("files", ArrayOf(ChallengeFiles))
+
+		Required("id", "title", "description", "score", "published")
 	})
 
 })
