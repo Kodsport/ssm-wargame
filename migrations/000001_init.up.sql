@@ -1,0 +1,142 @@
+BEGIN;
+
+CREATE TABLE schools (
+    id INT PRIMARY KEY,
+    name TEXT NOT NULL,
+    geographical_area_code INT,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    discord_id TEXT NOT NULL UNIQUE,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    school_id INT REFERENCES schools(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE INDEX users_school_id_indx ON users USING hash ( school_id );
+
+CREATE TABLE categories (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+-- för att visa vilket event en chall kommer ifrån
+CREATE TABLE ctf_events (
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    url TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE TABLE challenges (
+    id UUID PRIMARY KEY,
+    slug TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    score INT NOT NULL CHECK (score >= 0),
+    published BOOLEAN NOT NULL,
+    services JSON, -- om de är attribut
+    files JSON, -- om de är attribut, alternativ nedan
+    ctf_event_id UUID REFERENCES ctf_events(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE INDEX challenges_ctf_event_id_idx ON challenges USING hash ( ctf_event_id );
+
+-- <alternativt> om vi gör servies och files till tabeller
+
+-- är lite osäker på denna
+CREATE TABLE challenge_services (
+    id UUID PRIMARY KEY,
+    challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+    type TEXT NOT NULL,
+    url TEXT,
+    host TEXT,
+    port INT,
+    name TEXT,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE INDEX challenge_services_challenge_id_idx ON challenge_services USING hash ( challenge_id );
+
+CREATE TABLE challenge_files (
+    id UUID PRIMARY KEY,
+    challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+    url TEXT NOT NULL,
+    filename TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE INDEX challenge_files_challenge_id_idx ON challenge_files USING hash ( challenge_id );
+
+-- </alternativ>
+
+CREATE TABLE flags (
+    id UUID PRIMARY KEY,
+    challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+    flag TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE INDEX flags_challenge_id_idx ON flags USING hash ( challenge_id );
+
+CREATE TABLE monthly_challenges (
+    challenge_id UUID PRIMARY KEY REFERENCES challenges(id) ON DELETE CASCADE,
+    start_date TIMESTAMPTZ NOT NULL,
+    end_date TIMESTAMPTZ NOT NULL,
+    display_month DATE NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL,
+    updated_at TIMESTAMPTZ,
+
+    CHECK (start_date < end_date),
+    CHECK (display_month BETWEEN start_date AND end_date)
+);
+
+CREATE TABLE submissions (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+    successful BOOLEAN NOT NULL,
+    input TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX submissions_challenge_id_idx ON submissions USING hash ( challenge_id );
+CREATE INDEX submissions_user_id_idx ON submissions USING hash ( user_id );
+
+CREATE TABLE challenge_authors (
+    challenge_id UUID REFERENCES challenges(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+
+    PRIMARY KEY (challenge_id, user_id)
+);
+
+CREATE TABLE challenge_categories (
+    challenge_id UUID REFERENCES challenges(id) ON DELETE CASCADE,
+    category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
+
+    PRIMARY KEY (challenge_id, category_id)
+);
+
+CREATE TABLE user_solves (
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    challenge_id UUID REFERENCES challenges(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL,
+
+    PRIMARY KEY (user_id, challenge_id)
+);
+
+END;

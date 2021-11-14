@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+podman-compose exec db psql ssm_wargame -U postgres

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+if [[ -z "$1" ]]; then
+    echo "error: please specify name"
+    exit 1
+fi
+
+migrate create -ext sql -dir migrations -seq $1
+
+TEMPLATE='BEGIN;
+-- SQL here
+END;'
+
+for m in $(ls migrations | tail -n 2); do 
+    echo "$TEMPLATE" >> "migrations/$m"; 
+done

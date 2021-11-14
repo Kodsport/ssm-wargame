@@ -1,0 +1,123 @@
+swagger: "2.0"
+info:
+  title: Wargame Service
+  description: HTTP service for the SSM Wargame
+  version: ""
+host: localhost:80
+consumes:
+- application/json
+- application/xml
+- application/gob
+produces:
+- application/json
+- application/xml
+- application/gob
+paths:
+  /challenge:
+    get:
+      tags:
+      - challenge
+      summary: ListChallenges challenge
+      operationId: challenge#ListChallenges
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/ChallengeSsmChallengeResponseCollection'
+      schemes:
+      - http
+definitions:
+  ChallengeFilesResponse:
+    title: ChallengeFilesResponse
+    type: object
+    example: {}
+  ChallengeServiceResponse:
+    title: ChallengeServiceResponse
+    type: object
+    example: {}
+  ChallengeSsmChallengeResponseCollection:
+    title: 'Mediatype identifier: application/vnd.ssm.challenge; type=collection;
+      view=default'
+    type: array
+    items:
+      $ref: '#/definitions/SsmChallengeResponse'
+    description: ListChallengesResponseBody is the result type for an array of SsmChallengeResponse
+      (default view)
+    example:
+    - description: A simple memory exploit bla bla
+      files:
+      - {}
+      - {}
+      - {}
+      id: uuid
+      published: true
+      score: 50
+      services:
+      - {}
+      - {}
+      title: pwnme bla bla
+    - description: A simple memory exploit bla bla
+      files:
+      - {}
+      - {}
+      - {}
+      id: uuid
+      published: true
+      score: 50
+      services:
+      - {}
+      - {}
+      title: pwnme bla bla
+  SsmChallengeResponse:
+    title: 'Mediatype identifier: application/vnd.ssm.challenge; view=default'
+    type: object
+    properties:
+      description:
+        type: string
+        example: A simple memory exploit bla bla
+      files:
+        type: array
+        items:
+          $ref: '#/definitions/ChallengeFilesResponse'
+        example:
+        - {}
+        - {}
+        - {}
+      id:
+        type: string
+        example: uuid
+      published:
+        type: boolean
+        example: true
+      score:
+        type: integer
+        example: 50
+        minimum: 0
+      services:
+        type: array
+        items:
+          $ref: '#/definitions/ChallengeServiceResponse'
+        example:
+        - {}
+        - {}
+        - {}
+      title:
+        type: string
+        example: pwnme bla bla
+    description: A Wargame challenge (default view)
+    example:
+      description: A simple memory exploit bla bla
+      files:
+      - {}
+      - {}
+      - {}
+      - {}
+      id: uuid
+      published: true
+      score: 50
+      services:
+      - {}
+      - {}
+      - {}
+      - {}
+      title: pwnme bla bla

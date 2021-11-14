@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+migrate -source file://migrations -database postgres://postgres@localhost:5432/ssm_wargame?sslmode=disable $@

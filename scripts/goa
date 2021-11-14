@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
