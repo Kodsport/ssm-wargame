@@ -5,21 +5,92 @@ package db
 
 import (
 	"context"
+	"database/sql"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/jackc/pgtype"
 )
 
-const listChallenges = `-- name: ListChallenges :many
-SELECT id, slug, title, description, score, published, services, files, ctf_event_id, created_at, updated_at FROM challenges
+const flagExists = `-- name: FlagExists :one
+SELECT EXISTS(SELECT id, challenge_id, flag, created_at, updated_at FROM flags WHERE challenge_id = $1 AND flag = $2)
 `
 
-func (q *Queries) ListChallenges(ctx context.Context) ([]Challenge, error) {
-	rows, err := q.db.Query(ctx, listChallenges)
+type FlagExistsParams struct {
+	ChallengeID uuid.UUID
+	Flag        string
+}
+
+func (q *Queries) FlagExists(ctx context.Context, arg FlagExistsParams) (bool, error) {
+	row := q.db.QueryRow(ctx, flagExists, arg.ChallengeID, arg.Flag)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const insertAttempt = `-- name: InsertAttempt :exec
+INSERT INTO submissions (user_id, challenge_id, successful, input) VALUES ($1, $2, $3, $4)
+`
+
+type InsertAttemptParams struct {
+	UserID      uuid.UUID
+	ChallengeID uuid.UUID
+	Successful  bool
+	Input       string
+}
+
+func (q *Queries) InsertAttempt(ctx context.Context, arg InsertAttemptParams) error {
+	_, err := q.db.Exec(ctx, insertAttempt,
+		arg.UserID,
+		arg.ChallengeID,
+		arg.Successful,
+		arg.Input,
+	)
+	return err
+}
+
+const insertSolve = `-- name: InsertSolve :exec
+INSERT INTO user_solves (user_id, challenge_id) VALUES ($1, $2)
+`
+
+type InsertSolveParams struct {
+	UserID      uuid.UUID
+	ChallengeID uuid.UUID
+}
+
+func (q *Queries) InsertSolve(ctx context.Context, arg InsertSolveParams) error {
+	_, err := q.db.Exec(ctx, insertSolve, arg.UserID, arg.ChallengeID)
+	return err
+}
+
+const listChallengesWithSolves = `-- name: ListChallengesWithSolves :many
+SELECT c.id, c.slug, c.title, c.description, c.score, c.published, c.services, c.files, c.ctf_event_id, c.created_at, c.updated_at, COUNT(us.user_id) num_solves FROM challenges c JOIN user_solves us ON us.challenge_id = c.id WHERE c.published = $1 GROUP BY c.id
+`
+
+type ListChallengesWithSolvesRow struct {
+	ID          uuid.UUID
+	Slug        string
+	Title       string
+	Description string
+	Score       int32
+	Published   bool
+	Services    pgtype.JSON
+	Files       pgtype.JSON
+	CtfEventID  uuid.NullUUID
+	CreatedAt   time.Time
+	UpdatedAt   sql.NullTime
+	NumSolves   int64
+}
+
+func (q *Queries) ListChallengesWithSolves(ctx context.Context, published bool) ([]ListChallengesWithSolvesRow, error) {
+	rows, err := q.db.Query(ctx, listChallengesWithSolves, published)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Challenge
+	var items []ListChallengesWithSolvesRow
 	for rows.Next() {
-		var i Challenge
+		var i ListChallengesWithSolvesRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Slug,
@@ -32,6 +103,7 @@ func (q *Queries) ListChallenges(ctx context.Context) ([]Challenge, error) {
 			&i.CtfEventID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.NumSolves,
 		); err != nil {
 			return nil, err
 		}
@@ -41,4 +113,20 @@ func (q *Queries) ListChallenges(ctx context.Context) ([]Challenge, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const userHasSolved = `-- name: UserHasSolved :one
+SELECT EXISTS (SELECT user_id, challenge_id, created_at FROM user_solves WHERE challenge_id = $1 AND user_id = $2)
+`
+
+type UserHasSolvedParams struct {
+	ChallengeID uuid.UUID
+	UserID      uuid.UUID
+}
+
+func (q *Queries) UserHasSolved(ctx context.Context, arg UserHasSolvedParams) (bool, error) {
+	row := q.db.QueryRow(ctx, userHasSolved, arg.ChallengeID, arg.UserID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
 }

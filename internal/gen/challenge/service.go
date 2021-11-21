@@ -11,12 +11,15 @@ import (
 	"context"
 
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // Service is the challenge service interface.
 type Service interface {
 	// ListChallenges implements ListChallenges.
 	ListChallenges(context.Context) (res SsmChallengeCollection, err error)
+	// SubmitFlag implements SubmitFlag.
+	SubmitFlag(context.Context, *SubmitFlagPayload) (err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -27,27 +30,59 @@ const ServiceName = "challenge"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [1]string{"ListChallenges"}
+var MethodNames = [2]string{"ListChallenges", "SubmitFlag"}
 
 // SsmChallengeCollection is the result type of the challenge service
 // ListChallenges method.
 type SsmChallengeCollection []*SsmChallenge
 
+// SubmitFlagPayload is the payload type of the challenge service SubmitFlag
+// method.
+type SubmitFlagPayload struct {
+	Flag        string
+	ChallengeID string
+}
+
 // A Wargame challenge
 type SsmChallenge struct {
-	ID          string
-	Title       string
+	ID string
+	// A unique string that can be used in URLs
+	Slug *string
+	// Title displayed to user
+	Title string
+	// A short text describing the challenge
 	Description string
-	Score       int
-	Published   bool
-	Services    []*ChallengeService
-	Files       []*ChallengeFiles
+	// The number of points given to the solver
+	Score     uint
+	Published bool
+	Services  []*ChallengeService
+	Files     []*ChallengeFiles
+	// The numer of people who solved the challenge
+	Solves uint
 }
 
 type ChallengeService struct {
 }
 
 type ChallengeFiles struct {
+}
+
+// MakeAlreadySolved builds a goa.ServiceError from an error.
+func MakeAlreadySolved(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "already_solved",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
+}
+
+// MakeIncorrectFlag builds a goa.ServiceError from an error.
+func MakeIncorrectFlag(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "incorrect_flag",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
 }
 
 // NewSsmChallengeCollection initializes result type SsmChallengeCollection
@@ -87,7 +122,9 @@ func newSsmChallengeCollectionView(res SsmChallengeCollection) challengeviews.Ss
 // newSsmChallenge converts projected type SsmChallenge to service type
 // SsmChallenge.
 func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
-	res := &SsmChallenge{}
+	res := &SsmChallenge{
+		Slug: vres.Slug,
+	}
 	if vres.ID != nil {
 		res.ID = *vres.ID
 	}
@@ -102,6 +139,9 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 	}
 	if vres.Published != nil {
 		res.Published = *vres.Published
+	}
+	if vres.Solves != nil {
+		res.Solves = *vres.Solves
 	}
 	if vres.Services != nil {
 		res.Services = make([]*ChallengeService, len(vres.Services))
@@ -123,10 +163,12 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 	vres := &challengeviews.SsmChallengeView{
 		ID:          &res.ID,
+		Slug:        res.Slug,
 		Title:       &res.Title,
 		Description: &res.Description,
 		Score:       &res.Score,
 		Published:   &res.Published,
+		Solves:      &res.Solves,
 	}
 	if res.Services != nil {
 		vres.Services = make([]*challengeviews.ChallengeServiceView, len(res.Services))

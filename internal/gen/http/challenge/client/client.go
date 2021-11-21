@@ -21,6 +21,10 @@ type Client struct {
 	// ListChallenges endpoint.
 	ListChallengesDoer goahttp.Doer
 
+	// SubmitFlag Doer is the HTTP client used to make requests to the SubmitFlag
+	// endpoint.
+	SubmitFlagDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -42,6 +46,7 @@ func NewClient(
 ) *Client {
 	return &Client{
 		ListChallengesDoer:  doer,
+		SubmitFlagDoer:      doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -64,6 +69,30 @@ func (c *Client) ListChallenges() goa.Endpoint {
 		resp, err := c.ListChallengesDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("challenge", "ListChallenges", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// SubmitFlag returns an endpoint that makes HTTP requests to the challenge
+// service SubmitFlag server.
+func (c *Client) SubmitFlag() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeSubmitFlagRequest(c.encoder)
+		decodeResponse = DecodeSubmitFlagResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildSubmitFlagRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.SubmitFlagDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "SubmitFlag", err)
 		}
 		return decodeResponse(resp)
 	}

@@ -1,17 +1,17 @@
 BEGIN;
 
-CREATE TABLE user_solves;
-CREATE TABLE challenge_categories;
-CREATE TABLE challenge_authors;
-CREATE TABLE submissions;
-CREATE TABLE monthly_challenges;
-CREATE TABLE flags;
-CREATE TABLE challenge_files;
-CREATE TABLE challenge_services;
-CREATE TABLE challenges;
-CREATE TABLE ctf_events;
-CREATE TABLE categories;
-CREATE TABLE users;
-CREATE TABLE schools;
+DROP TABLE user_solves;
+DROP TABLE challenge_categories;
+DROP TABLE challenge_authors;
+DROP TABLE submissions;
+DROP TABLE monthly_challenges;
+DROP TABLE flags;
+DROP TABLE challenge_files;
+DROP TABLE challenge_services;
+DROP TABLE challenges;
+DROP TABLE ctf_events;
+DROP TABLE categories;
+DROP TABLE users;
+DROP TABLE schools;
 
 END;

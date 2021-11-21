@@ -6,3 +6,46 @@
 // $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package client
+
+import (
+	"encoding/json"
+	"fmt"
+	"unicode/utf8"
+
+	challenge "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
+	goa "goa.design/goa/v3/pkg"
+)
+
+// BuildSubmitFlagPayload builds the payload for the challenge SubmitFlag
+// endpoint from CLI flags.
+func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagChallengeID string) (*challenge.SubmitFlagPayload, error) {
+	var err error
+	var body SubmitFlagRequestBody
+	{
+		err = json.Unmarshal([]byte(challengeSubmitFlagBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"flag\": \"SSM{flag}\"\n   }'")
+		}
+		if utf8.RuneCountInString(body.Flag) > 200 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.flag", body.Flag, utf8.RuneCountInString(body.Flag), 200, false))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	var challengeID string
+	{
+		challengeID = challengeSubmitFlagChallengeID
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	v := &challenge.SubmitFlagPayload{
+		Flag: body.Flag,
+	}
+	v.ChallengeID = challengeID
+
+	return v, nil
+}

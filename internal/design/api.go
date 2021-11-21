@@ -23,17 +23,19 @@ var Challenge = ResultType("application/vnd.ssm.challenge", func() {
 
 	Attributes(func() {
 		Attribute("id", String, func() {
-			Example("uuid")
+			Example("e721a338-44de-4de8-a562-43d2db5f4115")
 		})
-		Attribute("title", String, func() {
-			Example("pwnme bla bla")
+		Attribute("slug", String, "A unique string that can be used in URLs", func() {
+			Example("pwnme")
 		})
-		Attribute("description", String, func() {
-			Example("A simple memory exploit bla bla")
+		Attribute("title", String, "Title displayed to user", func() {
+			Example("pwnme")
 		})
-		Attribute("score", Int, func() {
+		Attribute("description", String, "A short text describing the challenge", func() {
+			Example("A simple memory exploit challenge")
+		})
+		Attribute("score", UInt, "The number of points given to the solver", func() {
 			Example(50)
-			Minimum(0)
 		})
 		Attribute("published", Boolean, func() {
 			Example(true)
@@ -41,7 +43,11 @@ var Challenge = ResultType("application/vnd.ssm.challenge", func() {
 		Attribute("services", ArrayOf(ChallengeService))
 		Attribute("files", ArrayOf(ChallengeFiles))
 
-		Required("id", "title", "description", "score", "published")
+		Attribute("solves", UInt, "The numer of people who solved the challenge", func() {
+			Example(3)
+		})
+
+		Required("id", "title", "description", "score", "published", "solves")
 	})
 
 })

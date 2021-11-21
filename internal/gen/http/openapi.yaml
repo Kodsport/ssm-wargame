@@ -13,6 +13,45 @@ produces:
 - application/xml
 - application/gob
 paths:
+  /auth/discord/exchange:
+    post:
+      tags:
+      - auth
+      summary: ExchangeDiscord auth
+      operationId: auth#ExchangeDiscord
+      parameters:
+      - name: ExchangeDiscordRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/AuthExchangeDiscordRequestBody'
+          required:
+          - code
+          - state
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/AuthExchangeDiscordResponseBody'
+            required:
+            - jwt
+      schemes:
+      - http
+  /auth/discord/url:
+    get:
+      tags:
+      - auth
+      summary: GenerateDiscordAuthURL auth
+      operationId: auth#GenerateDiscordAuthURL
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/AuthGenerateDiscordAuthURLResponseBody'
+            required:
+            - url
+      schemes:
+      - http
   /challenge:
     get:
       tags:
@@ -26,7 +65,78 @@ paths:
             $ref: '#/definitions/ChallengeSsmChallengeResponseCollection'
       schemes:
       - http
+  /challenge/{challengeId}/attempt:
+    post:
+      tags:
+      - challenge
+      summary: SubmitFlag challenge
+      operationId: challenge#SubmitFlag
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        type: string
+        format: uuid
+      - name: SubmitFlagRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ChallengeSubmitFlagRequestBody'
+          required:
+          - flag
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: If the challenge is already solved
+          schema:
+            $ref: '#/definitions/ChallengeSubmitFlagIncorrectFlagResponseBody'
+        "409":
+          description: If the challenge is already solved
+          schema:
+            $ref: '#/definitions/ChallengeSubmitFlagAlreadySolvedResponseBody'
+      schemes:
+      - http
 definitions:
+  AuthExchangeDiscordRequestBody:
+    title: AuthExchangeDiscordRequestBody
+    type: object
+    properties:
+      code:
+        type: string
+        example: 123abc
+      state:
+        type: string
+        example: 15773059ghq9183habn
+    example:
+      code: 123abc
+      state: 15773059ghq9183habn
+    required:
+    - code
+    - state
+  AuthExchangeDiscordResponseBody:
+    title: AuthExchangeDiscordResponseBody
+    type: object
+    properties:
+      jwt:
+        type: string
+        description: A token to authenticate with the SSM API
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    example:
+      jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+    required:
+    - jwt
+  AuthGenerateDiscordAuthURLResponseBody:
+    title: AuthGenerateDiscordAuthURLResponseBody
+    type: object
+    properties:
+      url:
+        type: string
+        example: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
+    example:
+      url: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
+    required:
+    - url
   ChallengeFilesResponse:
     title: ChallengeFilesResponse
     type: object
@@ -44,37 +154,144 @@ definitions:
     description: ListChallengesResponseBody is the result type for an array of SsmChallengeResponse
       (default view)
     example:
-    - description: A simple memory exploit bla bla
+    - description: A simple memory exploit challenge
       files:
       - {}
       - {}
       - {}
-      id: uuid
+      id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
       - {}
       - {}
-      title: pwnme bla bla
-    - description: A simple memory exploit bla bla
+      slug: pwnme
+      solves: 3
+      title: pwnme
+    - description: A simple memory exploit challenge
       files:
       - {}
       - {}
       - {}
-      id: uuid
+      id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
       - {}
       - {}
-      title: pwnme bla bla
+      slug: pwnme
+      solves: 3
+      title: pwnme
+  ChallengeSubmitFlagAlreadySolvedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: SubmitFlag_already_solved_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  ChallengeSubmitFlagIncorrectFlagResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: SubmitFlag_incorrect_flag_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  ChallengeSubmitFlagRequestBody:
+    title: ChallengeSubmitFlagRequestBody
+    type: object
+    properties:
+      flag:
+        type: string
+        example: SSM{flag}
+        maxLength: 200
+    example:
+      flag: SSM{flag}
+    required:
+    - flag
   SsmChallengeResponse:
     title: 'Mediatype identifier: application/vnd.ssm.challenge; view=default'
     type: object
     properties:
       description:
         type: string
-        example: A simple memory exploit bla bla
+        description: A short text describing the challenge
+        example: A simple memory exploit challenge
       files:
         type: array
         items:
@@ -85,14 +302,15 @@ definitions:
         - {}
       id:
         type: string
-        example: uuid
+        example: e721a338-44de-4de8-a562-43d2db5f4115
       published:
         type: boolean
         example: true
       score:
         type: integer
+        description: The number of points given to the solver
         example: 50
-        minimum: 0
+        format: int64
       services:
         type: array
         items:
@@ -101,18 +319,28 @@ definitions:
         - {}
         - {}
         - {}
+      slug:
+        type: string
+        description: A unique string that can be used in URLs
+        example: pwnme
+      solves:
+        type: integer
+        description: The numer of people who solved the challenge
+        example: 3
+        format: int64
       title:
         type: string
-        example: pwnme bla bla
+        description: Title displayed to user
+        example: pwnme
     description: A Wargame challenge (default view)
     example:
-      description: A simple memory exploit bla bla
+      description: A simple memory exploit challenge
       files:
       - {}
       - {}
       - {}
       - {}
-      id: uuid
+      id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
@@ -120,10 +348,13 @@ definitions:
       - {}
       - {}
       - {}
-      title: pwnme bla bla
+      slug: pwnme
+      solves: 3
+      title: pwnme
     required:
     - id
     - title
     - description
     - score
     - published
+    - solves

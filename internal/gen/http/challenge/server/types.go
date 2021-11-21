@@ -8,22 +8,75 @@
 package server
 
 import (
+	"unicode/utf8"
+
+	challenge "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
+	goa "goa.design/goa/v3/pkg"
 )
+
+// SubmitFlagRequestBody is the type of the "challenge" service "SubmitFlag"
+// endpoint HTTP request body.
+type SubmitFlagRequestBody struct {
+	Flag *string `form:"flag,omitempty" json:"flag,omitempty" xml:"flag,omitempty"`
+}
 
 // SsmChallengeResponseCollection is the type of the "challenge" service
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
 
+// SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
+// "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
+type SubmitFlagAlreadySolvedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// SubmitFlagIncorrectFlagResponseBody is the type of the "challenge" service
+// "SubmitFlag" endpoint HTTP response body for the "incorrect_flag" error.
+type SubmitFlagIncorrectFlagResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
-	ID          string                      `form:"id" json:"id" xml:"id"`
-	Title       string                      `form:"title" json:"title" xml:"title"`
-	Description string                      `form:"description" json:"description" xml:"description"`
-	Score       int                         `form:"score" json:"score" xml:"score"`
-	Published   bool                        `form:"published" json:"published" xml:"published"`
-	Services    []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files       []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	ID string `form:"id" json:"id" xml:"id"`
+	// A unique string that can be used in URLs
+	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Title displayed to user
+	Title string `form:"title" json:"title" xml:"title"`
+	// A short text describing the challenge
+	Description string `form:"description" json:"description" xml:"description"`
+	// The number of points given to the solver
+	Score     uint                        `form:"score" json:"score" xml:"score"`
+	Published bool                        `form:"published" json:"published" xml:"published"`
+	Services  []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files     []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	// The numer of people who solved the challenge
+	Solves uint `form:"solves" json:"solves" xml:"solves"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -42,4 +95,56 @@ func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollection
 		body[i] = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(val)
 	}
 	return body
+}
+
+// NewSubmitFlagAlreadySolvedResponseBody builds the HTTP response body from
+// the result of the "SubmitFlag" endpoint of the "challenge" service.
+func NewSubmitFlagAlreadySolvedResponseBody(res *goa.ServiceError) *SubmitFlagAlreadySolvedResponseBody {
+	body := &SubmitFlagAlreadySolvedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewSubmitFlagIncorrectFlagResponseBody builds the HTTP response body from
+// the result of the "SubmitFlag" endpoint of the "challenge" service.
+func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIncorrectFlagResponseBody {
+	body := &SubmitFlagIncorrectFlagResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewSubmitFlagPayload builds a challenge service SubmitFlag endpoint payload.
+func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string) *challenge.SubmitFlagPayload {
+	v := &challenge.SubmitFlagPayload{
+		Flag: *body.Flag,
+	}
+	v.ChallengeID = challengeID
+
+	return v
+}
+
+// ValidateSubmitFlagRequestBody runs the validations defined on
+// SubmitFlagRequestBody
+func ValidateSubmitFlagRequestBody(body *SubmitFlagRequestBody) (err error) {
+	if body.Flag == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "body"))
+	}
+	if body.Flag != nil {
+		if utf8.RuneCountInString(*body.Flag) > 200 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.flag", *body.Flag, utf8.RuneCountInString(*body.Flag), 200, false))
+		}
+	}
+	return
 }

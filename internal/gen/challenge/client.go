@@ -16,12 +16,14 @@ import (
 // Client is the "challenge" service client.
 type Client struct {
 	ListChallengesEndpoint goa.Endpoint
+	SubmitFlagEndpoint     goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges goa.Endpoint) *Client {
+func NewClient(listChallenges, submitFlag goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint: listChallenges,
+		SubmitFlagEndpoint:     submitFlag,
 	}
 }
 
@@ -34,4 +36,14 @@ func (c *Client) ListChallenges(ctx context.Context) (res SsmChallengeCollection
 		return
 	}
 	return ires.(SsmChallengeCollection), nil
+}
+
+// SubmitFlag calls the "SubmitFlag" endpoint of the "challenge" service.
+// SubmitFlag may return the following errors:
+//	- "already_solved" (type *goa.ServiceError)
+//	- "incorrect_flag" (type *goa.ServiceError)
+//	- error: internal error
+func (c *Client) SubmitFlag(ctx context.Context, p *SubmitFlagPayload) (err error) {
+	_, err = c.SubmitFlagEndpoint(ctx, p)
+	return
 }

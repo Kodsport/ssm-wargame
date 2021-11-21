@@ -7,11 +7,16 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4"
-	"github.com/sakerhetsm/ssm-wargame/internal/api"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
+	"go.uber.org/zap"
 
+	challenge_service "github.com/sakerhetsm/ssm-wargame/internal/api/challenge"
 	challenge_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	challenge_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/challenge/server"
+
+	auth_service "github.com/sakerhetsm/ssm-wargame/internal/api/auth"
+	auth_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/auth"
+	auth_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/auth/server"
 
 	goahttp "goa.design/goa/v3/http"
 )
@@ -35,10 +40,26 @@ func realMain() error {
 
 	mux := goahttp.NewMuxer()
 
-	svc := api.NewService(db.New(conn))
-	endpoints := challenge_transport.NewEndpoints(svc)
-	s := challenge_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
-	challenge_server.Mount(mux, s)
+	log, err := zap.NewDevelopment()
+	if err != nil {
+		return err
+	}
+
+	tx, _ := conn.BeginTx(nil, pgx.TxOptions{})
+	db.New(conn).WithTx(tx)
+
+	{
+		svc := challenge_service.NewService(conn, log)
+		endpoints := challenge_transport.NewEndpoints(svc)
+		s := challenge_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
+		challenge_server.Mount(mux, s)
+	}
+	{
+		svc := auth_service.NewService(conn, log)
+		endpoints := auth_transport.NewEndpoints(svc)
+		s := auth_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
+		auth_server.Mount(mux, s)
+	}
 
 	var handler http.Handler = mux
 

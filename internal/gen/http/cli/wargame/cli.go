@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 
+	authc "github.com/sakerhetsm/ssm-wargame/internal/gen/http/auth/client"
 	challengec "github.com/sakerhetsm/ssm-wargame/internal/gen/http/challenge/client"
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
@@ -23,13 +24,15 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `challenge list-challenges
+	return `auth (generate-discord-auth-url|exchange-discord)
+challenge (list-challenges|submit-flag)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` challenge list-challenges` + "\n" +
+	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
+		os.Args[0] + ` challenge list-challenges` + "\n" +
 		""
 }
 
@@ -43,12 +46,28 @@ func ParseEndpoint(
 	restore bool,
 ) (goa.Endpoint, interface{}, error) {
 	var (
+		authFlags = flag.NewFlagSet("auth", flag.ContinueOnError)
+
+		authGenerateDiscordAuthURLFlags = flag.NewFlagSet("generate-discord-auth-url", flag.ExitOnError)
+
+		authExchangeDiscordFlags    = flag.NewFlagSet("exchange-discord", flag.ExitOnError)
+		authExchangeDiscordBodyFlag = authExchangeDiscordFlags.String("body", "REQUIRED", "")
+
 		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
 
 		challengeListChallengesFlags = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+
+		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
+		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
+		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "")
 	)
+	authFlags.Usage = authUsage
+	authGenerateDiscordAuthURLFlags.Usage = authGenerateDiscordAuthURLUsage
+	authExchangeDiscordFlags.Usage = authExchangeDiscordUsage
+
 	challengeFlags.Usage = challengeUsage
 	challengeListChallengesFlags.Usage = challengeListChallengesUsage
+	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
@@ -65,6 +84,8 @@ func ParseEndpoint(
 	{
 		svcn = flag.Arg(0)
 		switch svcn {
+		case "auth":
+			svcf = authFlags
 		case "challenge":
 			svcf = challengeFlags
 		default:
@@ -82,10 +103,23 @@ func ParseEndpoint(
 	{
 		epn = svcf.Arg(0)
 		switch svcn {
+		case "auth":
+			switch epn {
+			case "generate-discord-auth-url":
+				epf = authGenerateDiscordAuthURLFlags
+
+			case "exchange-discord":
+				epf = authExchangeDiscordFlags
+
+			}
+
 		case "challenge":
 			switch epn {
 			case "list-challenges":
 				epf = challengeListChallengesFlags
+
+			case "submit-flag":
+				epf = challengeSubmitFlagFlags
 
 			}
 
@@ -109,12 +143,25 @@ func ParseEndpoint(
 	)
 	{
 		switch svcn {
+		case "auth":
+			c := authc.NewClient(scheme, host, doer, enc, dec, restore)
+			switch epn {
+			case "generate-discord-auth-url":
+				endpoint = c.GenerateDiscordAuthURL()
+				data = nil
+			case "exchange-discord":
+				endpoint = c.ExchangeDiscord()
+				data, err = authc.BuildExchangeDiscordPayload(*authExchangeDiscordBodyFlag)
+			}
 		case "challenge":
 			c := challengec.NewClient(scheme, host, doer, enc, dec, restore)
 			switch epn {
 			case "list-challenges":
 				endpoint = c.ListChallenges()
 				data = nil
+			case "submit-flag":
+				endpoint = c.SubmitFlag()
+				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag)
 			}
 		}
 	}
@@ -123,6 +170,44 @@ func ParseEndpoint(
 	}
 
 	return endpoint, data, nil
+}
+
+// authUsage displays the usage of the auth command and its subcommands.
+func authUsage() {
+	fmt.Fprintf(os.Stderr, `Service is the auth service interface.
+Usage:
+    %[1]s [globalflags] auth COMMAND [flags]
+
+COMMAND:
+    generate-discord-auth-url: GenerateDiscordAuthURL implements GenerateDiscordAuthURL.
+    exchange-discord: ExchangeDiscord implements ExchangeDiscord.
+
+Additional help:
+    %[1]s auth COMMAND --help
+`, os.Args[0])
+}
+func authGenerateDiscordAuthURLUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] auth generate-discord-auth-url
+
+GenerateDiscordAuthURL implements GenerateDiscordAuthURL.
+
+Example:
+    %[1]s auth generate-discord-auth-url
+`, os.Args[0])
+}
+
+func authExchangeDiscordUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] auth exchange-discord -body JSON
+
+ExchangeDiscord implements ExchangeDiscord.
+    -body JSON: 
+
+Example:
+    %[1]s auth exchange-discord --body '{
+      "code": "123abc",
+      "state": "15773059ghq9183habn"
+   }'
+`, os.Args[0])
 }
 
 // challengeUsage displays the usage of the challenge command and its
@@ -134,6 +219,7 @@ Usage:
 
 COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
+    submit-flag: SubmitFlag implements SubmitFlag.
 
 Additional help:
     %[1]s challenge COMMAND --help
@@ -146,5 +232,19 @@ ListChallenges implements ListChallenges.
 
 Example:
     %[1]s challenge list-challenges
+`, os.Args[0])
+}
+
+func challengeSubmitFlagUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge submit-flag -body JSON -challenge-id STRING
+
+SubmitFlag implements SubmitFlag.
+    -body JSON: 
+    -challenge-id STRING: 
+
+Example:
+    %[1]s challenge submit-flag --body '{
+      "flag": "SSM{flag}"
+   }' --challenge-id "123"
 `, os.Args[0])
 }

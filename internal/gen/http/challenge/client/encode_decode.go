@@ -76,16 +76,118 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 	}
 }
 
+// BuildSubmitFlagRequest instantiates a HTTP request object with method and
+// path set to call the "challenge" service "SubmitFlag" endpoint
+func (c *Client) BuildSubmitFlagRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		challengeID string
+	)
+	{
+		p, ok := v.(*challenge.SubmitFlagPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("challenge", "SubmitFlag", "*challenge.SubmitFlagPayload", v)
+		}
+		challengeID = p.ChallengeID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: SubmitFlagChallengePath(challengeID)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "SubmitFlag", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeSubmitFlagRequest returns an encoder for requests sent to the
+// challenge SubmitFlag server.
+func EncodeSubmitFlagRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.SubmitFlagPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "SubmitFlag", "*challenge.SubmitFlagPayload", v)
+		}
+		body := NewSubmitFlagRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("challenge", "SubmitFlag", err)
+		}
+		return nil
+	}
+}
+
+// DecodeSubmitFlagResponse returns a decoder for responses returned by the
+// challenge SubmitFlag endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeSubmitFlagResponse may return the following errors:
+//	- "already_solved" (type *goa.ServiceError): http.StatusConflict
+//	- "incorrect_flag" (type *goa.ServiceError): http.StatusBadRequest
+//	- error: internal error
+func DecodeSubmitFlagResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusConflict:
+			var (
+				body SubmitFlagAlreadySolvedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "SubmitFlag", err)
+			}
+			err = ValidateSubmitFlagAlreadySolvedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "SubmitFlag", err)
+			}
+			return nil, NewSubmitFlagAlreadySolved(&body)
+		case http.StatusBadRequest:
+			var (
+				body SubmitFlagIncorrectFlagResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "SubmitFlag", err)
+			}
+			err = ValidateSubmitFlagIncorrectFlagResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "SubmitFlag", err)
+			}
+			return nil, NewSubmitFlagIncorrectFlag(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "SubmitFlag", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView builds a value
 // of type *challengeviews.SsmChallengeView from a value of type
 // *SsmChallengeResponse.
 func unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v *SsmChallengeResponse) *challengeviews.SsmChallengeView {
 	res := &challengeviews.SsmChallengeView{
 		ID:          v.ID,
+		Slug:        v.Slug,
 		Title:       v.Title,
 		Description: v.Description,
 		Score:       v.Score,
 		Published:   v.Published,
+		Solves:      v.Solves,
 	}
 	if v.Services != nil {
 		res.Services = make([]*challengeviews.ChallengeServiceView, len(v.Services))

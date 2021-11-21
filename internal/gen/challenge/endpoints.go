@@ -16,18 +16,21 @@ import (
 // Endpoints wraps the "challenge" service endpoints.
 type Endpoints struct {
 	ListChallenges goa.Endpoint
+	SubmitFlag     goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "challenge" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
 		ListChallenges: NewListChallengesEndpoint(s),
+		SubmitFlag:     NewSubmitFlagEndpoint(s),
 	}
 }
 
 // Use applies the given middleware to all the "challenge" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListChallenges = m(e.ListChallenges)
+	e.SubmitFlag = m(e.SubmitFlag)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -40,5 +43,14 @@ func NewListChallengesEndpoint(s Service) goa.Endpoint {
 		}
 		vres := NewViewedSsmChallengeCollection(res, "default")
 		return vres, nil
+	}
+}
+
+// NewSubmitFlagEndpoint returns an endpoint function that calls the method
+// "SubmitFlag" of service "challenge".
+func NewSubmitFlagEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*SubmitFlagPayload)
+		return nil, s.SubmitFlag(ctx, p)
 	}
 }

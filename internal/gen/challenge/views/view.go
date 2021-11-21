@@ -26,13 +26,20 @@ type SsmChallengeCollectionView []*SsmChallengeView
 
 // SsmChallengeView is a type that runs validations on a projected type.
 type SsmChallengeView struct {
-	ID          *string
-	Title       *string
+	ID *string
+	// A unique string that can be used in URLs
+	Slug *string
+	// Title displayed to user
+	Title *string
+	// A short text describing the challenge
 	Description *string
-	Score       *int
-	Published   *bool
-	Services    []*ChallengeServiceView
-	Files       []*ChallengeFilesView
+	// The number of points given to the solver
+	Score     *uint
+	Published *bool
+	Services  []*ChallengeServiceView
+	Files     []*ChallengeFilesView
+	// The numer of people who solved the challenge
+	Solves *uint
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -49,12 +56,14 @@ var (
 	SsmChallengeCollectionMap = map[string][]string{
 		"default": {
 			"id",
+			"slug",
 			"title",
 			"description",
 			"score",
 			"published",
 			"services",
 			"files",
+			"solves",
 		},
 	}
 	// SsmChallengeMap is a map indexing the attribute names of SsmChallenge by
@@ -62,12 +71,14 @@ var (
 	SsmChallengeMap = map[string][]string{
 		"default": {
 			"id",
+			"slug",
 			"title",
 			"description",
 			"score",
 			"published",
 			"services",
 			"files",
+			"solves",
 		},
 	}
 )
@@ -113,10 +124,8 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	if result.Published == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("published", "result"))
 	}
-	if result.Score != nil {
-		if *result.Score < 0 {
-			err = goa.MergeErrors(err, goa.InvalidRangeError("result.score", *result.Score, 0, true))
-		}
+	if result.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
 	}
 	return
 }
