@@ -22,6 +22,7 @@ func NewService(conn *pgx.Conn, log *zap.Logger) challenge_spec.Service {
 		log: log.Named("challenge"),
 	}
 }
+
 func (s *service) CreateChallenge(ctx context.Context) error {
 	return nil
 }

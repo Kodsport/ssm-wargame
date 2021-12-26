@@ -7,7 +7,10 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4"
+	"github.com/joho/godotenv"
 	"go.uber.org/zap"
+
+	"github.com/sakerhetsm/ssm-wargame/internal/config"
 
 	challenge_service "github.com/sakerhetsm/ssm-wargame/internal/api/challenge"
 	challenge_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
@@ -30,7 +33,14 @@ func main() {
 
 func realMain() error {
 
-	conn, err := pgx.Connect(context.Background(), "postgres://postgres@localhost:5432/ssm_wargame?sslmode=disable")
+	godotenv.Load()
+	cfg, err := config.Get()
+	if err != nil {
+		return err
+	}
+
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s", cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Port, cfg.DB.DBName, cfg.DB.SSLMode)
+	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
