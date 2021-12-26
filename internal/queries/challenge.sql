@@ -6,7 +6,7 @@ WHERE (NOT c.published = @show_unpublished::bool OR c.published = true)
 GROUP BY c.id;
 
 -- name: FlagExists :one
-SELECT EXISTS(SELECT * FROM flags WHERE challenge_id = $1 AND flag = $2);
+SELECT EXISTS(SELECT 1 FROM flags WHERE challenge_id = $1 AND flag = $2);
 
 -- name: InsertAttempt :exec
 INSERT INTO submissions (user_id, challenge_id, successful, input) VALUES ($1, $2, $3, $4);

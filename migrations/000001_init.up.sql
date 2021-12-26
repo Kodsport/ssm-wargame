@@ -11,8 +11,8 @@ CREATE TABLE schools (
 CREATE TABLE users (
     id UUID PRIMARY KEY,
     discord_id TEXT UNIQUE,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
+    first_name TEXT,
+    last_name TEXT,
     email TEXT NOT NULL,
     school_id INT REFERENCES schools(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

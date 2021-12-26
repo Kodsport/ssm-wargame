@@ -42,8 +42,7 @@ func realMain() error {
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s", cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Port, cfg.DB.DBName, cfg.DB.SSLMode)
 	conn, err := pgx.Connect(context.Background(), connStr)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
-		os.Exit(1)
+		return err
 	}
 	defer conn.Close(context.Background())
 
@@ -53,6 +52,7 @@ func realMain() error {
 	if err != nil {
 		return err
 	}
+	defer log.Sync()
 
 	{
 		svc := challenge_service.NewService(conn, log)
@@ -61,15 +61,16 @@ func realMain() error {
 		challenge_server.Mount(mux, s)
 	}
 	{
-		svc := auth_service.NewService(conn, log)
+		svc := auth_service.NewService(conn, log, cfg)
 		endpoints := auth_transport.NewEndpoints(svc)
 		s := auth_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		auth_server.Mount(mux, s)
 	}
 
-	var handler http.Handler = mux
-
-	srv := &http.Server{Addr: "localhost:8080", Handler: handler}
+	srv := &http.Server{
+		Addr:    "localhost:8080",
+		Handler: mux,
+	}
 
 	return srv.ListenAndServe()
 }

@@ -13,7 +13,7 @@ import (
 )
 
 const flagExists = `-- name: FlagExists :one
-SELECT EXISTS(SELECT id, challenge_id, flag, created_at, updated_at FROM flags WHERE challenge_id = $1 AND flag = $2)
+SELECT EXISTS(SELECT 1 FROM flags WHERE challenge_id = $1 AND flag = $2)
 `
 
 type FlagExistsParams struct {
