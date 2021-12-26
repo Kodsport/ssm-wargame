@@ -68,6 +68,16 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 
 })
 
+var CreateChallengePayload = Type("CreateChallengePayload", func() {
+	Reference(Challenge)
+
+	Attribute("slug")
+	Attribute("title")
+	Attribute("description")
+	Attribute("score")
+
+})
+
 var Challenge = Type("Challenge", func() {
 	Attribute("id", String, func() {
 		Example("e721a338-44de-4de8-a562-43d2db5f4115")

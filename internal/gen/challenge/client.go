@@ -42,8 +42,8 @@ func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (
 
 // CreateChallenge calls the "CreateChallenge" endpoint of the "challenge"
 // service.
-func (c *Client) CreateChallenge(ctx context.Context) (err error) {
-	_, err = c.CreateChallengeEndpoint(ctx, nil)
+func (c *Client) CreateChallenge(ctx context.Context, p *CreateChallengePayload) (err error) {
+	_, err = c.CreateChallengeEndpoint(ctx, p)
 	return
 }
 

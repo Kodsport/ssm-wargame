@@ -22,7 +22,7 @@ var _ = Service("challenge", func() {
 	})
 	Method("CreateChallenge", func() {
 		Payload(func() {
-
+			Extend(CreateChallengePayload)
 		})
 		HTTP(func() {
 			POST("/")

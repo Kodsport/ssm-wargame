@@ -54,7 +54,8 @@ func NewListChallengesEndpoint(s Service) goa.Endpoint {
 // method "CreateChallenge" of service "challenge".
 func NewCreateChallengeEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
-		return nil, s.CreateChallenge(ctx)
+		p := req.(*CreateChallengePayload)
+		return nil, s.CreateChallenge(ctx, p)
 	}
 }
 

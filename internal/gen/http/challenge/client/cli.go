@@ -38,6 +38,27 @@ func BuildListChallengesPayload(challengeListChallengesView string) (*challenge.
 	return v, nil
 }
 
+// BuildCreateChallengePayload builds the payload for the challenge
+// CreateChallenge endpoint from CLI flags.
+func BuildCreateChallengePayload(challengeCreateChallengeBody string) (*challenge.CreateChallengePayload, error) {
+	var err error
+	var body CreateChallengeRequestBody
+	{
+		err = json.Unmarshal([]byte(challengeCreateChallengeBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"A heap overflow challenge\",\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+		}
+	}
+	v := &challenge.CreateChallengePayload{
+		Slug:        body.Slug,
+		Title:       body.Title,
+		Description: body.Description,
+		Score:       body.Score,
+	}
+
+	return v, nil
+}
+
 // BuildSubmitFlagPayload builds the payload for the challenge SubmitFlag
 // endpoint from CLI flags.
 func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagChallengeID string) (*challenge.SubmitFlagPayload, error) {

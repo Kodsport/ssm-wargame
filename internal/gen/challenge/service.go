@@ -22,7 +22,7 @@ type Service interface {
 	//	- "author"
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, view string, err error)
 	// CreateChallenge implements CreateChallenge.
-	CreateChallenge(context.Context) (err error)
+	CreateChallenge(context.Context, *CreateChallengePayload) (err error)
 	// SubmitFlag implements SubmitFlag.
 	SubmitFlag(context.Context, *SubmitFlagPayload) (err error)
 }
@@ -46,6 +46,19 @@ type ListChallengesPayload struct {
 // SsmChallengeCollection is the result type of the challenge service
 // ListChallenges method.
 type SsmChallengeCollection []*SsmChallenge
+
+// CreateChallengePayload is the payload type of the challenge service
+// CreateChallenge method.
+type CreateChallengePayload struct {
+	// A unique string that can be used in URLs
+	Slug string
+	// Title displayed to user
+	Title string
+	// A short text describing the challenge
+	Description string
+	// The number of points given to the solver
+	Score int32
+}
 
 // SubmitFlagPayload is the payload type of the challenge service SubmitFlag
 // method.

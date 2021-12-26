@@ -106,6 +106,22 @@ func (c *Client) BuildCreateChallengeRequest(ctx context.Context, v interface{})
 	return req, nil
 }
 
+// EncodeCreateChallengeRequest returns an encoder for requests sent to the
+// challenge CreateChallenge server.
+func EncodeCreateChallengeRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.CreateChallengePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "CreateChallenge", "*challenge.CreateChallengePayload", v)
+		}
+		body := NewCreateChallengeRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("challenge", "CreateChallenge", err)
+		}
+		return nil
+	}
+}
+
 // DecodeCreateChallengeResponse returns a decoder for responses returned by
 // the challenge CreateChallenge endpoint. restoreBody controls whether the
 // response body should be restored after having been read.

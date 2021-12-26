@@ -58,7 +58,8 @@ func ParseEndpoint(
 		challengeListChallengesFlags    = flag.NewFlagSet("list-challenges", flag.ExitOnError)
 		challengeListChallengesViewFlag = challengeListChallengesFlags.String("view", "default", "")
 
-		challengeCreateChallengeFlags = flag.NewFlagSet("create-challenge", flag.ExitOnError)
+		challengeCreateChallengeFlags    = flag.NewFlagSet("create-challenge", flag.ExitOnError)
+		challengeCreateChallengeBodyFlag = challengeCreateChallengeFlags.String("body", "REQUIRED", "")
 
 		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
 		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
@@ -168,7 +169,7 @@ func ParseEndpoint(
 				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesViewFlag)
 			case "create-challenge":
 				endpoint = c.CreateChallenge()
-				data = nil
+				data, err = challengec.BuildCreateChallengePayload(*challengeCreateChallengeBodyFlag)
 			case "submit-flag":
 				endpoint = c.SubmitFlag()
 				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag)
@@ -248,12 +249,18 @@ Example:
 }
 
 func challengeCreateChallengeUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge create-challenge
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge create-challenge -body JSON
 
 CreateChallenge implements CreateChallenge.
+    -body JSON: 
 
 Example:
-    %[1]s challenge create-challenge
+    %[1]s challenge create-challenge --body '{
+      "description": "A heap overflow challenge",
+      "score": 50,
+      "slug": "pwnme",
+      "title": "pwnme"
+   }'
 `, os.Args[0])
 }
 

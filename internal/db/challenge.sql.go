@@ -49,6 +49,31 @@ func (q *Queries) InsertAttempt(ctx context.Context, arg InsertAttemptParams) er
 	return err
 }
 
+const insertChallenge = `-- name: InsertChallenge :exec
+INSERT INTO challenges (id, title, slug, description, score, published) VALUES ($1, $2, $3, $4, $5, $6)
+`
+
+type InsertChallengeParams struct {
+	ID          uuid.UUID
+	Title       string
+	Slug        string
+	Description string
+	Score       int32
+	Published   bool
+}
+
+func (q *Queries) InsertChallenge(ctx context.Context, arg InsertChallengeParams) error {
+	_, err := q.db.Exec(ctx, insertChallenge,
+		arg.ID,
+		arg.Title,
+		arg.Slug,
+		arg.Description,
+		arg.Score,
+		arg.Published,
+	)
+	return err
+}
+
 const insertSolve = `-- name: InsertSolve :exec
 INSERT INTO user_solves (user_id, challenge_id) VALUES ($1, $2)
 `

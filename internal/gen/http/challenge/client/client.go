@@ -88,10 +88,15 @@ func (c *Client) ListChallenges() goa.Endpoint {
 // challenge service CreateChallenge server.
 func (c *Client) CreateChallenge() goa.Endpoint {
 	var (
+		encodeRequest  = EncodeCreateChallengeRequest(c.encoder)
 		decodeResponse = DecodeCreateChallengeResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
 		req, err := c.BuildCreateChallengeRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
 		if err != nil {
 			return nil, err
 		}

@@ -107,8 +107,8 @@ type Submission struct {
 type User struct {
 	ID        uuid.UUID
 	DiscordID sql.NullString
-	FirstName string
-	LastName  string
+	FirstName sql.NullString
+	LastName  sql.NullString
 	Email     string
 	SchoolID  sql.NullInt32
 	CreatedAt time.Time

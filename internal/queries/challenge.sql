@@ -16,3 +16,6 @@ INSERT INTO user_solves (user_id, challenge_id) VALUES ($1, $2);
 
 -- name: UserHasSolved :one
 SELECT EXISTS (SELECT * FROM user_solves WHERE challenge_id = $1 AND user_id = $2);
+
+-- name: InsertChallenge :exec
+INSERT INTO challenges (id, title, slug, description, score, published) VALUES ($1, $2, $3, $4, $5, $6);

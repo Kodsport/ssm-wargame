@@ -23,7 +23,23 @@ func NewService(conn *pgx.Conn, log *zap.Logger) challenge_spec.Service {
 	}
 }
 
-func (s *service) CreateChallenge(ctx context.Context) error {
+func (s *service) CreateChallenge(ctx context.Context, req *challenge_spec.CreateChallengePayload) error {
+
+	q := db.New(s.db)
+
+	err := q.InsertChallenge(ctx, db.InsertChallengeParams{
+		ID:          uuid.New(),
+		Title:       req.Title,
+		Slug:        req.Slug,
+		Description: req.Description,
+		Score:       req.Score,
+		Published:   false,
+	})
+	if err != nil {
+		s.log.Error("inserting challenge", zap.Error(err))
+		return err
+	}
+
 	return nil
 }
 

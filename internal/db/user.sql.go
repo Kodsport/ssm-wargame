@@ -10,7 +10,7 @@ import (
 )
 
 const insertUserDiscord = `-- name: InsertUserDiscord :exec
-INSERT INTO users (id, discord_id, email, created_at) VALUES ($1::uuid, $2::text, $3::text, NOW())
+INSERT INTO users (id, discord_id, email) VALUES ($1::uuid, $2::text, $3::text)
 `
 
 type InsertUserDiscordParams struct {

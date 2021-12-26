@@ -15,6 +15,19 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// CreateChallengeRequestBody is the type of the "challenge" service
+// "CreateChallenge" endpoint HTTP request body.
+type CreateChallengeRequestBody struct {
+	// A unique string that can be used in URLs
+	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Title displayed to user
+	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// A short text describing the challenge
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	// The number of points given to the solver
+	Score *int32 `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+}
+
 // SubmitFlagRequestBody is the type of the "challenge" service "SubmitFlag"
 // endpoint HTTP request body.
 type SubmitFlagRequestBody struct {
@@ -165,6 +178,19 @@ func NewListChallengesPayload(view string) *challenge.ListChallengesPayload {
 	return v
 }
 
+// NewCreateChallengePayload builds a challenge service CreateChallenge
+// endpoint payload.
+func NewCreateChallengePayload(body *CreateChallengeRequestBody) *challenge.CreateChallengePayload {
+	v := &challenge.CreateChallengePayload{
+		Slug:        *body.Slug,
+		Title:       *body.Title,
+		Description: *body.Description,
+		Score:       *body.Score,
+	}
+
+	return v
+}
+
 // NewSubmitFlagPayload builds a challenge service SubmitFlag endpoint payload.
 func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string) *challenge.SubmitFlagPayload {
 	v := &challenge.SubmitFlagPayload{
@@ -173,6 +199,24 @@ func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string) *chal
 	v.ChallengeID = challengeID
 
 	return v
+}
+
+// ValidateCreateChallengeRequestBody runs the validations defined on
+// CreateChallengeRequestBody
+func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err error) {
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	return
 }
 
 // ValidateSubmitFlagRequestBody runs the validations defined on

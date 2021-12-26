@@ -71,6 +71,31 @@ func EncodeCreateChallengeResponse(encoder func(context.Context, http.ResponseWr
 	}
 }
 
+// DecodeCreateChallengeRequest returns a decoder for requests sent to the
+// challenge CreateChallenge endpoint.
+func DecodeCreateChallengeRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body CreateChallengeRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateCreateChallengeRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+		payload := NewCreateChallengePayload(&body)
+
+		return payload, nil
+	}
+}
+
 // EncodeSubmitFlagResponse returns an encoder for responses returned by the
 // challenge SubmitFlag endpoint.
 func EncodeSubmitFlagResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {

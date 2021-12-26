@@ -106,6 +106,17 @@ paths:
       - challenge
       summary: CreateChallenge challenge
       operationId: challenge#CreateChallenge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChallengeRequestBody'
+            example:
+              description: A heap overflow challenge
+              score: 50
+              slug: pwnme
+              title: pwnme
       responses:
         "201":
           description: Created response.
@@ -160,6 +171,38 @@ components:
     ChallengeService:
       type: object
       example: {}
+    CreateChallengeRequestBody:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A short text describing the challenge
+          example: A heap overflow challenge
+        score:
+          type: integer
+          description: The number of points given to the solver
+          example: 50
+          format: int32
+        slug:
+          type: string
+          description: A unique string that can be used in URLs
+          example: pwnme
+        title:
+          type: string
+          description: Title displayed to user
+          example: pwnme
+      example:
+        description: A heap overflow challenge
+        score: 50
+        slug: pwnme
+        title: pwnme
+      required:
+      - id
+      - title
+      - description
+      - score
+      - published
+      - slug
     Error:
       type: object
       properties:
