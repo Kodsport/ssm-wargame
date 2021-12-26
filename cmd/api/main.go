@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v4"
-	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	"go.uber.org/zap"
 
 	challenge_service "github.com/sakerhetsm/ssm-wargame/internal/api/challenge"
@@ -44,9 +43,6 @@ func realMain() error {
 	if err != nil {
 		return err
 	}
-
-	tx, _ := conn.BeginTx(nil, pgx.TxOptions{})
-	db.New(conn).WithTx(tx)
 
 	{
 		svc := challenge_service.NewService(conn, log)

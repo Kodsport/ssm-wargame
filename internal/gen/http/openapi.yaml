@@ -58,11 +58,29 @@ paths:
       - challenge
       summary: ListChallenges challenge
       operationId: challenge#ListChallenges
+      parameters:
+      - name: ListChallengesRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ChallengeListChallengesRequestBody'
+          required:
+          - view
       responses:
         "200":
           description: OK response.
           schema:
             $ref: '#/definitions/ChallengeSsmChallengeResponseCollection'
+      schemes:
+      - http
+    post:
+      tags:
+      - challenge
+      summary: CreateChallenge challenge
+      operationId: challenge#CreateChallenge
+      responses:
+        "201":
+          description: Created response.
       schemes:
       - http
   /challenge/{challengeId}/attempt:
@@ -141,6 +159,21 @@ definitions:
     title: ChallengeFilesResponse
     type: object
     example: {}
+  ChallengeListChallengesRequestBody:
+    title: ChallengeListChallengesRequestBody
+    type: object
+    properties:
+      view:
+        type: string
+        default: default
+        example: default
+        enum:
+        - default
+        - author
+    example:
+      view: default
+    required:
+    - view
   ChallengeServiceResponse:
     title: ChallengeServiceResponse
     type: object
@@ -154,8 +187,9 @@ definitions:
     description: ListChallengesResponseBody is the result type for an array of SsmChallengeResponse
       (default view)
     example:
-    - description: A simple memory exploit challenge
+    - description: A heap overflow challenge
       files:
+      - {}
       - {}
       - {}
       - {}
@@ -163,13 +197,16 @@ definitions:
       published: true
       score: 50
       services:
+      - {}
+      - {}
       - {}
       - {}
       slug: pwnme
       solves: 3
       title: pwnme
-    - description: A simple memory exploit challenge
+    - description: A heap overflow challenge
       files:
+      - {}
       - {}
       - {}
       - {}
@@ -177,6 +214,8 @@ definitions:
       published: true
       score: 50
       services:
+      - {}
+      - {}
       - {}
       - {}
       slug: pwnme
@@ -219,7 +258,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -252,7 +291,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -264,7 +303,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -291,7 +330,7 @@ definitions:
       description:
         type: string
         description: A short text describing the challenge
-        example: A simple memory exploit challenge
+        example: A heap overflow challenge
       files:
         type: array
         items:
@@ -318,7 +357,6 @@ definitions:
         example:
         - {}
         - {}
-        - {}
       slug:
         type: string
         description: A unique string that can be used in URLs
@@ -334,10 +372,8 @@ definitions:
         example: pwnme
     description: A Wargame challenge (default view)
     example:
-      description: A simple memory exploit challenge
+      description: A heap overflow challenge
       files:
-      - {}
-      - {}
       - {}
       - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -346,15 +382,13 @@ definitions:
       services:
       - {}
       - {}
-      - {}
-      - {}
       slug: pwnme
       solves: 3
       title: pwnme
     required:
+    - solves
     - id
     - title
     - description
     - score
     - published
-    - solves

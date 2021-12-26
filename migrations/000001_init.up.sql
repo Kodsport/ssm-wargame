@@ -10,7 +10,7 @@ CREATE TABLE schools (
 
 CREATE TABLE users (
     id UUID PRIMARY KEY,
-    discord_id TEXT NOT NULL UNIQUE,
+    discord_id TEXT UNIQUE,
     first_name TEXT NOT NULL,
     last_name TEXT NOT NULL,
     email TEXT NOT NULL,

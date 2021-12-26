@@ -21,6 +21,10 @@ type Client struct {
 	// ListChallenges endpoint.
 	ListChallengesDoer goahttp.Doer
 
+	// CreateChallenge Doer is the HTTP client used to make requests to the
+	// CreateChallenge endpoint.
+	CreateChallengeDoer goahttp.Doer
+
 	// SubmitFlag Doer is the HTTP client used to make requests to the SubmitFlag
 	// endpoint.
 	SubmitFlagDoer goahttp.Doer
@@ -46,6 +50,7 @@ func NewClient(
 ) *Client {
 	return &Client{
 		ListChallengesDoer:  doer,
+		CreateChallengeDoer: doer,
 		SubmitFlagDoer:      doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
@@ -59,6 +64,7 @@ func NewClient(
 // service ListChallenges server.
 func (c *Client) ListChallenges() goa.Endpoint {
 	var (
+		encodeRequest  = EncodeListChallengesRequest(c.encoder)
 		decodeResponse = DecodeListChallengesResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
@@ -66,9 +72,32 @@ func (c *Client) ListChallenges() goa.Endpoint {
 		if err != nil {
 			return nil, err
 		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
 		resp, err := c.ListChallengesDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("challenge", "ListChallenges", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CreateChallenge returns an endpoint that makes HTTP requests to the
+// challenge service CreateChallenge server.
+func (c *Client) CreateChallenge() goa.Endpoint {
+	var (
+		decodeResponse = DecodeCreateChallengeResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCreateChallengeRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CreateChallengeDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "CreateChallenge", err)
 		}
 		return decodeResponse(resp)
 	}

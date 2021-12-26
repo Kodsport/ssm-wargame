@@ -7,12 +7,26 @@ var _ = Service("challenge", func() {
 		Path("/challenge")
 	})
 	Method("ListChallenges", func() {
-		Result(CollectionOf(Challenge), func() {
-			View("default")
+		Result(CollectionOf(ResultChallenge))
+		Payload(func() {
+			Attribute("view", func() {
+				Default("default")
+				Enum("default", "author")
+			})
+			Required("view")
 		})
 		HTTP(func() {
 			GET("/")
 			Response(StatusOK)
+		})
+	})
+	Method("CreateChallenge", func() {
+		Payload(func() {
+
+		})
+		HTTP(func() {
+			POST("/")
+			Response(StatusCreated)
 		})
 	})
 	Method("SubmitFlag", func() {

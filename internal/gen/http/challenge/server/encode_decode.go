@@ -22,10 +22,51 @@ import (
 func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
 		res := v.(challengeviews.SsmChallengeCollection)
+		w.Header().Set("goa-view", res.View)
 		enc := encoder(ctx, w)
-		body := NewSsmChallengeResponseCollection(res.Projected)
+		var body interface{}
+		switch res.View {
+		case "author":
+			body = NewSsmChallengeResponseAuthorCollection(res.Projected)
+		case "default", "":
+			body = NewSsmChallengeResponseCollection(res.Projected)
+		}
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
+	}
+}
+
+// DecodeListChallengesRequest returns a decoder for requests sent to the
+// challenge ListChallenges endpoint.
+func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body ListChallengesRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateListChallengesRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+		payload := NewListChallengesPayload(&body)
+
+		return payload, nil
+	}
+}
+
+// EncodeCreateChallengeResponse returns an encoder for responses returned by
+// the challenge CreateChallenge endpoint.
+func EncodeCreateChallengeResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusCreated)
+		return nil
 	}
 }
 
@@ -115,11 +156,11 @@ func EncodeSubmitFlagError(encoder func(context.Context, http.ResponseWriter) go
 	}
 }
 
-// marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse builds a value
-// of type *SsmChallengeResponse from a value of type
+// marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor builds a
+// value of type *SsmChallengeResponseAuthor from a value of type
 // *challengeviews.SsmChallengeView.
-func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengeviews.SsmChallengeView) *SsmChallengeResponse {
-	res := &SsmChallengeResponse{
+func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor(v *challengeviews.SsmChallengeView) *SsmChallengeResponseAuthor {
+	res := &SsmChallengeResponseAuthor{
 		ID:          *v.ID,
 		Slug:        v.Slug,
 		Title:       *v.Title,
@@ -164,6 +205,35 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 		return nil
 	}
 	res := &ChallengeFilesResponse{}
+
+	return res
+}
+
+// marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse builds a value
+// of type *SsmChallengeResponse from a value of type
+// *challengeviews.SsmChallengeView.
+func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengeviews.SsmChallengeView) *SsmChallengeResponse {
+	res := &SsmChallengeResponse{
+		ID:          *v.ID,
+		Slug:        v.Slug,
+		Title:       *v.Title,
+		Description: *v.Description,
+		Score:       *v.Score,
+		Published:   *v.Published,
+		Solves:      *v.Solves,
+	}
+	if v.Services != nil {
+		res.Services = make([]*ChallengeServiceResponse, len(v.Services))
+		for i, val := range v.Services {
+			res.Services[i] = marshalChallengeviewsChallengeServiceViewToChallengeServiceResponse(val)
+		}
+	}
+	if v.Files != nil {
+		res.Files = make([]*ChallengeFilesResponse, len(v.Files))
+		for i, val := range v.Files {
+			res.Files[i] = marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(val)
+		}
+	}
 
 	return res
 }

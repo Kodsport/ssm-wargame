@@ -16,6 +16,30 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// BuildListChallengesPayload builds the payload for the challenge
+// ListChallenges endpoint from CLI flags.
+func BuildListChallengesPayload(challengeListChallengesBody string) (*challenge.ListChallengesPayload, error) {
+	var err error
+	var body ListChallengesRequestBody
+	{
+		err = json.Unmarshal([]byte(challengeListChallengesBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"view\": \"author\"\n   }'")
+		}
+		if !(body.View == "default" || body.View == "author") {
+			err = goa.MergeErrors(err, goa.InvalidEnumValueError("body.view", body.View, []interface{}{"default", "author"}))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	v := &challenge.ListChallengesPayload{
+		View: body.View,
+	}
+
+	return v, nil
+}
+
 // BuildSubmitFlagPayload builds the payload for the challenge SubmitFlag
 // endpoint from CLI flags.
 func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagChallengeID string) (*challenge.SubmitFlagPayload, error) {

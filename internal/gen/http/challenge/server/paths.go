@@ -16,6 +16,11 @@ func ListChallengesChallengePath() string {
 	return "/challenge"
 }
 
+// CreateChallengeChallengePath returns the URL path to the challenge service CreateChallenge HTTP endpoint.
+func CreateChallengeChallengePath() string {
+	return "/challenge"
+}
+
 // SubmitFlagChallengePath returns the URL path to the challenge service SubmitFlag HTTP endpoint.
 func SubmitFlagChallengePath(challengeID string) string {
 	return fmt.Sprintf("/challenge/%v/attempt", challengeID)

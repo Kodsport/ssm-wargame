@@ -13,6 +13,12 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// ListChallengesRequestBody is the type of the "challenge" service
+// "ListChallenges" endpoint HTTP request body.
+type ListChallengesRequestBody struct {
+	View string `form:"view" json:"view" xml:"view"`
+}
+
 // SubmitFlagRequestBody is the type of the "challenge" service "SubmitFlag"
 // endpoint HTTP request body.
 type SubmitFlagRequestBody struct {
@@ -83,6 +89,15 @@ type ChallengeServiceResponse struct {
 
 // ChallengeFilesResponse is used to define fields on response body types.
 type ChallengeFilesResponse struct {
+}
+
+// NewListChallengesRequestBody builds the HTTP request body from the payload
+// of the "ListChallenges" endpoint of the "challenge" service.
+func NewListChallengesRequestBody(p *challenge.ListChallengesPayload) *ListChallengesRequestBody {
+	body := &ListChallengesRequestBody{
+		View: p.View,
+	}
+	return body
 }
 
 // NewSubmitFlagRequestBody builds the HTTP request body from the payload of
@@ -186,6 +201,9 @@ func ValidateSubmitFlagIncorrectFlagResponseBody(body *SubmitFlagIncorrectFlagRe
 // ValidateSsmChallengeResponse runs the validations defined on
 // SsmChallengeResponse
 func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
+	if body.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
@@ -200,9 +218,6 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	if body.Published == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("published", "body"))
-	}
-	if body.Solves == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
 	}
 	return
 }

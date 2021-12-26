@@ -25,14 +25,16 @@ import (
 //
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
-challenge (list-challenges|submit-flag)
+challenge (list-challenges|create-challenge|submit-flag)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges` + "\n" +
+		os.Args[0] + ` challenge list-challenges --body '{
+      "view": "author"
+   }'` + "\n" +
 		""
 }
 
@@ -55,7 +57,10 @@ func ParseEndpoint(
 
 		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
 
-		challengeListChallengesFlags = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+		challengeListChallengesFlags    = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+		challengeListChallengesBodyFlag = challengeListChallengesFlags.String("body", "REQUIRED", "")
+
+		challengeCreateChallengeFlags = flag.NewFlagSet("create-challenge", flag.ExitOnError)
 
 		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
 		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
@@ -67,6 +72,7 @@ func ParseEndpoint(
 
 	challengeFlags.Usage = challengeUsage
 	challengeListChallengesFlags.Usage = challengeListChallengesUsage
+	challengeCreateChallengeFlags.Usage = challengeCreateChallengeUsage
 	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
@@ -118,6 +124,9 @@ func ParseEndpoint(
 			case "list-challenges":
 				epf = challengeListChallengesFlags
 
+			case "create-challenge":
+				epf = challengeCreateChallengeFlags
+
 			case "submit-flag":
 				epf = challengeSubmitFlagFlags
 
@@ -158,6 +167,9 @@ func ParseEndpoint(
 			switch epn {
 			case "list-challenges":
 				endpoint = c.ListChallenges()
+				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesBodyFlag)
+			case "create-challenge":
+				endpoint = c.CreateChallenge()
 				data = nil
 			case "submit-flag":
 				endpoint = c.SubmitFlag()
@@ -219,6 +231,7 @@ Usage:
 
 COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
+    create-challenge: CreateChallenge implements CreateChallenge.
     submit-flag: SubmitFlag implements SubmitFlag.
 
 Additional help:
@@ -226,12 +239,25 @@ Additional help:
 `, os.Args[0])
 }
 func challengeListChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -body JSON
 
 ListChallenges implements ListChallenges.
+    -body JSON: 
 
 Example:
-    %[1]s challenge list-challenges
+    %[1]s challenge list-challenges --body '{
+      "view": "author"
+   }'
+`, os.Args[0])
+}
+
+func challengeCreateChallengeUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge create-challenge
+
+CreateChallenge implements CreateChallenge.
+
+Example:
+    %[1]s challenge create-challenge
 `, os.Args[0])
 }
 

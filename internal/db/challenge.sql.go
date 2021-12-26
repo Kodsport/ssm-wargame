@@ -64,7 +64,10 @@ func (q *Queries) InsertSolve(ctx context.Context, arg InsertSolveParams) error 
 }
 
 const listChallengesWithSolves = `-- name: ListChallengesWithSolves :many
-SELECT c.id, c.slug, c.title, c.description, c.score, c.published, c.services, c.files, c.ctf_event_id, c.created_at, c.updated_at, COUNT(us.user_id) num_solves FROM challenges c JOIN user_solves us ON us.challenge_id = c.id WHERE c.published = $1 GROUP BY c.id
+SELECT c.id, c.slug, c.title, c.description, c.score, c.published, c.services, c.files, c.ctf_event_id, c.created_at, c.updated_at, COUNT(us.user_id) num_solves 
+FROM challenges c JOIN user_solves us ON us.challenge_id = c.id 
+WHERE (NOT c.published = $1::bool OR c.published = true)
+GROUP BY c.id
 `
 
 type ListChallengesWithSolvesRow struct {
@@ -82,8 +85,8 @@ type ListChallengesWithSolvesRow struct {
 	NumSolves   int64
 }
 
-func (q *Queries) ListChallengesWithSolves(ctx context.Context, published bool) ([]ListChallengesWithSolvesRow, error) {
-	rows, err := q.db.Query(ctx, listChallengesWithSolves, published)
+func (q *Queries) ListChallengesWithSolves(ctx context.Context, showUnpublished bool) ([]ListChallengesWithSolvesRow, error) {
+	rows, err := q.db.Query(ctx, listChallengesWithSolves, showUnpublished)
 	if err != nil {
 		return nil, err
 	}

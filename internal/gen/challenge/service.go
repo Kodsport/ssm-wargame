@@ -17,7 +17,12 @@ import (
 // Service is the challenge service interface.
 type Service interface {
 	// ListChallenges implements ListChallenges.
-	ListChallenges(context.Context) (res SsmChallengeCollection, err error)
+	// The "view" return value must have one of the following views
+	//	- "author"
+	//	- "default"
+	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, view string, err error)
+	// CreateChallenge implements CreateChallenge.
+	CreateChallenge(context.Context) (err error)
 	// SubmitFlag implements SubmitFlag.
 	SubmitFlag(context.Context, *SubmitFlagPayload) (err error)
 }
@@ -30,7 +35,13 @@ const ServiceName = "challenge"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [2]string{"ListChallenges", "SubmitFlag"}
+var MethodNames = [3]string{"ListChallenges", "CreateChallenge", "SubmitFlag"}
+
+// ListChallengesPayload is the payload type of the challenge service
+// ListChallenges method.
+type ListChallengesPayload struct {
+	View string
+}
 
 // SsmChallengeCollection is the result type of the challenge service
 // ListChallenges method.
@@ -88,15 +99,40 @@ func MakeIncorrectFlag(err error) *goa.ServiceError {
 // NewSsmChallengeCollection initializes result type SsmChallengeCollection
 // from viewed result type SsmChallengeCollection.
 func NewSsmChallengeCollection(vres challengeviews.SsmChallengeCollection) SsmChallengeCollection {
-	return newSsmChallengeCollection(vres.Projected)
+	var res SsmChallengeCollection
+	switch vres.View {
+	case "author":
+		res = newSsmChallengeCollectionAuthor(vres.Projected)
+	case "default", "":
+		res = newSsmChallengeCollection(vres.Projected)
+	}
+	return res
 }
 
 // NewViewedSsmChallengeCollection initializes viewed result type
 // SsmChallengeCollection from result type SsmChallengeCollection using the
 // given view.
 func NewViewedSsmChallengeCollection(res SsmChallengeCollection, view string) challengeviews.SsmChallengeCollection {
-	p := newSsmChallengeCollectionView(res)
-	return challengeviews.SsmChallengeCollection{Projected: p, View: "default"}
+	var vres challengeviews.SsmChallengeCollection
+	switch view {
+	case "author":
+		p := newSsmChallengeCollectionViewAuthor(res)
+		vres = challengeviews.SsmChallengeCollection{Projected: p, View: "author"}
+	case "default", "":
+		p := newSsmChallengeCollectionView(res)
+		vres = challengeviews.SsmChallengeCollection{Projected: p, View: "default"}
+	}
+	return vres
+}
+
+// newSsmChallengeCollectionAuthor converts projected type
+// SsmChallengeCollection to service type SsmChallengeCollection.
+func newSsmChallengeCollectionAuthor(vres challengeviews.SsmChallengeCollectionView) SsmChallengeCollection {
+	res := make(SsmChallengeCollection, len(vres))
+	for i, n := range vres {
+		res[i] = newSsmChallengeAuthor(n)
+	}
+	return res
 }
 
 // newSsmChallengeCollection converts projected type SsmChallengeCollection to
@@ -109,6 +145,17 @@ func newSsmChallengeCollection(vres challengeviews.SsmChallengeCollectionView) S
 	return res
 }
 
+// newSsmChallengeCollectionViewAuthor projects result type
+// SsmChallengeCollection to projected type SsmChallengeCollectionView using
+// the "author" view.
+func newSsmChallengeCollectionViewAuthor(res SsmChallengeCollection) challengeviews.SsmChallengeCollectionView {
+	vres := make(challengeviews.SsmChallengeCollectionView, len(res))
+	for i, n := range res {
+		vres[i] = newSsmChallengeViewAuthor(n)
+	}
+	return vres
+}
+
 // newSsmChallengeCollectionView projects result type SsmChallengeCollection to
 // projected type SsmChallengeCollectionView using the "default" view.
 func newSsmChallengeCollectionView(res SsmChallengeCollection) challengeviews.SsmChallengeCollectionView {
@@ -117,6 +164,45 @@ func newSsmChallengeCollectionView(res SsmChallengeCollection) challengeviews.Ss
 		vres[i] = newSsmChallengeView(n)
 	}
 	return vres
+}
+
+// newSsmChallengeAuthor converts projected type SsmChallenge to service type
+// SsmChallenge.
+func newSsmChallengeAuthor(vres *challengeviews.SsmChallengeView) *SsmChallenge {
+	res := &SsmChallenge{
+		Slug: vres.Slug,
+	}
+	if vres.ID != nil {
+		res.ID = *vres.ID
+	}
+	if vres.Title != nil {
+		res.Title = *vres.Title
+	}
+	if vres.Description != nil {
+		res.Description = *vres.Description
+	}
+	if vres.Score != nil {
+		res.Score = *vres.Score
+	}
+	if vres.Published != nil {
+		res.Published = *vres.Published
+	}
+	if vres.Solves != nil {
+		res.Solves = *vres.Solves
+	}
+	if vres.Services != nil {
+		res.Services = make([]*ChallengeService, len(vres.Services))
+		for i, val := range vres.Services {
+			res.Services[i] = transformChallengeviewsChallengeServiceViewToChallengeService(val)
+		}
+	}
+	if vres.Files != nil {
+		res.Files = make([]*ChallengeFiles, len(vres.Files))
+		for i, val := range vres.Files {
+			res.Files[i] = transformChallengeviewsChallengeFilesViewToChallengeFiles(val)
+		}
+	}
+	return res
 }
 
 // newSsmChallenge converts projected type SsmChallenge to service type
@@ -156,6 +242,33 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 		}
 	}
 	return res
+}
+
+// newSsmChallengeViewAuthor projects result type SsmChallenge to projected
+// type SsmChallengeView using the "author" view.
+func newSsmChallengeViewAuthor(res *SsmChallenge) *challengeviews.SsmChallengeView {
+	vres := &challengeviews.SsmChallengeView{
+		ID:          &res.ID,
+		Slug:        res.Slug,
+		Title:       &res.Title,
+		Description: &res.Description,
+		Score:       &res.Score,
+		Published:   &res.Published,
+		Solves:      &res.Solves,
+	}
+	if res.Services != nil {
+		vres.Services = make([]*challengeviews.ChallengeServiceView, len(res.Services))
+		for i, val := range res.Services {
+			vres.Services[i] = transformChallengeServiceToChallengeviewsChallengeServiceView(val)
+		}
+	}
+	if res.Files != nil {
+		vres.Files = make([]*challengeviews.ChallengeFilesView, len(res.Files))
+		for i, val := range res.Files {
+			vres.Files[i] = transformChallengeFilesToChallengeviewsChallengeFilesView(val)
+		}
+	}
+	return vres
 }
 
 // newSsmChallengeView projects result type SsmChallenge to projected type

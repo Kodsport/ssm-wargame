@@ -1,6 +1,9 @@
 
 -- name: ListChallengesWithSolves :many
-SELECT c.*, COUNT(us.user_id) num_solves FROM challenges c JOIN user_solves us ON us.challenge_id = c.id WHERE c.published = $1 GROUP BY c.id;
+SELECT c.*, COUNT(us.user_id) num_solves 
+FROM challenges c JOIN user_solves us ON us.challenge_id = c.id 
+WHERE (NOT c.published = @show_unpublished::bool OR c.published = true)
+GROUP BY c.id;
 
 -- name: FlagExists :one
 SELECT EXISTS(SELECT * FROM flags WHERE challenge_id = $1 AND flag = $2);

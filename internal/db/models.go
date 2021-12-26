@@ -106,7 +106,7 @@ type Submission struct {
 
 type User struct {
 	ID        uuid.UUID
-	DiscordID string
+	DiscordID sql.NullString
 	FirstName string
 	LastName  string
 	Email     string

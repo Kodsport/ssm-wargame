@@ -15,27 +15,36 @@ import (
 
 // Client is the "challenge" service client.
 type Client struct {
-	ListChallengesEndpoint goa.Endpoint
-	SubmitFlagEndpoint     goa.Endpoint
+	ListChallengesEndpoint  goa.Endpoint
+	CreateChallengeEndpoint goa.Endpoint
+	SubmitFlagEndpoint      goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges, submitFlag goa.Endpoint) *Client {
+func NewClient(listChallenges, createChallenge, submitFlag goa.Endpoint) *Client {
 	return &Client{
-		ListChallengesEndpoint: listChallenges,
-		SubmitFlagEndpoint:     submitFlag,
+		ListChallengesEndpoint:  listChallenges,
+		CreateChallengeEndpoint: createChallenge,
+		SubmitFlagEndpoint:      submitFlag,
 	}
 }
 
 // ListChallenges calls the "ListChallenges" endpoint of the "challenge"
 // service.
-func (c *Client) ListChallenges(ctx context.Context) (res SsmChallengeCollection, err error) {
+func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (res SsmChallengeCollection, err error) {
 	var ires interface{}
-	ires, err = c.ListChallengesEndpoint(ctx, nil)
+	ires, err = c.ListChallengesEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
 	return ires.(SsmChallengeCollection), nil
+}
+
+// CreateChallenge calls the "CreateChallenge" endpoint of the "challenge"
+// service.
+func (c *Client) CreateChallenge(ctx context.Context) (err error) {
+	_, err = c.CreateChallengeEndpoint(ctx, nil)
+	return
 }
 
 // SubmitFlag calls the "SubmitFlag" endpoint of the "challenge" service.

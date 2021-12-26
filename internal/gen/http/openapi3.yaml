@@ -52,17 +52,25 @@ paths:
       - challenge
       summary: ListChallenges challenge
       operationId: challenge#ListChallenges
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListChallengesRequestBody'
+            example:
+              view: author
       responses:
         "200":
           description: OK response.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SsmChallengeResponseCollection'
+                description: 'Response body may alternatively be #/components/schemas/SsmChallengeResponseAuthorCollection'
+                $ref: '#/components/schemas/SsmChallengeCollection'
               example:
-              - description: A simple memory exploit challenge
+              - description: A heap overflow challenge
                 files:
-                - {}
                 - {}
                 - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -71,12 +79,12 @@ paths:
                 services:
                 - {}
                 - {}
+                - {}
                 slug: pwnme
                 solves: 3
                 title: pwnme
-              - description: A simple memory exploit challenge
+              - description: A heap overflow challenge
                 files:
-                - {}
                 - {}
                 - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -85,23 +93,18 @@ paths:
                 services:
                 - {}
                 - {}
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - description: A simple memory exploit challenge
-                files:
-                - {}
-                - {}
-                - {}
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
                 - {}
                 slug: pwnme
                 solves: 3
                 title: pwnme
+    post:
+      tags:
+      - challenge
+      summary: CreateChallenge challenge
+      operationId: challenge#CreateChallenge
+      responses:
+        "201":
+          description: Created response.
   /challenge/{challengeId}/attempt:
     post:
       tags:
@@ -177,11 +180,11 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-          example: true
+          example: false
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: false
+          example: true
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -229,19 +232,32 @@ components:
         url: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
       required:
       - url
-    SsmChallengeResponse:
+    ListChallengesRequestBody:
+      type: object
+      properties:
+        view:
+          type: string
+          default: default
+          example: author
+          enum:
+          - default
+          - author
+      example:
+        view: author
+      required:
+      - view
+    SsmChallenge:
       type: object
       properties:
         description:
           type: string
           description: A short text describing the challenge
-          example: A simple memory exploit challenge
+          example: A heap overflow challenge
         files:
           type: array
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
           - {}
           - {}
           - {}
@@ -276,9 +292,9 @@ components:
           type: string
           description: Title displayed to user
           example: pwnme
-      description: A Wargame challenge (default view)
+      description: A Wargame challenge
       example:
-        description: A simple memory exploit challenge
+        description: A heap overflow challenge
         files:
         - {}
         - {}
@@ -289,26 +305,128 @@ components:
         score: 50
         services:
         - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      required:
+      - solves
+      - id
+      - title
+      - description
+      - score
+      - published
+    SsmChallengeCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/SsmChallenge'
+      example:
+      - description: A heap overflow challenge
+        files:
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      - description: A heap overflow challenge
+        files:
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+    SsmChallengeResponseAuthor:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A short text describing the challenge
+          example: A heap overflow challenge
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeService'
+          example:
+          - {}
+          - {}
+          - {}
+          - {}
+        id:
+          type: string
+          example: e721a338-44de-4de8-a562-43d2db5f4115
+        published:
+          type: boolean
+          example: true
+        score:
+          type: integer
+          description: The number of points given to the solver
+          example: 50
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeService'
+          example:
+          - {}
+          - {}
+          - {}
+        slug:
+          type: string
+          description: A unique string that can be used in URLs
+          example: pwnme
+        solves:
+          type: integer
+          description: The numer of people who solved the challenge
+          example: 3
+        title:
+          type: string
+          description: Title displayed to user
+          example: pwnme
+      description: A Wargame challenge (author view)
+      example:
+        description: A heap overflow challenge
+        files:
+        - {}
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
         - {}
         - {}
         slug: pwnme
         solves: 3
         title: pwnme
       required:
+      - solves
       - id
       - title
       - description
       - score
       - published
-      - solves
-    SsmChallengeResponseCollection:
+    SsmChallengeResponseAuthorCollection:
       type: array
       items:
-        $ref: '#/components/schemas/SsmChallengeResponse'
+        $ref: '#/components/schemas/SsmChallengeResponseAuthor'
       description: ListChallengesResponseBody is the result type for an array of SsmChallengeResponse
-        (default view)
+        (author view)
       example:
-      - description: A simple memory exploit challenge
+      - description: A heap overflow challenge
         files:
         - {}
         - {}
@@ -317,12 +435,13 @@ components:
         published: true
         score: 50
         services:
+        - {}
         - {}
         - {}
         slug: pwnme
         solves: 3
         title: pwnme
-      - description: A simple memory exploit challenge
+      - description: A heap overflow challenge
         files:
         - {}
         - {}
@@ -331,6 +450,37 @@ components:
         published: true
         score: 50
         services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      - description: A heap overflow challenge
+        files:
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      - description: A heap overflow challenge
+        files:
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
         - {}
         - {}
         slug: pwnme

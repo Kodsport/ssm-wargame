@@ -22,12 +22,23 @@ func NewService(conn *pgx.Conn, log *zap.Logger) challenge_spec.Service {
 		log: log.Named("challenge"),
 	}
 }
+func (s *service) CreateChallenge(ctx context.Context) error {
+	return nil
+}
 
-func (s *service) ListChallenges(ctx context.Context) (challenge_spec.SsmChallengeCollection, error) {
+func (s *service) ListChallenges(ctx context.Context, req *challenge_spec.ListChallengesPayload) (challenge_spec.SsmChallengeCollection, string, error) {
 
-	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, true)
+	showUnpublished := req.View == "author"
+	if showUnpublished {
+		// TODO: check that user is an author or admin
+		if false {
+			return nil, "", errors.New("todo unauth error")
+		}
+	}
+
+	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, showUnpublished)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	res := make(challenge_spec.SsmChallengeCollection, len(challs))
@@ -42,7 +53,7 @@ func (s *service) ListChallenges(ctx context.Context) (challenge_spec.SsmChallen
 		}
 	}
 
-	return res, nil
+	return res, req.View, nil
 }
 
 func (s *service) SubmitFlag(ctx context.Context, req *challenge_spec.SubmitFlagPayload) error {
