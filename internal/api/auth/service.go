@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"time"
 
@@ -79,11 +78,12 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *auth_spec.ExchangeDi
 
 	// Checks if the user already exists, insert them if not
 	userID, err := s.q.UserIDByDiscordID(ctx, dcUser.ID)
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil && err != pgx.ErrNoRows {
+		s.log.Error("db err", zap.Error(err), zap.String("discordID", dcUser.ID))
 		return nil, err
 	}
 
-	if err == sql.ErrNoRows {
+	if err == pgx.ErrNoRows {
 		userID = uuid.New()
 		err = s.q.InsertUserDiscord(ctx, db.InsertUserDiscordParams{
 			ID:        userID,
