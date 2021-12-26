@@ -96,14 +96,7 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *auth_spec.ExchangeDi
 		}
 	}
 
-	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		// Id: uuid.NewString(), // don't store, but might be useful for log context
-		Subject:   userID.String(),
-		ExpiresAt: time.Now().Add(time.Hour * 24 * 4).Unix(),
-		NotBefore: time.Now().Unix(),
-	})
-
-	jwtStr, err := jwtToken.SignedString(s.jwtSecret)
+	jwtStr, err := s.genJWT(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -111,4 +104,16 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *auth_spec.ExchangeDi
 	return &auth_spec.ExchangeDiscordResult{
 		JWT: jwtStr,
 	}, nil
+}
+
+func (s *service) genJWT(userID uuid.UUID) (string, error) {
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
+		// Id: uuid.NewString(), // don't store, but might be useful for log context
+		Subject:   userID.String(),
+		ExpiresAt: time.Now().Add(time.Hour * 24 * 4).Unix(),
+		NotBefore: time.Now().Unix(),
+	})
+
+	return jwtToken.SignedString(s.jwtSecret)
+
 }
