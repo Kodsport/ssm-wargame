@@ -18,8 +18,8 @@ import (
 type Service interface {
 	// ListChallenges implements ListChallenges.
 	// The "view" return value must have one of the following views
-	//	- "author"
 	//	- "default"
+	//	- "author"
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, view string, err error)
 	// CreateChallenge implements CreateChallenge.
 	CreateChallenge(context.Context) (err error)
@@ -58,16 +58,16 @@ type SubmitFlagPayload struct {
 type SsmChallenge struct {
 	ID string
 	// A unique string that can be used in URLs
-	Slug *string
+	Slug string
 	// Title displayed to user
 	Title string
 	// A short text describing the challenge
 	Description string
 	// The number of points given to the solver
 	Score     uint
-	Published bool
 	Services  []*ChallengeService
 	Files     []*ChallengeFiles
+	Published bool
 	// The numer of people who solved the challenge
 	Solves uint
 }
@@ -101,10 +101,10 @@ func MakeIncorrectFlag(err error) *goa.ServiceError {
 func NewSsmChallengeCollection(vres challengeviews.SsmChallengeCollection) SsmChallengeCollection {
 	var res SsmChallengeCollection
 	switch vres.View {
-	case "author":
-		res = newSsmChallengeCollectionAuthor(vres.Projected)
 	case "default", "":
 		res = newSsmChallengeCollection(vres.Projected)
+	case "author":
+		res = newSsmChallengeCollectionAuthor(vres.Projected)
 	}
 	return res
 }
@@ -115,14 +115,24 @@ func NewSsmChallengeCollection(vres challengeviews.SsmChallengeCollection) SsmCh
 func NewViewedSsmChallengeCollection(res SsmChallengeCollection, view string) challengeviews.SsmChallengeCollection {
 	var vres challengeviews.SsmChallengeCollection
 	switch view {
-	case "author":
-		p := newSsmChallengeCollectionViewAuthor(res)
-		vres = challengeviews.SsmChallengeCollection{Projected: p, View: "author"}
 	case "default", "":
 		p := newSsmChallengeCollectionView(res)
 		vres = challengeviews.SsmChallengeCollection{Projected: p, View: "default"}
+	case "author":
+		p := newSsmChallengeCollectionViewAuthor(res)
+		vres = challengeviews.SsmChallengeCollection{Projected: p, View: "author"}
 	}
 	return vres
+}
+
+// newSsmChallengeCollection converts projected type SsmChallengeCollection to
+// service type SsmChallengeCollection.
+func newSsmChallengeCollection(vres challengeviews.SsmChallengeCollectionView) SsmChallengeCollection {
+	res := make(SsmChallengeCollection, len(vres))
+	for i, n := range vres {
+		res[i] = newSsmChallenge(n)
+	}
+	return res
 }
 
 // newSsmChallengeCollectionAuthor converts projected type
@@ -135,14 +145,14 @@ func newSsmChallengeCollectionAuthor(vres challengeviews.SsmChallengeCollectionV
 	return res
 }
 
-// newSsmChallengeCollection converts projected type SsmChallengeCollection to
-// service type SsmChallengeCollection.
-func newSsmChallengeCollection(vres challengeviews.SsmChallengeCollectionView) SsmChallengeCollection {
-	res := make(SsmChallengeCollection, len(vres))
-	for i, n := range vres {
-		res[i] = newSsmChallenge(n)
+// newSsmChallengeCollectionView projects result type SsmChallengeCollection to
+// projected type SsmChallengeCollectionView using the "default" view.
+func newSsmChallengeCollectionView(res SsmChallengeCollection) challengeviews.SsmChallengeCollectionView {
+	vres := make(challengeviews.SsmChallengeCollectionView, len(res))
+	for i, n := range res {
+		vres[i] = newSsmChallengeView(n)
 	}
-	return res
+	return vres
 }
 
 // newSsmChallengeCollectionViewAuthor projects result type
@@ -156,24 +166,52 @@ func newSsmChallengeCollectionViewAuthor(res SsmChallengeCollection) challengevi
 	return vres
 }
 
-// newSsmChallengeCollectionView projects result type SsmChallengeCollection to
-// projected type SsmChallengeCollectionView using the "default" view.
-func newSsmChallengeCollectionView(res SsmChallengeCollection) challengeviews.SsmChallengeCollectionView {
-	vres := make(challengeviews.SsmChallengeCollectionView, len(res))
-	for i, n := range res {
-		vres[i] = newSsmChallengeView(n)
+// newSsmChallenge converts projected type SsmChallenge to service type
+// SsmChallenge.
+func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
+	res := &SsmChallenge{}
+	if vres.ID != nil {
+		res.ID = *vres.ID
 	}
-	return vres
+	if vres.Slug != nil {
+		res.Slug = *vres.Slug
+	}
+	if vres.Title != nil {
+		res.Title = *vres.Title
+	}
+	if vres.Description != nil {
+		res.Description = *vres.Description
+	}
+	if vres.Score != nil {
+		res.Score = *vres.Score
+	}
+	if vres.Solves != nil {
+		res.Solves = *vres.Solves
+	}
+	if vres.Services != nil {
+		res.Services = make([]*ChallengeService, len(vres.Services))
+		for i, val := range vres.Services {
+			res.Services[i] = transformChallengeviewsChallengeServiceViewToChallengeService(val)
+		}
+	}
+	if vres.Files != nil {
+		res.Files = make([]*ChallengeFiles, len(vres.Files))
+		for i, val := range vres.Files {
+			res.Files[i] = transformChallengeviewsChallengeFilesViewToChallengeFiles(val)
+		}
+	}
+	return res
 }
 
 // newSsmChallengeAuthor converts projected type SsmChallenge to service type
 // SsmChallenge.
 func newSsmChallengeAuthor(vres *challengeviews.SsmChallengeView) *SsmChallenge {
-	res := &SsmChallenge{
-		Slug: vres.Slug,
-	}
+	res := &SsmChallenge{}
 	if vres.ID != nil {
 		res.ID = *vres.ID
+	}
+	if vres.Slug != nil {
+		res.Slug = *vres.Slug
 	}
 	if vres.Title != nil {
 		res.Title = *vres.Title
@@ -184,11 +222,11 @@ func newSsmChallengeAuthor(vres *challengeviews.SsmChallengeView) *SsmChallenge 
 	if vres.Score != nil {
 		res.Score = *vres.Score
 	}
-	if vres.Published != nil {
-		res.Published = *vres.Published
-	}
 	if vres.Solves != nil {
 		res.Solves = *vres.Solves
+	}
+	if vres.Published != nil {
+		res.Published = *vres.Published
 	}
 	if vres.Services != nil {
 		res.Services = make([]*ChallengeService, len(vres.Services))
@@ -205,55 +243,15 @@ func newSsmChallengeAuthor(vres *challengeviews.SsmChallengeView) *SsmChallenge 
 	return res
 }
 
-// newSsmChallenge converts projected type SsmChallenge to service type
-// SsmChallenge.
-func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
-	res := &SsmChallenge{
-		Slug: vres.Slug,
-	}
-	if vres.ID != nil {
-		res.ID = *vres.ID
-	}
-	if vres.Title != nil {
-		res.Title = *vres.Title
-	}
-	if vres.Description != nil {
-		res.Description = *vres.Description
-	}
-	if vres.Score != nil {
-		res.Score = *vres.Score
-	}
-	if vres.Published != nil {
-		res.Published = *vres.Published
-	}
-	if vres.Solves != nil {
-		res.Solves = *vres.Solves
-	}
-	if vres.Services != nil {
-		res.Services = make([]*ChallengeService, len(vres.Services))
-		for i, val := range vres.Services {
-			res.Services[i] = transformChallengeviewsChallengeServiceViewToChallengeService(val)
-		}
-	}
-	if vres.Files != nil {
-		res.Files = make([]*ChallengeFiles, len(vres.Files))
-		for i, val := range vres.Files {
-			res.Files[i] = transformChallengeviewsChallengeFilesViewToChallengeFiles(val)
-		}
-	}
-	return res
-}
-
-// newSsmChallengeViewAuthor projects result type SsmChallenge to projected
-// type SsmChallengeView using the "author" view.
-func newSsmChallengeViewAuthor(res *SsmChallenge) *challengeviews.SsmChallengeView {
+// newSsmChallengeView projects result type SsmChallenge to projected type
+// SsmChallengeView using the "default" view.
+func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 	vres := &challengeviews.SsmChallengeView{
 		ID:          &res.ID,
-		Slug:        res.Slug,
+		Slug:        &res.Slug,
 		Title:       &res.Title,
 		Description: &res.Description,
 		Score:       &res.Score,
-		Published:   &res.Published,
 		Solves:      &res.Solves,
 	}
 	if res.Services != nil {
@@ -271,12 +269,12 @@ func newSsmChallengeViewAuthor(res *SsmChallenge) *challengeviews.SsmChallengeVi
 	return vres
 }
 
-// newSsmChallengeView projects result type SsmChallenge to projected type
-// SsmChallengeView using the "default" view.
-func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
+// newSsmChallengeViewAuthor projects result type SsmChallenge to projected
+// type SsmChallengeView using the "author" view.
+func newSsmChallengeViewAuthor(res *SsmChallenge) *challengeviews.SsmChallengeView {
 	vres := &challengeviews.SsmChallengeView{
 		ID:          &res.ID,
-		Slug:        res.Slug,
+		Slug:        &res.Slug,
 		Title:       &res.Title,
 		Description: &res.Description,
 		Score:       &res.Score,

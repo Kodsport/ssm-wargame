@@ -18,24 +18,22 @@ import (
 
 // BuildListChallengesPayload builds the payload for the challenge
 // ListChallenges endpoint from CLI flags.
-func BuildListChallengesPayload(challengeListChallengesBody string) (*challenge.ListChallengesPayload, error) {
+func BuildListChallengesPayload(challengeListChallengesView string) (*challenge.ListChallengesPayload, error) {
 	var err error
-	var body ListChallengesRequestBody
+	var view string
 	{
-		err = json.Unmarshal([]byte(challengeListChallengesBody), &body)
-		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"view\": \"author\"\n   }'")
-		}
-		if !(body.View == "default" || body.View == "author") {
-			err = goa.MergeErrors(err, goa.InvalidEnumValueError("body.view", body.View, []interface{}{"default", "author"}))
-		}
-		if err != nil {
-			return nil, err
+		if challengeListChallengesView != "" {
+			view = challengeListChallengesView
+			if !(view == "default" || view == "author") {
+				err = goa.MergeErrors(err, goa.InvalidEnumValueError("view", view, []interface{}{"default", "author"}))
+			}
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
-	v := &challenge.ListChallengesPayload{
-		View: body.View,
-	}
+	v := &challenge.ListChallengesPayload{}
+	v.View = view
 
 	return v, nil
 }

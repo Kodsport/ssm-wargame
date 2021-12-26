@@ -42,10 +42,9 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 		if !ok {
 			return goahttp.ErrInvalidType("challenge", "ListChallenges", "*challenge.ListChallengesPayload", v)
 		}
-		body := NewListChallengesRequestBody(p)
-		if err := encoder(req).Encode(&body); err != nil {
-			return goahttp.ErrEncodingError("challenge", "ListChallenges", err)
-		}
+		values := req.URL.Query()
+		values.Add("view", p.View)
+		req.URL.RawQuery = values.Encode()
 		return nil
 	}
 }

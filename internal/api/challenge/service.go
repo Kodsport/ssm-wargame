@@ -45,6 +45,7 @@ func (s *service) ListChallenges(ctx context.Context, req *challenge_spec.ListCh
 	for i, c := range challs {
 		res[i] = &challenge_spec.SsmChallenge{
 			ID:          c.ID.String(),
+			Slug:        c.Slug,
 			Title:       c.Title,
 			Description: c.Description,
 			Score:       uint(c.Score),

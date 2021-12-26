@@ -15,25 +15,19 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
-// ListChallengesRequestBody is the type of the "challenge" service
-// "ListChallenges" endpoint HTTP request body.
-type ListChallengesRequestBody struct {
-	View *string `form:"view,omitempty" json:"view,omitempty" xml:"view,omitempty"`
-}
-
 // SubmitFlagRequestBody is the type of the "challenge" service "SubmitFlag"
 // endpoint HTTP request body.
 type SubmitFlagRequestBody struct {
 	Flag *string `form:"flag,omitempty" json:"flag,omitempty" xml:"flag,omitempty"`
 }
 
-// SsmChallengeResponseAuthorCollection is the type of the "challenge" service
-// "ListChallenges" endpoint HTTP response body.
-type SsmChallengeResponseAuthorCollection []*SsmChallengeResponseAuthor
-
 // SsmChallengeResponseCollection is the type of the "challenge" service
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
+
+// SsmChallengeResponseAuthorCollection is the type of the "challenge" service
+// "ListChallenges" endpoint HTTP response body.
+type SsmChallengeResponseAuthorCollection []*SsmChallengeResponseAuthor
 
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
@@ -71,20 +65,19 @@ type SubmitFlagIncorrectFlagResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
-// SsmChallengeResponseAuthor is used to define fields on response body types.
-type SsmChallengeResponseAuthor struct {
+// SsmChallengeResponse is used to define fields on response body types.
+type SsmChallengeResponse struct {
 	ID string `form:"id" json:"id" xml:"id"`
 	// A unique string that can be used in URLs
-	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	Slug string `form:"slug" json:"slug" xml:"slug"`
 	// Title displayed to user
 	Title string `form:"title" json:"title" xml:"title"`
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
-	Score     uint                        `form:"score" json:"score" xml:"score"`
-	Published bool                        `form:"published" json:"published" xml:"published"`
-	Services  []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files     []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	Score    uint                        `form:"score" json:"score" xml:"score"`
+	Services []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
 	Solves uint `form:"solves" json:"solves" xml:"solves"`
 }
@@ -97,32 +90,22 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 }
 
-// SsmChallengeResponse is used to define fields on response body types.
-type SsmChallengeResponse struct {
+// SsmChallengeResponseAuthor is used to define fields on response body types.
+type SsmChallengeResponseAuthor struct {
 	ID string `form:"id" json:"id" xml:"id"`
 	// A unique string that can be used in URLs
-	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	Slug string `form:"slug" json:"slug" xml:"slug"`
 	// Title displayed to user
 	Title string `form:"title" json:"title" xml:"title"`
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
-	Score     uint                        `form:"score" json:"score" xml:"score"`
-	Published bool                        `form:"published" json:"published" xml:"published"`
-	Services  []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files     []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	Score    uint                        `form:"score" json:"score" xml:"score"`
+	Services []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
-	Solves uint `form:"solves" json:"solves" xml:"solves"`
-}
-
-// NewSsmChallengeResponseAuthorCollection builds the HTTP response body from
-// the result of the "ListChallenges" endpoint of the "challenge" service.
-func NewSsmChallengeResponseAuthorCollection(res challengeviews.SsmChallengeCollectionView) SsmChallengeResponseAuthorCollection {
-	body := make([]*SsmChallengeResponseAuthor, len(res))
-	for i, val := range res {
-		body[i] = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor(val)
-	}
-	return body
+	Solves    uint `form:"solves" json:"solves" xml:"solves"`
+	Published bool `form:"published" json:"published" xml:"published"`
 }
 
 // NewSsmChallengeResponseCollection builds the HTTP response body from the
@@ -131,6 +114,16 @@ func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollection
 	body := make([]*SsmChallengeResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(val)
+	}
+	return body
+}
+
+// NewSsmChallengeResponseAuthorCollection builds the HTTP response body from
+// the result of the "ListChallenges" endpoint of the "challenge" service.
+func NewSsmChallengeResponseAuthorCollection(res challengeviews.SsmChallengeCollectionView) SsmChallengeResponseAuthorCollection {
+	body := make([]*SsmChallengeResponseAuthor, len(res))
+	for i, val := range res {
+		body[i] = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor(val)
 	}
 	return body
 }
@@ -165,10 +158,9 @@ func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIn
 
 // NewListChallengesPayload builds a challenge service ListChallenges endpoint
 // payload.
-func NewListChallengesPayload(body *ListChallengesRequestBody) *challenge.ListChallengesPayload {
-	v := &challenge.ListChallengesPayload{
-		View: *body.View,
-	}
+func NewListChallengesPayload(view string) *challenge.ListChallengesPayload {
+	v := &challenge.ListChallengesPayload{}
+	v.View = view
 
 	return v
 }
@@ -181,20 +173,6 @@ func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string) *chal
 	v.ChallengeID = challengeID
 
 	return v
-}
-
-// ValidateListChallengesRequestBody runs the validations defined on
-// ListChallengesRequestBody
-func ValidateListChallengesRequestBody(body *ListChallengesRequestBody) (err error) {
-	if body.View == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("view", "body"))
-	}
-	if body.View != nil {
-		if !(*body.View == "default" || *body.View == "author") {
-			err = goa.MergeErrors(err, goa.InvalidEnumValueError("body.view", *body.View, []interface{}{"default", "author"}))
-		}
-	}
-	return
 }
 
 // ValidateSubmitFlagRequestBody runs the validations defined on

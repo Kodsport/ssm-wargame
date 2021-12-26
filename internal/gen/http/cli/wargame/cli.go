@@ -32,9 +32,7 @@ challenge (list-challenges|create-challenge|submit-flag)
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges --body '{
-      "view": "author"
-   }'` + "\n" +
+		os.Args[0] + ` challenge list-challenges --view "author"` + "\n" +
 		""
 }
 
@@ -58,7 +56,7 @@ func ParseEndpoint(
 		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
 
 		challengeListChallengesFlags    = flag.NewFlagSet("list-challenges", flag.ExitOnError)
-		challengeListChallengesBodyFlag = challengeListChallengesFlags.String("body", "REQUIRED", "")
+		challengeListChallengesViewFlag = challengeListChallengesFlags.String("view", "default", "")
 
 		challengeCreateChallengeFlags = flag.NewFlagSet("create-challenge", flag.ExitOnError)
 
@@ -167,7 +165,7 @@ func ParseEndpoint(
 			switch epn {
 			case "list-challenges":
 				endpoint = c.ListChallenges()
-				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesBodyFlag)
+				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesViewFlag)
 			case "create-challenge":
 				endpoint = c.CreateChallenge()
 				data = nil
@@ -239,15 +237,13 @@ Additional help:
 `, os.Args[0])
 }
 func challengeListChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -body JSON
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -view STRING
 
 ListChallenges implements ListChallenges.
-    -body JSON: 
+    -view STRING: 
 
 Example:
-    %[1]s challenge list-challenges --body '{
-      "view": "author"
-   }'
+    %[1]s challenge list-challenges --view "author"
 `, os.Args[0])
 }
 

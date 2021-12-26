@@ -13,12 +13,6 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
-// ListChallengesRequestBody is the type of the "challenge" service
-// "ListChallenges" endpoint HTTP request body.
-type ListChallengesRequestBody struct {
-	View string `form:"view" json:"view" xml:"view"`
-}
-
 // SubmitFlagRequestBody is the type of the "challenge" service "SubmitFlag"
 // endpoint HTTP request body.
 type SubmitFlagRequestBody struct {
@@ -76,9 +70,9 @@ type SsmChallengeResponse struct {
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	// The number of points given to the solver
 	Score     *uint                       `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-	Published *bool                       `form:"published,omitempty" json:"published,omitempty" xml:"published,omitempty"`
 	Services  []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
 	Files     []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	Published *bool                       `form:"published,omitempty" json:"published,omitempty" xml:"published,omitempty"`
 	// The numer of people who solved the challenge
 	Solves *uint `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
 }
@@ -89,15 +83,6 @@ type ChallengeServiceResponse struct {
 
 // ChallengeFilesResponse is used to define fields on response body types.
 type ChallengeFilesResponse struct {
-}
-
-// NewListChallengesRequestBody builds the HTTP request body from the payload
-// of the "ListChallenges" endpoint of the "challenge" service.
-func NewListChallengesRequestBody(p *challenge.ListChallengesPayload) *ListChallengesRequestBody {
-	body := &ListChallengesRequestBody{
-		View: p.View,
-	}
-	return body
 }
 
 // NewSubmitFlagRequestBody builds the HTTP request body from the payload of
@@ -218,6 +203,9 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	if body.Published == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("published", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
 	}
 	return
 }

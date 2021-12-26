@@ -28,7 +28,6 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 		Attribute("title")
 		Attribute("description")
 		Attribute("score")
-		Attribute("published")
 		Attribute("services")
 		Attribute("files")
 		Attribute("published")
@@ -41,6 +40,18 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 
 	})
 
+	View("default", func() {
+		Attribute("id")
+
+		Attribute("slug")
+		Attribute("title")
+		Attribute("description")
+		Attribute("score")
+		Attribute("services")
+		Attribute("files")
+		Attribute("solves")
+	})
+
 	View("author", func() {
 		Attribute("id")
 
@@ -48,7 +59,6 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 		Attribute("title")
 		Attribute("description")
 		Attribute("score")
-		Attribute("published")
 		Attribute("services")
 		Attribute("files")
 		Attribute("solves")
@@ -81,5 +91,5 @@ var Challenge = Type("Challenge", func() {
 	Attribute("services", ArrayOf(ChallengeService))
 	Attribute("files", ArrayOf(ChallengeFiles))
 
-	Required("id", "title", "description", "score", "published")
+	Required("id", "title", "description", "score", "published", "slug")
 })

@@ -13,10 +13,10 @@ var _ = Service("challenge", func() {
 				Default("default")
 				Enum("default", "author")
 			})
-			Required("view")
 		})
 		HTTP(func() {
 			GET("/")
+			Param("view")
 			Response(StatusOK)
 		})
 	})

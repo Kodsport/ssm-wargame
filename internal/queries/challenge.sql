@@ -1,7 +1,7 @@
 
 -- name: ListChallengesWithSolves :many
 SELECT c.*, COUNT(us.user_id) num_solves 
-FROM challenges c JOIN user_solves us ON us.challenge_id = c.id 
+FROM challenges c LEFT JOIN user_solves us ON us.challenge_id = c.id 
 WHERE (NOT c.published = @show_unpublished::bool OR c.published = true)
 GROUP BY c.id;
 

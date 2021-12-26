@@ -59,13 +59,14 @@ paths:
       summary: ListChallenges challenge
       operationId: challenge#ListChallenges
       parameters:
-      - name: ListChallengesRequestBody
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/ChallengeListChallengesRequestBody'
-          required:
-          - view
+      - name: view
+        in: query
+        required: false
+        type: string
+        default: default
+        enum:
+        - default
+        - author
       responses:
         "200":
           description: OK response.
@@ -159,21 +160,6 @@ definitions:
     title: ChallengeFilesResponse
     type: object
     example: {}
-  ChallengeListChallengesRequestBody:
-    title: ChallengeListChallengesRequestBody
-    type: object
-    properties:
-      view:
-        type: string
-        default: default
-        example: default
-        enum:
-        - default
-        - author
-    example:
-      view: default
-    required:
-    - view
   ChallengeServiceResponse:
     title: ChallengeServiceResponse
     type: object
@@ -192,12 +178,9 @@ definitions:
       - {}
       - {}
       - {}
-      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
-      published: true
       score: 50
       services:
-      - {}
       - {}
       - {}
       - {}
@@ -209,12 +192,9 @@ definitions:
       - {}
       - {}
       - {}
-      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
-      published: true
       score: 50
       services:
-      - {}
       - {}
       - {}
       - {}
@@ -246,14 +226,14 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: SubmitFlag_already_solved_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -295,7 +275,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: SubmitFlag_incorrect_flag_Response_Body result type (default view)
     example:
       fault: false
@@ -303,7 +283,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -342,9 +322,6 @@ definitions:
       id:
         type: string
         example: e721a338-44de-4de8-a562-43d2db5f4115
-      published:
-        type: boolean
-        example: true
       score:
         type: integer
         description: The number of points given to the solver
@@ -377,7 +354,6 @@ definitions:
       - {}
       - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
-      published: true
       score: 50
       services:
       - {}
@@ -391,4 +367,4 @@ definitions:
     - title
     - description
     - score
-    - published
+    - slug

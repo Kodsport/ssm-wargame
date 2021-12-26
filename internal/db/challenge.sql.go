@@ -65,7 +65,7 @@ func (q *Queries) InsertSolve(ctx context.Context, arg InsertSolveParams) error 
 
 const listChallengesWithSolves = `-- name: ListChallengesWithSolves :many
 SELECT c.id, c.slug, c.title, c.description, c.score, c.published, c.services, c.files, c.ctf_event_id, c.created_at, c.updated_at, COUNT(us.user_id) num_solves 
-FROM challenges c JOIN user_solves us ON us.challenge_id = c.id 
+FROM challenges c LEFT JOIN user_solves us ON us.challenge_id = c.id 
 WHERE (NOT c.published = $1::bool OR c.published = true)
 GROUP BY c.id
 `

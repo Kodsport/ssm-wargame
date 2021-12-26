@@ -35,9 +35,9 @@ type SsmChallengeView struct {
 	Description *string
 	// The number of points given to the solver
 	Score     *uint
-	Published *bool
 	Services  []*ChallengeServiceView
 	Files     []*ChallengeFilesView
+	Published *bool
 	// The numer of people who solved the challenge
 	Solves *uint
 }
@@ -54,53 +54,51 @@ var (
 	// SsmChallengeCollectionMap is a map indexing the attribute names of
 	// SsmChallengeCollection by view name.
 	SsmChallengeCollectionMap = map[string][]string{
-		"author": {
-			"id",
-			"slug",
-			"title",
-			"description",
-			"score",
-			"published",
-			"services",
-			"files",
-			"solves",
-		},
 		"default": {
 			"id",
 			"slug",
 			"title",
 			"description",
 			"score",
-			"published",
 			"services",
 			"files",
 			"solves",
+		},
+		"author": {
+			"id",
+			"slug",
+			"title",
+			"description",
+			"score",
+			"services",
+			"files",
+			"solves",
+			"published",
 		},
 	}
 	// SsmChallengeMap is a map indexing the attribute names of SsmChallenge by
 	// view name.
 	SsmChallengeMap = map[string][]string{
-		"author": {
-			"id",
-			"slug",
-			"title",
-			"description",
-			"score",
-			"published",
-			"services",
-			"files",
-			"solves",
-		},
 		"default": {
 			"id",
 			"slug",
 			"title",
 			"description",
 			"score",
-			"published",
 			"services",
 			"files",
 			"solves",
+		},
+		"author": {
+			"id",
+			"slug",
+			"title",
+			"description",
+			"score",
+			"services",
+			"files",
+			"solves",
+			"published",
 		},
 	}
 )
@@ -109,12 +107,23 @@ var (
 // result type SsmChallengeCollection.
 func ValidateSsmChallengeCollection(result SsmChallengeCollection) (err error) {
 	switch result.View {
-	case "author":
-		err = ValidateSsmChallengeCollectionViewAuthor(result.Projected)
 	case "default", "":
 		err = ValidateSsmChallengeCollectionView(result.Projected)
+	case "author":
+		err = ValidateSsmChallengeCollectionViewAuthor(result.Projected)
 	default:
-		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"author", "default"})
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default", "author"})
+	}
+	return
+}
+
+// ValidateSsmChallengeCollectionView runs the validations defined on
+// SsmChallengeCollectionView using the "default" view.
+func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err error) {
+	for _, item := range result {
+		if err2 := ValidateSsmChallengeView(item); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
 	}
 	return
 }
@@ -130,13 +139,26 @@ func ValidateSsmChallengeCollectionViewAuthor(result SsmChallengeCollectionView)
 	return
 }
 
-// ValidateSsmChallengeCollectionView runs the validations defined on
-// SsmChallengeCollectionView using the "default" view.
-func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err error) {
-	for _, item := range result {
-		if err2 := ValidateSsmChallengeView(item); err2 != nil {
-			err = goa.MergeErrors(err, err2)
-		}
+// ValidateSsmChallengeView runs the validations defined on SsmChallengeView
+// using the "default" view.
+func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
+	if result.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "result"))
+	}
+	if result.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "result"))
+	}
+	if result.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
+	}
+	if result.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "result"))
 	}
 	return
 }
@@ -162,29 +184,8 @@ func ValidateSsmChallengeViewAuthor(result *SsmChallengeView) (err error) {
 	if result.Published == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("published", "result"))
 	}
-	return
-}
-
-// ValidateSsmChallengeView runs the validations defined on SsmChallengeView
-// using the "default" view.
-func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
-	if result.Solves == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
-	}
-	if result.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
-	}
-	if result.Title == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("title", "result"))
-	}
-	if result.Description == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("description", "result"))
-	}
-	if result.Score == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
-	}
-	if result.Published == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("published", "result"))
+	if result.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "result"))
 	}
 	return
 }

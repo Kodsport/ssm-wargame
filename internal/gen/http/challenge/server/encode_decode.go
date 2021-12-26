@@ -26,10 +26,10 @@ func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWri
 		enc := encoder(ctx, w)
 		var body interface{}
 		switch res.View {
-		case "author":
-			body = NewSsmChallengeResponseAuthorCollection(res.Projected)
 		case "default", "":
 			body = NewSsmChallengeResponseCollection(res.Projected)
+		case "author":
+			body = NewSsmChallengeResponseAuthorCollection(res.Projected)
 		}
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
@@ -41,21 +41,22 @@ func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWri
 func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			body ListChallengesRequestBody
+			view string
 			err  error
 		)
-		err = decoder(r).Decode(&body)
-		if err != nil {
-			if err == io.EOF {
-				return nil, goa.MissingPayloadError()
-			}
-			return nil, goa.DecodePayloadError(err.Error())
+		viewRaw := r.URL.Query().Get("view")
+		if viewRaw != "" {
+			view = viewRaw
+		} else {
+			view = "default"
 		}
-		err = ValidateListChallengesRequestBody(&body)
+		if !(view == "default" || view == "author") {
+			err = goa.MergeErrors(err, goa.InvalidEnumValueError("view", view, []interface{}{"default", "author"}))
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewListChallengesPayload(&body)
+		payload := NewListChallengesPayload(view)
 
 		return payload, nil
 	}
@@ -156,17 +157,16 @@ func EncodeSubmitFlagError(encoder func(context.Context, http.ResponseWriter) go
 	}
 }
 
-// marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor builds a
-// value of type *SsmChallengeResponseAuthor from a value of type
+// marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse builds a value
+// of type *SsmChallengeResponse from a value of type
 // *challengeviews.SsmChallengeView.
-func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor(v *challengeviews.SsmChallengeView) *SsmChallengeResponseAuthor {
-	res := &SsmChallengeResponseAuthor{
+func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengeviews.SsmChallengeView) *SsmChallengeResponse {
+	res := &SsmChallengeResponse{
 		ID:          *v.ID,
-		Slug:        v.Slug,
+		Slug:        *v.Slug,
 		Title:       *v.Title,
 		Description: *v.Description,
 		Score:       *v.Score,
-		Published:   *v.Published,
 		Solves:      *v.Solves,
 	}
 	if v.Services != nil {
@@ -209,13 +209,13 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 	return res
 }
 
-// marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse builds a value
-// of type *SsmChallengeResponse from a value of type
+// marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor builds a
+// value of type *SsmChallengeResponseAuthor from a value of type
 // *challengeviews.SsmChallengeView.
-func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengeviews.SsmChallengeView) *SsmChallengeResponse {
-	res := &SsmChallengeResponse{
+func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor(v *challengeviews.SsmChallengeView) *SsmChallengeResponseAuthor {
+	res := &SsmChallengeResponseAuthor{
 		ID:          *v.ID,
-		Slug:        v.Slug,
+		Slug:        *v.Slug,
 		Title:       *v.Title,
 		Description: *v.Description,
 		Score:       *v.Score,
