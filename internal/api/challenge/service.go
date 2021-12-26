@@ -48,9 +48,9 @@ func (s *service) ListChallenges(ctx context.Context, req *challenge_spec.ListCh
 			Slug:        c.Slug,
 			Title:       c.Title,
 			Description: c.Description,
-			Score:       uint(c.Score),
+			Score:       c.Score,
 			Published:   c.Published,
-			Solves:      uint(c.NumSolves),
+			Solves:      c.NumSolves,
 		}
 	}
 

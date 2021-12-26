@@ -260,6 +260,7 @@ components:
           type: integer
           description: The number of points given to the solver
           example: 50
+          format: int32
         services:
           type: array
           items:
@@ -275,6 +276,7 @@ components:
           type: integer
           description: The numer of people who solved the challenge
           example: 3
+          format: int64
         title:
           type: string
           description: Title displayed to user
@@ -388,6 +390,7 @@ components:
           type: integer
           description: The number of points given to the solver
           example: 50
+          format: int32
         services:
           type: array
           items:
@@ -404,6 +407,7 @@ components:
           type: integer
           description: The numer of people who solved the challenge
           example: 3
+          format: int64
         title:
           type: string
           description: Title displayed to user

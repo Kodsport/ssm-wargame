@@ -326,7 +326,7 @@ definitions:
         type: integer
         description: The number of points given to the solver
         example: 50
-        format: int64
+        format: int32
       services:
         type: array
         items:

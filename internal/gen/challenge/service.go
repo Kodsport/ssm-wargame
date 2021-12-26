@@ -64,12 +64,12 @@ type SsmChallenge struct {
 	// A short text describing the challenge
 	Description string
 	// The number of points given to the solver
-	Score     uint
+	Score     int32
 	Services  []*ChallengeService
 	Files     []*ChallengeFiles
 	Published bool
 	// The numer of people who solved the challenge
-	Solves uint
+	Solves int64
 }
 
 type ChallengeService struct {

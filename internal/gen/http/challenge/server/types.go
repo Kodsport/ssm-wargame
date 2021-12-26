@@ -75,11 +75,11 @@ type SsmChallengeResponse struct {
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
-	Score    uint                        `form:"score" json:"score" xml:"score"`
+	Score    int32                       `form:"score" json:"score" xml:"score"`
 	Services []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
 	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
-	Solves uint `form:"solves" json:"solves" xml:"solves"`
+	Solves int64 `form:"solves" json:"solves" xml:"solves"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -100,12 +100,12 @@ type SsmChallengeResponseAuthor struct {
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
-	Score    uint                        `form:"score" json:"score" xml:"score"`
+	Score    int32                       `form:"score" json:"score" xml:"score"`
 	Services []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
 	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
-	Solves    uint `form:"solves" json:"solves" xml:"solves"`
-	Published bool `form:"published" json:"published" xml:"published"`
+	Solves    int64 `form:"solves" json:"solves" xml:"solves"`
+	Published bool  `form:"published" json:"published" xml:"published"`
 }
 
 // NewSsmChallengeResponseCollection builds the HTTP response body from the

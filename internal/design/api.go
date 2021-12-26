@@ -32,7 +32,7 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 		Attribute("files")
 		Attribute("published")
 
-		Attribute("solves", UInt, "The numer of people who solved the challenge", func() {
+		Attribute("solves", Int64, "The numer of people who solved the challenge", func() {
 			Example(3)
 		})
 
@@ -81,7 +81,7 @@ var Challenge = Type("Challenge", func() {
 	Attribute("description", String, "A short text describing the challenge", func() {
 		Example("A heap overflow challenge")
 	})
-	Attribute("score", UInt, "The number of points given to the solver", func() {
+	Attribute("score", Int32, "The number of points given to the solver", func() {
 		Example(50)
 	})
 	Attribute("published", Boolean, func() {

@@ -34,12 +34,12 @@ type SsmChallengeView struct {
 	// A short text describing the challenge
 	Description *string
 	// The number of points given to the solver
-	Score     *uint
+	Score     *int32
 	Services  []*ChallengeServiceView
 	Files     []*ChallengeFilesView
 	Published *bool
 	// The numer of people who solved the challenge
-	Solves *uint
+	Solves *int64
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
