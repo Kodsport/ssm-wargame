@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v4"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
-	auth_spec "github.com/sakerhetsm/ssm-wargame/internal/gen/auth"
+	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/auth"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 
@@ -25,7 +25,7 @@ type service struct {
 	jwtSecret []byte
 }
 
-func NewService(conn *pgx.Conn, log *zap.Logger, cfg *config.Config) auth_spec.Service {
+func NewService(conn *pgx.Conn, log *zap.Logger, cfg *config.Config) spec.Service {
 
 	config := &oauth2.Config{
 		ClientID:     cfg.OAuth.Discord.ClientID,
@@ -47,14 +47,14 @@ func NewService(conn *pgx.Conn, log *zap.Logger, cfg *config.Config) auth_spec.S
 	}
 }
 
-func (s *service) GenerateDiscordAuthURL(ctx context.Context) (*auth_spec.GenerateDiscordAuthURLResult, error) {
+func (s *service) GenerateDiscordAuthURL(ctx context.Context) (*spec.GenerateDiscordAuthURLResult, error) {
 	url := s.config.AuthCodeURL("state_todo")
-	return &auth_spec.GenerateDiscordAuthURLResult{
+	return &spec.GenerateDiscordAuthURLResult{
 		URL: url,
 	}, nil
 }
 
-func (s *service) ExchangeDiscord(ctx context.Context, req *auth_spec.ExchangeDiscordPayload) (*auth_spec.ExchangeDiscordResult, error) {
+func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscordPayload) (*spec.ExchangeDiscordResult, error) {
 
 	if req.State != "state_todo" {
 		return nil, errors.New("invalid state")
@@ -101,7 +101,7 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *auth_spec.ExchangeDi
 		return nil, err
 	}
 
-	return &auth_spec.ExchangeDiscordResult{
+	return &spec.ExchangeDiscordResult{
 		JWT: jwtStr,
 	}, nil
 }

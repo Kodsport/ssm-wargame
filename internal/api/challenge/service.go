@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
-	challenge_spec "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
+	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	"go.uber.org/zap"
 )
 
@@ -16,14 +16,14 @@ type service struct {
 	log *zap.Logger
 }
 
-func NewService(conn *pgx.Conn, log *zap.Logger) challenge_spec.Service {
+func NewService(conn *pgx.Conn, log *zap.Logger) spec.Service {
 	return &service{
 		db:  conn,
 		log: log.Named("challenge"),
 	}
 }
 
-func (s *service) CreateChallenge(ctx context.Context, req *challenge_spec.CreateChallengePayload) error {
+func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallengePayload) error {
 
 	q := db.New(s.db)
 
@@ -43,7 +43,7 @@ func (s *service) CreateChallenge(ctx context.Context, req *challenge_spec.Creat
 	return nil
 }
 
-func (s *service) ListChallenges(ctx context.Context, req *challenge_spec.ListChallengesPayload) (challenge_spec.SsmChallengeCollection, string, error) {
+func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, string, error) {
 
 	showUnpublished := req.View == "author"
 	if showUnpublished {
@@ -58,9 +58,9 @@ func (s *service) ListChallenges(ctx context.Context, req *challenge_spec.ListCh
 		return nil, "", err
 	}
 
-	res := make(challenge_spec.SsmChallengeCollection, len(challs))
+	res := make(spec.SsmChallengeCollection, len(challs))
 	for i, c := range challs {
-		res[i] = &challenge_spec.SsmChallenge{
+		res[i] = &spec.SsmChallenge{
 			ID:          c.ID.String(),
 			Slug:        c.Slug,
 			Title:       c.Title,
@@ -74,7 +74,7 @@ func (s *service) ListChallenges(ctx context.Context, req *challenge_spec.ListCh
 	return res, req.View, nil
 }
 
-func (s *service) SubmitFlag(ctx context.Context, req *challenge_spec.SubmitFlagPayload) error {
+func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) error {
 
 	tx, err := s.db.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
@@ -96,7 +96,7 @@ func (s *service) SubmitFlag(ctx context.Context, req *challenge_spec.SubmitFlag
 	}
 
 	if solved {
-		return challenge_spec.MakeAlreadySolved(errors.New("already solved"))
+		return spec.MakeAlreadySolved(errors.New("already solved"))
 	}
 
 	exists, err := txq.FlagExists(ctx, db.FlagExistsParams{
@@ -135,7 +135,7 @@ func (s *service) SubmitFlag(ctx context.Context, req *challenge_spec.SubmitFlag
 	}
 
 	if !exists {
-		return challenge_spec.MakeIncorrectFlag(errors.New("incorrect flag"))
+		return spec.MakeIncorrectFlag(errors.New("incorrect flag"))
 	}
 
 	return nil
