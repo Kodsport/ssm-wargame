@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 
+	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
 
 	challenge_service "github.com/sakerhetsm/ssm-wargame/internal/api/challenge"
@@ -21,6 +22,7 @@ import (
 	auth_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/auth/server"
 
 	goahttp "goa.design/goa/v3/http"
+	goahttpmid "goa.design/goa/v3/http/middleware"
 )
 
 func main() {
@@ -46,24 +48,28 @@ func realMain() error {
 	}
 	defer conn.Close(context.Background())
 
-	mux := goahttp.NewMuxer()
-
 	log, err := zap.NewDevelopment()
 	if err != nil {
 		return err
 	}
 	defer log.Sync()
 
+	mux := goahttp.NewMuxer()
+
+	auther := auth.New(cfg, log, conn)
+
 	{
-		svc := challenge_service.NewService(conn, log)
+		svc := challenge_service.NewService(conn, log, auther)
 		endpoints := challenge_transport.NewEndpoints(svc)
 		s := challenge_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
+		s.Use(goahttpmid.RequestID())
 		challenge_server.Mount(mux, s)
 	}
 	{
 		svc := auth_service.NewService(conn, log, cfg)
 		endpoints := auth_transport.NewEndpoints(svc)
 		s := auth_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
+		s.Use(goahttpmid.RequestID())
 		auth_server.Mount(mux, s)
 	}
 
@@ -72,5 +78,6 @@ func realMain() error {
 		Handler: mux,
 	}
 
+	log.Info("starting http server")
 	return srv.ListenAndServe()
 }

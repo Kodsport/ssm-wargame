@@ -10,7 +10,7 @@ import (
 )
 
 const insertUserDiscord = `-- name: InsertUserDiscord :exec
-INSERT INTO users (id, discord_id, email) VALUES ($1::uuid, $2::text, $3::text)
+INSERT INTO users (id, discord_id, email, role) VALUES ($1::uuid, $2::text, $3::text, 'solver')
 `
 
 type InsertUserDiscordParams struct {
@@ -22,6 +22,27 @@ type InsertUserDiscordParams struct {
 func (q *Queries) InsertUserDiscord(ctx context.Context, arg InsertUserDiscordParams) error {
 	_, err := q.db.Exec(ctx, insertUserDiscord, arg.ID, arg.DiscordID, arg.Email)
 	return err
+}
+
+const userByID = `-- name: UserByID :one
+SELECT id, discord_id, first_name, last_name, email, role, school_id, created_at, updated_at FROM users WHERE id = $1
+`
+
+func (q *Queries) UserByID(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, userByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.DiscordID,
+		&i.FirstName,
+		&i.LastName,
+		&i.Email,
+		&i.Role,
+		&i.SchoolID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const userIDByDiscordID = `-- name: UserIDByDiscordID :one

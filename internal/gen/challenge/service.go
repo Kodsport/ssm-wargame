@@ -12,6 +12,7 @@ import (
 
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
 	goa "goa.design/goa/v3/pkg"
+	"goa.design/goa/v3/security"
 )
 
 // Service is the challenge service interface.
@@ -27,6 +28,12 @@ type Service interface {
 	SubmitFlag(context.Context, *SubmitFlagPayload) (err error)
 }
 
+// Auther defines the authorization functions to be implemented by the service.
+type Auther interface {
+	// JWTAuth implements the authorization logic for the JWT security scheme.
+	JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error)
+}
+
 // ServiceName is the name of the service as defined in the design. This is the
 // same value that is set in the endpoint request contexts under the ServiceKey
 // key.
@@ -40,7 +47,8 @@ var MethodNames = [3]string{"ListChallenges", "CreateChallenge", "SubmitFlag"}
 // ListChallengesPayload is the payload type of the challenge service
 // ListChallenges method.
 type ListChallengesPayload struct {
-	View string
+	View  string
+	Token *string
 }
 
 // SsmChallengeCollection is the result type of the challenge service
@@ -58,6 +66,7 @@ type CreateChallengePayload struct {
 	Description string
 	// The number of points given to the solver
 	Score int32
+	Token string
 }
 
 // SubmitFlagPayload is the payload type of the challenge service SubmitFlag
@@ -65,6 +74,7 @@ type CreateChallengePayload struct {
 type SubmitFlagPayload struct {
 	Flag        string
 	ChallengeID string
+	Token       *string
 }
 
 // A Wargame challenge

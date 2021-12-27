@@ -9,6 +9,8 @@ var _ = API("wargame", func() {
 	Description("HTTP service for the SSM Wargame")
 })
 
+var JWTAuth = JWTSecurity("jwt")
+
 var ChallengeService = Type("ChallengeService", func() {
 
 })

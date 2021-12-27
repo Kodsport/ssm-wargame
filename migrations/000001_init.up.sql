@@ -14,6 +14,7 @@ CREATE TABLE users (
     first_name TEXT,
     last_name TEXT,
     email TEXT NOT NULL,
+    role TEXT NOT NULL,
     school_id INT REFERENCES schools(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ

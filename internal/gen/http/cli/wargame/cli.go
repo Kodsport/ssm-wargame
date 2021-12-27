@@ -32,7 +32,7 @@ challenge (list-challenges|create-challenge|submit-flag)
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges --view "author"` + "\n" +
+		os.Args[0] + ` challenge list-challenges --view "author" --token "Est saepe dolores enim aut."` + "\n" +
 		""
 }
 
@@ -55,15 +55,18 @@ func ParseEndpoint(
 
 		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
 
-		challengeListChallengesFlags    = flag.NewFlagSet("list-challenges", flag.ExitOnError)
-		challengeListChallengesViewFlag = challengeListChallengesFlags.String("view", "default", "")
+		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+		challengeListChallengesViewFlag  = challengeListChallengesFlags.String("view", "default", "")
+		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
 
-		challengeCreateChallengeFlags    = flag.NewFlagSet("create-challenge", flag.ExitOnError)
-		challengeCreateChallengeBodyFlag = challengeCreateChallengeFlags.String("body", "REQUIRED", "")
+		challengeCreateChallengeFlags     = flag.NewFlagSet("create-challenge", flag.ExitOnError)
+		challengeCreateChallengeBodyFlag  = challengeCreateChallengeFlags.String("body", "REQUIRED", "")
+		challengeCreateChallengeTokenFlag = challengeCreateChallengeFlags.String("token", "REQUIRED", "")
 
 		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
 		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
 		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "")
+		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "", "")
 	)
 	authFlags.Usage = authUsage
 	authGenerateDiscordAuthURLFlags.Usage = authGenerateDiscordAuthURLUsage
@@ -166,13 +169,13 @@ func ParseEndpoint(
 			switch epn {
 			case "list-challenges":
 				endpoint = c.ListChallenges()
-				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesViewFlag)
+				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesViewFlag, *challengeListChallengesTokenFlag)
 			case "create-challenge":
 				endpoint = c.CreateChallenge()
-				data, err = challengec.BuildCreateChallengePayload(*challengeCreateChallengeBodyFlag)
+				data, err = challengec.BuildCreateChallengePayload(*challengeCreateChallengeBodyFlag, *challengeCreateChallengeTokenFlag)
 			case "submit-flag":
 				endpoint = c.SubmitFlag()
-				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag)
+				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag, *challengeSubmitFlagTokenFlag)
 			}
 		}
 	}
@@ -238,21 +241,23 @@ Additional help:
 `, os.Args[0])
 }
 func challengeListChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -view STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -view STRING -token STRING
 
 ListChallenges implements ListChallenges.
     -view STRING: 
+    -token STRING: 
 
 Example:
-    %[1]s challenge list-challenges --view "author"
+    %[1]s challenge list-challenges --view "author" --token "Est saepe dolores enim aut."
 `, os.Args[0])
 }
 
 func challengeCreateChallengeUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge create-challenge -body JSON
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge create-challenge -body JSON -token STRING
 
 CreateChallenge implements CreateChallenge.
     -body JSON: 
+    -token STRING: 
 
 Example:
     %[1]s challenge create-challenge --body '{
@@ -260,20 +265,21 @@ Example:
       "score": 50,
       "slug": "pwnme",
       "title": "pwnme"
-   }'
+   }' --token "Sed consequatur iure laudantium error voluptates."
 `, os.Args[0])
 }
 
 func challengeSubmitFlagUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge submit-flag -body JSON -challenge-id STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge submit-flag -body JSON -challenge-id STRING -token STRING
 
 SubmitFlag implements SubmitFlag.
     -body JSON: 
     -challenge-id STRING: 
+    -token STRING: 
 
 Example:
     %[1]s challenge submit-flag --body '{
       "flag": "SSM{flag}"
-   }' --challenge-id "123"
+   }' --challenge-id "123" --token "Veniam qui."
 `, os.Args[0])
 }

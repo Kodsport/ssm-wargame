@@ -13,6 +13,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 
 	challenge "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
@@ -41,6 +42,14 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 		p, ok := v.(*challenge.ListChallengesPayload)
 		if !ok {
 			return goahttp.ErrInvalidType("challenge", "ListChallenges", "*challenge.ListChallengesPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
 		}
 		values := req.URL.Query()
 		values.Add("view", p.View)
@@ -114,6 +123,14 @@ func EncodeCreateChallengeRequest(encoder func(*http.Request) goahttp.Encoder) f
 		if !ok {
 			return goahttp.ErrInvalidType("challenge", "CreateChallenge", "*challenge.CreateChallengePayload", v)
 		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
 		body := NewCreateChallengeRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {
 			return goahttp.ErrEncodingError("challenge", "CreateChallenge", err)
@@ -181,6 +198,14 @@ func EncodeSubmitFlagRequest(encoder func(*http.Request) goahttp.Encoder) func(*
 		p, ok := v.(*challenge.SubmitFlagPayload)
 		if !ok {
 			return goahttp.ErrInvalidType("challenge", "SubmitFlag", "*challenge.SubmitFlagPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
 		}
 		body := NewSubmitFlagRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {

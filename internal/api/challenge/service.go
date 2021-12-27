@@ -6,20 +6,23 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
+	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	"go.uber.org/zap"
 )
 
 type service struct {
+	spec.Auther
 	db  *pgx.Conn
 	log *zap.Logger
 }
 
-func NewService(conn *pgx.Conn, log *zap.Logger) spec.Service {
+func NewService(conn *pgx.Conn, log *zap.Logger, auther spec.Auther) spec.Service {
 	return &service{
-		db:  conn,
-		log: log.Named("challenge"),
+		Auther: auther,
+		db:     conn,
+		log:    log.Named("challenge"),
 	}
 }
 
@@ -36,7 +39,7 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 		Published:   false,
 	})
 	if err != nil {
-		s.log.Error("inserting challenge", zap.Error(err))
+		s.log.With(auth.LogCtx(ctx)...).Error("inserting challenge", zap.Error(err))
 		return err
 	}
 
@@ -47,9 +50,8 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 	showUnpublished := req.View == "author"
 	if showUnpublished {
-		// TODO: check that user is an author or admin
-		if false {
-			return nil, "", errors.New("todo unauth error")
+		if !auth.HasRole(ctx, "author", "admin") {
+			return nil, "", errors.New("not authorized")
 		}
 	}
 
@@ -105,7 +107,7 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 	})
 
 	if err != nil {
-		s.log.Error("FlagExists failed", zap.Error(err))
+		s.log.With(auth.LogCtx(ctx)...).Error("FlagExists failed", zap.Error(err))
 		return err
 	}
 

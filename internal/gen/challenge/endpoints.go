@@ -11,6 +11,7 @@ import (
 	"context"
 
 	goa "goa.design/goa/v3/pkg"
+	"goa.design/goa/v3/security"
 )
 
 // Endpoints wraps the "challenge" service endpoints.
@@ -22,10 +23,12 @@ type Endpoints struct {
 
 // NewEndpoints wraps the methods of the "challenge" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
+	// Casting service to Auther interface
+	a := s.(Auther)
 	return &Endpoints{
-		ListChallenges:  NewListChallengesEndpoint(s),
-		CreateChallenge: NewCreateChallengeEndpoint(s),
-		SubmitFlag:      NewSubmitFlagEndpoint(s),
+		ListChallenges:  NewListChallengesEndpoint(s, a.JWTAuth),
+		CreateChallenge: NewCreateChallengeEndpoint(s, a.JWTAuth),
+		SubmitFlag:      NewSubmitFlagEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -38,9 +41,23 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
 // "ListChallenges" of service "challenge".
-func NewListChallengesEndpoint(s Service) goa.Endpoint {
+func NewListChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*ListChallengesPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		res, view, err := s.ListChallenges(ctx, p)
 		if err != nil {
 			return nil, err
@@ -52,18 +69,42 @@ func NewListChallengesEndpoint(s Service) goa.Endpoint {
 
 // NewCreateChallengeEndpoint returns an endpoint function that calls the
 // method "CreateChallenge" of service "challenge".
-func NewCreateChallengeEndpoint(s Service) goa.Endpoint {
+func NewCreateChallengeEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*CreateChallengePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.CreateChallenge(ctx, p)
 	}
 }
 
 // NewSubmitFlagEndpoint returns an endpoint function that calls the method
 // "SubmitFlag" of service "challenge".
-func NewSubmitFlagEndpoint(s Service) goa.Endpoint {
+func NewSubmitFlagEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*SubmitFlagPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
 		return nil, s.SubmitFlag(ctx, p)
 	}
 }

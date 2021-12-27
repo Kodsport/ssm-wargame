@@ -11,6 +11,7 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"strings"
 
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
 	goahttp "goa.design/goa/v3/http"
@@ -41,8 +42,9 @@ func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWri
 func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			view string
-			err  error
+			view  string
+			token *string
+			err   error
 		)
 		viewRaw := r.URL.Query().Get("view")
 		if viewRaw != "" {
@@ -53,10 +55,21 @@ func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 		if !(view == "default" || view == "author") {
 			err = goa.MergeErrors(err, goa.InvalidEnumValueError("view", view, []interface{}{"default", "author"}))
 		}
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewListChallengesPayload(view)
+		payload := NewListChallengesPayload(view, token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
 
 		return payload, nil
 	}
@@ -90,7 +103,23 @@ func DecodeCreateChallengeRequest(mux goahttp.Muxer, decoder func(*http.Request)
 		if err != nil {
 			return nil, err
 		}
-		payload := NewCreateChallengePayload(&body)
+
+		var (
+			token string
+		)
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewCreateChallengePayload(&body, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
 
 		return payload, nil
 	}
@@ -127,16 +156,28 @@ func DecodeSubmitFlagRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 
 		var (
 			challengeID string
+			token       *string
 
 			params = mux.Vars(r)
 		)
 		challengeID = params["challengeId"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
 		if err != nil {
 			return nil, err
 		}
-		payload := NewSubmitFlagPayload(&body, challengeID)
+		payload := NewSubmitFlagPayload(&body, challengeID, token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
 
 		return payload, nil
 	}

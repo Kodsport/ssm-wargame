@@ -110,6 +110,7 @@ type User struct {
 	FirstName sql.NullString
 	LastName  sql.NullString
 	Email     string
+	Role      string
 	SchoolID  sql.NullInt32
 	CreatedAt time.Time
 	UpdatedAt sql.NullTime

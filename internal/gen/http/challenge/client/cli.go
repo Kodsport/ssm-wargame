@@ -18,7 +18,7 @@ import (
 
 // BuildListChallengesPayload builds the payload for the challenge
 // ListChallenges endpoint from CLI flags.
-func BuildListChallengesPayload(challengeListChallengesView string) (*challenge.ListChallengesPayload, error) {
+func BuildListChallengesPayload(challengeListChallengesView string, challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
 	var err error
 	var view string
 	{
@@ -32,15 +32,22 @@ func BuildListChallengesPayload(challengeListChallengesView string) (*challenge.
 			}
 		}
 	}
+	var token *string
+	{
+		if challengeListChallengesToken != "" {
+			token = &challengeListChallengesToken
+		}
+	}
 	v := &challenge.ListChallengesPayload{}
 	v.View = view
+	v.Token = token
 
 	return v, nil
 }
 
 // BuildCreateChallengePayload builds the payload for the challenge
 // CreateChallenge endpoint from CLI flags.
-func BuildCreateChallengePayload(challengeCreateChallengeBody string) (*challenge.CreateChallengePayload, error) {
+func BuildCreateChallengePayload(challengeCreateChallengeBody string, challengeCreateChallengeToken string) (*challenge.CreateChallengePayload, error) {
 	var err error
 	var body CreateChallengeRequestBody
 	{
@@ -49,19 +56,24 @@ func BuildCreateChallengePayload(challengeCreateChallengeBody string) (*challeng
 			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"A heap overflow challenge\",\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
 		}
 	}
+	var token string
+	{
+		token = challengeCreateChallengeToken
+	}
 	v := &challenge.CreateChallengePayload{
 		Slug:        body.Slug,
 		Title:       body.Title,
 		Description: body.Description,
 		Score:       body.Score,
 	}
+	v.Token = token
 
 	return v, nil
 }
 
 // BuildSubmitFlagPayload builds the payload for the challenge SubmitFlag
 // endpoint from CLI flags.
-func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagChallengeID string) (*challenge.SubmitFlagPayload, error) {
+func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagChallengeID string, challengeSubmitFlagToken string) (*challenge.SubmitFlagPayload, error) {
 	var err error
 	var body SubmitFlagRequestBody
 	{
@@ -85,10 +97,17 @@ func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagC
 			return nil, err
 		}
 	}
+	var token *string
+	{
+		if challengeSubmitFlagToken != "" {
+			token = &challengeSubmitFlagToken
+		}
+	}
 	v := &challenge.SubmitFlagPayload{
 		Flag: body.Flag,
 	}
 	v.ChallengeID = challengeID
+	v.Token = token
 
 	return v, nil
 }

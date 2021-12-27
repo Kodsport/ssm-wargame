@@ -63,7 +63,7 @@ paths:
           enum:
           - default
           - author
-        example: author
+        example: default
       responses:
         "200":
           description: OK response.
@@ -77,6 +77,7 @@ paths:
                 files:
                 - {}
                 - {}
+                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -91,6 +92,7 @@ paths:
                 files:
                 - {}
                 - {}
+                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -101,6 +103,23 @@ paths:
                 slug: pwnme
                 solves: 3
                 title: pwnme
+              - description: A heap overflow challenge
+                files:
+                - {}
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                title: pwnme
+      security:
+      - jwt_header_Authorization: []
     post:
       tags:
       - challenge
@@ -120,6 +139,8 @@ paths:
       responses:
         "201":
           description: Created response.
+      security:
+      - jwt_header_Authorization: []
   /challenge/{challengeId}/attempt:
     post:
       tags:
@@ -166,6 +187,8 @@ paths:
                 id: 3F1FKVRR
                 message: Value of ID must be an integer
                 name: bad_request
+      security:
+      - jwt_header_Authorization: []
 components:
   schemas:
     ChallengeService:
@@ -209,7 +232,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: true
+          example: false
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -231,7 +254,7 @@ components:
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: false
+          example: true
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -293,6 +316,7 @@ components:
           example:
           - {}
           - {}
+          - {}
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -309,6 +333,7 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - {}
           - {}
           - {}
         slug:
@@ -337,6 +362,7 @@ components:
         - {}
         - {}
         - {}
+        - {}
         slug: pwnme
         solves: 3
         title: pwnme
@@ -357,19 +383,6 @@ components:
         files:
         - {}
         - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
-      - description: A heap overflow challenge
-        files:
-        - {}
         - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
@@ -385,6 +398,7 @@ components:
         files:
         - {}
         - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -397,6 +411,7 @@ components:
         title: pwnme
       - description: A heap overflow challenge
         files:
+        - {}
         - {}
         - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -423,6 +438,7 @@ components:
           example:
           - {}
           - {}
+          - {}
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -439,7 +455,6 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
           - {}
           - {}
         slug:
@@ -461,11 +476,12 @@ components:
         files:
         - {}
         - {}
+        - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
-        - {}
         - {}
         - {}
         - {}
@@ -492,7 +508,6 @@ components:
         - {}
         - {}
         - {}
-        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -506,24 +521,6 @@ components:
         title: pwnme
       - description: A heap overflow challenge
         files:
-        - {}
-        - {}
-        - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
-      - description: A heap overflow challenge
-        files:
-        - {}
         - {}
         - {}
         - {}
@@ -549,6 +546,10 @@ components:
         flag: SSM{flag}
       required:
       - flag
+  securitySchemes:
+    jwt_header_Authorization:
+      type: http
+      scheme: bearer
 tags:
 - name: auth
 - name: challenge
