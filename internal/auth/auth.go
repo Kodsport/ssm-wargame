@@ -28,7 +28,7 @@ type Auther struct {
 func New(cfg *config.Config, log *zap.Logger, conn *pgx.Conn) *Auther {
 	return &Auther{
 		jwtSecret: []byte(cfg.JWTSecret),
-		log:       log,
+		log:       log.Named("auth-middleware"),
 		conn:      conn,
 	}
 }
@@ -60,6 +60,7 @@ func (s *Auther) JWTAuth(ctx context.Context, token string, schema *security.JWT
 		return nil, errors.New("user not found")
 	}
 	if err != nil {
+		s.log.With(LogCtx(ctx)...).Warn("db err when getting user", zap.String("subject", userID.String()))
 		return nil, err
 	}
 
