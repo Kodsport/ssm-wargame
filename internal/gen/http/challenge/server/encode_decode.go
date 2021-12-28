@@ -54,6 +54,42 @@ func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 	}
 }
 
+// EncodeListMonthlyChallengesResponse returns an encoder for responses
+// returned by the challenge ListMonthlyChallenges endpoint.
+func EncodeListMonthlyChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(challengeviews.SsmMonthlyChallengeCollection)
+		enc := encoder(ctx, w)
+		body := NewSsmMonthlyChallengeResponseCollection(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListMonthlyChallengesRequest returns a decoder for requests sent to
+// the challenge ListMonthlyChallenges endpoint.
+func DecodeListMonthlyChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewListMonthlyChallengesPayload(token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
 // EncodeSubmitFlagResponse returns an encoder for responses returned by the
 // challenge SubmitFlag endpoint.
 func EncodeSubmitFlagResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -89,7 +125,7 @@ func DecodeSubmitFlagRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 
 			params = mux.Vars(r)
 		)
-		challengeID = params["challengeId"]
+		challengeID = params["challengeID"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
 		token = r.Header.Get("Authorization")
@@ -199,6 +235,19 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 		return nil
 	}
 	res := &ChallengeFilesResponse{}
+
+	return res
+}
+
+// marshalChallengeviewsSsmMonthlyChallengeViewToSsmMonthlyChallengeResponse
+// builds a value of type *SsmMonthlyChallengeResponse from a value of type
+// *challengeviews.SsmMonthlyChallengeView.
+func marshalChallengeviewsSsmMonthlyChallengeViewToSsmMonthlyChallengeResponse(v *challengeviews.SsmMonthlyChallengeView) *SsmMonthlyChallengeResponse {
+	res := &SsmMonthlyChallengeResponse{
+		DisplayMonth: *v.DisplayMonth,
+		StartDate:    *v.StartDate,
+		EndDate:      *v.EndDate,
+	}
 
 	return res
 }

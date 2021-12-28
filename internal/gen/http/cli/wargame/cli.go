@@ -27,15 +27,15 @@ import (
 func UsageCommands() string {
 	return `admin (list-challenges|create-challenge)
 auth (generate-discord-auth-url|exchange-discord)
-challenge (list-challenges|submit-flag)
+challenge (list-challenges|list-monthly-challenges|submit-flag)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` admin list-challenges --token "Saepe dolores."` + "\n" +
+	return os.Args[0] + ` admin list-challenges --token "Occaecati accusantium voluptatem."` + "\n" +
 		os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges --token "Vel sed consequatur iure laudantium error voluptates."` + "\n" +
+		os.Args[0] + ` challenge list-challenges --token "Facilis ea aliquam doloremque nostrum aperiam."` + "\n" +
 		""
 }
 
@@ -70,6 +70,9 @@ func ParseEndpoint(
 		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
 		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
 
+		challengeListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
+		challengeListMonthlyChallengesTokenFlag = challengeListMonthlyChallengesFlags.String("token", "", "")
+
 		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
 		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
 		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "")
@@ -85,6 +88,7 @@ func ParseEndpoint(
 
 	challengeFlags.Usage = challengeUsage
 	challengeListChallengesFlags.Usage = challengeListChallengesUsage
+	challengeListMonthlyChallengesFlags.Usage = challengeListMonthlyChallengesUsage
 	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
@@ -148,6 +152,9 @@ func ParseEndpoint(
 			case "list-challenges":
 				epf = challengeListChallengesFlags
 
+			case "list-monthly-challenges":
+				epf = challengeListMonthlyChallengesFlags
+
 			case "submit-flag":
 				epf = challengeSubmitFlagFlags
 
@@ -199,6 +206,9 @@ func ParseEndpoint(
 			case "list-challenges":
 				endpoint = c.ListChallenges()
 				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesTokenFlag)
+			case "list-monthly-challenges":
+				endpoint = c.ListMonthlyChallenges()
+				data, err = challengec.BuildListMonthlyChallengesPayload(*challengeListMonthlyChallengesTokenFlag)
 			case "submit-flag":
 				endpoint = c.SubmitFlag()
 				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag, *challengeSubmitFlagTokenFlag)
@@ -233,7 +243,7 @@ ListChallenges implements ListChallenges.
     -token STRING: 
 
 Example:
-    %[1]s admin list-challenges --token "Saepe dolores."
+    %[1]s admin list-challenges --token "Occaecati accusantium voluptatem."
 `, os.Args[0])
 }
 
@@ -250,7 +260,7 @@ Example:
       "score": 50,
       "slug": "pwnme",
       "title": "pwnme"
-   }' --token "Quaerat occaecati accusantium."
+   }' --token "Laudantium error voluptates in veniam."
 `, os.Args[0])
 }
 
@@ -301,6 +311,7 @@ Usage:
 
 COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
+    list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
     submit-flag: SubmitFlag implements SubmitFlag.
 
 Additional help:
@@ -314,7 +325,18 @@ ListChallenges implements ListChallenges.
     -token STRING: 
 
 Example:
-    %[1]s challenge list-challenges --token "Vel sed consequatur iure laudantium error voluptates."
+    %[1]s challenge list-challenges --token "Facilis ea aliquam doloremque nostrum aperiam."
+`, os.Args[0])
+}
+
+func challengeListMonthlyChallengesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-monthly-challenges -token STRING
+
+ListMonthlyChallenges implements ListMonthlyChallenges.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-monthly-challenges --token "Nemo praesentium consequuntur."
 `, os.Args[0])
 }
 
@@ -329,6 +351,6 @@ SubmitFlag implements SubmitFlag.
 Example:
     %[1]s challenge submit-flag --body '{
       "flag": "SSM{flag}"
-   }' --challenge-id "123" --token "Veniam qui."
+   }' --challenge-id "123" --token "Neque nihil tenetur quas nesciunt iusto ut."
 `, os.Args[0])
 }

@@ -13,7 +13,7 @@ produces:
 - application/xml
 - application/gob
 paths:
-  /admin/challenge:
+  /admin/challenges:
     get:
       tags:
       - admin
@@ -55,6 +55,7 @@ paths:
           - score
           - published
           - slug
+          - solves
       responses:
         "201":
           description: Created response.
@@ -101,7 +102,7 @@ paths:
             - url
       schemes:
       - http
-  /challenge:
+  /challenges:
     get:
       tags:
       - challenge
@@ -121,14 +122,14 @@ paths:
       - http
       security:
       - jwt_header_Authorization: []
-  /challenge/{challengeId}/attempt:
+  /challenges/{challengeID}/attempt:
     post:
       tags:
       - challenge
       summary: SubmitFlag challenge
       operationId: challenge#SubmitFlag
       parameters:
-      - name: challengeId
+      - name: challengeID
         in: path
         required: true
         type: string
@@ -155,6 +156,26 @@ paths:
           description: If the challenge is already solved
           schema:
             $ref: '#/definitions/ChallengeSubmitFlagAlreadySolvedResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /monthly_challenges:
+    get:
+      tags:
+      - challenge
+      summary: ListMonthlyChallenges challenge
+      operationId: challenge#ListMonthlyChallenges
+      parameters:
+      - name: Authorization
+        in: header
+        required: false
+        type: string
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/ChallengeSsmMonthlyChallengeResponseCollection'
       schemes:
       - http
       security:
@@ -193,6 +214,7 @@ definitions:
     - score
     - published
     - slug
+    - solves
   AdminSsmChallengeResponseCollection:
     title: 'Mediatype identifier: application/vnd.ssm.challenge; type=collection;
       view=default'
@@ -212,17 +234,6 @@ definitions:
       services:
       - {}
       - {}
-      slug: pwnme
-      solves: 3
-      title: pwnme
-    - description: A heap overflow challenge
-      files:
-      - {}
-      - {}
-      id: e721a338-44de-4de8-a562-43d2db5f4115
-      published: true
-      score: 50
-      services:
       - {}
       - {}
       slug: pwnme
@@ -238,6 +249,8 @@ definitions:
       services:
       - {}
       - {}
+      - {}
+      - {}
       slug: pwnme
       solves: 3
       title: pwnme
@@ -249,6 +262,8 @@ definitions:
       published: true
       score: 50
       services:
+      - {}
+      - {}
       - {}
       - {}
       slug: pwnme
@@ -320,17 +335,6 @@ definitions:
       services:
       - {}
       - {}
-      slug: pwnme
-      solves: 3
-      title: pwnme
-    - description: A heap overflow challenge
-      files:
-      - {}
-      - {}
-      id: e721a338-44de-4de8-a562-43d2db5f4115
-      published: true
-      score: 50
-      services:
       - {}
       - {}
       slug: pwnme
@@ -346,6 +350,8 @@ definitions:
       services:
       - {}
       - {}
+      - {}
+      - {}
       slug: pwnme
       solves: 3
       title: pwnme
@@ -359,9 +365,32 @@ definitions:
       services:
       - {}
       - {}
+      - {}
+      - {}
       slug: pwnme
       solves: 3
       title: pwnme
+  ChallengeSsmMonthlyChallengeResponseCollection:
+    title: 'Mediatype identifier: application/vnd.ssm.monthly.challenge; type=collection;
+      view=default'
+    type: array
+    items:
+      $ref: '#/definitions/SsmMonthlyChallengeResponse'
+    description: ListMonthlyChallengesResponseBody is the result type for an array
+      of SsmMonthlyChallengeResponse (default view)
+    example:
+    - display_month: Januari/Februari
+      end_date: "2006-02-01"
+      start_date: "2006-02-01"
+    - display_month: Januari/Februari
+      end_date: "2006-02-01"
+      start_date: "2006-02-01"
+    - display_month: Januari/Februari
+      end_date: "2006-02-01"
+      start_date: "2006-02-01"
+    - display_month: Januari/Februari
+      end_date: "2006-02-01"
+      start_date: "2006-02-01"
   ChallengeSubmitFlagAlreadySolvedResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -387,19 +416,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: SubmitFlag_already_solved_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -414,7 +443,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -436,10 +465,10 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: SubmitFlag_incorrect_flag_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -479,7 +508,6 @@ definitions:
         example:
         - {}
         - {}
-        - {}
       id:
         type: string
         example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -496,6 +524,7 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeServiceResponse'
         example:
+        - {}
         - {}
         - {}
         - {}
@@ -524,17 +553,43 @@ definitions:
       services:
       - {}
       - {}
+      - {}
       slug: pwnme
       solves: 3
       title: pwnme
     required:
-    - solves
     - id
     - title
     - description
     - score
     - published
     - slug
+    - solves
+  SsmMonthlyChallengeResponse:
+    title: 'Mediatype identifier: application/vnd.ssm.monthly.challenge; view=default'
+    type: object
+    properties:
+      display_month:
+        type: string
+        description: The month(s) that the challenge is assigned for
+        example: Januari/Februari
+      end_date:
+        type: string
+        description: Ending date of the monthly challenge
+        example: "2006-02-01"
+      start_date:
+        type: string
+        description: Starting date of the monthly challenge
+        example: "2006-02-01"
+    description: A monthly challenge (default view)
+    example:
+      display_month: Januari/Februari
+      end_date: "2006-02-01"
+      start_date: "2006-02-01"
+    required:
+    - start_date
+    - end_date
+    - display_month
 securityDefinitions:
   jwt_header_Authorization:
     type: apiKey

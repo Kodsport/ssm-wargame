@@ -25,6 +25,10 @@ type SubmitFlagRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
 
+// SsmMonthlyChallengeResponseCollection is the type of the "challenge" service
+// "ListMonthlyChallenges" endpoint HTTP response body.
+type SsmMonthlyChallengeResponseCollection []*SsmMonthlyChallengeResponse
+
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
 type SubmitFlagAlreadySolvedResponseBody struct {
@@ -87,12 +91,33 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 }
 
+// SsmMonthlyChallengeResponse is used to define fields on response body types.
+type SsmMonthlyChallengeResponse struct {
+	// The month(s) that the challenge is assigned for
+	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
+	// Starting date of the monthly challenge
+	StartDate string `form:"start_date" json:"start_date" xml:"start_date"`
+	// Ending date of the monthly challenge
+	EndDate string `form:"end_date" json:"end_date" xml:"end_date"`
+}
+
 // NewSsmChallengeResponseCollection builds the HTTP response body from the
 // result of the "ListChallenges" endpoint of the "challenge" service.
 func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollectionView) SsmChallengeResponseCollection {
 	body := make([]*SsmChallengeResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(val)
+	}
+	return body
+}
+
+// NewSsmMonthlyChallengeResponseCollection builds the HTTP response body from
+// the result of the "ListMonthlyChallenges" endpoint of the "challenge"
+// service.
+func NewSsmMonthlyChallengeResponseCollection(res challengeviews.SsmMonthlyChallengeCollectionView) SsmMonthlyChallengeResponseCollection {
+	body := make([]*SsmMonthlyChallengeResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalChallengeviewsSsmMonthlyChallengeViewToSsmMonthlyChallengeResponse(val)
 	}
 	return body
 }
@@ -129,6 +154,15 @@ func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIn
 // payload.
 func NewListChallengesPayload(token *string) *challenge.ListChallengesPayload {
 	v := &challenge.ListChallengesPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewListMonthlyChallengesPayload builds a challenge service
+// ListMonthlyChallenges endpoint payload.
+func NewListMonthlyChallengesPayload(token *string) *challenge.ListMonthlyChallengesPayload {
+	v := &challenge.ListMonthlyChallengesPayload{}
 	v.Token = token
 
 	return v

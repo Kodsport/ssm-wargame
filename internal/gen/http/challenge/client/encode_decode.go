@@ -97,6 +97,84 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 	}
 }
 
+// BuildListMonthlyChallengesRequest instantiates a HTTP request object with
+// method and path set to call the "challenge" service "ListMonthlyChallenges"
+// endpoint
+func (c *Client) BuildListMonthlyChallengesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListMonthlyChallengesChallengePath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "ListMonthlyChallenges", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListMonthlyChallengesRequest returns an encoder for requests sent to
+// the challenge ListMonthlyChallenges server.
+func EncodeListMonthlyChallengesRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.ListMonthlyChallengesPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "ListMonthlyChallenges", "*challenge.ListMonthlyChallengesPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListMonthlyChallengesResponse returns a decoder for responses returned
+// by the challenge ListMonthlyChallenges endpoint. restoreBody controls
+// whether the response body should be restored after having been read.
+func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListMonthlyChallengesResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "ListMonthlyChallenges", err)
+			}
+			p := NewListMonthlyChallengesSsmMonthlyChallengeCollectionOK(body)
+			view := "default"
+			vres := challengeviews.SsmMonthlyChallengeCollection{Projected: p, View: view}
+			if err = challengeviews.ValidateSsmMonthlyChallengeCollection(vres); err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "ListMonthlyChallenges", err)
+			}
+			res := challenge.NewSsmMonthlyChallengeCollection(vres)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "ListMonthlyChallenges", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildSubmitFlagRequest instantiates a HTTP request object with method and
 // path set to call the "challenge" service "SubmitFlag" endpoint
 func (c *Client) BuildSubmitFlagRequest(ctx context.Context, v interface{}) (*http.Request, error) {
@@ -254,6 +332,38 @@ func unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(v *Challe
 		return nil
 	}
 	res := &challengeviews.ChallengeFilesView{}
+
+	return res
+}
+
+// unmarshalSsmMonthlyChallengeResponseToChallengeviewsSsmMonthlyChallengeView
+// builds a value of type *challengeviews.SsmMonthlyChallengeView from a value
+// of type *SsmMonthlyChallengeResponse.
+func unmarshalSsmMonthlyChallengeResponseToChallengeviewsSsmMonthlyChallengeView(v *SsmMonthlyChallengeResponse) *challengeviews.SsmMonthlyChallengeView {
+	res := &challengeviews.SsmMonthlyChallengeView{
+		DisplayMonth: v.DisplayMonth,
+		StartDate:    v.StartDate,
+		EndDate:      v.EndDate,
+		ID:           v.ID,
+		Slug:         v.Slug,
+		Title:        v.Title,
+		Description:  v.Description,
+		Score:        v.Score,
+		Published:    v.Published,
+		Solves:       v.Solves,
+	}
+	if v.Services != nil {
+		res.Services = make([]*challengeviews.ChallengeServiceView, len(v.Services))
+		for i, val := range v.Services {
+			res.Services[i] = unmarshalChallengeServiceResponseToChallengeviewsChallengeServiceView(val)
+		}
+	}
+	if v.Files != nil {
+		res.Files = make([]*challengeviews.ChallengeFilesView, len(v.Files))
+		for i, val := range v.Files {
+			res.Files[i] = unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(val)
+		}
+	}
 
 	return res
 }

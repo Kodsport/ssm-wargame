@@ -16,8 +16,9 @@ import (
 
 // Endpoints wraps the "challenge" service endpoints.
 type Endpoints struct {
-	ListChallenges goa.Endpoint
-	SubmitFlag     goa.Endpoint
+	ListChallenges        goa.Endpoint
+	ListMonthlyChallenges goa.Endpoint
+	SubmitFlag            goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "challenge" service with endpoints.
@@ -25,14 +26,16 @@ func NewEndpoints(s Service) *Endpoints {
 	// Casting service to Auther interface
 	a := s.(Auther)
 	return &Endpoints{
-		ListChallenges: NewListChallengesEndpoint(s, a.JWTAuth),
-		SubmitFlag:     NewSubmitFlagEndpoint(s, a.JWTAuth),
+		ListChallenges:        NewListChallengesEndpoint(s, a.JWTAuth),
+		ListMonthlyChallenges: NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
+		SubmitFlag:            NewSubmitFlagEndpoint(s, a.JWTAuth),
 	}
 }
 
 // Use applies the given middleware to all the "challenge" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListChallenges = m(e.ListChallenges)
+	e.ListMonthlyChallenges = m(e.ListMonthlyChallenges)
 	e.SubmitFlag = m(e.SubmitFlag)
 }
 
@@ -60,6 +63,34 @@ func NewListChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 			return nil, err
 		}
 		vres := NewViewedSsmChallengeCollection(res, "default")
+		return vres, nil
+	}
+}
+
+// NewListMonthlyChallengesEndpoint returns an endpoint function that calls the
+// method "ListMonthlyChallenges" of service "challenge".
+func NewListMonthlyChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListMonthlyChallengesPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		res, err := s.ListMonthlyChallenges(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedSsmMonthlyChallengeCollection(res, "default")
 		return vres, nil
 	}
 }

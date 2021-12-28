@@ -18,9 +18,10 @@ import (
 
 // Server lists the challenge service endpoint HTTP handlers.
 type Server struct {
-	Mounts         []*MountPoint
-	ListChallenges http.Handler
-	SubmitFlag     http.Handler
+	Mounts                []*MountPoint
+	ListChallenges        http.Handler
+	ListMonthlyChallenges http.Handler
+	SubmitFlag            http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -56,11 +57,13 @@ func New(
 ) *Server {
 	return &Server{
 		Mounts: []*MountPoint{
-			{"ListChallenges", "GET", "/challenge"},
-			{"SubmitFlag", "POST", "/challenge/{challengeId}/attempt"},
+			{"ListChallenges", "GET", "/challenges"},
+			{"ListMonthlyChallenges", "GET", "/monthly_challenges"},
+			{"SubmitFlag", "POST", "/challenges/{challengeID}/attempt"},
 		},
-		ListChallenges: NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
-		SubmitFlag:     NewSubmitFlagHandler(e.SubmitFlag, mux, decoder, encoder, errhandler, formatter),
+		ListChallenges:        NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
+		ListMonthlyChallenges: NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
+		SubmitFlag:            NewSubmitFlagHandler(e.SubmitFlag, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -70,12 +73,14 @@ func (s *Server) Service() string { return "challenge" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListChallenges = m(s.ListChallenges)
+	s.ListMonthlyChallenges = m(s.ListMonthlyChallenges)
 	s.SubmitFlag = m(s.SubmitFlag)
 }
 
 // Mount configures the mux to serve the challenge endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountListChallengesHandler(mux, h.ListChallenges)
+	MountListMonthlyChallengesHandler(mux, h.ListMonthlyChallenges)
 	MountSubmitFlagHandler(mux, h.SubmitFlag)
 }
 
@@ -88,7 +93,7 @@ func MountListChallengesHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("GET", "/challenge", f)
+	mux.Handle("GET", "/challenges", f)
 }
 
 // NewListChallengesHandler creates a HTTP handler which loads the HTTP request
@@ -130,6 +135,57 @@ func NewListChallengesHandler(
 	})
 }
 
+// MountListMonthlyChallengesHandler configures the mux to serve the
+// "challenge" service "ListMonthlyChallenges" endpoint.
+func MountListMonthlyChallengesHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/monthly_challenges", f)
+}
+
+// NewListMonthlyChallengesHandler creates a HTTP handler which loads the HTTP
+// request and calls the "challenge" service "ListMonthlyChallenges" endpoint.
+func NewListMonthlyChallengesHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListMonthlyChallengesRequest(mux, decoder)
+		encodeResponse = EncodeListMonthlyChallengesResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListMonthlyChallenges")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
 // MountSubmitFlagHandler configures the mux to serve the "challenge" service
 // "SubmitFlag" endpoint.
 func MountSubmitFlagHandler(mux goahttp.Muxer, h http.Handler) {
@@ -139,7 +195,7 @@ func MountSubmitFlagHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/challenge/{challengeId}/attempt", f)
+	mux.Handle("POST", "/challenges/{challengeID}/attempt", f)
 }
 
 // NewSubmitFlagHandler creates a HTTP handler which loads the HTTP request and

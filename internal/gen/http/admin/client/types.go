@@ -82,9 +82,6 @@ func NewListChallengesSsmChallengeCollectionOK(body ListChallengesResponseBody) 
 // ValidateSsmChallengeResponse runs the validations defined on
 // SsmChallengeResponse
 func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
-	if body.Solves == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
-	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
@@ -102,6 +99,9 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	if body.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
 	}
 	return
 }

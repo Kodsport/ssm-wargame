@@ -31,6 +31,21 @@ func BuildListChallengesPayload(challengeListChallengesToken string) (*challenge
 	return v, nil
 }
 
+// BuildListMonthlyChallengesPayload builds the payload for the challenge
+// ListMonthlyChallenges endpoint from CLI flags.
+func BuildListMonthlyChallengesPayload(challengeListMonthlyChallengesToken string) (*challenge.ListMonthlyChallengesPayload, error) {
+	var token *string
+	{
+		if challengeListMonthlyChallengesToken != "" {
+			token = &challengeListMonthlyChallengesToken
+		}
+	}
+	v := &challenge.ListMonthlyChallengesPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildSubmitFlagPayload builds the payload for the challenge SubmitFlag
 // endpoint from CLI flags.
 func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagChallengeID string, challengeSubmitFlagToken string) (*challenge.SubmitFlagPayload, error) {

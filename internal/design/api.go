@@ -28,26 +28,32 @@ var ChallengeFiles = Type("ChallengeFiles", func() {
 
 })
 
+var MonthlyChallengeMeta = Type("MonthlyChallengeMeta", func() {
+	Attribute("display_month", String, func() {
+		Description("The month(s) that the challenge is assigned for")
+		Example("Januari/Februari")
+	})
+	Attribute("start_date", String, func() {
+		Description("Starting date of the monthly challenge")
+		Example("2006-02-01")
+	})
+	Attribute("end_date", String, func() {
+		Description("Ending date of the monthly challenge")
+		Example("2006-02-01")
+	})
+
+	Required("start_date", "end_date", "display_month")
+})
+
 var MonthlyChallenge = ResultType("application/vnd.ssm.monthly.challenge", func() {
 	Description("A monthly challenge")
-	Reference(Challenge)
 
-	Attributes(func() {
-		Attribute("id")
-		Attribute("slug")
-		Attribute("title")
-		Attribute("description")
-		Attribute("score")
-		Attribute("services")
-		Attribute("files")
+	Extend(ResultChallenge)
 
-		Attribute("solves", Int64, "The numer of people who solved the challenge", func() {
-			Example(3)
-		})
-
-		Required("solves")
-
-	})
+	Reference(MonthlyChallengeMeta)
+	Attribute("display_month")
+	Attribute("start_date")
+	Attribute("end_date")
 
 })
 
@@ -55,24 +61,16 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Description("A Wargame challenge")
 	Reference(Challenge)
 
-	Attributes(func() {
-		Attribute("id")
+	Attribute("id")
 
-		Attribute("slug")
-		Attribute("title")
-		Attribute("description")
-		Attribute("score")
-		Attribute("services")
-		Attribute("files")
-		Attribute("published")
-
-		Attribute("solves", Int64, "The numer of people who solved the challenge", func() {
-			Example(3)
-		})
-
-		Required("solves")
-
-	})
+	Attribute("slug")
+	Attribute("title")
+	Attribute("description")
+	Attribute("score")
+	Attribute("services")
+	Attribute("files")
+	Attribute("published")
+	Attribute("solves")
 
 })
 
@@ -105,9 +103,12 @@ var Challenge = Type("Challenge", func() {
 	Attribute("published", Boolean, func() {
 		Example(true)
 	})
+	Attribute("solves", Int64, "The numer of people who solved the challenge", func() {
+		Example(3)
+	})
 
 	Attribute("services", ArrayOf(ChallengeService))
 	Attribute("files", ArrayOf(ChallengeFiles))
 
-	Required("id", "title", "description", "score", "published", "slug")
+	Required("id", "title", "description", "score", "published", "slug", "solves")
 })

@@ -9,10 +9,10 @@ package client
 
 // ListChallengesAdminPath returns the URL path to the admin service ListChallenges HTTP endpoint.
 func ListChallengesAdminPath() string {
-	return "/admin/challenge"
+	return "/admin/challenges"
 }
 
 // CreateChallengeAdminPath returns the URL path to the admin service CreateChallenge HTTP endpoint.
 func CreateChallengeAdminPath() string {
-	return "/admin/challenge"
+	return "/admin/challenges"
 }

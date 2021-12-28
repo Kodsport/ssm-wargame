@@ -109,9 +109,6 @@ func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err 
 // ValidateSsmChallengeView runs the validations defined on SsmChallengeView
 // using the "default" view.
 func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
-	if result.Solves == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
-	}
 	if result.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
@@ -129,6 +126,9 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	}
 	if result.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "result"))
+	}
+	if result.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
 	}
 	return
 }

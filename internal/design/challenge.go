@@ -4,7 +4,6 @@ import . "goa.design/goa/v3/dsl"
 
 var _ = Service("challenge", func() {
 	HTTP(func() {
-		Path("/challenge")
 	})
 	Security(JWTAuth)
 	Method("ListChallenges", func() {
@@ -13,7 +12,17 @@ var _ = Service("challenge", func() {
 			Extend(OptionalTokenPayload)
 		})
 		HTTP(func() {
-			GET("/")
+			GET("/challenges")
+			Response(StatusOK)
+		})
+	})
+	Method("ListMonthlyChallenges", func() {
+		Result(CollectionOf(MonthlyChallenge))
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+		})
+		HTTP(func() {
+			GET("/monthly_challenges")
 			Response(StatusOK)
 		})
 	})
@@ -23,17 +32,17 @@ var _ = Service("challenge", func() {
 				Example("SSM{flag}")
 				MaxLength(200)
 			})
-			Attribute("challengeId", String, func() {
+			Attribute("challengeID", String, func() {
 				Format(FormatUUID)
 				Example("123")
 			})
 			Extend(TokenPayload)
-			Required("flag", "challengeId")
+			Required("flag", "challengeID")
 		})
 		Error("already_solved")
 		Error("incorrect_flag")
 		HTTP(func() {
-			POST("/{challengeId}/attempt")
+			POST("/challenges/{challengeID}/attempt")
 			Response(StatusOK)
 			Response("already_solved", StatusConflict, func() {
 				Description("If the challenge is already solved")

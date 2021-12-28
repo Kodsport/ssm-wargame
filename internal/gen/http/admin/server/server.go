@@ -56,8 +56,8 @@ func New(
 ) *Server {
 	return &Server{
 		Mounts: []*MountPoint{
-			{"ListChallenges", "GET", "/admin/challenge"},
-			{"CreateChallenge", "POST", "/admin/challenge"},
+			{"ListChallenges", "GET", "/admin/challenges"},
+			{"CreateChallenge", "POST", "/admin/challenges"},
 		},
 		ListChallenges:  NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		CreateChallenge: NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
@@ -88,7 +88,7 @@ func MountListChallengesHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("GET", "/admin/challenge", f)
+	mux.Handle("GET", "/admin/challenges", f)
 }
 
 // NewListChallengesHandler creates a HTTP handler which loads the HTTP request
@@ -139,7 +139,7 @@ func MountCreateChallengeHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/admin/challenge", f)
+	mux.Handle("POST", "/admin/challenges", f)
 }
 
 // NewCreateChallengeHandler creates a HTTP handler which loads the HTTP

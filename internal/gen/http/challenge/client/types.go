@@ -23,6 +23,10 @@ type SubmitFlagRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmChallengeResponse
 
+// ListMonthlyChallengesResponseBody is the type of the "challenge" service
+// "ListMonthlyChallenges" endpoint HTTP response body.
+type ListMonthlyChallengesResponseBody []*SsmMonthlyChallengeResponse
+
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
 type SubmitFlagAlreadySolvedResponseBody struct {
@@ -85,6 +89,30 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 }
 
+// SsmMonthlyChallengeResponse is used to define fields on response body types.
+type SsmMonthlyChallengeResponse struct {
+	// The month(s) that the challenge is assigned for
+	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
+	// Starting date of the monthly challenge
+	StartDate *string `form:"start_date,omitempty" json:"start_date,omitempty" xml:"start_date,omitempty"`
+	// Ending date of the monthly challenge
+	EndDate *string `form:"end_date,omitempty" json:"end_date,omitempty" xml:"end_date,omitempty"`
+	ID      *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// A unique string that can be used in URLs
+	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Title displayed to user
+	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// A short text describing the challenge
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	// The number of points given to the solver
+	Score     *int32                      `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	Services  []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files     []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	Published *bool                       `form:"published,omitempty" json:"published,omitempty" xml:"published,omitempty"`
+	// The numer of people who solved the challenge
+	Solves *int64 `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+}
+
 // NewSubmitFlagRequestBody builds the HTTP request body from the payload of
 // the "SubmitFlag" endpoint of the "challenge" service.
 func NewSubmitFlagRequestBody(p *challenge.SubmitFlagPayload) *SubmitFlagRequestBody {
@@ -100,6 +128,17 @@ func NewListChallengesSsmChallengeCollectionOK(body ListChallengesResponseBody) 
 	v := make([]*challengeviews.SsmChallengeView, len(body))
 	for i, val := range body {
 		v[i] = unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(val)
+	}
+
+	return v
+}
+
+// NewListMonthlyChallengesSsmMonthlyChallengeCollectionOK builds a "challenge"
+// service "ListMonthlyChallenges" endpoint result from a HTTP "OK" response.
+func NewListMonthlyChallengesSsmMonthlyChallengeCollectionOK(body ListMonthlyChallengesResponseBody) challengeviews.SsmMonthlyChallengeCollectionView {
+	v := make([]*challengeviews.SsmMonthlyChallengeView, len(body))
+	for i, val := range body {
+		v[i] = unmarshalSsmMonthlyChallengeResponseToChallengeviewsSsmMonthlyChallengeView(val)
 	}
 
 	return v
@@ -186,8 +225,41 @@ func ValidateSubmitFlagIncorrectFlagResponseBody(body *SubmitFlagIncorrectFlagRe
 // ValidateSsmChallengeResponse runs the validations defined on
 // SsmChallengeResponse
 func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	if body.Published == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("published", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	return
+}
+
+// ValidateSsmMonthlyChallengeResponse runs the validations defined on
+// SsmMonthlyChallengeResponse
+func ValidateSsmMonthlyChallengeResponse(body *SsmMonthlyChallengeResponse) (err error) {
+	if body.StartDate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start_date", "body"))
+	}
+	if body.EndDate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end_date", "body"))
+	}
+	if body.DisplayMonth == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_month", "body"))
 	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
@@ -206,6 +278,9 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	if body.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
 	}
 	return
 }

@@ -20,6 +20,15 @@ type SsmChallengeCollection struct {
 	View string
 }
 
+// SsmMonthlyChallengeCollection is the viewed result type that is projected
+// based on a view.
+type SsmMonthlyChallengeCollection struct {
+	// Type to project
+	Projected SsmMonthlyChallengeCollectionView
+	// View to render
+	View string
+}
+
 // SsmChallengeCollectionView is a type that runs validations on a projected
 // type.
 type SsmChallengeCollectionView []*SsmChallengeView
@@ -50,11 +59,57 @@ type ChallengeServiceView struct {
 type ChallengeFilesView struct {
 }
 
+// SsmMonthlyChallengeCollectionView is a type that runs validations on a
+// projected type.
+type SsmMonthlyChallengeCollectionView []*SsmMonthlyChallengeView
+
+// SsmMonthlyChallengeView is a type that runs validations on a projected type.
+type SsmMonthlyChallengeView struct {
+	// The month(s) that the challenge is assigned for
+	DisplayMonth *string
+	// Starting date of the monthly challenge
+	StartDate *string
+	// Ending date of the monthly challenge
+	EndDate *string
+	ID      *string
+	// A unique string that can be used in URLs
+	Slug *string
+	// Title displayed to user
+	Title *string
+	// A short text describing the challenge
+	Description *string
+	// The number of points given to the solver
+	Score     *int32
+	Services  []*ChallengeServiceView
+	Files     []*ChallengeFilesView
+	Published *bool
+	// The numer of people who solved the challenge
+	Solves *int64
+}
+
 var (
 	// SsmChallengeCollectionMap is a map indexing the attribute names of
 	// SsmChallengeCollection by view name.
 	SsmChallengeCollectionMap = map[string][]string{
 		"default": {
+			"id",
+			"slug",
+			"title",
+			"description",
+			"score",
+			"services",
+			"files",
+			"published",
+			"solves",
+		},
+	}
+	// SsmMonthlyChallengeCollectionMap is a map indexing the attribute names of
+	// SsmMonthlyChallengeCollection by view name.
+	SsmMonthlyChallengeCollectionMap = map[string][]string{
+		"default": {
+			"display_month",
+			"start_date",
+			"end_date",
 			"id",
 			"slug",
 			"title",
@@ -81,6 +136,15 @@ var (
 			"solves",
 		},
 	}
+	// SsmMonthlyChallengeMap is a map indexing the attribute names of
+	// SsmMonthlyChallenge by view name.
+	SsmMonthlyChallengeMap = map[string][]string{
+		"default": {
+			"display_month",
+			"start_date",
+			"end_date",
+		},
+	}
 )
 
 // ValidateSsmChallengeCollection runs the validations defined on the viewed
@@ -89,6 +153,18 @@ func ValidateSsmChallengeCollection(result SsmChallengeCollection) (err error) {
 	switch result.View {
 	case "default", "":
 		err = ValidateSsmChallengeCollectionView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
+// ValidateSsmMonthlyChallengeCollection runs the validations defined on the
+// viewed result type SsmMonthlyChallengeCollection.
+func ValidateSsmMonthlyChallengeCollection(result SsmMonthlyChallengeCollection) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmMonthlyChallengeCollectionView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
@@ -109,9 +185,6 @@ func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err 
 // ValidateSsmChallengeView runs the validations defined on SsmChallengeView
 // using the "default" view.
 func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
-	if result.Solves == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
-	}
 	if result.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
@@ -130,6 +203,9 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	if result.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "result"))
 	}
+	if result.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
+	}
 	return
 }
 
@@ -144,5 +220,31 @@ func ValidateChallengeServiceView(result *ChallengeServiceView) (err error) {
 // ChallengeFilesView.
 func ValidateChallengeFilesView(result *ChallengeFilesView) (err error) {
 
+	return
+}
+
+// ValidateSsmMonthlyChallengeCollectionView runs the validations defined on
+// SsmMonthlyChallengeCollectionView using the "default" view.
+func ValidateSsmMonthlyChallengeCollectionView(result SsmMonthlyChallengeCollectionView) (err error) {
+	for _, item := range result {
+		if err2 := ValidateSsmMonthlyChallengeView(item); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// ValidateSsmMonthlyChallengeView runs the validations defined on
+// SsmMonthlyChallengeView using the "default" view.
+func ValidateSsmMonthlyChallengeView(result *SsmMonthlyChallengeView) (err error) {
+	if result.StartDate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start_date", "result"))
+	}
+	if result.EndDate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end_date", "result"))
+	}
+	if result.DisplayMonth == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_month", "result"))
+	}
 	return
 }

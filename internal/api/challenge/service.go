@@ -6,6 +6,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
+	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
@@ -24,6 +25,10 @@ func NewService(conn *pgx.Conn, log *zap.Logger, auther spec.Auther) spec.Servic
 		db:     conn,
 		log:    log.Named("challenge"),
 	}
+}
+
+func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) (spec.SsmMonthlyChallengeCollection, error) {
+	return nil, nil
 }
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
@@ -58,14 +63,13 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 	defer tx.Rollback(ctx)
 	txq := (&db.Queries{}).WithTx(tx)
 
-	userID := uuid.MustParse("")
+	user := auth.GetUser(ctx)
 	challID := uuid.MustParse(req.ChallengeID)
 
 	solved, err := txq.UserHasSolved(ctx, db.UserHasSolvedParams{
 		ChallengeID: challID,
-		UserID:      userID,
+		UserID:      user.ID,
 	})
-
 	if err != nil {
 		return err
 	}
@@ -74,27 +78,26 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 		return spec.MakeAlreadySolved(errors.New("already solved"))
 	}
 
-	exists, err := txq.FlagExists(ctx, db.FlagExistsParams{
+	flagCorrect, err := txq.FlagExists(ctx, db.FlagExistsParams{
 		ChallengeID: challID,
 		Flag:        req.Flag,
 	})
-
 	if err != nil {
 		s.log.Error("FlagExists failed", zap.Error(err), utils.C(ctx))
 		return err
 	}
 
 	err = txq.InsertAttempt(ctx, db.InsertAttemptParams{
-		UserID:      userID,
+		UserID:      user.ID,
 		ChallengeID: challID,
-		Successful:  exists,
+		Successful:  flagCorrect,
 		Input:       req.Flag,
 	})
 	if err != nil {
 		return err
 	}
 
-	if exists {
+	if flagCorrect {
 		err = txq.InsertSolve(ctx, db.InsertSolveParams{
 			UserID:      uuid.MustParse(""),
 			ChallengeID: challID,
@@ -106,10 +109,11 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 
 	err = tx.Commit(ctx)
 	if err != nil {
+		s.log.Error("could not commit", zap.Error(err), utils.C(ctx))
 		return err
 	}
 
-	if !exists {
+	if !flagCorrect {
 		return spec.MakeIncorrectFlag(errors.New("incorrect flag"))
 	}
 

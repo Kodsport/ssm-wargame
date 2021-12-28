@@ -7,7 +7,7 @@ servers:
 - url: http://localhost:80
   description: Default server for wargame
 paths:
-  /admin/challenge:
+  /admin/challenges:
     get:
       tags:
       - admin
@@ -143,7 +143,7 @@ paths:
                 $ref: '#/components/schemas/GenerateDiscordAuthURLResponseBody'
               example:
                 url: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
-  /challenge:
+  /challenges:
     get:
       tags:
       - challenge
@@ -219,14 +219,14 @@ paths:
                 title: pwnme
       security:
       - jwt_header_Authorization: []
-  /challenge/{challengeId}/attempt:
+  /challenges/{challengeID}/attempt:
     post:
       tags:
       - challenge
       summary: SubmitFlag challenge
       operationId: challenge#SubmitFlag
       parameters:
-      - name: challengeId
+      - name: challengeID
         in: path
         required: true
         schema:
@@ -267,6 +267,98 @@ paths:
                 name: bad_request
       security:
       - jwt_header_Authorization: []
+  /monthly_challenges:
+    get:
+      tags:
+      - challenge
+      summary: ListMonthlyChallenges challenge
+      operationId: challenge#ListMonthlyChallenges
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsmMonthlyChallengeCollection'
+              example:
+              - description: A heap overflow challenge
+                display_month: Januari/Februari
+                end_date: "2006-02-01"
+                files:
+                - {}
+                - {}
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                start_date: "2006-02-01"
+                title: pwnme
+              - description: A heap overflow challenge
+                display_month: Januari/Februari
+                end_date: "2006-02-01"
+                files:
+                - {}
+                - {}
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                start_date: "2006-02-01"
+                title: pwnme
+              - description: A heap overflow challenge
+                display_month: Januari/Februari
+                end_date: "2006-02-01"
+                files:
+                - {}
+                - {}
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                start_date: "2006-02-01"
+                title: pwnme
+              - description: A heap overflow challenge
+                display_month: Januari/Februari
+                end_date: "2006-02-01"
+                files:
+                - {}
+                - {}
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                start_date: "2006-02-01"
+                title: pwnme
+      security:
+      - jwt_header_Authorization: []
 components:
   schemas:
     ChallengeService:
@@ -304,6 +396,7 @@ components:
       - score
       - published
       - slug
+      - solves
     Error:
       type: object
       properties:
@@ -332,7 +425,7 @@ components:
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: true
+          example: false
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -395,7 +488,6 @@ components:
           - {}
           - {}
           - {}
-          - {}
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -441,17 +533,18 @@ components:
         services:
         - {}
         - {}
+        - {}
         slug: pwnme
         solves: 3
         title: pwnme
       required:
-      - solves
       - id
       - title
       - description
       - score
       - published
       - slug
+      - solves
     SsmChallengeCollection:
       type: array
       items:
@@ -486,6 +579,178 @@ components:
         - {}
         slug: pwnme
         solves: 3
+        title: pwnme
+    SsmMonthlyChallenge:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A short text describing the challenge
+          example: A heap overflow challenge
+        display_month:
+          type: string
+          description: The month(s) that the challenge is assigned for
+          example: Januari/Februari
+        end_date:
+          type: string
+          description: Ending date of the monthly challenge
+          example: "2006-02-01"
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeService'
+          example:
+          - {}
+          - {}
+        id:
+          type: string
+          example: e721a338-44de-4de8-a562-43d2db5f4115
+        published:
+          type: boolean
+          example: true
+        score:
+          type: integer
+          description: The number of points given to the solver
+          example: 50
+          format: int32
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeService'
+          example:
+          - {}
+          - {}
+          - {}
+          - {}
+        slug:
+          type: string
+          description: A unique string that can be used in URLs
+          example: pwnme
+        solves:
+          type: integer
+          description: The numer of people who solved the challenge
+          example: 3
+          format: int64
+        start_date:
+          type: string
+          description: Starting date of the monthly challenge
+          example: "2006-02-01"
+        title:
+          type: string
+          description: Title displayed to user
+          example: pwnme
+      description: A monthly challenge
+      example:
+        description: A heap overflow challenge
+        display_month: Januari/Februari
+        end_date: "2006-02-01"
+        files:
+        - {}
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        start_date: "2006-02-01"
+        title: pwnme
+      required:
+      - start_date
+      - end_date
+      - display_month
+      - id
+      - title
+      - description
+      - score
+      - published
+      - slug
+      - solves
+    SsmMonthlyChallengeCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/SsmMonthlyChallenge'
+      example:
+      - description: A heap overflow challenge
+        display_month: Januari/Februari
+        end_date: "2006-02-01"
+        files:
+        - {}
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        start_date: "2006-02-01"
+        title: pwnme
+      - description: A heap overflow challenge
+        display_month: Januari/Februari
+        end_date: "2006-02-01"
+        files:
+        - {}
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        start_date: "2006-02-01"
+        title: pwnme
+      - description: A heap overflow challenge
+        display_month: Januari/Februari
+        end_date: "2006-02-01"
+        files:
+        - {}
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        start_date: "2006-02-01"
+        title: pwnme
+      - description: A heap overflow challenge
+        display_month: Januari/Februari
+        end_date: "2006-02-01"
+        files:
+        - {}
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        start_date: "2006-02-01"
         title: pwnme
     SubmitFlagRequestBody:
       type: object

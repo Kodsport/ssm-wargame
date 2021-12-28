@@ -21,6 +21,10 @@ type Client struct {
 	// ListChallenges endpoint.
 	ListChallengesDoer goahttp.Doer
 
+	// ListMonthlyChallenges Doer is the HTTP client used to make requests to the
+	// ListMonthlyChallenges endpoint.
+	ListMonthlyChallengesDoer goahttp.Doer
+
 	// SubmitFlag Doer is the HTTP client used to make requests to the SubmitFlag
 	// endpoint.
 	SubmitFlagDoer goahttp.Doer
@@ -45,13 +49,14 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		ListChallengesDoer:  doer,
-		SubmitFlagDoer:      doer,
-		RestoreResponseBody: restoreBody,
-		scheme:              scheme,
-		host:                host,
-		decoder:             dec,
-		encoder:             enc,
+		ListChallengesDoer:        doer,
+		ListMonthlyChallengesDoer: doer,
+		SubmitFlagDoer:            doer,
+		RestoreResponseBody:       restoreBody,
+		scheme:                    scheme,
+		host:                      host,
+		decoder:                   dec,
+		encoder:                   enc,
 	}
 }
 
@@ -74,6 +79,30 @@ func (c *Client) ListChallenges() goa.Endpoint {
 		resp, err := c.ListChallengesDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("challenge", "ListChallenges", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// ListMonthlyChallenges returns an endpoint that makes HTTP requests to the
+// challenge service ListMonthlyChallenges server.
+func (c *Client) ListMonthlyChallenges() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeListMonthlyChallengesRequest(c.encoder)
+		decodeResponse = DecodeListMonthlyChallengesResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildListMonthlyChallengesRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ListMonthlyChallengesDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "ListMonthlyChallenges", err)
 		}
 		return decodeResponse(resp)
 	}

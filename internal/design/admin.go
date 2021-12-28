@@ -13,7 +13,7 @@ var _ = Service("admin", func() {
 		})
 		Result(CollectionOf(ResultChallenge))
 		HTTP(func() {
-			GET("/challenge")
+			GET("/challenges")
 			Response(StatusOK)
 		})
 	})
@@ -23,7 +23,7 @@ var _ = Service("admin", func() {
 			Extend(TokenPayload)
 		})
 		HTTP(func() {
-			POST("/challenge")
+			POST("/challenges")
 			Response(StatusCreated)
 		})
 	})
