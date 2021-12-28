@@ -56,11 +56,11 @@ func (s *Auther) JWTAuth(ctx context.Context, token string, schema *security.JWT
 
 	user, err := db.New(s.conn).UserByID(ctx, userID)
 	if err == pgx.ErrNoRows {
-		s.log.With(LogCtx(ctx)...).Warn("subject from valid jwt doesn't exist in DB, cross-env token usage or security issue?", zap.String("subject", userID.String()))
+		s.log.Warn("subject from valid jwt doesn't exist in DB, cross-env token usage or security issue?", zap.String("subject", userID.String()))
 		return nil, errors.New("user not found")
 	}
 	if err != nil {
-		s.log.With(LogCtx(ctx)...).Warn("db err when getting user", zap.String("subject", userID.String()))
+		s.log.Warn("db err when getting user", zap.String("subject", userID.String()))
 		return nil, err
 	}
 

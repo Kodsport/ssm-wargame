@@ -6,9 +6,9 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
+	"github.com/sakerhetsm/ssm-wargame/internal/utils"
 	"go.uber.org/zap"
 )
 
@@ -26,38 +26,11 @@ func NewService(conn *pgx.Conn, log *zap.Logger, auther spec.Auther) spec.Servic
 	}
 }
 
-func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallengePayload) error {
+func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
 
-	q := db.New(s.db)
-
-	err := q.InsertChallenge(ctx, db.InsertChallengeParams{
-		ID:          uuid.New(),
-		Title:       req.Title,
-		Slug:        req.Slug,
-		Description: req.Description,
-		Score:       req.Score,
-		Published:   false,
-	})
+	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, false)
 	if err != nil {
-		s.log.With(auth.LogCtx(ctx)...).Error("inserting challenge", zap.Error(err))
-		return err
-	}
-
-	return nil
-}
-
-func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, string, error) {
-
-	showUnpublished := req.View == "author"
-	if showUnpublished {
-		if !auth.HasRole(ctx, "author", "admin") {
-			return nil, "", errors.New("not authorized")
-		}
-	}
-
-	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, showUnpublished)
-	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	res := make(spec.SsmChallengeCollection, len(challs))
@@ -73,7 +46,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		}
 	}
 
-	return res, req.View, nil
+	return res, nil
 }
 
 func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) error {
@@ -107,7 +80,7 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 	})
 
 	if err != nil {
-		s.log.With(auth.LogCtx(ctx)...).Error("FlagExists failed", zap.Error(err))
+		s.log.Error("FlagExists failed", zap.Error(err), utils.C(ctx))
 		return err
 	}
 

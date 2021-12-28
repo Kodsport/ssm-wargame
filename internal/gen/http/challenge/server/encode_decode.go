@@ -23,15 +23,8 @@ import (
 func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
 		res := v.(challengeviews.SsmChallengeCollection)
-		w.Header().Set("goa-view", res.View)
 		enc := encoder(ctx, w)
-		var body interface{}
-		switch res.View {
-		case "default", "":
-			body = NewSsmChallengeResponseCollection(res.Projected)
-		case "author":
-			body = NewSsmChallengeResponseAuthorCollection(res.Projected)
-		}
+		body := NewSsmChallengeResponseCollection(res.Projected)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
@@ -42,83 +35,19 @@ func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWri
 func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			view  string
 			token *string
-			err   error
 		)
-		viewRaw := r.URL.Query().Get("view")
-		if viewRaw != "" {
-			view = viewRaw
-		} else {
-			view = "default"
-		}
-		if !(view == "default" || view == "author") {
-			err = goa.MergeErrors(err, goa.InvalidEnumValueError("view", view, []interface{}{"default", "author"}))
-		}
 		tokenRaw := r.Header.Get("Authorization")
 		if tokenRaw != "" {
 			token = &tokenRaw
 		}
-		if err != nil {
-			return nil, err
-		}
-		payload := NewListChallengesPayload(view, token)
+		payload := NewListChallengesPayload(token)
 		if payload.Token != nil {
 			if strings.Contains(*payload.Token, " ") {
 				// Remove authorization scheme prefix (e.g. "Bearer")
 				cred := strings.SplitN(*payload.Token, " ", 2)[1]
 				payload.Token = &cred
 			}
-		}
-
-		return payload, nil
-	}
-}
-
-// EncodeCreateChallengeResponse returns an encoder for responses returned by
-// the challenge CreateChallenge endpoint.
-func EncodeCreateChallengeResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
-	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		w.WriteHeader(http.StatusCreated)
-		return nil
-	}
-}
-
-// DecodeCreateChallengeRequest returns a decoder for requests sent to the
-// challenge CreateChallenge endpoint.
-func DecodeCreateChallengeRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
-	return func(r *http.Request) (interface{}, error) {
-		var (
-			body CreateChallengeRequestBody
-			err  error
-		)
-		err = decoder(r).Decode(&body)
-		if err != nil {
-			if err == io.EOF {
-				return nil, goa.MissingPayloadError()
-			}
-			return nil, goa.DecodePayloadError(err.Error())
-		}
-		err = ValidateCreateChallengeRequestBody(&body)
-		if err != nil {
-			return nil, err
-		}
-
-		var (
-			token string
-		)
-		token = r.Header.Get("Authorization")
-		if token == "" {
-			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
-		}
-		if err != nil {
-			return nil, err
-		}
-		payload := NewCreateChallengePayload(&body, token)
-		if strings.Contains(payload.Token, " ") {
-			// Remove authorization scheme prefix (e.g. "Bearer")
-			cred := strings.SplitN(payload.Token, " ", 2)[1]
-			payload.Token = cred
 		}
 
 		return payload, nil
@@ -156,27 +85,25 @@ func DecodeSubmitFlagRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 
 		var (
 			challengeID string
-			token       *string
+			token       string
 
 			params = mux.Vars(r)
 		)
 		challengeID = params["challengeId"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
-		tokenRaw := r.Header.Get("Authorization")
-		if tokenRaw != "" {
-			token = &tokenRaw
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
 		}
 		if err != nil {
 			return nil, err
 		}
 		payload := NewSubmitFlagPayload(&body, challengeID, token)
-		if payload.Token != nil {
-			if strings.Contains(*payload.Token, " ") {
-				// Remove authorization scheme prefix (e.g. "Bearer")
-				cred := strings.SplitN(*payload.Token, " ", 2)[1]
-				payload.Token = &cred
-			}
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
 		}
 
 		return payload, nil
@@ -233,6 +160,7 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengevie
 		Title:       *v.Title,
 		Description: *v.Description,
 		Score:       *v.Score,
+		Published:   *v.Published,
 		Solves:      *v.Solves,
 	}
 	if v.Services != nil {
@@ -271,35 +199,6 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 		return nil
 	}
 	res := &ChallengeFilesResponse{}
-
-	return res
-}
-
-// marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor builds a
-// value of type *SsmChallengeResponseAuthor from a value of type
-// *challengeviews.SsmChallengeView.
-func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor(v *challengeviews.SsmChallengeView) *SsmChallengeResponseAuthor {
-	res := &SsmChallengeResponseAuthor{
-		ID:          *v.ID,
-		Slug:        *v.Slug,
-		Title:       *v.Title,
-		Description: *v.Description,
-		Score:       *v.Score,
-		Published:   *v.Published,
-		Solves:      *v.Solves,
-	}
-	if v.Services != nil {
-		res.Services = make([]*ChallengeServiceResponse, len(v.Services))
-		for i, val := range v.Services {
-			res.Services[i] = marshalChallengeviewsChallengeServiceViewToChallengeServiceResponse(val)
-		}
-	}
-	if v.Files != nil {
-		res.Files = make([]*ChallengeFilesResponse, len(v.Files))
-		for i, val := range v.Files {
-			res.Files[i] = marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(val)
-		}
-	}
 
 	return res
 }

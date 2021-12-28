@@ -2,10 +2,6 @@ package goa
 
 import . "goa.design/goa/v3/dsl"
 
-var TokenPayload = Type("TokenPayload", func() {
-	Token("token", String)
-})
-
 var _ = Service("challenge", func() {
 	HTTP(func() {
 		Path("/challenge")
@@ -14,27 +10,11 @@ var _ = Service("challenge", func() {
 	Method("ListChallenges", func() {
 		Result(CollectionOf(ResultChallenge))
 		Payload(func() {
-			Attribute("view", func() {
-				Default("default")
-				Enum("default", "author")
-			})
-			Extend(TokenPayload)
+			Extend(OptionalTokenPayload)
 		})
 		HTTP(func() {
 			GET("/")
-			Param("view")
 			Response(StatusOK)
-		})
-	})
-	Method("CreateChallenge", func() {
-		Payload(func() {
-			Extend(CreateChallengePayload)
-			Extend(TokenPayload)
-			Required("token")
-		})
-		HTTP(func() {
-			POST("/")
-			Response(StatusCreated)
 		})
 	})
 	Method("SubmitFlag", func() {

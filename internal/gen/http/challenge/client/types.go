@@ -13,19 +13,6 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
-// CreateChallengeRequestBody is the type of the "challenge" service
-// "CreateChallenge" endpoint HTTP request body.
-type CreateChallengeRequestBody struct {
-	// A unique string that can be used in URLs
-	Slug string `form:"slug" json:"slug" xml:"slug"`
-	// Title displayed to user
-	Title string `form:"title" json:"title" xml:"title"`
-	// A short text describing the challenge
-	Description string `form:"description" json:"description" xml:"description"`
-	// The number of points given to the solver
-	Score int32 `form:"score" json:"score" xml:"score"`
-}
-
 // SubmitFlagRequestBody is the type of the "challenge" service "SubmitFlag"
 // endpoint HTTP request body.
 type SubmitFlagRequestBody struct {
@@ -96,18 +83,6 @@ type ChallengeServiceResponse struct {
 
 // ChallengeFilesResponse is used to define fields on response body types.
 type ChallengeFilesResponse struct {
-}
-
-// NewCreateChallengeRequestBody builds the HTTP request body from the payload
-// of the "CreateChallenge" endpoint of the "challenge" service.
-func NewCreateChallengeRequestBody(p *challenge.CreateChallengePayload) *CreateChallengeRequestBody {
-	body := &CreateChallengeRequestBody{
-		Slug:        p.Slug,
-		Title:       p.Title,
-		Description: p.Description,
-		Score:       p.Score,
-	}
-	return body
 }
 
 // NewSubmitFlagRequestBody builds the HTTP request body from the payload of

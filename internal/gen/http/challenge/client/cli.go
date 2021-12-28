@@ -18,20 +18,7 @@ import (
 
 // BuildListChallengesPayload builds the payload for the challenge
 // ListChallenges endpoint from CLI flags.
-func BuildListChallengesPayload(challengeListChallengesView string, challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
-	var err error
-	var view string
-	{
-		if challengeListChallengesView != "" {
-			view = challengeListChallengesView
-			if !(view == "default" || view == "author") {
-				err = goa.MergeErrors(err, goa.InvalidEnumValueError("view", view, []interface{}{"default", "author"}))
-			}
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
+func BuildListChallengesPayload(challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
 	var token *string
 	{
 		if challengeListChallengesToken != "" {
@@ -39,33 +26,6 @@ func BuildListChallengesPayload(challengeListChallengesView string, challengeLis
 		}
 	}
 	v := &challenge.ListChallengesPayload{}
-	v.View = view
-	v.Token = token
-
-	return v, nil
-}
-
-// BuildCreateChallengePayload builds the payload for the challenge
-// CreateChallenge endpoint from CLI flags.
-func BuildCreateChallengePayload(challengeCreateChallengeBody string, challengeCreateChallengeToken string) (*challenge.CreateChallengePayload, error) {
-	var err error
-	var body CreateChallengeRequestBody
-	{
-		err = json.Unmarshal([]byte(challengeCreateChallengeBody), &body)
-		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"A heap overflow challenge\",\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
-		}
-	}
-	var token string
-	{
-		token = challengeCreateChallengeToken
-	}
-	v := &challenge.CreateChallengePayload{
-		Slug:        body.Slug,
-		Title:       body.Title,
-		Description: body.Description,
-		Score:       body.Score,
-	}
 	v.Token = token
 
 	return v, nil
@@ -97,11 +57,9 @@ func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagC
 			return nil, err
 		}
 	}
-	var token *string
+	var token string
 	{
-		if challengeSubmitFlagToken != "" {
-			token = &challengeSubmitFlagToken
-		}
+		token = challengeSubmitFlagToken
 	}
 	v := &challenge.SubmitFlagPayload{
 		Flag: body.Flag,

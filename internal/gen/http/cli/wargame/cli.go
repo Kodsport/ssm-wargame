@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"os"
 
+	adminc "github.com/sakerhetsm/ssm-wargame/internal/gen/http/admin/client"
 	authc "github.com/sakerhetsm/ssm-wargame/internal/gen/http/auth/client"
 	challengec "github.com/sakerhetsm/ssm-wargame/internal/gen/http/challenge/client"
 	goahttp "goa.design/goa/v3/http"
@@ -24,15 +25,17 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `auth (generate-discord-auth-url|exchange-discord)
-challenge (list-challenges|create-challenge|submit-flag)
+	return `admin (list-challenges|create-challenge)
+auth (generate-discord-auth-url|exchange-discord)
+challenge (list-challenges|submit-flag)
 `
 }
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges --view "author" --token "Est saepe dolores enim aut."` + "\n" +
+	return os.Args[0] + ` admin list-challenges --token "Saepe dolores."` + "\n" +
+		os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
+		os.Args[0] + ` challenge list-challenges --token "Vel sed consequatur iure laudantium error voluptates."` + "\n" +
 		""
 }
 
@@ -46,6 +49,15 @@ func ParseEndpoint(
 	restore bool,
 ) (goa.Endpoint, interface{}, error) {
 	var (
+		adminFlags = flag.NewFlagSet("admin", flag.ContinueOnError)
+
+		adminListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+		adminListChallengesTokenFlag = adminListChallengesFlags.String("token", "REQUIRED", "")
+
+		adminCreateChallengeFlags     = flag.NewFlagSet("create-challenge", flag.ExitOnError)
+		adminCreateChallengeBodyFlag  = adminCreateChallengeFlags.String("body", "REQUIRED", "")
+		adminCreateChallengeTokenFlag = adminCreateChallengeFlags.String("token", "REQUIRED", "")
+
 		authFlags = flag.NewFlagSet("auth", flag.ContinueOnError)
 
 		authGenerateDiscordAuthURLFlags = flag.NewFlagSet("generate-discord-auth-url", flag.ExitOnError)
@@ -56,25 +68,23 @@ func ParseEndpoint(
 		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
 
 		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
-		challengeListChallengesViewFlag  = challengeListChallengesFlags.String("view", "default", "")
 		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
-
-		challengeCreateChallengeFlags     = flag.NewFlagSet("create-challenge", flag.ExitOnError)
-		challengeCreateChallengeBodyFlag  = challengeCreateChallengeFlags.String("body", "REQUIRED", "")
-		challengeCreateChallengeTokenFlag = challengeCreateChallengeFlags.String("token", "REQUIRED", "")
 
 		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
 		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
 		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "")
-		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "", "")
+		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "REQUIRED", "")
 	)
+	adminFlags.Usage = adminUsage
+	adminListChallengesFlags.Usage = adminListChallengesUsage
+	adminCreateChallengeFlags.Usage = adminCreateChallengeUsage
+
 	authFlags.Usage = authUsage
 	authGenerateDiscordAuthURLFlags.Usage = authGenerateDiscordAuthURLUsage
 	authExchangeDiscordFlags.Usage = authExchangeDiscordUsage
 
 	challengeFlags.Usage = challengeUsage
 	challengeListChallengesFlags.Usage = challengeListChallengesUsage
-	challengeCreateChallengeFlags.Usage = challengeCreateChallengeUsage
 	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
 
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
@@ -92,6 +102,8 @@ func ParseEndpoint(
 	{
 		svcn = flag.Arg(0)
 		switch svcn {
+		case "admin":
+			svcf = adminFlags
 		case "auth":
 			svcf = authFlags
 		case "challenge":
@@ -111,6 +123,16 @@ func ParseEndpoint(
 	{
 		epn = svcf.Arg(0)
 		switch svcn {
+		case "admin":
+			switch epn {
+			case "list-challenges":
+				epf = adminListChallengesFlags
+
+			case "create-challenge":
+				epf = adminCreateChallengeFlags
+
+			}
+
 		case "auth":
 			switch epn {
 			case "generate-discord-auth-url":
@@ -125,9 +147,6 @@ func ParseEndpoint(
 			switch epn {
 			case "list-challenges":
 				epf = challengeListChallengesFlags
-
-			case "create-challenge":
-				epf = challengeCreateChallengeFlags
 
 			case "submit-flag":
 				epf = challengeSubmitFlagFlags
@@ -154,6 +173,16 @@ func ParseEndpoint(
 	)
 	{
 		switch svcn {
+		case "admin":
+			c := adminc.NewClient(scheme, host, doer, enc, dec, restore)
+			switch epn {
+			case "list-challenges":
+				endpoint = c.ListChallenges()
+				data, err = adminc.BuildListChallengesPayload(*adminListChallengesTokenFlag)
+			case "create-challenge":
+				endpoint = c.CreateChallenge()
+				data, err = adminc.BuildCreateChallengePayload(*adminCreateChallengeBodyFlag, *adminCreateChallengeTokenFlag)
+			}
 		case "auth":
 			c := authc.NewClient(scheme, host, doer, enc, dec, restore)
 			switch epn {
@@ -169,10 +198,7 @@ func ParseEndpoint(
 			switch epn {
 			case "list-challenges":
 				endpoint = c.ListChallenges()
-				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesViewFlag, *challengeListChallengesTokenFlag)
-			case "create-challenge":
-				endpoint = c.CreateChallenge()
-				data, err = challengec.BuildCreateChallengePayload(*challengeCreateChallengeBodyFlag, *challengeCreateChallengeTokenFlag)
+				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesTokenFlag)
 			case "submit-flag":
 				endpoint = c.SubmitFlag()
 				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag, *challengeSubmitFlagTokenFlag)
@@ -184,6 +210,48 @@ func ParseEndpoint(
 	}
 
 	return endpoint, data, nil
+}
+
+// adminUsage displays the usage of the admin command and its subcommands.
+func adminUsage() {
+	fmt.Fprintf(os.Stderr, `Service is the admin service interface.
+Usage:
+    %[1]s [globalflags] admin COMMAND [flags]
+
+COMMAND:
+    list-challenges: ListChallenges implements ListChallenges.
+    create-challenge: CreateChallenge implements CreateChallenge.
+
+Additional help:
+    %[1]s admin COMMAND --help
+`, os.Args[0])
+}
+func adminListChallengesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin list-challenges -token STRING
+
+ListChallenges implements ListChallenges.
+    -token STRING: 
+
+Example:
+    %[1]s admin list-challenges --token "Saepe dolores."
+`, os.Args[0])
+}
+
+func adminCreateChallengeUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin create-challenge -body JSON -token STRING
+
+CreateChallenge implements CreateChallenge.
+    -body JSON: 
+    -token STRING: 
+
+Example:
+    %[1]s admin create-challenge --body '{
+      "description": "A heap overflow challenge",
+      "score": 50,
+      "slug": "pwnme",
+      "title": "pwnme"
+   }' --token "Quaerat occaecati accusantium."
+`, os.Args[0])
 }
 
 // authUsage displays the usage of the auth command and its subcommands.
@@ -233,7 +301,6 @@ Usage:
 
 COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
-    create-challenge: CreateChallenge implements CreateChallenge.
     submit-flag: SubmitFlag implements SubmitFlag.
 
 Additional help:
@@ -241,31 +308,13 @@ Additional help:
 `, os.Args[0])
 }
 func challengeListChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -view STRING -token STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -token STRING
 
 ListChallenges implements ListChallenges.
-    -view STRING: 
     -token STRING: 
 
 Example:
-    %[1]s challenge list-challenges --view "author" --token "Est saepe dolores enim aut."
-`, os.Args[0])
-}
-
-func challengeCreateChallengeUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge create-challenge -body JSON -token STRING
-
-CreateChallenge implements CreateChallenge.
-    -body JSON: 
-    -token STRING: 
-
-Example:
-    %[1]s challenge create-challenge --body '{
-      "description": "A heap overflow challenge",
-      "score": 50,
-      "slug": "pwnme",
-      "title": "pwnme"
-   }' --token "Sed consequatur iure laudantium error voluptates."
+    %[1]s challenge list-challenges --token "Vel sed consequatur iure laudantium error voluptates."
 `, os.Args[0])
 }
 

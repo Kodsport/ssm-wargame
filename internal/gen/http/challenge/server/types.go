@@ -15,19 +15,6 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
-// CreateChallengeRequestBody is the type of the "challenge" service
-// "CreateChallenge" endpoint HTTP request body.
-type CreateChallengeRequestBody struct {
-	// A unique string that can be used in URLs
-	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
-	// Title displayed to user
-	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
-	// A short text describing the challenge
-	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	// The number of points given to the solver
-	Score *int32 `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-}
-
 // SubmitFlagRequestBody is the type of the "challenge" service "SubmitFlag"
 // endpoint HTTP request body.
 type SubmitFlagRequestBody struct {
@@ -37,10 +24,6 @@ type SubmitFlagRequestBody struct {
 // SsmChallengeResponseCollection is the type of the "challenge" service
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
-
-// SsmChallengeResponseAuthorCollection is the type of the "challenge" service
-// "ListChallenges" endpoint HTTP response body.
-type SsmChallengeResponseAuthorCollection []*SsmChallengeResponseAuthor
 
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
@@ -88,9 +71,10 @@ type SsmChallengeResponse struct {
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
-	Score    int32                       `form:"score" json:"score" xml:"score"`
-	Services []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	Score     int32                       `form:"score" json:"score" xml:"score"`
+	Services  []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files     []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	Published bool                        `form:"published" json:"published" xml:"published"`
 	// The numer of people who solved the challenge
 	Solves int64 `form:"solves" json:"solves" xml:"solves"`
 }
@@ -103,40 +87,12 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 }
 
-// SsmChallengeResponseAuthor is used to define fields on response body types.
-type SsmChallengeResponseAuthor struct {
-	ID string `form:"id" json:"id" xml:"id"`
-	// A unique string that can be used in URLs
-	Slug string `form:"slug" json:"slug" xml:"slug"`
-	// Title displayed to user
-	Title string `form:"title" json:"title" xml:"title"`
-	// A short text describing the challenge
-	Description string `form:"description" json:"description" xml:"description"`
-	// The number of points given to the solver
-	Score    int32                       `form:"score" json:"score" xml:"score"`
-	Services []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
-	// The numer of people who solved the challenge
-	Solves    int64 `form:"solves" json:"solves" xml:"solves"`
-	Published bool  `form:"published" json:"published" xml:"published"`
-}
-
 // NewSsmChallengeResponseCollection builds the HTTP response body from the
 // result of the "ListChallenges" endpoint of the "challenge" service.
 func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollectionView) SsmChallengeResponseCollection {
 	body := make([]*SsmChallengeResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(val)
-	}
-	return body
-}
-
-// NewSsmChallengeResponseAuthorCollection builds the HTTP response body from
-// the result of the "ListChallenges" endpoint of the "challenge" service.
-func NewSsmChallengeResponseAuthorCollection(res challengeviews.SsmChallengeCollectionView) SsmChallengeResponseAuthorCollection {
-	body := make([]*SsmChallengeResponseAuthor, len(res))
-	for i, val := range res {
-		body[i] = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseAuthor(val)
 	}
 	return body
 }
@@ -171,30 +127,15 @@ func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIn
 
 // NewListChallengesPayload builds a challenge service ListChallenges endpoint
 // payload.
-func NewListChallengesPayload(view string, token *string) *challenge.ListChallengesPayload {
+func NewListChallengesPayload(token *string) *challenge.ListChallengesPayload {
 	v := &challenge.ListChallengesPayload{}
-	v.View = view
-	v.Token = token
-
-	return v
-}
-
-// NewCreateChallengePayload builds a challenge service CreateChallenge
-// endpoint payload.
-func NewCreateChallengePayload(body *CreateChallengeRequestBody, token string) *challenge.CreateChallengePayload {
-	v := &challenge.CreateChallengePayload{
-		Slug:        *body.Slug,
-		Title:       *body.Title,
-		Description: *body.Description,
-		Score:       *body.Score,
-	}
 	v.Token = token
 
 	return v
 }
 
 // NewSubmitFlagPayload builds a challenge service SubmitFlag endpoint payload.
-func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string, token *string) *challenge.SubmitFlagPayload {
+func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string, token string) *challenge.SubmitFlagPayload {
 	v := &challenge.SubmitFlagPayload{
 		Flag: *body.Flag,
 	}
@@ -202,24 +143,6 @@ func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string, token
 	v.Token = token
 
 	return v
-}
-
-// ValidateCreateChallengeRequestBody runs the validations defined on
-// CreateChallengeRequestBody
-func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err error) {
-	if body.Title == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
-	}
-	if body.Description == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
-	}
-	if body.Score == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
-	}
-	if body.Slug == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
-	}
-	return
 }
 
 // ValidateSubmitFlagRequestBody runs the validations defined on

@@ -13,6 +13,55 @@ produces:
 - application/xml
 - application/gob
 paths:
+  /admin/challenge:
+    get:
+      tags:
+      - admin
+      summary: ListChallenges admin
+      operationId: admin#ListChallenges
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/AdminSsmChallengeResponseCollection'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+    post:
+      tags:
+      - admin
+      summary: CreateChallenge admin
+      operationId: admin#CreateChallenge
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+      - name: CreateChallengeRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/AdminCreateChallengeRequestBody'
+          required:
+          - id
+          - title
+          - description
+          - score
+          - published
+          - slug
+      responses:
+        "201":
+          description: Created response.
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
   /auth/discord/exchange:
     post:
       tags:
@@ -59,14 +108,6 @@ paths:
       summary: ListChallenges challenge
       operationId: challenge#ListChallenges
       parameters:
-      - name: view
-        in: query
-        required: false
-        type: string
-        default: default
-        enum:
-        - default
-        - author
       - name: Authorization
         in: header
         required: false
@@ -76,35 +117,6 @@ paths:
           description: OK response.
           schema:
             $ref: '#/definitions/ChallengeSsmChallengeResponseCollection'
-      schemes:
-      - http
-      security:
-      - jwt_header_Authorization: []
-    post:
-      tags:
-      - challenge
-      summary: CreateChallenge challenge
-      operationId: challenge#CreateChallenge
-      parameters:
-      - name: Authorization
-        in: header
-        required: true
-        type: string
-      - name: CreateChallengeRequestBody
-        in: body
-        required: true
-        schema:
-          $ref: '#/definitions/ChallengeCreateChallengeRequestBody'
-          required:
-          - id
-          - title
-          - description
-          - score
-          - published
-          - slug
-      responses:
-        "201":
-          description: Created response.
       schemes:
       - http
       security:
@@ -123,7 +135,7 @@ paths:
         format: uuid
       - name: Authorization
         in: header
-        required: false
+        required: true
         type: string
       - name: SubmitFlagRequestBody
         in: body
@@ -148,6 +160,100 @@ paths:
       security:
       - jwt_header_Authorization: []
 definitions:
+  AdminCreateChallengeRequestBody:
+    title: AdminCreateChallengeRequestBody
+    type: object
+    properties:
+      description:
+        type: string
+        description: A short text describing the challenge
+        example: A heap overflow challenge
+      score:
+        type: integer
+        description: The number of points given to the solver
+        example: 50
+        format: int32
+      slug:
+        type: string
+        description: A unique string that can be used in URLs
+        example: pwnme
+      title:
+        type: string
+        description: Title displayed to user
+        example: pwnme
+    example:
+      description: A heap overflow challenge
+      score: 50
+      slug: pwnme
+      title: pwnme
+    required:
+    - id
+    - title
+    - description
+    - score
+    - published
+    - slug
+  AdminSsmChallengeResponseCollection:
+    title: 'Mediatype identifier: application/vnd.ssm.challenge; type=collection;
+      view=default'
+    type: array
+    items:
+      $ref: '#/definitions/SsmChallengeResponse'
+    description: ListChallengesResponseBody is the result type for an array of SsmChallengeResponse
+      (default view)
+    example:
+    - description: A heap overflow challenge
+      files:
+      - {}
+      - {}
+      id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
+      score: 50
+      services:
+      - {}
+      - {}
+      slug: pwnme
+      solves: 3
+      title: pwnme
+    - description: A heap overflow challenge
+      files:
+      - {}
+      - {}
+      id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
+      score: 50
+      services:
+      - {}
+      - {}
+      slug: pwnme
+      solves: 3
+      title: pwnme
+    - description: A heap overflow challenge
+      files:
+      - {}
+      - {}
+      id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
+      score: 50
+      services:
+      - {}
+      - {}
+      slug: pwnme
+      solves: 3
+      title: pwnme
+    - description: A heap overflow challenge
+      files:
+      - {}
+      - {}
+      id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
+      score: 50
+      services:
+      - {}
+      - {}
+      slug: pwnme
+      solves: 3
+      title: pwnme
   AuthExchangeDiscordRequestBody:
     title: AuthExchangeDiscordRequestBody
     type: object
@@ -187,39 +293,6 @@ definitions:
       url: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
     required:
     - url
-  ChallengeCreateChallengeRequestBody:
-    title: ChallengeCreateChallengeRequestBody
-    type: object
-    properties:
-      description:
-        type: string
-        description: A short text describing the challenge
-        example: A heap overflow challenge
-      score:
-        type: integer
-        description: The number of points given to the solver
-        example: 50
-        format: int32
-      slug:
-        type: string
-        description: A unique string that can be used in URLs
-        example: pwnme
-      title:
-        type: string
-        description: Title displayed to user
-        example: pwnme
-    example:
-      description: A heap overflow challenge
-      score: 50
-      slug: pwnme
-      title: pwnme
-    required:
-    - id
-    - title
-    - description
-    - score
-    - published
-    - slug
   ChallengeFilesResponse:
     title: ChallengeFilesResponse
     type: object
@@ -241,8 +314,8 @@ definitions:
       files:
       - {}
       - {}
-      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
       score: 50
       services:
       - {}
@@ -254,8 +327,8 @@ definitions:
       files:
       - {}
       - {}
-      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
       score: 50
       services:
       - {}
@@ -267,8 +340,8 @@ definitions:
       files:
       - {}
       - {}
-      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
       score: 50
       services:
       - {}
@@ -280,8 +353,8 @@ definitions:
       files:
       - {}
       - {}
-      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
       score: 50
       services:
       - {}
@@ -318,10 +391,10 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: SubmitFlag_already_solved_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -341,7 +414,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -366,7 +439,7 @@ definitions:
         example: false
     description: SubmitFlag_incorrect_flag_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -410,6 +483,9 @@ definitions:
       id:
         type: string
         example: e721a338-44de-4de8-a562-43d2db5f4115
+      published:
+        type: boolean
+        example: true
       score:
         type: integer
         description: The number of points given to the solver
@@ -443,6 +519,7 @@ definitions:
       - {}
       - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
+      published: true
       score: 50
       services:
       - {}
@@ -456,6 +533,7 @@ definitions:
     - title
     - description
     - score
+    - published
     - slug
 securityDefinitions:
   jwt_header_Authorization:

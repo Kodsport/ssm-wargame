@@ -7,6 +7,103 @@ servers:
 - url: http://localhost:80
   description: Default server for wargame
 paths:
+  /admin/challenge:
+    get:
+      tags:
+      - admin
+      summary: ListChallenges admin
+      operationId: admin#ListChallenges
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsmChallengeCollection'
+              example:
+              - description: A heap overflow challenge
+                files:
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                title: pwnme
+              - description: A heap overflow challenge
+                files:
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                title: pwnme
+              - description: A heap overflow challenge
+                files:
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                title: pwnme
+              - description: A heap overflow challenge
+                files:
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                title: pwnme
+      security:
+      - jwt_header_Authorization: []
+    post:
+      tags:
+      - admin
+      summary: CreateChallenge admin
+      operationId: admin#CreateChallenge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChallengeRequestBody'
+            example:
+              description: A heap overflow challenge
+              score: 50
+              slug: pwnme
+              title: pwnme
+      responses:
+        "201":
+          description: Created response.
+      security:
+      - jwt_header_Authorization: []
   /auth/discord/exchange:
     post:
       tags:
@@ -52,36 +149,23 @@ paths:
       - challenge
       summary: ListChallenges challenge
       operationId: challenge#ListChallenges
-      parameters:
-      - name: view
-        in: query
-        allowEmptyValue: true
-        schema:
-          type: string
-          default: default
-          example: author
-          enum:
-          - default
-          - author
-        example: default
       responses:
         "200":
           description: OK response.
           content:
             application/json:
               schema:
-                description: 'Response body may alternatively be #/components/schemas/SsmChallengeResponseAuthorCollection'
                 $ref: '#/components/schemas/SsmChallengeCollection'
               example:
               - description: A heap overflow challenge
                 files:
                 - {}
                 - {}
-                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
+                - {}
                 - {}
                 - {}
                 - {}
@@ -92,11 +176,11 @@ paths:
                 files:
                 - {}
                 - {}
-                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
+                - {}
                 - {}
                 - {}
                 - {}
@@ -107,6 +191,20 @@ paths:
                 files:
                 - {}
                 - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                title: pwnme
+              - description: A heap overflow challenge
+                files:
+                - {}
                 - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
@@ -115,30 +213,10 @@ paths:
                 - {}
                 - {}
                 - {}
+                - {}
                 slug: pwnme
                 solves: 3
                 title: pwnme
-      security:
-      - jwt_header_Authorization: []
-    post:
-      tags:
-      - challenge
-      summary: CreateChallenge challenge
-      operationId: challenge#CreateChallenge
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateChallengeRequestBody'
-            example:
-              description: A heap overflow challenge
-              score: 50
-              slug: pwnme
-              title: pwnme
-      responses:
-        "201":
-          description: Created response.
       security:
       - jwt_header_Authorization: []
   /challenge/{challengeId}/attempt:
@@ -232,7 +310,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: false
+          example: true
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -317,6 +395,7 @@ components:
           - {}
           - {}
           - {}
+          - {}
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -355,12 +434,11 @@ components:
         files:
         - {}
         - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
-        - {}
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -383,131 +461,6 @@ components:
         files:
         - {}
         - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
-      - description: A heap overflow challenge
-        files:
-        - {}
-        - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
-      - description: A heap overflow challenge
-        files:
-        - {}
-        - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
-    SsmChallengeResponseAuthor:
-      type: object
-      properties:
-        description:
-          type: string
-          description: A short text describing the challenge
-          example: A heap overflow challenge
-        files:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChallengeService'
-          example:
-          - {}
-          - {}
-          - {}
-        id:
-          type: string
-          example: e721a338-44de-4de8-a562-43d2db5f4115
-        published:
-          type: boolean
-          example: true
-        score:
-          type: integer
-          description: The number of points given to the solver
-          example: 50
-          format: int32
-        services:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChallengeService'
-          example:
-          - {}
-          - {}
-        slug:
-          type: string
-          description: A unique string that can be used in URLs
-          example: pwnme
-        solves:
-          type: integer
-          description: The numer of people who solved the challenge
-          example: 3
-          format: int64
-        title:
-          type: string
-          description: Title displayed to user
-          example: pwnme
-      description: A Wargame challenge (author view)
-      example:
-        description: A heap overflow challenge
-        files:
-        - {}
-        - {}
-        - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
-      required:
-      - solves
-      - id
-      - title
-      - description
-      - score
-      - published
-      - slug
-    SsmChallengeResponseAuthorCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/SsmChallengeResponseAuthor'
-      description: ListChallengesResponseBody is the result type for an array of SsmChallengeResponse
-        (author view)
-      example:
-      - description: A heap overflow challenge
-        files:
-        - {}
-        - {}
-        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -521,7 +474,6 @@ components:
         title: pwnme
       - description: A heap overflow challenge
         files:
-        - {}
         - {}
         - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -551,5 +503,6 @@ components:
       type: http
       scheme: bearer
 tags:
+- name: admin
 - name: auth
 - name: challenge

@@ -51,9 +51,6 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 				req.Header.Set("Authorization", head)
 			}
 		}
-		values := req.URL.Query()
-		values.Add("view", p.View)
-		req.URL.RawQuery = values.Encode()
 		return nil
 	}
 }
@@ -86,7 +83,7 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 				return nil, goahttp.ErrDecodingError("challenge", "ListChallenges", err)
 			}
 			p := NewListChallengesSsmChallengeCollectionOK(body)
-			view := resp.Header.Get("goa-view")
+			view := "default"
 			vres := challengeviews.SsmChallengeCollection{Projected: p, View: view}
 			if err = challengeviews.ValidateSsmChallengeCollection(vres); err != nil {
 				return nil, goahttp.ErrValidationError("challenge", "ListChallenges", err)
@@ -96,72 +93,6 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("challenge", "ListChallenges", resp.StatusCode, string(body))
-		}
-	}
-}
-
-// BuildCreateChallengeRequest instantiates a HTTP request object with method
-// and path set to call the "challenge" service "CreateChallenge" endpoint
-func (c *Client) BuildCreateChallengeRequest(ctx context.Context, v interface{}) (*http.Request, error) {
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateChallengeChallengePath()}
-	req, err := http.NewRequest("POST", u.String(), nil)
-	if err != nil {
-		return nil, goahttp.ErrInvalidURL("challenge", "CreateChallenge", u.String(), err)
-	}
-	if ctx != nil {
-		req = req.WithContext(ctx)
-	}
-
-	return req, nil
-}
-
-// EncodeCreateChallengeRequest returns an encoder for requests sent to the
-// challenge CreateChallenge server.
-func EncodeCreateChallengeRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
-	return func(req *http.Request, v interface{}) error {
-		p, ok := v.(*challenge.CreateChallengePayload)
-		if !ok {
-			return goahttp.ErrInvalidType("challenge", "CreateChallenge", "*challenge.CreateChallengePayload", v)
-		}
-		{
-			head := p.Token
-			if !strings.Contains(head, " ") {
-				req.Header.Set("Authorization", "Bearer "+head)
-			} else {
-				req.Header.Set("Authorization", head)
-			}
-		}
-		body := NewCreateChallengeRequestBody(p)
-		if err := encoder(req).Encode(&body); err != nil {
-			return goahttp.ErrEncodingError("challenge", "CreateChallenge", err)
-		}
-		return nil
-	}
-}
-
-// DecodeCreateChallengeResponse returns a decoder for responses returned by
-// the challenge CreateChallenge endpoint. restoreBody controls whether the
-// response body should be restored after having been read.
-func DecodeCreateChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
-	return func(resp *http.Response) (interface{}, error) {
-		if restoreBody {
-			b, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				return nil, err
-			}
-			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
-			defer func() {
-				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
-			}()
-		} else {
-			defer resp.Body.Close()
-		}
-		switch resp.StatusCode {
-		case http.StatusCreated:
-			return nil, nil
-		default:
-			body, _ := ioutil.ReadAll(resp.Body)
-			return nil, goahttp.ErrInvalidResponse("challenge", "CreateChallenge", resp.StatusCode, string(body))
 		}
 	}
 }
@@ -199,8 +130,8 @@ func EncodeSubmitFlagRequest(encoder func(*http.Request) goahttp.Encoder) func(*
 		if !ok {
 			return goahttp.ErrInvalidType("challenge", "SubmitFlag", "*challenge.SubmitFlagPayload", v)
 		}
-		if p.Token != nil {
-			head := *p.Token
+		{
+			head := p.Token
 			if !strings.Contains(head, " ") {
 				req.Header.Set("Authorization", "Bearer "+head)
 			} else {

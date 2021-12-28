@@ -11,11 +11,43 @@ var _ = API("wargame", func() {
 
 var JWTAuth = JWTSecurity("jwt")
 
+var OptionalTokenPayload = Type("OptionalTokenPayload", func() {
+	Token("token", String)
+})
+
+var TokenPayload = Type("TokenPayload", func() {
+	Token("token", String)
+	Required("token")
+})
+
 var ChallengeService = Type("ChallengeService", func() {
 
 })
 
 var ChallengeFiles = Type("ChallengeFiles", func() {
+
+})
+
+var MonthlyChallenge = ResultType("application/vnd.ssm.monthly.challenge", func() {
+	Description("A monthly challenge")
+	Reference(Challenge)
+
+	Attributes(func() {
+		Attribute("id")
+		Attribute("slug")
+		Attribute("title")
+		Attribute("description")
+		Attribute("score")
+		Attribute("services")
+		Attribute("files")
+
+		Attribute("solves", Int64, "The numer of people who solved the challenge", func() {
+			Example(3)
+		})
+
+		Required("solves")
+
+	})
 
 })
 
@@ -40,32 +72,6 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 
 		Required("solves")
 
-	})
-
-	View("default", func() {
-		Attribute("id")
-
-		Attribute("slug")
-		Attribute("title")
-		Attribute("description")
-		Attribute("score")
-		Attribute("services")
-		Attribute("files")
-		Attribute("solves")
-	})
-
-	View("author", func() {
-		Attribute("id")
-
-		Attribute("slug")
-		Attribute("title")
-		Attribute("description")
-		Attribute("score")
-		Attribute("services")
-		Attribute("files")
-		Attribute("solves")
-
-		Attribute("published")
 	})
 
 })

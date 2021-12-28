@@ -8,10 +8,10 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/auth"
+	"github.com/sakerhetsm/ssm-wargame/internal/utils"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 
@@ -56,7 +56,6 @@ func (s *service) GenerateDiscordAuthURL(ctx context.Context) (*spec.GenerateDis
 }
 
 func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscordPayload) (*spec.ExchangeDiscordResult, error) {
-	log := s.log.With(auth.LogCtx(ctx)...)
 
 	if req.State != "state_todo" {
 		return nil, errors.New("invalid state")
@@ -74,14 +73,14 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscord
 
 	dcUser, err := dc.User("@me")
 	if err != nil {
-		log.Warn("could not get discord user", zap.Error(err))
+		s.log.Warn("could not get discord user", zap.Error(err), utils.C(ctx))
 		return nil, err
 	}
 
 	// Checks if the user already exists, insert them if not
 	userID, err := s.q.UserIDByDiscordID(ctx, dcUser.ID)
 	if err != nil && err != pgx.ErrNoRows {
-		log.Error("db err", zap.Error(err), zap.String("discordID", dcUser.ID))
+		s.log.Error("db err", zap.Error(err), zap.String("discordID", dcUser.ID), utils.C(ctx))
 		return nil, err
 	}
 
@@ -93,7 +92,7 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscord
 			Email:     dcUser.Email,
 		})
 		if err != nil {
-			log.Error("could not insert new user", zap.Error(err), zap.String("discordID", dcUser.ID))
+			s.log.Error("could not insert new user", zap.Error(err), zap.String("discordID", dcUser.ID), utils.C(ctx))
 			return nil, err
 		}
 	}
