@@ -56,6 +56,34 @@ func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 	}
 }
 
+// EncodeListChallengesError returns an encoder for errors returned by the
+// ListChallenges admin endpoint.
+func EncodeListChallengesError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListChallengesUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeCreateChallengeResponse returns an encoder for responses returned by
 // the admin CreateChallenge endpoint.
 func EncodeCreateChallengeResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -103,6 +131,34 @@ func DecodeCreateChallengeRequest(mux goahttp.Muxer, decoder func(*http.Request)
 		}
 
 		return payload, nil
+	}
+}
+
+// EncodeCreateChallengeError returns an encoder for errors returned by the
+// CreateChallenge admin endpoint.
+func EncodeCreateChallengeError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCreateChallengeUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
 	}
 }
 

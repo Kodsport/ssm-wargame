@@ -21,6 +21,10 @@ import (
 	auth_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/auth"
 	auth_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/auth/server"
 
+	admin_service "github.com/sakerhetsm/ssm-wargame/internal/api/admin"
+	admin_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
+	admin_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/admin/server"
+
 	goahttp "goa.design/goa/v3/http"
 	goahttpmid "goa.design/goa/v3/http/middleware"
 )
@@ -71,6 +75,13 @@ func realMain() error {
 		s := auth_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
 		auth_server.Mount(mux, s)
+	}
+	{
+		svc := admin_service.NewService(conn, log, auther)
+		endpoints := admin_transport.NewEndpoints(svc)
+		s := admin_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
+		s.Use(goahttpmid.RequestID())
+		admin_server.Mount(mux, s)
 	}
 
 	srv := &http.Server{

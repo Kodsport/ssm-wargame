@@ -11,6 +11,7 @@ import (
 	"context"
 
 	adminviews "github.com/sakerhetsm/ssm-wargame/internal/gen/admin/views"
+	goa "goa.design/goa/v3/pkg"
 	"goa.design/goa/v3/security"
 )
 
@@ -84,6 +85,15 @@ type ChallengeService struct {
 }
 
 type ChallengeFiles struct {
+}
+
+// MakeUnauthorized builds a goa.ServiceError from an error.
+func MakeUnauthorized(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "unauthorized",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
 }
 
 // NewSsmChallengeCollection initializes result type SsmChallengeCollection

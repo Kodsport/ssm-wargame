@@ -30,6 +30,42 @@ type CreateChallengeRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
 
+// ListChallengesUnauthorizedResponseBody is the type of the "admin" service
+// "ListChallenges" endpoint HTTP response body for the "unauthorized" error.
+type ListChallengesUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateChallengeUnauthorizedResponseBody is the type of the "admin" service
+// "CreateChallenge" endpoint HTTP response body for the "unauthorized" error.
+type CreateChallengeUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
 	ID string `form:"id" json:"id" xml:"id"`
@@ -62,6 +98,34 @@ func NewSsmChallengeResponseCollection(res adminviews.SsmChallengeCollectionView
 	body := make([]*SsmChallengeResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalAdminviewsSsmChallengeViewToSsmChallengeResponse(val)
+	}
+	return body
+}
+
+// NewListChallengesUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "ListChallenges" endpoint of the "admin" service.
+func NewListChallengesUnauthorizedResponseBody(res *goa.ServiceError) *ListChallengesUnauthorizedResponseBody {
+	body := &ListChallengesUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateChallengeUnauthorizedResponseBody builds the HTTP response body
+// from the result of the "CreateChallenge" endpoint of the "admin" service.
+func NewCreateChallengeUnauthorizedResponseBody(res *goa.ServiceError) *CreateChallengeUnauthorizedResponseBody {
+	body := &CreateChallengeUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
 	}
 	return body
 }

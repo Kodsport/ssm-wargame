@@ -38,8 +38,8 @@ func (s *Auther) JWTAuth(ctx context.Context, token string, schema *security.JWT
 		return ctx, nil
 	}
 
-	claims := &jwt.StandardClaims{}
-	t, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
+	claims := jwt.StandardClaims{}
+	t, err := jwt.ParseWithClaims(token, &claims, func(t *jwt.Token) (interface{}, error) {
 		// limit alg?
 		return s.jwtSecret, nil
 	})

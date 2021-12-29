@@ -104,7 +104,7 @@ func NewListChallengesHandler(
 	var (
 		decodeRequest  = DecodeListChallengesRequest(mux, decoder)
 		encodeResponse = EncodeListChallengesResponse(encoder)
-		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+		encodeError    = EncodeListChallengesError(encoder, formatter)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
@@ -155,7 +155,7 @@ func NewCreateChallengeHandler(
 	var (
 		decodeRequest  = DecodeCreateChallengeRequest(mux, decoder)
 		encodeResponse = EncodeCreateChallengeResponse(encoder)
-		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+		encodeError    = EncodeCreateChallengeError(encoder, formatter)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))

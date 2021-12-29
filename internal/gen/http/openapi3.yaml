@@ -81,6 +81,16 @@ paths:
                 slug: pwnme
                 solves: 3
                 title: pwnme
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
       security:
       - jwt_header_Authorization: []
     post:
@@ -102,6 +112,16 @@ paths:
       responses:
         "201":
           description: Created response.
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
       security:
       - jwt_header_Authorization: []
   /auth/discord/exchange:
@@ -403,7 +423,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: true
+          example: false
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -421,11 +441,11 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-          example: false
+          example: true
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: false
+          example: true
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -487,7 +507,6 @@ components:
           example:
           - {}
           - {}
-          - {}
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -504,6 +523,7 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - {}
           - {}
           - {}
           - {}
@@ -550,6 +570,36 @@ components:
       items:
         $ref: '#/components/schemas/SsmChallenge'
       example:
+      - description: A heap overflow challenge
+        files:
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      - description: A heap overflow challenge
+        files:
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
       - description: A heap overflow challenge
         files:
         - {}
@@ -648,11 +698,11 @@ components:
         - {}
         - {}
         - {}
-        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
+        - {}
         - {}
         - {}
         - {}
@@ -676,44 +726,6 @@ components:
       items:
         $ref: '#/components/schemas/SsmMonthlyChallenge'
       example:
-      - description: A heap overflow challenge
-        display_month: Januari/Februari
-        end_date: "2006-02-01"
-        files:
-        - {}
-        - {}
-        - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        start_date: "2006-02-01"
-        title: pwnme
-      - description: A heap overflow challenge
-        display_month: Januari/Februari
-        end_date: "2006-02-01"
-        files:
-        - {}
-        - {}
-        - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        start_date: "2006-02-01"
-        title: pwnme
       - description: A heap overflow challenge
         display_month: Januari/Februari
         end_date: "2006-02-01"

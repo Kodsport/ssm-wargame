@@ -42,7 +42,7 @@ func NewService(conn *pgx.Conn, log *zap.Logger, cfg *config.Config) spec.Servic
 	return &service{
 		db:        conn,
 		q:         db.New(conn),
-		log:       log.Named("auth"),
+		log:       log,
 		config:    config,
 		jwtSecret: []byte(cfg.JWTSecret),
 	}

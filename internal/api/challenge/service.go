@@ -23,7 +23,7 @@ func NewService(conn *pgx.Conn, log *zap.Logger, auther spec.Auther) spec.Servic
 	return &service{
 		Auther: auther,
 		db:     conn,
-		log:    log.Named("challenge"),
+		log:    log,
 	}
 }
 

@@ -3,7 +3,11 @@ package goa
 import . "goa.design/goa/v3/dsl"
 
 var _ = Service("admin", func() {
+	Error("unauthorized")
 	HTTP(func() {
+		Response("unauthorized", StatusForbidden, func() {
+			Description("When the user does not have the required role")
+		})
 		Path("/admin")
 	})
 	Security(JWTAuth)

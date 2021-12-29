@@ -58,6 +58,9 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 // DecodeListChallengesResponse returns a decoder for responses returned by the
 // admin ListChallenges endpoint. restoreBody controls whether the response
 // body should be restored after having been read.
+// DecodeListChallengesResponse may return the following errors:
+//	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- error: internal error
 func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
@@ -90,6 +93,20 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 			}
 			res := admin.NewSsmChallengeCollection(vres)
 			return res, nil
+		case http.StatusForbidden:
+			var (
+				body ListChallengesUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListChallenges", err)
+			}
+			err = ValidateListChallengesUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListChallenges", err)
+			}
+			return nil, NewListChallengesUnauthorized(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "ListChallenges", resp.StatusCode, string(body))
@@ -139,6 +156,9 @@ func EncodeCreateChallengeRequest(encoder func(*http.Request) goahttp.Encoder) f
 // DecodeCreateChallengeResponse returns a decoder for responses returned by
 // the admin CreateChallenge endpoint. restoreBody controls whether the
 // response body should be restored after having been read.
+// DecodeCreateChallengeResponse may return the following errors:
+//	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- error: internal error
 func DecodeCreateChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
@@ -156,6 +176,20 @@ func DecodeCreateChallengeResponse(decoder func(*http.Response) goahttp.Decoder,
 		switch resp.StatusCode {
 		case http.StatusCreated:
 			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body CreateChallengeUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateChallenge", err)
+			}
+			err = ValidateCreateChallengeUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateChallenge", err)
+			}
+			return nil, NewCreateChallengeUnauthorized(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "CreateChallenge", resp.StatusCode, string(body))
