@@ -4,11 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
-	"github.com/sakerhetsm/ssm-wargame/internal/db"
-	"github.com/sakerhetsm/ssm-wargame/internal/utils"
 	"go.uber.org/zap"
 	"goa.design/goa/v3/security"
 
@@ -41,29 +38,4 @@ func (s *service) JWTAuth(ctx context.Context, token string, schema *security.JW
 
 	return ctx, nil
 
-}
-
-func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
-
-	return nil, nil
-}
-
-func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallengePayload) error {
-
-	q := db.New(s.db)
-
-	err := q.InsertChallenge(ctx, db.InsertChallengeParams{
-		ID:          uuid.New(),
-		Title:       req.Title,
-		Slug:        req.Slug,
-		Description: req.Description,
-		Score:       req.Score,
-		Published:   false,
-	})
-	if err != nil {
-		s.log.Error("inserting challenge", zap.Error(err), utils.C(ctx))
-		return err
-	}
-
-	return nil
 }

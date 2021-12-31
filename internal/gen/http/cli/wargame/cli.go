@@ -25,7 +25,7 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `admin (list-challenges|create-challenge)
+	return `admin (list-challenges|create-challenge|list-monthly-challenges|delete-monthly-challenge|create-monthly-challenge)
 auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-monthly-challenges|submit-flag)
 `
@@ -33,9 +33,9 @@ challenge (list-challenges|list-monthly-challenges|submit-flag)
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` admin list-challenges --token "Occaecati accusantium voluptatem."` + "\n" +
+	return os.Args[0] + ` admin list-challenges --token "Earum iure sit quis et quia et."` + "\n" +
 		os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges --token "Facilis ea aliquam doloremque nostrum aperiam."` + "\n" +
+		os.Args[0] + ` challenge list-challenges --token "Ut facilis."` + "\n" +
 		""
 }
 
@@ -57,6 +57,17 @@ func ParseEndpoint(
 		adminCreateChallengeFlags     = flag.NewFlagSet("create-challenge", flag.ExitOnError)
 		adminCreateChallengeBodyFlag  = adminCreateChallengeFlags.String("body", "REQUIRED", "")
 		adminCreateChallengeTokenFlag = adminCreateChallengeFlags.String("token", "REQUIRED", "")
+
+		adminListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
+		adminListMonthlyChallengesTokenFlag = adminListMonthlyChallengesFlags.String("token", "REQUIRED", "")
+
+		adminDeleteMonthlyChallengeFlags                  = flag.NewFlagSet("delete-monthly-challenge", flag.ExitOnError)
+		adminDeleteMonthlyChallengeMonthlyChallengeIDFlag = adminDeleteMonthlyChallengeFlags.String("monthly-challenge-id", "REQUIRED", "")
+		adminDeleteMonthlyChallengeTokenFlag              = adminDeleteMonthlyChallengeFlags.String("token", "REQUIRED", "")
+
+		adminCreateMonthlyChallengeFlags     = flag.NewFlagSet("create-monthly-challenge", flag.ExitOnError)
+		adminCreateMonthlyChallengeBodyFlag  = adminCreateMonthlyChallengeFlags.String("body", "REQUIRED", "")
+		adminCreateMonthlyChallengeTokenFlag = adminCreateMonthlyChallengeFlags.String("token", "REQUIRED", "")
 
 		authFlags = flag.NewFlagSet("auth", flag.ContinueOnError)
 
@@ -81,6 +92,9 @@ func ParseEndpoint(
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
 	adminCreateChallengeFlags.Usage = adminCreateChallengeUsage
+	adminListMonthlyChallengesFlags.Usage = adminListMonthlyChallengesUsage
+	adminDeleteMonthlyChallengeFlags.Usage = adminDeleteMonthlyChallengeUsage
+	adminCreateMonthlyChallengeFlags.Usage = adminCreateMonthlyChallengeUsage
 
 	authFlags.Usage = authUsage
 	authGenerateDiscordAuthURLFlags.Usage = authGenerateDiscordAuthURLUsage
@@ -134,6 +148,15 @@ func ParseEndpoint(
 
 			case "create-challenge":
 				epf = adminCreateChallengeFlags
+
+			case "list-monthly-challenges":
+				epf = adminListMonthlyChallengesFlags
+
+			case "delete-monthly-challenge":
+				epf = adminDeleteMonthlyChallengeFlags
+
+			case "create-monthly-challenge":
+				epf = adminCreateMonthlyChallengeFlags
 
 			}
 
@@ -189,6 +212,15 @@ func ParseEndpoint(
 			case "create-challenge":
 				endpoint = c.CreateChallenge()
 				data, err = adminc.BuildCreateChallengePayload(*adminCreateChallengeBodyFlag, *adminCreateChallengeTokenFlag)
+			case "list-monthly-challenges":
+				endpoint = c.ListMonthlyChallenges()
+				data, err = adminc.BuildListMonthlyChallengesPayload(*adminListMonthlyChallengesTokenFlag)
+			case "delete-monthly-challenge":
+				endpoint = c.DeleteMonthlyChallenge()
+				data, err = adminc.BuildDeleteMonthlyChallengePayload(*adminDeleteMonthlyChallengeMonthlyChallengeIDFlag, *adminDeleteMonthlyChallengeTokenFlag)
+			case "create-monthly-challenge":
+				endpoint = c.CreateMonthlyChallenge()
+				data, err = adminc.BuildCreateMonthlyChallengePayload(*adminCreateMonthlyChallengeBodyFlag, *adminCreateMonthlyChallengeTokenFlag)
 			}
 		case "auth":
 			c := authc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -231,6 +263,9 @@ Usage:
 COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
     create-challenge: CreateChallenge implements CreateChallenge.
+    list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
+    delete-monthly-challenge: DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
+    create-monthly-challenge: CreateMonthlyChallenge implements CreateMonthlyChallenge.
 
 Additional help:
     %[1]s admin COMMAND --help
@@ -243,7 +278,7 @@ ListChallenges implements ListChallenges.
     -token STRING: 
 
 Example:
-    %[1]s admin list-challenges --token "Occaecati accusantium voluptatem."
+    %[1]s admin list-challenges --token "Earum iure sit quis et quia et."
 `, os.Args[0])
 }
 
@@ -260,7 +295,47 @@ Example:
       "score": 50,
       "slug": "pwnme",
       "title": "pwnme"
-   }' --token "Laudantium error voluptates in veniam."
+   }' --token "In alias."
+`, os.Args[0])
+}
+
+func adminListMonthlyChallengesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin list-monthly-challenges -token STRING
+
+ListMonthlyChallenges implements ListMonthlyChallenges.
+    -token STRING: 
+
+Example:
+    %[1]s admin list-monthly-challenges --token "Repellat alias voluptas eum sit aut sed."
+`, os.Args[0])
+}
+
+func adminDeleteMonthlyChallengeUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin delete-monthly-challenge -monthly-challenge-id STRING -token STRING
+
+DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
+    -monthly-challenge-id STRING: 
+    -token STRING: 
+
+Example:
+    %[1]s admin delete-monthly-challenge --monthly-challenge-id "Ipsa nisi asperiores sed maiores aut." --token "Amet quasi."
+`, os.Args[0])
+}
+
+func adminCreateMonthlyChallengeUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin create-monthly-challenge -body JSON -token STRING
+
+CreateMonthlyChallenge implements CreateMonthlyChallenge.
+    -body JSON: 
+    -token STRING: 
+
+Example:
+    %[1]s admin create-monthly-challenge --body '{
+      "challengeID": "Et est.",
+      "display_month": "Januari/Februari",
+      "end_date": "2006-02-01",
+      "start_date": "2006-02-01"
+   }' --token "Vitae asperiores voluptatem nihil et."
 `, os.Args[0])
 }
 
@@ -325,7 +400,7 @@ ListChallenges implements ListChallenges.
     -token STRING: 
 
 Example:
-    %[1]s challenge list-challenges --token "Facilis ea aliquam doloremque nostrum aperiam."
+    %[1]s challenge list-challenges --token "Ut facilis."
 `, os.Args[0])
 }
 
@@ -336,7 +411,7 @@ ListMonthlyChallenges implements ListMonthlyChallenges.
     -token STRING: 
 
 Example:
-    %[1]s challenge list-monthly-challenges --token "Nemo praesentium consequuntur."
+    %[1]s challenge list-monthly-challenges --token "Odit et error enim minus."
 `, os.Args[0])
 }
 
@@ -351,6 +426,6 @@ SubmitFlag implements SubmitFlag.
 Example:
     %[1]s challenge submit-flag --body '{
       "flag": "SSM{flag}"
-   }' --challenge-id "123" --token "Neque nihil tenetur quas nesciunt iusto ut."
+   }' --challenge-id "123" --token "Quo quia fugit."
 `, os.Args[0])
 }

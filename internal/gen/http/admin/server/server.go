@@ -18,9 +18,12 @@ import (
 
 // Server lists the admin service endpoint HTTP handlers.
 type Server struct {
-	Mounts          []*MountPoint
-	ListChallenges  http.Handler
-	CreateChallenge http.Handler
+	Mounts                 []*MountPoint
+	ListChallenges         http.Handler
+	CreateChallenge        http.Handler
+	ListMonthlyChallenges  http.Handler
+	DeleteMonthlyChallenge http.Handler
+	CreateMonthlyChallenge http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -58,9 +61,15 @@ func New(
 		Mounts: []*MountPoint{
 			{"ListChallenges", "GET", "/admin/challenges"},
 			{"CreateChallenge", "POST", "/admin/challenges"},
+			{"ListMonthlyChallenges", "GET", "/admin/monthly_challenges"},
+			{"DeleteMonthlyChallenge", "DELETE", "/admin/monthly_challenges/{monthlyChallengeID}"},
+			{"CreateMonthlyChallenge", "POST", "/admin/monthly_challenges"},
 		},
-		ListChallenges:  NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
-		CreateChallenge: NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
+		ListChallenges:         NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
+		CreateChallenge:        NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
+		ListMonthlyChallenges:  NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
+		DeleteMonthlyChallenge: NewDeleteMonthlyChallengeHandler(e.DeleteMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
+		CreateMonthlyChallenge: NewCreateMonthlyChallengeHandler(e.CreateMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -71,12 +80,18 @@ func (s *Server) Service() string { return "admin" }
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListChallenges = m(s.ListChallenges)
 	s.CreateChallenge = m(s.CreateChallenge)
+	s.ListMonthlyChallenges = m(s.ListMonthlyChallenges)
+	s.DeleteMonthlyChallenge = m(s.DeleteMonthlyChallenge)
+	s.CreateMonthlyChallenge = m(s.CreateMonthlyChallenge)
 }
 
 // Mount configures the mux to serve the admin endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountListChallengesHandler(mux, h.ListChallenges)
 	MountCreateChallengeHandler(mux, h.CreateChallenge)
+	MountListMonthlyChallengesHandler(mux, h.ListMonthlyChallenges)
+	MountDeleteMonthlyChallengeHandler(mux, h.DeleteMonthlyChallenge)
+	MountCreateMonthlyChallengeHandler(mux, h.CreateMonthlyChallenge)
 }
 
 // MountListChallengesHandler configures the mux to serve the "admin" service
@@ -160,6 +175,159 @@ func NewCreateChallengeHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "CreateChallenge")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListMonthlyChallengesHandler configures the mux to serve the "admin"
+// service "ListMonthlyChallenges" endpoint.
+func MountListMonthlyChallengesHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/monthly_challenges", f)
+}
+
+// NewListMonthlyChallengesHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "ListMonthlyChallenges" endpoint.
+func NewListMonthlyChallengesHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListMonthlyChallengesRequest(mux, decoder)
+		encodeResponse = EncodeListMonthlyChallengesResponse(encoder)
+		encodeError    = EncodeListMonthlyChallengesError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListMonthlyChallenges")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteMonthlyChallengeHandler configures the mux to serve the "admin"
+// service "DeleteMonthlyChallenge" endpoint.
+func MountDeleteMonthlyChallengeHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/admin/monthly_challenges/{monthlyChallengeID}", f)
+}
+
+// NewDeleteMonthlyChallengeHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "DeleteMonthlyChallenge" endpoint.
+func NewDeleteMonthlyChallengeHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteMonthlyChallengeRequest(mux, decoder)
+		encodeResponse = EncodeDeleteMonthlyChallengeResponse(encoder)
+		encodeError    = EncodeDeleteMonthlyChallengeError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteMonthlyChallenge")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateMonthlyChallengeHandler configures the mux to serve the "admin"
+// service "CreateMonthlyChallenge" endpoint.
+func MountCreateMonthlyChallengeHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/monthly_challenges", f)
+}
+
+// NewCreateMonthlyChallengeHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "CreateMonthlyChallenge" endpoint.
+func NewCreateMonthlyChallengeHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateMonthlyChallengeRequest(mux, decoder)
+		encodeResponse = EncodeCreateMonthlyChallengeResponse(encoder)
+		encodeError    = EncodeCreateMonthlyChallengeError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateMonthlyChallenge")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

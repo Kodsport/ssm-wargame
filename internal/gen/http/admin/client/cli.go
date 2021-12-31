@@ -52,3 +52,60 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 
 	return v, nil
 }
+
+// BuildListMonthlyChallengesPayload builds the payload for the admin
+// ListMonthlyChallenges endpoint from CLI flags.
+func BuildListMonthlyChallengesPayload(adminListMonthlyChallengesToken string) (*admin.ListMonthlyChallengesPayload, error) {
+	var token string
+	{
+		token = adminListMonthlyChallengesToken
+	}
+	v := &admin.ListMonthlyChallengesPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteMonthlyChallengePayload builds the payload for the admin
+// DeleteMonthlyChallenge endpoint from CLI flags.
+func BuildDeleteMonthlyChallengePayload(adminDeleteMonthlyChallengeMonthlyChallengeID string, adminDeleteMonthlyChallengeToken string) (*admin.DeleteMonthlyChallengePayload, error) {
+	var monthlyChallengeID string
+	{
+		monthlyChallengeID = adminDeleteMonthlyChallengeMonthlyChallengeID
+	}
+	var token string
+	{
+		token = adminDeleteMonthlyChallengeToken
+	}
+	v := &admin.DeleteMonthlyChallengePayload{}
+	v.MonthlyChallengeID = monthlyChallengeID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildCreateMonthlyChallengePayload builds the payload for the admin
+// CreateMonthlyChallenge endpoint from CLI flags.
+func BuildCreateMonthlyChallengePayload(adminCreateMonthlyChallengeBody string, adminCreateMonthlyChallengeToken string) (*admin.CreateMonthlyChallengePayload, error) {
+	var err error
+	var body CreateMonthlyChallengeRequestBody
+	{
+		err = json.Unmarshal([]byte(adminCreateMonthlyChallengeBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challengeID\": \"Et est.\",\n      \"display_month\": \"Januari/Februari\",\n      \"end_date\": \"2006-02-01\",\n      \"start_date\": \"2006-02-01\"\n   }'")
+		}
+	}
+	var token string
+	{
+		token = adminCreateMonthlyChallengeToken
+	}
+	v := &admin.CreateMonthlyChallengePayload{
+		ChallengeID:  body.ChallengeID,
+		DisplayMonth: body.DisplayMonth,
+		StartDate:    body.StartDate,
+		EndDate:      body.EndDate,
+	}
+	v.Token = token
+
+	return v, nil
+}

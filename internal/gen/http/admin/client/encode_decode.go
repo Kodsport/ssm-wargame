@@ -18,6 +18,7 @@ import (
 	admin "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
 	adminviews "github.com/sakerhetsm/ssm-wargame/internal/gen/admin/views"
 	goahttp "goa.design/goa/v3/http"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // BuildListChallengesRequest instantiates a HTTP request object with method
@@ -60,6 +61,7 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 // body should be restored after having been read.
 // DecodeListChallengesResponse may return the following errors:
 //	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- "not_found" (type *goa.ServiceError): http.StatusNotFound
 //	- error: internal error
 func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -107,6 +109,20 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 				return nil, goahttp.ErrValidationError("admin", "ListChallenges", err)
 			}
 			return nil, NewListChallengesUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ListChallengesNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListChallenges", err)
+			}
+			err = ValidateListChallengesNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListChallenges", err)
+			}
+			return nil, NewListChallengesNotFound(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "ListChallenges", resp.StatusCode, string(body))
@@ -158,6 +174,7 @@ func EncodeCreateChallengeRequest(encoder func(*http.Request) goahttp.Encoder) f
 // response body should be restored after having been read.
 // DecodeCreateChallengeResponse may return the following errors:
 //	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- "not_found" (type *goa.ServiceError): http.StatusNotFound
 //	- error: internal error
 func DecodeCreateChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -190,9 +207,341 @@ func DecodeCreateChallengeResponse(decoder func(*http.Response) goahttp.Decoder,
 				return nil, goahttp.ErrValidationError("admin", "CreateChallenge", err)
 			}
 			return nil, NewCreateChallengeUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body CreateChallengeNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateChallenge", err)
+			}
+			err = ValidateCreateChallengeNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateChallenge", err)
+			}
+			return nil, NewCreateChallengeNotFound(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "CreateChallenge", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildListMonthlyChallengesRequest instantiates a HTTP request object with
+// method and path set to call the "admin" service "ListMonthlyChallenges"
+// endpoint
+func (c *Client) BuildListMonthlyChallengesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListMonthlyChallengesAdminPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "ListMonthlyChallenges", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListMonthlyChallengesRequest returns an encoder for requests sent to
+// the admin ListMonthlyChallenges server.
+func EncodeListMonthlyChallengesRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.ListMonthlyChallengesPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "ListMonthlyChallenges", "*admin.ListMonthlyChallengesPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListMonthlyChallengesResponse returns a decoder for responses returned
+// by the admin ListMonthlyChallenges endpoint. restoreBody controls whether
+// the response body should be restored after having been read.
+// DecodeListMonthlyChallengesResponse may return the following errors:
+//	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- error: internal error
+func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListMonthlyChallengesResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListMonthlyChallenges", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateMonthlyChallengeMetaResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListMonthlyChallenges", err)
+			}
+			res := NewListMonthlyChallengesMonthlyChallengeMetaOK(body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body ListMonthlyChallengesUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListMonthlyChallenges", err)
+			}
+			err = ValidateListMonthlyChallengesUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListMonthlyChallenges", err)
+			}
+			return nil, NewListMonthlyChallengesUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ListMonthlyChallengesNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListMonthlyChallenges", err)
+			}
+			err = ValidateListMonthlyChallengesNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListMonthlyChallenges", err)
+			}
+			return nil, NewListMonthlyChallengesNotFound(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "ListMonthlyChallenges", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildDeleteMonthlyChallengeRequest instantiates a HTTP request object with
+// method and path set to call the "admin" service "DeleteMonthlyChallenge"
+// endpoint
+func (c *Client) BuildDeleteMonthlyChallengeRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		monthlyChallengeID string
+	)
+	{
+		p, ok := v.(*admin.DeleteMonthlyChallengePayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "DeleteMonthlyChallenge", "*admin.DeleteMonthlyChallengePayload", v)
+		}
+		monthlyChallengeID = p.MonthlyChallengeID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteMonthlyChallengeAdminPath(monthlyChallengeID)}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "DeleteMonthlyChallenge", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeDeleteMonthlyChallengeRequest returns an encoder for requests sent to
+// the admin DeleteMonthlyChallenge server.
+func EncodeDeleteMonthlyChallengeRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.DeleteMonthlyChallengePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "DeleteMonthlyChallenge", "*admin.DeleteMonthlyChallengePayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeDeleteMonthlyChallengeResponse returns a decoder for responses
+// returned by the admin DeleteMonthlyChallenge endpoint. restoreBody controls
+// whether the response body should be restored after having been read.
+// DecodeDeleteMonthlyChallengeResponse may return the following errors:
+//	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- error: internal error
+func DecodeDeleteMonthlyChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body DeleteMonthlyChallengeUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteMonthlyChallenge", err)
+			}
+			err = ValidateDeleteMonthlyChallengeUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteMonthlyChallenge", err)
+			}
+			return nil, NewDeleteMonthlyChallengeUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body DeleteMonthlyChallengeNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteMonthlyChallenge", err)
+			}
+			err = ValidateDeleteMonthlyChallengeNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteMonthlyChallenge", err)
+			}
+			return nil, NewDeleteMonthlyChallengeNotFound(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "DeleteMonthlyChallenge", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildCreateMonthlyChallengeRequest instantiates a HTTP request object with
+// method and path set to call the "admin" service "CreateMonthlyChallenge"
+// endpoint
+func (c *Client) BuildCreateMonthlyChallengeRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateMonthlyChallengeAdminPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "CreateMonthlyChallenge", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeCreateMonthlyChallengeRequest returns an encoder for requests sent to
+// the admin CreateMonthlyChallenge server.
+func EncodeCreateMonthlyChallengeRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.CreateMonthlyChallengePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "CreateMonthlyChallenge", "*admin.CreateMonthlyChallengePayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewCreateMonthlyChallengeRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "CreateMonthlyChallenge", err)
+		}
+		return nil
+	}
+}
+
+// DecodeCreateMonthlyChallengeResponse returns a decoder for responses
+// returned by the admin CreateMonthlyChallenge endpoint. restoreBody controls
+// whether the response body should be restored after having been read.
+// DecodeCreateMonthlyChallengeResponse may return the following errors:
+//	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- error: internal error
+func DecodeCreateMonthlyChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body CreateMonthlyChallengeUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateMonthlyChallenge", err)
+			}
+			err = ValidateCreateMonthlyChallengeUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateMonthlyChallenge", err)
+			}
+			return nil, NewCreateMonthlyChallengeUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body CreateMonthlyChallengeNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateMonthlyChallenge", err)
+			}
+			err = ValidateCreateMonthlyChallengeNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateMonthlyChallenge", err)
+			}
+			return nil, NewCreateMonthlyChallengeNotFound(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "CreateMonthlyChallenge", resp.StatusCode, string(body))
 		}
 	}
 }
@@ -245,6 +594,19 @@ func unmarshalChallengeFilesResponseToAdminviewsChallengeFilesView(v *ChallengeF
 		return nil
 	}
 	res := &adminviews.ChallengeFilesView{}
+
+	return res
+}
+
+// unmarshalMonthlyChallengeMetaResponseToAdminMonthlyChallengeMeta builds a
+// value of type *admin.MonthlyChallengeMeta from a value of type
+// *MonthlyChallengeMetaResponse.
+func unmarshalMonthlyChallengeMetaResponseToAdminMonthlyChallengeMeta(v *MonthlyChallengeMetaResponse) *admin.MonthlyChallengeMeta {
+	res := &admin.MonthlyChallengeMeta{
+		DisplayMonth: *v.DisplayMonth,
+		StartDate:    *v.StartDate,
+		EndDate:      *v.EndDate,
+	}
 
 	return res
 }

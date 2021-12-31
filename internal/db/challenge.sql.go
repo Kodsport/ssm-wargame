@@ -12,6 +12,15 @@ import (
 	"github.com/jackc/pgtype"
 )
 
+const deleteMonthlyChallenge = `-- name: DeleteMonthlyChallenge :exec
+DELETE FROM monthly_challenges WHERE challenge_id = $1
+`
+
+func (q *Queries) DeleteMonthlyChallenge(ctx context.Context, challengeID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteMonthlyChallenge, challengeID)
+	return err
+}
+
 const flagExists = `-- name: FlagExists :one
 SELECT EXISTS(SELECT 1 FROM flags WHERE challenge_id = $1 AND flag = $2)
 `
@@ -74,6 +83,27 @@ func (q *Queries) InsertChallenge(ctx context.Context, arg InsertChallengeParams
 	return err
 }
 
+const insertMonthlyChallenge = `-- name: InsertMonthlyChallenge :exec
+INSERT INTO monthly_challenges (challenge_id, start_date, end_date, display_month) VALUES ($1, $2, $3, $4)
+`
+
+type InsertMonthlyChallengeParams struct {
+	ChallengeID  uuid.UUID
+	StartDate    time.Time
+	EndDate      time.Time
+	DisplayMonth time.Time
+}
+
+func (q *Queries) InsertMonthlyChallenge(ctx context.Context, arg InsertMonthlyChallengeParams) error {
+	_, err := q.db.Exec(ctx, insertMonthlyChallenge,
+		arg.ChallengeID,
+		arg.StartDate,
+		arg.EndDate,
+		arg.DisplayMonth,
+	)
+	return err
+}
+
 const insertSolve = `-- name: InsertSolve :exec
 INSERT INTO user_solves (user_id, challenge_id) VALUES ($1, $2)
 `
@@ -132,6 +162,37 @@ func (q *Queries) ListChallengesWithSolves(ctx context.Context, showUnpublished 
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.NumSolves,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listMonthlyChallenges = `-- name: ListMonthlyChallenges :many
+SELECT challenge_id, start_date, end_date, display_month, created_at, updated_at FROM monthly_challenges
+`
+
+func (q *Queries) ListMonthlyChallenges(ctx context.Context) ([]MonthlyChallenge, error) {
+	rows, err := q.db.Query(ctx, listMonthlyChallenges)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []MonthlyChallenge
+	for rows.Next() {
+		var i MonthlyChallenge
+		if err := rows.Scan(
+			&i.ChallengeID,
+			&i.StartDate,
+			&i.EndDate,
+			&i.DisplayMonth,
+			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}

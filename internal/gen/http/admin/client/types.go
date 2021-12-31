@@ -26,9 +26,25 @@ type CreateChallengeRequestBody struct {
 	Score int32 `form:"score" json:"score" xml:"score"`
 }
 
+// CreateMonthlyChallengeRequestBody is the type of the "admin" service
+// "CreateMonthlyChallenge" endpoint HTTP request body.
+type CreateMonthlyChallengeRequestBody struct {
+	ChallengeID string `form:"challengeID" json:"challengeID" xml:"challengeID"`
+	// The month(s) that the challenge is assigned for
+	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
+	// Starting date of the monthly challenge
+	StartDate string `form:"start_date" json:"start_date" xml:"start_date"`
+	// Ending date of the monthly challenge
+	EndDate string `form:"end_date" json:"end_date" xml:"end_date"`
+}
+
 // ListChallengesResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmChallengeResponse
+
+// ListMonthlyChallengesResponseBody is the type of the "admin" service
+// "ListMonthlyChallenges" endpoint HTTP response body.
+type ListMonthlyChallengesResponseBody []*MonthlyChallengeMetaResponse
 
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "unauthorized" error.
@@ -48,9 +64,159 @@ type ListChallengesUnauthorizedResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// ListChallengesNotFoundResponseBody is the type of the "admin" service
+// "ListChallenges" endpoint HTTP response body for the "not_found" error.
+type ListChallengesNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // CreateChallengeUnauthorizedResponseBody is the type of the "admin" service
 // "CreateChallenge" endpoint HTTP response body for the "unauthorized" error.
 type CreateChallengeUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateChallengeNotFoundResponseBody is the type of the "admin" service
+// "CreateChallenge" endpoint HTTP response body for the "not_found" error.
+type CreateChallengeNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListMonthlyChallengesUnauthorizedResponseBody is the type of the "admin"
+// service "ListMonthlyChallenges" endpoint HTTP response body for the
+// "unauthorized" error.
+type ListMonthlyChallengesUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListMonthlyChallengesNotFoundResponseBody is the type of the "admin" service
+// "ListMonthlyChallenges" endpoint HTTP response body for the "not_found"
+// error.
+type ListMonthlyChallengesNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteMonthlyChallengeUnauthorizedResponseBody is the type of the "admin"
+// service "DeleteMonthlyChallenge" endpoint HTTP response body for the
+// "unauthorized" error.
+type DeleteMonthlyChallengeUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteMonthlyChallengeNotFoundResponseBody is the type of the "admin"
+// service "DeleteMonthlyChallenge" endpoint HTTP response body for the
+// "not_found" error.
+type DeleteMonthlyChallengeNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateMonthlyChallengeUnauthorizedResponseBody is the type of the "admin"
+// service "CreateMonthlyChallenge" endpoint HTTP response body for the
+// "unauthorized" error.
+type CreateMonthlyChallengeUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateMonthlyChallengeNotFoundResponseBody is the type of the "admin"
+// service "CreateMonthlyChallenge" endpoint HTTP response body for the
+// "not_found" error.
+type CreateMonthlyChallengeNotFoundResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -92,6 +258,16 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 }
 
+// MonthlyChallengeMetaResponse is used to define fields on response body types.
+type MonthlyChallengeMetaResponse struct {
+	// The month(s) that the challenge is assigned for
+	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
+	// Starting date of the monthly challenge
+	StartDate *string `form:"start_date,omitempty" json:"start_date,omitempty" xml:"start_date,omitempty"`
+	// Ending date of the monthly challenge
+	EndDate *string `form:"end_date,omitempty" json:"end_date,omitempty" xml:"end_date,omitempty"`
+}
+
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
 // of the "CreateChallenge" endpoint of the "admin" service.
 func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChallengeRequestBody {
@@ -100,6 +276,18 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 		Title:       p.Title,
 		Description: p.Description,
 		Score:       p.Score,
+	}
+	return body
+}
+
+// NewCreateMonthlyChallengeRequestBody builds the HTTP request body from the
+// payload of the "CreateMonthlyChallenge" endpoint of the "admin" service.
+func NewCreateMonthlyChallengeRequestBody(p *admin.CreateMonthlyChallengePayload) *CreateMonthlyChallengeRequestBody {
+	body := &CreateMonthlyChallengeRequestBody{
+		ChallengeID:  p.ChallengeID,
+		DisplayMonth: p.DisplayMonth,
+		StartDate:    p.StartDate,
+		EndDate:      p.EndDate,
 	}
 	return body
 }
@@ -130,6 +318,21 @@ func NewListChallengesUnauthorized(body *ListChallengesUnauthorizedResponseBody)
 	return v
 }
 
+// NewListChallengesNotFound builds a admin service ListChallenges endpoint
+// not_found error.
+func NewListChallengesNotFound(body *ListChallengesNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
 // NewCreateChallengeUnauthorized builds a admin service CreateChallenge
 // endpoint unauthorized error.
 func NewCreateChallengeUnauthorized(body *CreateChallengeUnauthorizedResponseBody) *goa.ServiceError {
@@ -145,9 +348,149 @@ func NewCreateChallengeUnauthorized(body *CreateChallengeUnauthorizedResponseBod
 	return v
 }
 
+// NewCreateChallengeNotFound builds a admin service CreateChallenge endpoint
+// not_found error.
+func NewCreateChallengeNotFound(body *CreateChallengeNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListMonthlyChallengesMonthlyChallengeMetaOK builds a "admin" service
+// "ListMonthlyChallenges" endpoint result from a HTTP "OK" response.
+func NewListMonthlyChallengesMonthlyChallengeMetaOK(body []*MonthlyChallengeMetaResponse) []*admin.MonthlyChallengeMeta {
+	v := make([]*admin.MonthlyChallengeMeta, len(body))
+	for i, val := range body {
+		v[i] = unmarshalMonthlyChallengeMetaResponseToAdminMonthlyChallengeMeta(val)
+	}
+
+	return v
+}
+
+// NewListMonthlyChallengesUnauthorized builds a admin service
+// ListMonthlyChallenges endpoint unauthorized error.
+func NewListMonthlyChallengesUnauthorized(body *ListMonthlyChallengesUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListMonthlyChallengesNotFound builds a admin service
+// ListMonthlyChallenges endpoint not_found error.
+func NewListMonthlyChallengesNotFound(body *ListMonthlyChallengesNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteMonthlyChallengeUnauthorized builds a admin service
+// DeleteMonthlyChallenge endpoint unauthorized error.
+func NewDeleteMonthlyChallengeUnauthorized(body *DeleteMonthlyChallengeUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteMonthlyChallengeNotFound builds a admin service
+// DeleteMonthlyChallenge endpoint not_found error.
+func NewDeleteMonthlyChallengeNotFound(body *DeleteMonthlyChallengeNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateMonthlyChallengeUnauthorized builds a admin service
+// CreateMonthlyChallenge endpoint unauthorized error.
+func NewCreateMonthlyChallengeUnauthorized(body *CreateMonthlyChallengeUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateMonthlyChallengeNotFound builds a admin service
+// CreateMonthlyChallenge endpoint not_found error.
+func NewCreateMonthlyChallengeNotFound(body *CreateMonthlyChallengeNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
 // ValidateListChallengesUnauthorizedResponseBody runs the validations defined
 // on ListChallenges_unauthorized_Response_Body
 func ValidateListChallengesUnauthorizedResponseBody(body *ListChallengesUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListChallengesNotFoundResponseBody runs the validations defined on
+// ListChallenges_not_found_Response_Body
+func ValidateListChallengesNotFoundResponseBody(body *ListChallengesNotFoundResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
@@ -193,6 +536,174 @@ func ValidateCreateChallengeUnauthorizedResponseBody(body *CreateChallengeUnauth
 	return
 }
 
+// ValidateCreateChallengeNotFoundResponseBody runs the validations defined on
+// CreateChallenge_not_found_Response_Body
+func ValidateCreateChallengeNotFoundResponseBody(body *CreateChallengeNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListMonthlyChallengesUnauthorizedResponseBody runs the validations
+// defined on ListMonthlyChallenges_unauthorized_Response_Body
+func ValidateListMonthlyChallengesUnauthorizedResponseBody(body *ListMonthlyChallengesUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListMonthlyChallengesNotFoundResponseBody runs the validations
+// defined on ListMonthlyChallenges_not_found_Response_Body
+func ValidateListMonthlyChallengesNotFoundResponseBody(body *ListMonthlyChallengesNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteMonthlyChallengeUnauthorizedResponseBody runs the validations
+// defined on DeleteMonthlyChallenge_unauthorized_Response_Body
+func ValidateDeleteMonthlyChallengeUnauthorizedResponseBody(body *DeleteMonthlyChallengeUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteMonthlyChallengeNotFoundResponseBody runs the validations
+// defined on DeleteMonthlyChallenge_not_found_Response_Body
+func ValidateDeleteMonthlyChallengeNotFoundResponseBody(body *DeleteMonthlyChallengeNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateMonthlyChallengeUnauthorizedResponseBody runs the validations
+// defined on CreateMonthlyChallenge_unauthorized_Response_Body
+func ValidateCreateMonthlyChallengeUnauthorizedResponseBody(body *CreateMonthlyChallengeUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateMonthlyChallengeNotFoundResponseBody runs the validations
+// defined on CreateMonthlyChallenge_not_found_Response_Body
+func ValidateCreateMonthlyChallengeNotFoundResponseBody(body *CreateMonthlyChallengeNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateSsmChallengeResponse runs the validations defined on
 // SsmChallengeResponse
 func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
@@ -216,6 +727,21 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	return
+}
+
+// ValidateMonthlyChallengeMetaResponse runs the validations defined on
+// MonthlyChallengeMetaResponse
+func ValidateMonthlyChallengeMetaResponse(body *MonthlyChallengeMetaResponse) (err error) {
+	if body.StartDate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start_date", "body"))
+	}
+	if body.EndDate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end_date", "body"))
+	}
+	if body.DisplayMonth == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_month", "body"))
 	}
 	return
 }

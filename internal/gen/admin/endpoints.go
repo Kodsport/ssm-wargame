@@ -16,8 +16,11 @@ import (
 
 // Endpoints wraps the "admin" service endpoints.
 type Endpoints struct {
-	ListChallenges  goa.Endpoint
-	CreateChallenge goa.Endpoint
+	ListChallenges         goa.Endpoint
+	CreateChallenge        goa.Endpoint
+	ListMonthlyChallenges  goa.Endpoint
+	DeleteMonthlyChallenge goa.Endpoint
+	CreateMonthlyChallenge goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "admin" service with endpoints.
@@ -25,8 +28,11 @@ func NewEndpoints(s Service) *Endpoints {
 	// Casting service to Auther interface
 	a := s.(Auther)
 	return &Endpoints{
-		ListChallenges:  NewListChallengesEndpoint(s, a.JWTAuth),
-		CreateChallenge: NewCreateChallengeEndpoint(s, a.JWTAuth),
+		ListChallenges:         NewListChallengesEndpoint(s, a.JWTAuth),
+		CreateChallenge:        NewCreateChallengeEndpoint(s, a.JWTAuth),
+		ListMonthlyChallenges:  NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
+		DeleteMonthlyChallenge: NewDeleteMonthlyChallengeEndpoint(s, a.JWTAuth),
+		CreateMonthlyChallenge: NewCreateMonthlyChallengeEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -34,6 +40,9 @@ func NewEndpoints(s Service) *Endpoints {
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListChallenges = m(e.ListChallenges)
 	e.CreateChallenge = m(e.CreateChallenge)
+	e.ListMonthlyChallenges = m(e.ListMonthlyChallenges)
+	e.DeleteMonthlyChallenge = m(e.DeleteMonthlyChallenge)
+	e.CreateMonthlyChallenge = m(e.CreateMonthlyChallenge)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -76,5 +85,62 @@ func NewCreateChallengeEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.E
 			return nil, err
 		}
 		return nil, s.CreateChallenge(ctx, p)
+	}
+}
+
+// NewListMonthlyChallengesEndpoint returns an endpoint function that calls the
+// method "ListMonthlyChallenges" of service "admin".
+func NewListMonthlyChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListMonthlyChallengesPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.ListMonthlyChallenges(ctx, p)
+	}
+}
+
+// NewDeleteMonthlyChallengeEndpoint returns an endpoint function that calls
+// the method "DeleteMonthlyChallenge" of service "admin".
+func NewDeleteMonthlyChallengeEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*DeleteMonthlyChallengePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.DeleteMonthlyChallenge(ctx, p)
+	}
+}
+
+// NewCreateMonthlyChallengeEndpoint returns an endpoint function that calls
+// the method "CreateMonthlyChallenge" of service "admin".
+func NewCreateMonthlyChallengeEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CreateMonthlyChallengePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.CreateMonthlyChallenge(ctx, p)
 	}
 }

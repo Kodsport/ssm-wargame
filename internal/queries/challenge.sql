@@ -19,3 +19,12 @@ SELECT EXISTS (SELECT * FROM user_solves WHERE challenge_id = $1 AND user_id = $
 
 -- name: InsertChallenge :exec
 INSERT INTO challenges (id, title, slug, description, score, published) VALUES ($1, $2, $3, $4, $5, $6);
+
+-- name: ListMonthlyChallenges :many
+SELECT * FROM monthly_challenges;
+
+-- name: InsertMonthlyChallenge :exec
+INSERT INTO monthly_challenges (challenge_id, start_date, end_date, display_month) VALUES ($1, $2, $3, $4);
+
+-- name: DeleteMonthlyChallenge :exec
+DELETE FROM monthly_challenges WHERE challenge_id = $1;

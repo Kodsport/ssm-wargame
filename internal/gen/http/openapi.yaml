@@ -33,6 +33,10 @@ paths:
           description: When the user does not have the required role
           schema:
             $ref: '#/definitions/AdminListChallengesUnauthorizedResponseBody'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/AdminListChallengesNotFoundResponseBody'
       schemes:
       - http
       security:
@@ -67,6 +71,105 @@ paths:
           description: When the user does not have the required role
           schema:
             $ref: '#/definitions/AdminCreateChallengeUnauthorizedResponseBody'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/AdminCreateChallengeNotFoundResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /admin/monthly_challenges:
+    get:
+      tags:
+      - admin
+      summary: ListMonthlyChallenges admin
+      operationId: admin#ListMonthlyChallenges
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MonthlyChallengeMetaResponse'
+        "403":
+          description: When the user does not have the required role
+          schema:
+            $ref: '#/definitions/AdminListMonthlyChallengesUnauthorizedResponseBody'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/AdminListMonthlyChallengesNotFoundResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+    post:
+      tags:
+      - admin
+      summary: CreateMonthlyChallenge admin
+      operationId: admin#CreateMonthlyChallenge
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+      - name: CreateMonthlyChallengeRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/AdminCreateMonthlyChallengeRequestBody'
+          required:
+          - challengeID
+          - start_date
+          - end_date
+          - display_month
+      responses:
+        "204":
+          description: No Content response.
+        "403":
+          description: When the user does not have the required role
+          schema:
+            $ref: '#/definitions/AdminCreateMonthlyChallengeUnauthorizedResponseBody'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/AdminCreateMonthlyChallengeNotFoundResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
+  /admin/monthly_challenges/{monthlyChallengeID}:
+    delete:
+      tags:
+      - admin
+      summary: DeleteMonthlyChallenge admin
+      operationId: admin#DeleteMonthlyChallenge
+      parameters:
+      - name: monthlyChallengeID
+        in: path
+        required: true
+        type: string
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content response.
+        "403":
+          description: When the user does not have the required role
+          schema:
+            $ref: '#/definitions/AdminDeleteMonthlyChallengeUnauthorizedResponseBody'
+        "404":
+          description: Resource not found
+          schema:
+            $ref: '#/definitions/AdminDeleteMonthlyChallengeNotFoundResponseBody'
       schemes:
       - http
       security:
@@ -189,6 +292,51 @@ paths:
       security:
       - jwt_header_Authorization: []
 definitions:
+  AdminCreateChallengeNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: CreateChallenge_not_found_Response_Body result type (default view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
   AdminCreateChallengeRequestBody:
     title: AdminCreateChallengeRequestBody
     type: object
@@ -255,11 +403,269 @@ definitions:
         example: true
     description: CreateChallenge_unauthorized_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  AdminCreateMonthlyChallengeNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CreateMonthlyChallenge_not_found_Response_Body result type (default
+      view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  AdminCreateMonthlyChallengeRequestBody:
+    title: AdminCreateMonthlyChallengeRequestBody
+    type: object
+    properties:
+      challengeID:
+        type: string
+        example: Voluptatum et quaerat nihil quia.
+      display_month:
+        type: string
+        description: The month(s) that the challenge is assigned for
+        example: Januari/Februari
+      end_date:
+        type: string
+        description: Ending date of the monthly challenge
+        example: "2006-02-01"
+      start_date:
+        type: string
+        description: Starting date of the monthly challenge
+        example: "2006-02-01"
+    example:
+      challengeID: Quia velit ut a sapiente earum.
+      display_month: Januari/Februari
+      end_date: "2006-02-01"
+      start_date: "2006-02-01"
+    required:
+    - challengeID
+    - start_date
+    - end_date
+    - display_month
+  AdminCreateMonthlyChallengeUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: true
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: CreateMonthlyChallenge_unauthorized_Response_Body result type (default
+      view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  AdminDeleteMonthlyChallengeNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: DeleteMonthlyChallenge_not_found_Response_Body result type (default
+      view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
+      timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  AdminDeleteMonthlyChallengeUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: true
+    description: DeleteMonthlyChallenge_unauthorized_Response_Body result type (default
+      view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  AdminListChallengesNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: ListChallenges_not_found_Response_Body result type (default view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: false
       timeout: false
     required:
     - name
@@ -293,7 +699,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -306,6 +712,98 @@ definitions:
       name: bad_request
       temporary: false
       timeout: true
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  AdminListMonthlyChallengesNotFoundResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: true
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: ListMonthlyChallenges_not_found_Response_Body result type (default
+      view)
+    example:
+      fault: false
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
+    required:
+    - name
+    - id
+    - message
+    - temporary
+    - timeout
+    - fault
+  AdminListMonthlyChallengesUnauthorizedResponseBody:
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+    properties:
+      fault:
+        type: boolean
+        description: Is the error a server-side fault?
+        example: false
+      id:
+        type: string
+        description: ID is a unique identifier for this particular occurrence of the
+          problem.
+        example: 123abc
+      message:
+        type: string
+        description: Message is a human-readable explanation specific to this occurrence
+          of the problem.
+        example: parameter 'p' must be an integer
+      name:
+        type: string
+        description: Name is the name of this class of errors.
+        example: bad_request
+      temporary:
+        type: boolean
+        description: Is the error temporary?
+        example: false
+      timeout:
+        type: boolean
+        description: Is the error a timeout?
+        example: false
+    description: ListMonthlyChallenges_unauthorized_Response_Body result type (default
+      view)
+    example:
+      fault: true
+      id: 123abc
+      message: parameter 'p' must be an integer
+      name: bad_request
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -326,11 +824,11 @@ definitions:
       files:
       - {}
       - {}
+      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
-      - {}
       - {}
       - {}
       - {}
@@ -341,11 +839,11 @@ definitions:
       files:
       - {}
       - {}
+      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
-      - {}
       - {}
       - {}
       - {}
@@ -356,11 +854,11 @@ definitions:
       files:
       - {}
       - {}
+      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
-      - {}
       - {}
       - {}
       - {}
@@ -427,11 +925,11 @@ definitions:
       files:
       - {}
       - {}
+      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
-      - {}
       - {}
       - {}
       - {}
@@ -442,41 +940,11 @@ definitions:
       files:
       - {}
       - {}
-      id: e721a338-44de-4de8-a562-43d2db5f4115
-      published: true
-      score: 50
-      services:
-      - {}
-      - {}
-      - {}
-      - {}
-      slug: pwnme
-      solves: 3
-      title: pwnme
-    - description: A heap overflow challenge
-      files:
-      - {}
       - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
-      - {}
-      - {}
-      - {}
-      - {}
-      slug: pwnme
-      solves: 3
-      title: pwnme
-    - description: A heap overflow challenge
-      files:
-      - {}
-      - {}
-      id: e721a338-44de-4de8-a562-43d2db5f4115
-      published: true
-      score: 50
-      services:
-      - {}
       - {}
       - {}
       - {}
@@ -534,7 +1002,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: true
     required:
     - name
@@ -550,7 +1018,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -575,12 +1043,12 @@ definitions:
         example: false
     description: SubmitFlag_incorrect_flag_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -600,6 +1068,30 @@ definitions:
       flag: SSM{flag}
     required:
     - flag
+  MonthlyChallengeMetaResponse:
+    title: MonthlyChallengeMetaResponse
+    type: object
+    properties:
+      display_month:
+        type: string
+        description: The month(s) that the challenge is assigned for
+        example: Januari/Februari
+      end_date:
+        type: string
+        description: Ending date of the monthly challenge
+        example: "2006-02-01"
+      start_date:
+        type: string
+        description: Starting date of the monthly challenge
+        example: "2006-02-01"
+    example:
+      display_month: Januari/Februari
+      end_date: "2006-02-01"
+      start_date: "2006-02-01"
+    required:
+    - start_date
+    - end_date
+    - display_month
   SsmChallengeResponse:
     title: 'Mediatype identifier: application/vnd.ssm.challenge; view=default'
     type: object
@@ -613,6 +1105,8 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeFilesResponse'
         example:
+        - {}
+        - {}
         - {}
         - {}
       id:
@@ -631,7 +1125,6 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeServiceResponse'
         example:
-        - {}
         - {}
         - {}
         - {}
@@ -654,11 +1147,12 @@ definitions:
       files:
       - {}
       - {}
+      - {}
+      - {}
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
-      - {}
       - {}
       - {}
       slug: pwnme

@@ -91,6 +91,16 @@ paths:
                 id: 3F1FKVRR
                 message: Value of ID must be an integer
                 name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
       security:
       - jwt_header_Authorization: []
     post:
@@ -114,6 +124,153 @@ paths:
           description: Created response.
         "403":
           description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/monthly_challenges:
+    get:
+      tags:
+      - admin
+      summary: ListMonthlyChallenges admin
+      operationId: admin#ListMonthlyChallenges
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MonthlyChallengeMeta'
+                example:
+                - display_month: Januari/Februari
+                  end_date: "2006-02-01"
+                  start_date: "2006-02-01"
+                - display_month: Januari/Februari
+                  end_date: "2006-02-01"
+                  start_date: "2006-02-01"
+              example:
+              - display_month: Januari/Februari
+                end_date: "2006-02-01"
+                start_date: "2006-02-01"
+              - display_month: Januari/Februari
+                end_date: "2006-02-01"
+                start_date: "2006-02-01"
+              - display_month: Januari/Februari
+                end_date: "2006-02-01"
+                start_date: "2006-02-01"
+              - display_month: Januari/Februari
+                end_date: "2006-02-01"
+                start_date: "2006-02-01"
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+    post:
+      tags:
+      - admin
+      summary: CreateMonthlyChallenge admin
+      operationId: admin#CreateMonthlyChallenge
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMonthlyChallengeRequestBody'
+            example:
+              challengeID: Et est.
+              display_month: Januari/Februari
+              end_date: "2006-02-01"
+              start_date: "2006-02-01"
+      responses:
+        "204":
+          description: No Content response.
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/monthly_challenges/{monthlyChallengeID}:
+    delete:
+      tags:
+      - admin
+      summary: DeleteMonthlyChallenge admin
+      operationId: admin#DeleteMonthlyChallenge
+      parameters:
+      - name: monthlyChallengeID
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Optio impedit repellat harum.
+        example: Eos tenetur.
+      responses:
+        "204":
+          description: No Content response.
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
           content:
             application/vnd.goa.error:
               schema:
@@ -417,6 +574,34 @@ components:
       - published
       - slug
       - solves
+    CreateMonthlyChallengeRequestBody:
+      type: object
+      properties:
+        challengeID:
+          type: string
+          example: Animi ipsum nam atque accusamus facilis.
+        display_month:
+          type: string
+          description: The month(s) that the challenge is assigned for
+          example: Januari/Februari
+        end_date:
+          type: string
+          description: Ending date of the monthly challenge
+          example: "2006-02-01"
+        start_date:
+          type: string
+          description: Starting date of the monthly challenge
+          example: "2006-02-01"
+      example:
+        challengeID: Et ut rerum eaque.
+        display_month: Januari/Februari
+        end_date: "2006-02-01"
+        start_date: "2006-02-01"
+      required:
+      - challengeID
+      - start_date
+      - end_date
+      - display_month
     Error:
       type: object
       properties:
@@ -441,11 +626,11 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-          example: true
+          example: false
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: true
+          example: false
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -493,6 +678,29 @@ components:
         url: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
       required:
       - url
+    MonthlyChallengeMeta:
+      type: object
+      properties:
+        display_month:
+          type: string
+          description: The month(s) that the challenge is assigned for
+          example: Januari/Februari
+        end_date:
+          type: string
+          description: Ending date of the monthly challenge
+          example: "2006-02-01"
+        start_date:
+          type: string
+          description: Starting date of the monthly challenge
+          example: "2006-02-01"
+      example:
+        display_month: Januari/Februari
+        end_date: "2006-02-01"
+        start_date: "2006-02-01"
+      required:
+      - start_date
+      - end_date
+      - display_month
     SsmChallenge:
       type: object
       properties:
@@ -523,8 +731,6 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
-          - {}
           - {}
           - {}
         slug:
@@ -652,6 +858,7 @@ components:
           example:
           - {}
           - {}
+          - {}
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -695,7 +902,6 @@ components:
         display_month: Januari/Februari
         end_date: "2006-02-01"
         files:
-        - {}
         - {}
         - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115

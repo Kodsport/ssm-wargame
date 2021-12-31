@@ -21,6 +21,12 @@ type Service interface {
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, err error)
 	// CreateChallenge implements CreateChallenge.
 	CreateChallenge(context.Context, *CreateChallengePayload) (err error)
+	// ListMonthlyChallenges implements ListMonthlyChallenges.
+	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallengeMeta, err error)
+	// DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
+	DeleteMonthlyChallenge(context.Context, *DeleteMonthlyChallengePayload) (err error)
+	// CreateMonthlyChallenge implements CreateMonthlyChallenge.
+	CreateMonthlyChallenge(context.Context, *CreateMonthlyChallengePayload) (err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -37,7 +43,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [2]string{"ListChallenges", "CreateChallenge"}
+var MethodNames = [5]string{"ListChallenges", "CreateChallenge", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "CreateMonthlyChallenge"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -61,6 +67,32 @@ type CreateChallengePayload struct {
 	// The number of points given to the solver
 	Score int32
 	Token string
+}
+
+// ListMonthlyChallengesPayload is the payload type of the admin service
+// ListMonthlyChallenges method.
+type ListMonthlyChallengesPayload struct {
+	Token string
+}
+
+// DeleteMonthlyChallengePayload is the payload type of the admin service
+// DeleteMonthlyChallenge method.
+type DeleteMonthlyChallengePayload struct {
+	MonthlyChallengeID string
+	Token              string
+}
+
+// CreateMonthlyChallengePayload is the payload type of the admin service
+// CreateMonthlyChallenge method.
+type CreateMonthlyChallengePayload struct {
+	ChallengeID string
+	Token       string
+	// The month(s) that the challenge is assigned for
+	DisplayMonth string
+	// Starting date of the monthly challenge
+	StartDate string
+	// Ending date of the monthly challenge
+	EndDate string
 }
 
 // A Wargame challenge
@@ -87,10 +119,28 @@ type ChallengeService struct {
 type ChallengeFiles struct {
 }
 
+type MonthlyChallengeMeta struct {
+	// The month(s) that the challenge is assigned for
+	DisplayMonth string
+	// Starting date of the monthly challenge
+	StartDate string
+	// Ending date of the monthly challenge
+	EndDate string
+}
+
 // MakeUnauthorized builds a goa.ServiceError from an error.
 func MakeUnauthorized(err error) *goa.ServiceError {
 	return &goa.ServiceError{
 		Name:    "unauthorized",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
+}
+
+// MakeNotFound builds a goa.ServiceError from an error.
+func MakeNotFound(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "not_found",
 		ID:      goa.NewErrorID(),
 		Message: err.Error(),
 	}
