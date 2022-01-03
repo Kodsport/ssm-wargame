@@ -8,6 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 	"go.uber.org/zap"
 
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
@@ -84,9 +85,13 @@ func realMain() error {
 		admin_server.Mount(mux, s)
 	}
 
+	var handler http.Handler = mux
+
+	handler = cors.AllowAll().Handler(handler)
+
 	srv := &http.Server{
 		Addr:    "localhost:8080",
-		Handler: mux,
+		Handler: handler,
 	}
 
 	log.Info("starting http server")

@@ -11,6 +11,7 @@ require (
 	github.com/jackc/pgtype v1.8.1
 	github.com/jackc/pgx/v4 v4.13.0
 	github.com/joho/godotenv v1.4.0
+	github.com/rs/cors v1.8.2 // indirect
 	go.uber.org/zap v1.13.0
 	goa.design/goa/v3 v3.5.2
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
