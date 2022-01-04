@@ -13,7 +13,28 @@ import (
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
 
-	return nil, nil
+	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, true)
+	if err != nil {
+		s.log.Warn("could not list challs", zap.Error(err), utils.C(ctx))
+		return nil, err
+	}
+
+	res := make(spec.SsmChallengeCollection, len(challs))
+
+	for i, chall := range challs {
+		res[i] = &spec.SsmChallenge{
+			ID:          chall.ID.String(),
+			Slug:        chall.Slug,
+			Title:       chall.Title,
+			Description: chall.Description,
+			Score:       chall.Score,
+			Solves:      chall.NumSolves,
+			Published:   chall.Published,
+		}
+
+	}
+
+	return res, nil
 }
 
 func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallengePayload) error {

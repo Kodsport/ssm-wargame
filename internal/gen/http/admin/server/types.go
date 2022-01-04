@@ -46,6 +46,10 @@ type SsmChallengeResponseCollection []*SsmChallengeResponse
 // "ListMonthlyChallenges" endpoint HTTP response body.
 type ListMonthlyChallengesResponseBody []*MonthlyChallengeMetaResponse
 
+// ListUsersResponseBody is the type of the "admin" service "ListUsers"
+// endpoint HTTP response body.
+type ListUsersResponseBody []*SsmUserResponse
+
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "unauthorized" error.
 type ListChallengesUnauthorizedResponseBody struct {
@@ -232,6 +236,42 @@ type CreateMonthlyChallengeNotFoundResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// ListUsersUnauthorizedResponseBody is the type of the "admin" service
+// "ListUsers" endpoint HTTP response body for the "unauthorized" error.
+type ListUsersUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// ListUsersNotFoundResponseBody is the type of the "admin" service "ListUsers"
+// endpoint HTTP response body for the "not_found" error.
+type ListUsersNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
 	ID string `form:"id" json:"id" xml:"id"`
@@ -268,6 +308,14 @@ type MonthlyChallengeMetaResponse struct {
 	EndDate string `form:"end_date" json:"end_date" xml:"end_date"`
 }
 
+// SsmUserResponse is used to define fields on response body types.
+type SsmUserResponse struct {
+	ID        string `form:"id" json:"id" xml:"id"`
+	Email     string `form:"email" json:"email" xml:"email"`
+	FirstName string `form:"first_name" json:"first_name" xml:"first_name"`
+	LastName  string `form:"last_name" json:"last_name" xml:"last_name"`
+}
+
 // NewSsmChallengeResponseCollection builds the HTTP response body from the
 // result of the "ListChallenges" endpoint of the "admin" service.
 func NewSsmChallengeResponseCollection(res adminviews.SsmChallengeCollectionView) SsmChallengeResponseCollection {
@@ -284,6 +332,16 @@ func NewListMonthlyChallengesResponseBody(res []*admin.MonthlyChallengeMeta) Lis
 	body := make([]*MonthlyChallengeMetaResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalAdminMonthlyChallengeMetaToMonthlyChallengeMetaResponse(val)
+	}
+	return body
+}
+
+// NewListUsersResponseBody builds the HTTP response body from the result of
+// the "ListUsers" endpoint of the "admin" service.
+func NewListUsersResponseBody(res []*admin.SsmUser) ListUsersResponseBody {
+	body := make([]*SsmUserResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalAdminSsmUserToSsmUserResponse(val)
 	}
 	return body
 }
@@ -434,6 +492,34 @@ func NewCreateMonthlyChallengeNotFoundResponseBody(res *goa.ServiceError) *Creat
 	return body
 }
 
+// NewListUsersUnauthorizedResponseBody builds the HTTP response body from the
+// result of the "ListUsers" endpoint of the "admin" service.
+func NewListUsersUnauthorizedResponseBody(res *goa.ServiceError) *ListUsersUnauthorizedResponseBody {
+	body := &ListUsersUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewListUsersNotFoundResponseBody builds the HTTP response body from the
+// result of the "ListUsers" endpoint of the "admin" service.
+func NewListUsersNotFoundResponseBody(res *goa.ServiceError) *ListUsersNotFoundResponseBody {
+	body := &ListUsersNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewListChallengesPayload builds a admin service ListChallenges endpoint
 // payload.
 func NewListChallengesPayload(token string) *admin.ListChallengesPayload {
@@ -485,6 +571,14 @@ func NewCreateMonthlyChallengePayload(body *CreateMonthlyChallengeRequestBody, t
 		StartDate:    *body.StartDate,
 		EndDate:      *body.EndDate,
 	}
+	v.Token = token
+
+	return v
+}
+
+// NewListUsersPayload builds a admin service ListUsers endpoint payload.
+func NewListUsersPayload(token string) *admin.ListUsersPayload {
+	v := &admin.ListUsersPayload{}
 	v.Token = token
 
 	return v

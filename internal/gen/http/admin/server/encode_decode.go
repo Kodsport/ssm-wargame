@@ -434,6 +434,84 @@ func EncodeCreateMonthlyChallengeError(encoder func(context.Context, http.Respon
 	}
 }
 
+// EncodeListUsersResponse returns an encoder for responses returned by the
+// admin ListUsers endpoint.
+func EncodeListUsersResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.([]*admin.SsmUser)
+		enc := encoder(ctx, w)
+		body := NewListUsersResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListUsersRequest returns a decoder for requests sent to the admin
+// ListUsers endpoint.
+func DecodeListUsersRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token string
+			err   error
+		)
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewListUsersPayload(token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeListUsersError returns an encoder for errors returned by the ListUsers
+// admin endpoint.
+func EncodeListUsersError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListUsersUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListUsersNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // marshalAdminviewsSsmChallengeViewToSsmChallengeResponse builds a value of
 // type *SsmChallengeResponse from a value of type *adminviews.SsmChallengeView.
 func marshalAdminviewsSsmChallengeViewToSsmChallengeResponse(v *adminviews.SsmChallengeView) *SsmChallengeResponse {
@@ -494,6 +572,19 @@ func marshalAdminMonthlyChallengeMetaToMonthlyChallengeMetaResponse(v *admin.Mon
 		DisplayMonth: v.DisplayMonth,
 		StartDate:    v.StartDate,
 		EndDate:      v.EndDate,
+	}
+
+	return res
+}
+
+// marshalAdminSsmUserToSsmUserResponse builds a value of type *SsmUserResponse
+// from a value of type *admin.SsmUser.
+func marshalAdminSsmUserToSsmUserResponse(v *admin.SsmUser) *SsmUserResponse {
+	res := &SsmUserResponse{
+		ID:        v.ID,
+		Email:     v.Email,
+		FirstName: v.FirstName,
+		LastName:  v.LastName,
 	}
 
 	return res

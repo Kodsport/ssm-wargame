@@ -546,6 +546,119 @@ func DecodeCreateMonthlyChallengeResponse(decoder func(*http.Response) goahttp.D
 	}
 }
 
+// BuildListUsersRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "ListUsers" endpoint
+func (c *Client) BuildListUsersRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListUsersAdminPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "ListUsers", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListUsersRequest returns an encoder for requests sent to the admin
+// ListUsers server.
+func EncodeListUsersRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.ListUsersPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "ListUsers", "*admin.ListUsersPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListUsersResponse returns a decoder for responses returned by the
+// admin ListUsers endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeListUsersResponse may return the following errors:
+//	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- error: internal error
+func DecodeListUsersResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListUsersResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListUsers", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateSsmUserResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListUsers", err)
+			}
+			res := NewListUsersSsmUserOK(body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body ListUsersUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListUsers", err)
+			}
+			err = ValidateListUsersUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListUsers", err)
+			}
+			return nil, NewListUsersUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ListUsersNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListUsers", err)
+			}
+			err = ValidateListUsersNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListUsers", err)
+			}
+			return nil, NewListUsersNotFound(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "ListUsers", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmChallengeResponseToAdminviewsSsmChallengeView builds a value of
 // type *adminviews.SsmChallengeView from a value of type *SsmChallengeResponse.
 func unmarshalSsmChallengeResponseToAdminviewsSsmChallengeView(v *SsmChallengeResponse) *adminviews.SsmChallengeView {
@@ -606,6 +719,19 @@ func unmarshalMonthlyChallengeMetaResponseToAdminMonthlyChallengeMeta(v *Monthly
 		DisplayMonth: *v.DisplayMonth,
 		StartDate:    *v.StartDate,
 		EndDate:      *v.EndDate,
+	}
+
+	return res
+}
+
+// unmarshalSsmUserResponseToAdminSsmUser builds a value of type *admin.SsmUser
+// from a value of type *SsmUserResponse.
+func unmarshalSsmUserResponseToAdminSsmUser(v *SsmUserResponse) *admin.SsmUser {
+	res := &admin.SsmUser{
+		ID:        *v.ID,
+		Email:     *v.Email,
+		FirstName: *v.FirstName,
+		LastName:  *v.LastName,
 	}
 
 	return res

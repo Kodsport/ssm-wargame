@@ -92,7 +92,7 @@ func BuildCreateMonthlyChallengePayload(adminCreateMonthlyChallengeBody string, 
 	{
 		err = json.Unmarshal([]byte(adminCreateMonthlyChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challengeID\": \"Et est.\",\n      \"display_month\": \"Januari/Februari\",\n      \"end_date\": \"2006-02-01\",\n      \"start_date\": \"2006-02-01\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challengeID\": \"Pariatur quo quia.\",\n      \"display_month\": \"Januari/Februari\",\n      \"end_date\": \"2006-02-01\",\n      \"start_date\": \"2006-02-01\"\n   }'")
 		}
 	}
 	var token string
@@ -105,6 +105,19 @@ func BuildCreateMonthlyChallengePayload(adminCreateMonthlyChallengeBody string, 
 		StartDate:    body.StartDate,
 		EndDate:      body.EndDate,
 	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListUsersPayload builds the payload for the admin ListUsers endpoint
+// from CLI flags.
+func BuildListUsersPayload(adminListUsersToken string) (*admin.ListUsersPayload, error) {
+	var token string
+	{
+		token = adminListUsersToken
+	}
+	v := &admin.ListUsersPayload{}
 	v.Token = token
 
 	return v, nil

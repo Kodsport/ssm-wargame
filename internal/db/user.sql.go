@@ -55,3 +55,37 @@ func (q *Queries) UserIDByDiscordID(ctx context.Context, discordID string) (uuid
 	err := row.Scan(&id)
 	return id, err
 }
+
+const users = `-- name: Users :many
+SELECT id, discord_id, first_name, last_name, email, role, school_id, created_at, updated_at FROM users
+`
+
+func (q *Queries) Users(ctx context.Context) ([]User, error) {
+	rows, err := q.db.Query(ctx, users)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.DiscordID,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Role,
+			&i.SchoolID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

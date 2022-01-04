@@ -24,6 +24,7 @@ type Server struct {
 	ListMonthlyChallenges  http.Handler
 	DeleteMonthlyChallenge http.Handler
 	CreateMonthlyChallenge http.Handler
+	ListUsers              http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -64,12 +65,14 @@ func New(
 			{"ListMonthlyChallenges", "GET", "/admin/monthly_challenges"},
 			{"DeleteMonthlyChallenge", "DELETE", "/admin/monthly_challenges/{monthlyChallengeID}"},
 			{"CreateMonthlyChallenge", "POST", "/admin/monthly_challenges"},
+			{"ListUsers", "GET", "/admin/users"},
 		},
 		ListChallenges:         NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		CreateChallenge:        NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
 		ListMonthlyChallenges:  NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
 		DeleteMonthlyChallenge: NewDeleteMonthlyChallengeHandler(e.DeleteMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
 		CreateMonthlyChallenge: NewCreateMonthlyChallengeHandler(e.CreateMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
+		ListUsers:              NewListUsersHandler(e.ListUsers, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -83,6 +86,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListMonthlyChallenges = m(s.ListMonthlyChallenges)
 	s.DeleteMonthlyChallenge = m(s.DeleteMonthlyChallenge)
 	s.CreateMonthlyChallenge = m(s.CreateMonthlyChallenge)
+	s.ListUsers = m(s.ListUsers)
 }
 
 // Mount configures the mux to serve the admin endpoints.
@@ -92,6 +96,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountListMonthlyChallengesHandler(mux, h.ListMonthlyChallenges)
 	MountDeleteMonthlyChallengeHandler(mux, h.DeleteMonthlyChallenge)
 	MountCreateMonthlyChallengeHandler(mux, h.CreateMonthlyChallenge)
+	MountListUsersHandler(mux, h.ListUsers)
 }
 
 // MountListChallengesHandler configures the mux to serve the "admin" service
@@ -328,6 +333,57 @@ func NewCreateMonthlyChallengeHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "CreateMonthlyChallenge")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListUsersHandler configures the mux to serve the "admin" service
+// "ListUsers" endpoint.
+func MountListUsersHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/users", f)
+}
+
+// NewListUsersHandler creates a HTTP handler which loads the HTTP request and
+// calls the "admin" service "ListUsers" endpoint.
+func NewListUsersHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListUsersRequest(mux, decoder)
+		encodeResponse = EncodeListUsersResponse(encoder)
+		encodeError    = EncodeListUsersError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListUsers")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

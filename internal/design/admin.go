@@ -73,4 +73,14 @@ var _ = Service("admin", func() {
 		})
 	})
 
+	Method("ListUsers", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+		})
+		Result(ArrayOf(User))
+		HTTP(func() {
+			GET("/users")
+		})
+	})
+
 })

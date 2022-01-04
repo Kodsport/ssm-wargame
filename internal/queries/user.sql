@@ -6,3 +6,6 @@ INSERT INTO users (id, discord_id, email, role) VALUES (@id::uuid, @discord_id::
 
 -- name: UserByID :one
 SELECT * FROM users WHERE id = $1; 
+
+-- name: Users :many
+SELECT * FROM users;

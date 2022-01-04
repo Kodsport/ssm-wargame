@@ -20,16 +20,18 @@ type Client struct {
 	ListMonthlyChallengesEndpoint  goa.Endpoint
 	DeleteMonthlyChallengeEndpoint goa.Endpoint
 	CreateMonthlyChallengeEndpoint goa.Endpoint
+	ListUsersEndpoint              goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, createChallenge, listMonthlyChallenges, deleteMonthlyChallenge, createMonthlyChallenge goa.Endpoint) *Client {
+func NewClient(listChallenges, createChallenge, listMonthlyChallenges, deleteMonthlyChallenge, createMonthlyChallenge, listUsers goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:         listChallenges,
 		CreateChallengeEndpoint:        createChallenge,
 		ListMonthlyChallengesEndpoint:  listMonthlyChallenges,
 		DeleteMonthlyChallengeEndpoint: deleteMonthlyChallenge,
 		CreateMonthlyChallengeEndpoint: createMonthlyChallenge,
+		ListUsersEndpoint:              listUsers,
 	}
 }
 
@@ -72,4 +74,14 @@ func (c *Client) DeleteMonthlyChallenge(ctx context.Context, p *DeleteMonthlyCha
 func (c *Client) CreateMonthlyChallenge(ctx context.Context, p *CreateMonthlyChallengePayload) (err error) {
 	_, err = c.CreateMonthlyChallengeEndpoint(ctx, p)
 	return
+}
+
+// ListUsers calls the "ListUsers" endpoint of the "admin" service.
+func (c *Client) ListUsers(ctx context.Context, p *ListUsersPayload) (res []*SsmUser, err error) {
+	var ires interface{}
+	ires, err = c.ListUsersEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*SsmUser), nil
 }

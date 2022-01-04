@@ -35,3 +35,8 @@ func DeleteMonthlyChallengeAdminPath(monthlyChallengeID string) string {
 func CreateMonthlyChallengeAdminPath() string {
 	return "/admin/monthly_challenges"
 }
+
+// ListUsersAdminPath returns the URL path to the admin service ListUsers HTTP endpoint.
+func ListUsersAdminPath() string {
+	return "/admin/users"
+}

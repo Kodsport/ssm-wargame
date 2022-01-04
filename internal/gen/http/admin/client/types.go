@@ -46,6 +46,10 @@ type ListChallengesResponseBody []*SsmChallengeResponse
 // "ListMonthlyChallenges" endpoint HTTP response body.
 type ListMonthlyChallengesResponseBody []*MonthlyChallengeMetaResponse
 
+// ListUsersResponseBody is the type of the "admin" service "ListUsers"
+// endpoint HTTP response body.
+type ListUsersResponseBody []*SsmUserResponse
+
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "unauthorized" error.
 type ListChallengesUnauthorizedResponseBody struct {
@@ -232,6 +236,42 @@ type CreateMonthlyChallengeNotFoundResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// ListUsersUnauthorizedResponseBody is the type of the "admin" service
+// "ListUsers" endpoint HTTP response body for the "unauthorized" error.
+type ListUsersUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListUsersNotFoundResponseBody is the type of the "admin" service "ListUsers"
+// endpoint HTTP response body for the "not_found" error.
+type ListUsersNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
@@ -266,6 +306,14 @@ type MonthlyChallengeMetaResponse struct {
 	StartDate *string `form:"start_date,omitempty" json:"start_date,omitempty" xml:"start_date,omitempty"`
 	// Ending date of the monthly challenge
 	EndDate *string `form:"end_date,omitempty" json:"end_date,omitempty" xml:"end_date,omitempty"`
+}
+
+// SsmUserResponse is used to define fields on response body types.
+type SsmUserResponse struct {
+	ID        *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Email     *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	FirstName *string `form:"first_name,omitempty" json:"first_name,omitempty" xml:"first_name,omitempty"`
+	LastName  *string `form:"last_name,omitempty" json:"last_name,omitempty" xml:"last_name,omitempty"`
 }
 
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
@@ -452,6 +500,47 @@ func NewCreateMonthlyChallengeUnauthorized(body *CreateMonthlyChallengeUnauthori
 // NewCreateMonthlyChallengeNotFound builds a admin service
 // CreateMonthlyChallenge endpoint not_found error.
 func NewCreateMonthlyChallengeNotFound(body *CreateMonthlyChallengeNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListUsersSsmUserOK builds a "admin" service "ListUsers" endpoint result
+// from a HTTP "OK" response.
+func NewListUsersSsmUserOK(body []*SsmUserResponse) []*admin.SsmUser {
+	v := make([]*admin.SsmUser, len(body))
+	for i, val := range body {
+		v[i] = unmarshalSsmUserResponseToAdminSsmUser(val)
+	}
+
+	return v
+}
+
+// NewListUsersUnauthorized builds a admin service ListUsers endpoint
+// unauthorized error.
+func NewListUsersUnauthorized(body *ListUsersUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListUsersNotFound builds a admin service ListUsers endpoint not_found
+// error.
+func NewListUsersNotFound(body *ListUsersNotFoundResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -704,6 +793,54 @@ func ValidateCreateMonthlyChallengeNotFoundResponseBody(body *CreateMonthlyChall
 	return
 }
 
+// ValidateListUsersUnauthorizedResponseBody runs the validations defined on
+// ListUsers_unauthorized_Response_Body
+func ValidateListUsersUnauthorizedResponseBody(body *ListUsersUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListUsersNotFoundResponseBody runs the validations defined on
+// ListUsers_not_found_Response_Body
+func ValidateListUsersNotFoundResponseBody(body *ListUsersNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateSsmChallengeResponse runs the validations defined on
 // SsmChallengeResponse
 func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
@@ -742,6 +879,23 @@ func ValidateMonthlyChallengeMetaResponse(body *MonthlyChallengeMetaResponse) (e
 	}
 	if body.DisplayMonth == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("display_month", "body"))
+	}
+	return
+}
+
+// ValidateSsmUserResponse runs the validations defined on SsmUserResponse
+func ValidateSsmUserResponse(body *SsmUserResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	if body.FirstName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("first_name", "body"))
+	}
+	if body.LastName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("last_name", "body"))
 	}
 	return
 }

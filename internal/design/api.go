@@ -20,6 +20,22 @@ var TokenPayload = Type("TokenPayload", func() {
 	Required("token")
 })
 
+var User = ResultType("application/vnd.ssm.user", func() {
+	Attribute("id", String, func() {
+		Example("uuid todo")
+	})
+	Attribute("email", String, func() {
+		Example("movitz.sunar@ssm.example")
+	})
+	Attribute("first_name", String, func() {
+		Example("Movitz")
+	})
+	Attribute("last_name", String, func() {
+		Example("Sunar")
+	})
+	Required("id", "email", "first_name", "last_name")
+})
+
 var ChallengeService = Type("ChallengeService", func() {
 
 })

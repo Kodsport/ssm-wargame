@@ -27,6 +27,8 @@ type Service interface {
 	DeleteMonthlyChallenge(context.Context, *DeleteMonthlyChallengePayload) (err error)
 	// CreateMonthlyChallenge implements CreateMonthlyChallenge.
 	CreateMonthlyChallenge(context.Context, *CreateMonthlyChallengePayload) (err error)
+	// ListUsers implements ListUsers.
+	ListUsers(context.Context, *ListUsersPayload) (res []*SsmUser, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -43,7 +45,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [5]string{"ListChallenges", "CreateChallenge", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "CreateMonthlyChallenge"}
+var MethodNames = [6]string{"ListChallenges", "CreateChallenge", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "CreateMonthlyChallenge", "ListUsers"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -95,6 +97,11 @@ type CreateMonthlyChallengePayload struct {
 	EndDate string
 }
 
+// ListUsersPayload is the payload type of the admin service ListUsers method.
+type ListUsersPayload struct {
+	Token string
+}
+
 // A Wargame challenge
 type SsmChallenge struct {
 	ID string
@@ -126,6 +133,13 @@ type MonthlyChallengeMeta struct {
 	StartDate string
 	// Ending date of the monthly challenge
 	EndDate string
+}
+
+type SsmUser struct {
+	ID        string
+	Email     string
+	FirstName string
+	LastName  string
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.

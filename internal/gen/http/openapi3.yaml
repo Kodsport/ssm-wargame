@@ -166,13 +166,13 @@ paths:
                 - display_month: Januari/Februari
                   end_date: "2006-02-01"
                   start_date: "2006-02-01"
+                - display_month: Januari/Februari
+                  end_date: "2006-02-01"
+                  start_date: "2006-02-01"
+                - display_month: Januari/Februari
+                  end_date: "2006-02-01"
+                  start_date: "2006-02-01"
               example:
-              - display_month: Januari/Februari
-                end_date: "2006-02-01"
-                start_date: "2006-02-01"
-              - display_month: Januari/Februari
-                end_date: "2006-02-01"
-                start_date: "2006-02-01"
               - display_month: Januari/Februari
                 end_date: "2006-02-01"
                 start_date: "2006-02-01"
@@ -213,7 +213,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateMonthlyChallengeRequestBody'
             example:
-              challengeID: Et est.
+              challengeID: Pariatur quo quia.
               display_month: Januari/Februari
               end_date: "2006-02-01"
               start_date: "2006-02-01"
@@ -254,11 +254,66 @@ paths:
         required: true
         schema:
           type: string
-          example: Optio impedit repellat harum.
-        example: Eos tenetur.
+          example: Quos nesciunt sed quia error quasi earum.
+        example: Illo necessitatibus officia sapiente ipsum deleniti perspiciatis.
       responses:
         "204":
           description: No Content response.
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/users:
+    get:
+      tags:
+      - admin
+      summary: ListUsers admin
+      operationId: admin#ListUsers
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SsmUser'
+                example:
+                - email: movitz.sunar@ssm.example
+                  first_name: Movitz
+                  id: uuid todo
+                  last_name: Sunar
+                - email: movitz.sunar@ssm.example
+                  first_name: Movitz
+                  id: uuid todo
+                  last_name: Sunar
+              example:
+              - email: movitz.sunar@ssm.example
+                first_name: Movitz
+                id: uuid todo
+                last_name: Sunar
+              - email: movitz.sunar@ssm.example
+                first_name: Movitz
+                id: uuid todo
+                last_name: Sunar
         "403":
           description: When the user does not have the required role
           content:
@@ -472,6 +527,23 @@ paths:
                 services:
                 - {}
                 - {}
+                slug: pwnme
+                solves: 3
+                start_date: "2006-02-01"
+                title: pwnme
+              - description: A heap overflow challenge
+                display_month: Januari/Februari
+                end_date: "2006-02-01"
+                files:
+                - {}
+                - {}
+                - {}
+                - {}
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                published: true
+                score: 50
+                services:
+                - {}
                 - {}
                 slug: pwnme
                 solves: 3
@@ -491,7 +563,6 @@ paths:
                 services:
                 - {}
                 - {}
-                - {}
                 slug: pwnme
                 solves: 3
                 start_date: "2006-02-01"
@@ -508,26 +579,6 @@ paths:
                 published: true
                 score: 50
                 services:
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                start_date: "2006-02-01"
-                title: pwnme
-              - description: A heap overflow challenge
-                display_month: Januari/Februari
-                end_date: "2006-02-01"
-                files:
-                - {}
-                - {}
-                - {}
-                - {}
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -579,7 +630,7 @@ components:
       properties:
         challengeID:
           type: string
-          example: Animi ipsum nam atque accusamus facilis.
+          example: Facere soluta omnis omnis assumenda.
         display_month:
           type: string
           description: The month(s) that the challenge is assigned for
@@ -593,7 +644,7 @@ components:
           description: Starting date of the monthly challenge
           example: "2006-02-01"
       example:
-        challengeID: Et ut rerum eaque.
+        challengeID: Modi voluptatem.
         display_month: Januari/Februari
         end_date: "2006-02-01"
         start_date: "2006-02-01"
@@ -760,6 +811,7 @@ components:
         - {}
         - {}
         - {}
+        - {}
         slug: pwnme
         solves: 3
         title: pwnme
@@ -776,21 +828,6 @@ components:
       items:
         $ref: '#/components/schemas/SsmChallenge'
       example:
-      - description: A heap overflow challenge
-        files:
-        - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
       - description: A heap overflow challenge
         files:
         - {}
@@ -877,8 +914,6 @@ components:
           example:
           - {}
           - {}
-          - {}
-          - {}
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -904,12 +939,11 @@ components:
         files:
         - {}
         - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
-        - {}
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -946,6 +980,23 @@ components:
         services:
         - {}
         - {}
+        slug: pwnme
+        solves: 3
+        start_date: "2006-02-01"
+        title: pwnme
+      - description: A heap overflow challenge
+        display_month: Januari/Februari
+        end_date: "2006-02-01"
+        files:
+        - {}
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
+        - {}
         - {}
         slug: pwnme
         solves: 3
@@ -965,11 +1016,35 @@ components:
         services:
         - {}
         - {}
-        - {}
         slug: pwnme
         solves: 3
         start_date: "2006-02-01"
         title: pwnme
+    SsmUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: movitz.sunar@ssm.example
+        first_name:
+          type: string
+          example: Movitz
+        id:
+          type: string
+          example: uuid todo
+        last_name:
+          type: string
+          example: Sunar
+      example:
+        email: movitz.sunar@ssm.example
+        first_name: Movitz
+        id: uuid todo
+        last_name: Sunar
+      required:
+      - id
+      - email
+      - first_name
+      - last_name
     SubmitFlagRequestBody:
       type: object
       properties:

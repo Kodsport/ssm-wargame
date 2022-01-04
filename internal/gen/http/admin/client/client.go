@@ -37,6 +37,10 @@ type Client struct {
 	// CreateMonthlyChallenge endpoint.
 	CreateMonthlyChallengeDoer goahttp.Doer
 
+	// ListUsers Doer is the HTTP client used to make requests to the ListUsers
+	// endpoint.
+	ListUsersDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -62,6 +66,7 @@ func NewClient(
 		ListMonthlyChallengesDoer:  doer,
 		DeleteMonthlyChallengeDoer: doer,
 		CreateMonthlyChallengeDoer: doer,
+		ListUsersDoer:              doer,
 		RestoreResponseBody:        restoreBody,
 		scheme:                     scheme,
 		host:                       host,
@@ -185,6 +190,30 @@ func (c *Client) CreateMonthlyChallenge() goa.Endpoint {
 		resp, err := c.CreateMonthlyChallengeDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "CreateMonthlyChallenge", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// ListUsers returns an endpoint that makes HTTP requests to the admin service
+// ListUsers server.
+func (c *Client) ListUsers() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeListUsersRequest(c.encoder)
+		decodeResponse = DecodeListUsersResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildListUsersRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ListUsersDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "ListUsers", err)
 		}
 		return decodeResponse(resp)
 	}
