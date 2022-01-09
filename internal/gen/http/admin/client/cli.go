@@ -12,6 +12,7 @@ import (
 	"fmt"
 
 	admin "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // BuildListChallengesPayload builds the payload for the admin ListChallenges
@@ -68,17 +69,23 @@ func BuildListMonthlyChallengesPayload(adminListMonthlyChallengesToken string) (
 
 // BuildDeleteMonthlyChallengePayload builds the payload for the admin
 // DeleteMonthlyChallenge endpoint from CLI flags.
-func BuildDeleteMonthlyChallengePayload(adminDeleteMonthlyChallengeMonthlyChallengeID string, adminDeleteMonthlyChallengeToken string) (*admin.DeleteMonthlyChallengePayload, error) {
-	var monthlyChallengeID string
+func BuildDeleteMonthlyChallengePayload(adminDeleteMonthlyChallengeChallengeID string, adminDeleteMonthlyChallengeToken string) (*admin.DeleteMonthlyChallengePayload, error) {
+	var err error
+	var challengeID string
 	{
-		monthlyChallengeID = adminDeleteMonthlyChallengeMonthlyChallengeID
+		challengeID = adminDeleteMonthlyChallengeChallengeID
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
 	}
 	var token string
 	{
 		token = adminDeleteMonthlyChallengeToken
 	}
 	v := &admin.DeleteMonthlyChallengePayload{}
-	v.MonthlyChallengeID = monthlyChallengeID
+	v.ChallengeID = challengeID
 	v.Token = token
 
 	return v, nil
@@ -92,7 +99,12 @@ func BuildCreateMonthlyChallengePayload(adminCreateMonthlyChallengeBody string, 
 	{
 		err = json.Unmarshal([]byte(adminCreateMonthlyChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challengeID\": \"Pariatur quo quia.\",\n      \"display_month\": \"Januari/Februari\",\n      \"end_date\": \"2006-02-01\",\n      \"start_date\": \"2006-02-01\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challengeID\": \"195229b0-b15f-4ee5-9a99-94bfff492967\",\n      \"display_month\": \"Januari/Februari\",\n      \"end_date\": \"2006-02-01\",\n      \"start_date\": \"2006-02-01\"\n   }'")
+		}
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.challengeID", body.ChallengeID, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
 		}
 	}
 	var token string
@@ -100,10 +112,10 @@ func BuildCreateMonthlyChallengePayload(adminCreateMonthlyChallengeBody string, 
 		token = adminCreateMonthlyChallengeToken
 	}
 	v := &admin.CreateMonthlyChallengePayload{
-		ChallengeID:  body.ChallengeID,
 		DisplayMonth: body.DisplayMonth,
 		StartDate:    body.StartDate,
 		EndDate:      body.EndDate,
+		ChallengeID:  body.ChallengeID,
 	}
 	v.Token = token
 

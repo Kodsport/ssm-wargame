@@ -52,12 +52,10 @@ var _ = Service("admin", func() {
 	Method("DeleteMonthlyChallenge", func() {
 		Payload(func() {
 			Extend(TokenPayload)
-
-			Attribute("monthlyChallengeID", String)
-			Required("monthlyChallengeID")
+			Extend(ChallengeIDArtifact)
 		})
 		HTTP(func() {
-			DELETE("/monthly_challenges/{monthlyChallengeID}")
+			DELETE("/monthly_challenges/{challengeID}")
 		})
 	})
 
@@ -65,8 +63,7 @@ var _ = Service("admin", func() {
 		Payload(func() {
 			Extend(TokenPayload)
 			Extend(MonthlyChallengeMeta)
-			Attribute("challengeID", String)
-			Required("challengeID")
+			Extend(ChallengeIDArtifact)
 		})
 		HTTP(func() {
 			POST("/monthly_challenges")

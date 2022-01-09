@@ -64,7 +64,8 @@ type SsmMonthlyChallengeCollection []*SsmMonthlyChallenge
 // SubmitFlagPayload is the payload type of the challenge service SubmitFlag
 // method.
 type SubmitFlagPayload struct {
-	Flag        string
+	Flag string
+	// ID of a challenge
 	ChallengeID string
 	Token       string
 }

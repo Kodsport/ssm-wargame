@@ -63,7 +63,7 @@ func New(
 			{"ListChallenges", "GET", "/admin/challenges"},
 			{"CreateChallenge", "POST", "/admin/challenges"},
 			{"ListMonthlyChallenges", "GET", "/admin/monthly_challenges"},
-			{"DeleteMonthlyChallenge", "DELETE", "/admin/monthly_challenges/{monthlyChallengeID}"},
+			{"DeleteMonthlyChallenge", "DELETE", "/admin/monthly_challenges/{challengeID}"},
 			{"CreateMonthlyChallenge", "POST", "/admin/monthly_challenges"},
 			{"ListUsers", "GET", "/admin/users"},
 		},
@@ -261,7 +261,7 @@ func MountDeleteMonthlyChallengeHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("DELETE", "/admin/monthly_challenges/{monthlyChallengeID}", f)
+	mux.Handle("DELETE", "/admin/monthly_challenges/{challengeID}", f)
 }
 
 // NewDeleteMonthlyChallengeHandler creates a HTTP handler which loads the HTTP

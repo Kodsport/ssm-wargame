@@ -80,21 +80,23 @@ type ListMonthlyChallengesPayload struct {
 // DeleteMonthlyChallengePayload is the payload type of the admin service
 // DeleteMonthlyChallenge method.
 type DeleteMonthlyChallengePayload struct {
-	MonthlyChallengeID string
-	Token              string
+	Token string
+	// ID of a challenge
+	ChallengeID string
 }
 
 // CreateMonthlyChallengePayload is the payload type of the admin service
 // CreateMonthlyChallenge method.
 type CreateMonthlyChallengePayload struct {
-	ChallengeID string
-	Token       string
+	Token string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string
 	// Starting date of the monthly challenge
 	StartDate string
 	// Ending date of the monthly challenge
 	EndDate string
+	// ID of a challenge
+	ChallengeID string
 }
 
 // ListUsersPayload is the payload type of the admin service ListUsers method.

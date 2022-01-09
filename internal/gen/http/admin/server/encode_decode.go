@@ -279,13 +279,15 @@ func EncodeDeleteMonthlyChallengeResponse(encoder func(context.Context, http.Res
 func DecodeDeleteMonthlyChallengeRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			monthlyChallengeID string
-			token              string
-			err                error
+			challengeID string
+			token       string
+			err         error
 
 			params = mux.Vars(r)
 		)
-		monthlyChallengeID = params["monthlyChallengeID"]
+		challengeID = params["challengeID"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+
 		token = r.Header.Get("Authorization")
 		if token == "" {
 			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
@@ -293,7 +295,7 @@ func DecodeDeleteMonthlyChallengeRequest(mux goahttp.Muxer, decoder func(*http.R
 		if err != nil {
 			return nil, err
 		}
-		payload := NewDeleteMonthlyChallengePayload(monthlyChallengeID, token)
+		payload := NewDeleteMonthlyChallengePayload(challengeID, token)
 		if strings.Contains(payload.Token, " ") {
 			// Remove authorization scheme prefix (e.g. "Bearer")
 			cred := strings.SplitN(payload.Token, " ", 2)[1]

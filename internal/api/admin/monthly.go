@@ -67,7 +67,7 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 
 func (s *service) DeleteMonthlyChallenge(ctx context.Context, req *spec.DeleteMonthlyChallengePayload) error {
 
-	err := db.New(s.db).DeleteMonthlyChallenge(ctx, uuid.MustParse(req.MonthlyChallengeID))
+	err := db.New(s.db).DeleteMonthlyChallenge(ctx, uuid.MustParse(req.ChallengeID))
 	if err == pgx.ErrNoRows {
 		return spec.MakeNotFound(errors.New("monthly challenge not found"))
 	}

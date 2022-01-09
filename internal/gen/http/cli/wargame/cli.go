@@ -33,9 +33,9 @@ challenge (list-challenges|list-monthly-challenges|submit-flag)
 
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
-	return os.Args[0] + ` admin list-challenges --token "Alias sequi repellat alias voluptas eum sit."` + "\n" +
+	return os.Args[0] + ` admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges --token "Nemo aut illum magni voluptatem illum numquam."` + "\n" +
+		os.Args[0] + ` challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		""
 }
 
@@ -61,9 +61,9 @@ func ParseEndpoint(
 		adminListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
 		adminListMonthlyChallengesTokenFlag = adminListMonthlyChallengesFlags.String("token", "REQUIRED", "")
 
-		adminDeleteMonthlyChallengeFlags                  = flag.NewFlagSet("delete-monthly-challenge", flag.ExitOnError)
-		adminDeleteMonthlyChallengeMonthlyChallengeIDFlag = adminDeleteMonthlyChallengeFlags.String("monthly-challenge-id", "REQUIRED", "")
-		adminDeleteMonthlyChallengeTokenFlag              = adminDeleteMonthlyChallengeFlags.String("token", "REQUIRED", "")
+		adminDeleteMonthlyChallengeFlags           = flag.NewFlagSet("delete-monthly-challenge", flag.ExitOnError)
+		adminDeleteMonthlyChallengeChallengeIDFlag = adminDeleteMonthlyChallengeFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
+		adminDeleteMonthlyChallengeTokenFlag       = adminDeleteMonthlyChallengeFlags.String("token", "REQUIRED", "")
 
 		adminCreateMonthlyChallengeFlags     = flag.NewFlagSet("create-monthly-challenge", flag.ExitOnError)
 		adminCreateMonthlyChallengeBodyFlag  = adminCreateMonthlyChallengeFlags.String("body", "REQUIRED", "")
@@ -89,7 +89,7 @@ func ParseEndpoint(
 
 		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
 		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
-		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "")
+		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
 		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "REQUIRED", "")
 	)
 	adminFlags.Usage = adminUsage
@@ -224,7 +224,7 @@ func ParseEndpoint(
 				data, err = adminc.BuildListMonthlyChallengesPayload(*adminListMonthlyChallengesTokenFlag)
 			case "delete-monthly-challenge":
 				endpoint = c.DeleteMonthlyChallenge()
-				data, err = adminc.BuildDeleteMonthlyChallengePayload(*adminDeleteMonthlyChallengeMonthlyChallengeIDFlag, *adminDeleteMonthlyChallengeTokenFlag)
+				data, err = adminc.BuildDeleteMonthlyChallengePayload(*adminDeleteMonthlyChallengeChallengeIDFlag, *adminDeleteMonthlyChallengeTokenFlag)
 			case "create-monthly-challenge":
 				endpoint = c.CreateMonthlyChallenge()
 				data, err = adminc.BuildCreateMonthlyChallengePayload(*adminCreateMonthlyChallengeBodyFlag, *adminCreateMonthlyChallengeTokenFlag)
@@ -289,7 +289,7 @@ ListChallenges implements ListChallenges.
     -token STRING: 
 
 Example:
-    %[1]s admin list-challenges --token "Alias sequi repellat alias voluptas eum sit."
+    %[1]s admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -306,7 +306,7 @@ Example:
       "score": 50,
       "slug": "pwnme",
       "title": "pwnme"
-   }' --token "A est est labore eligendi."
+   }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -317,19 +317,19 @@ ListMonthlyChallenges implements ListMonthlyChallenges.
     -token STRING: 
 
 Example:
-    %[1]s admin list-monthly-challenges --token "Nisi asperiores sed maiores aut qui."
+    %[1]s admin list-monthly-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
 func adminDeleteMonthlyChallengeUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin delete-monthly-challenge -monthly-challenge-id STRING -token STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin delete-monthly-challenge -challenge-id STRING -token STRING
 
 DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
-    -monthly-challenge-id STRING: 
+    -challenge-id STRING: ID of a challenge
     -token STRING: 
 
 Example:
-    %[1]s admin delete-monthly-challenge --monthly-challenge-id "Ut facilis." --token "Odit et error enim minus."
+    %[1]s admin delete-monthly-challenge --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -342,11 +342,11 @@ CreateMonthlyChallenge implements CreateMonthlyChallenge.
 
 Example:
     %[1]s admin create-monthly-challenge --body '{
-      "challengeID": "Pariatur quo quia.",
+      "challengeID": "195229b0-b15f-4ee5-9a99-94bfff492967",
       "display_month": "Januari/Februari",
       "end_date": "2006-02-01",
       "start_date": "2006-02-01"
-   }' --token "Natus fugiat cumque eius rem vel."
+   }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -357,7 +357,7 @@ ListUsers implements ListUsers.
     -token STRING: 
 
 Example:
-    %[1]s admin list-users --token "Sit minus quae error molestias neque."
+    %[1]s admin list-users --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -422,7 +422,7 @@ ListChallenges implements ListChallenges.
     -token STRING: 
 
 Example:
-    %[1]s challenge list-challenges --token "Nemo aut illum magni voluptatem illum numquam."
+    %[1]s challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -433,7 +433,7 @@ ListMonthlyChallenges implements ListMonthlyChallenges.
     -token STRING: 
 
 Example:
-    %[1]s challenge list-monthly-challenges --token "Quia ducimus accusamus nostrum sed sint."
+    %[1]s challenge list-monthly-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -442,12 +442,12 @@ func challengeSubmitFlagUsage() {
 
 SubmitFlag implements SubmitFlag.
     -body JSON: 
-    -challenge-id STRING: 
+    -challenge-id STRING: ID of a challenge
     -token STRING: 
 
 Example:
     %[1]s challenge submit-flag --body '{
       "flag": "SSM{flag}"
-   }' --challenge-id "123" --token "Laudantium explicabo quos maxime."
+   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }

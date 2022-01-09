@@ -347,16 +347,16 @@ func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.De
 // endpoint
 func (c *Client) BuildDeleteMonthlyChallengeRequest(ctx context.Context, v interface{}) (*http.Request, error) {
 	var (
-		monthlyChallengeID string
+		challengeID string
 	)
 	{
 		p, ok := v.(*admin.DeleteMonthlyChallengePayload)
 		if !ok {
 			return nil, goahttp.ErrInvalidType("admin", "DeleteMonthlyChallenge", "*admin.DeleteMonthlyChallengePayload", v)
 		}
-		monthlyChallengeID = p.MonthlyChallengeID
+		challengeID = p.ChallengeID
 	}
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteMonthlyChallengeAdminPath(monthlyChallengeID)}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteMonthlyChallengeAdminPath(challengeID)}
 	req, err := http.NewRequest("DELETE", u.String(), nil)
 	if err != nil {
 		return nil, goahttp.ErrInvalidURL("admin", "DeleteMonthlyChallenge", u.String(), err)

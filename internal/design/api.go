@@ -11,12 +11,22 @@ var _ = API("wargame", func() {
 
 var JWTAuth = JWTSecurity("jwt")
 
+var ChallengeIDArtifact = Type("ChallengeIDArtifact", func() {
+	Attribute("challengeID", String, "ID of a challenge", func() {
+		Example("195229b0-b15f-4ee5-9a99-94bfff492967")
+		Format(FormatUUID)
+	})
+	Required("challengeID")
+})
+
 var OptionalTokenPayload = Type("OptionalTokenPayload", func() {
-	Token("token", String)
+	Token("token", String, func() {
+		Example("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg")
+	})
 })
 
 var TokenPayload = Type("TokenPayload", func() {
-	Token("token", String)
+	Extend(OptionalTokenPayload)
 	Required("token")
 })
 

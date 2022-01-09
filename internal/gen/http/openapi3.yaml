@@ -25,12 +25,11 @@ paths:
                 files:
                 - {}
                 - {}
+                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
-                - {}
-                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -40,42 +39,11 @@ paths:
                 files:
                 - {}
                 - {}
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - description: A heap overflow challenge
-                files:
-                - {}
                 - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
-                - {}
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - description: A heap overflow challenge
-                files:
-                - {}
-                - {}
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
-                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -179,6 +147,9 @@ paths:
               - display_month: Januari/Februari
                 end_date: "2006-02-01"
                 start_date: "2006-02-01"
+              - display_month: Januari/Februari
+                end_date: "2006-02-01"
+                start_date: "2006-02-01"
         "403":
           description: When the user does not have the required role
           content:
@@ -213,7 +184,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateMonthlyChallengeRequestBody'
             example:
-              challengeID: Pariatur quo quia.
+              challengeID: 195229b0-b15f-4ee5-9a99-94bfff492967
               display_month: Januari/Februari
               end_date: "2006-02-01"
               start_date: "2006-02-01"
@@ -242,20 +213,23 @@ paths:
                 name: bad_request
       security:
       - jwt_header_Authorization: []
-  /admin/monthly_challenges/{monthlyChallengeID}:
+  /admin/monthly_challenges/{challengeID}:
     delete:
       tags:
       - admin
       summary: DeleteMonthlyChallenge admin
       operationId: admin#DeleteMonthlyChallenge
       parameters:
-      - name: monthlyChallengeID
+      - name: challengeID
         in: path
+        description: ID of a challenge
         required: true
         schema:
           type: string
-          example: Quos nesciunt sed quia error quasi earum.
-        example: Illo necessitatibus officia sapiente ipsum deleniti perspiciatis.
+          description: ID of a challenge
+          example: 195229b0-b15f-4ee5-9a99-94bfff492967
+          format: uuid
+        example: 195229b0-b15f-4ee5-9a99-94bfff492967
       responses:
         "204":
           description: No Content response.
@@ -297,6 +271,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/SsmUser'
                 example:
+                - email: movitz.sunar@ssm.example
+                  first_name: Movitz
+                  id: uuid todo
+                  last_name: Sunar
                 - email: movitz.sunar@ssm.example
                   first_name: Movitz
                   id: uuid todo
@@ -393,12 +371,11 @@ paths:
                 files:
                 - {}
                 - {}
+                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
-                - {}
-                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -408,42 +385,11 @@ paths:
                 files:
                 - {}
                 - {}
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - description: A heap overflow challenge
-                files:
-                - {}
                 - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
-                - {}
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - description: A heap overflow challenge
-                files:
-                - {}
-                - {}
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
-                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -460,12 +406,14 @@ paths:
       parameters:
       - name: challengeID
         in: path
+        description: ID of a challenge
         required: true
         schema:
           type: string
-          example: "123"
+          description: ID of a challenge
+          example: 195229b0-b15f-4ee5-9a99-94bfff492967
           format: uuid
-        example: "123"
+        example: 195229b0-b15f-4ee5-9a99-94bfff492967
       requestBody:
         required: true
         content:
@@ -520,11 +468,11 @@ paths:
                 - {}
                 - {}
                 - {}
-                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
+                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -538,11 +486,11 @@ paths:
                 - {}
                 - {}
                 - {}
-                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
+                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -556,29 +504,11 @@ paths:
                 - {}
                 - {}
                 - {}
-                - {}
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
                 - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                start_date: "2006-02-01"
-                title: pwnme
-              - description: A heap overflow challenge
-                display_month: Januari/Februari
-                end_date: "2006-02-01"
-                files:
-                - {}
-                - {}
-                - {}
-                - {}
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
                 - {}
                 - {}
                 slug: pwnme
@@ -630,7 +560,9 @@ components:
       properties:
         challengeID:
           type: string
-          example: Facere soluta omnis omnis assumenda.
+          description: ID of a challenge
+          example: 195229b0-b15f-4ee5-9a99-94bfff492967
+          format: uuid
         display_month:
           type: string
           description: The month(s) that the challenge is assigned for
@@ -644,15 +576,15 @@ components:
           description: Starting date of the monthly challenge
           example: "2006-02-01"
       example:
-        challengeID: Modi voluptatem.
+        challengeID: 195229b0-b15f-4ee5-9a99-94bfff492967
         display_month: Januari/Februari
         end_date: "2006-02-01"
         start_date: "2006-02-01"
       required:
-      - challengeID
       - start_date
       - end_date
       - display_month
+      - challengeID
     Error:
       type: object
       properties:
@@ -677,11 +609,11 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-          example: false
+          example: true
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: false
+          example: true
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -784,6 +716,8 @@ components:
           example:
           - {}
           - {}
+          - {}
+          - {}
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -804,12 +738,11 @@ components:
         - {}
         - {}
         - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
-        - {}
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -832,12 +765,11 @@ components:
         files:
         - {}
         - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
-        - {}
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -847,12 +779,11 @@ components:
         files:
         - {}
         - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
-        - {}
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -862,12 +793,25 @@ components:
         files:
         - {}
         - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
         - {}
         - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      - description: A heap overflow challenge
+        files:
+        - {}
+        - {}
+        - {}
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        published: true
+        score: 50
+        services:
         - {}
         - {}
         slug: pwnme
@@ -912,6 +856,7 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - {}
           - {}
           - {}
         slug:
@@ -973,11 +918,11 @@ components:
         - {}
         - {}
         - {}
-        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
+        - {}
         - {}
         - {}
         slug: pwnme
@@ -991,11 +936,11 @@ components:
         - {}
         - {}
         - {}
-        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
+        - {}
         - {}
         - {}
         slug: pwnme
@@ -1009,11 +954,11 @@ components:
         - {}
         - {}
         - {}
-        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
+        - {}
         - {}
         - {}
         slug: pwnme

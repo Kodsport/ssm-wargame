@@ -29,13 +29,14 @@ type CreateChallengeRequestBody struct {
 // CreateMonthlyChallengeRequestBody is the type of the "admin" service
 // "CreateMonthlyChallenge" endpoint HTTP request body.
 type CreateMonthlyChallengeRequestBody struct {
-	ChallengeID string `form:"challengeID" json:"challengeID" xml:"challengeID"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
 	// Starting date of the monthly challenge
 	StartDate string `form:"start_date" json:"start_date" xml:"start_date"`
 	// Ending date of the monthly challenge
 	EndDate string `form:"end_date" json:"end_date" xml:"end_date"`
+	// ID of a challenge
+	ChallengeID string `form:"challengeID" json:"challengeID" xml:"challengeID"`
 }
 
 // ListChallengesResponseBody is the type of the "admin" service
@@ -332,10 +333,10 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 // payload of the "CreateMonthlyChallenge" endpoint of the "admin" service.
 func NewCreateMonthlyChallengeRequestBody(p *admin.CreateMonthlyChallengePayload) *CreateMonthlyChallengeRequestBody {
 	body := &CreateMonthlyChallengeRequestBody{
-		ChallengeID:  p.ChallengeID,
 		DisplayMonth: p.DisplayMonth,
 		StartDate:    p.StartDate,
 		EndDate:      p.EndDate,
+		ChallengeID:  p.ChallengeID,
 	}
 	return body
 }
