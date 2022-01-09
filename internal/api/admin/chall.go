@@ -112,12 +112,11 @@ func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignC
 
 	go func() {
 		defer func() {
-			err := recover()
-			if err != nil {
+			if err := recover(); err != nil {
 				s.log.Error("objectWait paniced", zap.Any("err", err))
 			}
 		}()
-		s.objectWait(context.Background(), fileID, s.cfg.S3.Bucket, objectKey)
+		s.checkUploaded(context.Background(), fileID, s.cfg.S3.Bucket, objectKey)
 	}()
 
 	return &spec.PresignChallFileUploadResult{
@@ -125,7 +124,7 @@ func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignC
 	}, nil
 }
 
-func (s *service) objectWait(ctx context.Context, fileID uuid.UUID, bucket, key string) {
+func (s *service) checkUploaded(ctx context.Context, fileID uuid.UUID, bucket, key string) {
 
 	log := s.log.With(zap.String("fileID", fileID.String()))
 
