@@ -26,6 +26,14 @@ type CreateChallengeRequestBody struct {
 	Score int32 `form:"score" json:"score" xml:"score"`
 }
 
+// PresignChallFileUploadRequestBody is the type of the "admin" service
+// "PresignChallFileUpload" endpoint HTTP request body.
+type PresignChallFileUploadRequestBody struct {
+	// MD5 hash of the file content
+	Md5      string `form:"md5" json:"md5" xml:"md5"`
+	Filename string `form:"filename" json:"filename" xml:"filename"`
+}
+
 // CreateMonthlyChallengeRequestBody is the type of the "admin" service
 // "CreateMonthlyChallenge" endpoint HTTP request body.
 type CreateMonthlyChallengeRequestBody struct {
@@ -42,6 +50,13 @@ type CreateMonthlyChallengeRequestBody struct {
 // ListChallengesResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmChallengeResponse
+
+// PresignChallFileUploadResponseBody is the type of the "admin" service
+// "PresignChallFileUpload" endpoint HTTP response body.
+type PresignChallFileUploadResponseBody struct {
+	// Signed PutObject URL
+	URL *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
+}
 
 // ListMonthlyChallengesResponseBody is the type of the "admin" service
 // "ListMonthlyChallenges" endpoint HTTP response body.
@@ -87,6 +102,24 @@ type ListChallengesNotFoundResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// ListChallengesBadRequestResponseBody is the type of the "admin" service
+// "ListChallenges" endpoint HTTP response body for the "bad_request" error.
+type ListChallengesBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // CreateChallengeUnauthorizedResponseBody is the type of the "admin" service
 // "CreateChallenge" endpoint HTTP response body for the "unauthorized" error.
 type CreateChallengeUnauthorizedResponseBody struct {
@@ -108,6 +141,81 @@ type CreateChallengeUnauthorizedResponseBody struct {
 // CreateChallengeNotFoundResponseBody is the type of the "admin" service
 // "CreateChallenge" endpoint HTTP response body for the "not_found" error.
 type CreateChallengeNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateChallengeBadRequestResponseBody is the type of the "admin" service
+// "CreateChallenge" endpoint HTTP response body for the "bad_request" error.
+type CreateChallengeBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// PresignChallFileUploadUnauthorizedResponseBody is the type of the "admin"
+// service "PresignChallFileUpload" endpoint HTTP response body for the
+// "unauthorized" error.
+type PresignChallFileUploadUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// PresignChallFileUploadNotFoundResponseBody is the type of the "admin"
+// service "PresignChallFileUpload" endpoint HTTP response body for the
+// "not_found" error.
+type PresignChallFileUploadNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// PresignChallFileUploadBadRequestResponseBody is the type of the "admin"
+// service "PresignChallFileUpload" endpoint HTTP response body for the
+// "bad_request" error.
+type PresignChallFileUploadBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -161,6 +269,25 @@ type ListMonthlyChallengesNotFoundResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// ListMonthlyChallengesBadRequestResponseBody is the type of the "admin"
+// service "ListMonthlyChallenges" endpoint HTTP response body for the
+// "bad_request" error.
+type ListMonthlyChallengesBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // DeleteMonthlyChallengeUnauthorizedResponseBody is the type of the "admin"
 // service "DeleteMonthlyChallenge" endpoint HTTP response body for the
 // "unauthorized" error.
@@ -184,6 +311,25 @@ type DeleteMonthlyChallengeUnauthorizedResponseBody struct {
 // service "DeleteMonthlyChallenge" endpoint HTTP response body for the
 // "not_found" error.
 type DeleteMonthlyChallengeNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteMonthlyChallengeBadRequestResponseBody is the type of the "admin"
+// service "DeleteMonthlyChallenge" endpoint HTTP response body for the
+// "bad_request" error.
+type DeleteMonthlyChallengeBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -237,6 +383,25 @@ type CreateMonthlyChallengeNotFoundResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// CreateMonthlyChallengeBadRequestResponseBody is the type of the "admin"
+// service "CreateMonthlyChallenge" endpoint HTTP response body for the
+// "bad_request" error.
+type CreateMonthlyChallengeBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // ListUsersUnauthorizedResponseBody is the type of the "admin" service
 // "ListUsers" endpoint HTTP response body for the "unauthorized" error.
 type ListUsersUnauthorizedResponseBody struct {
@@ -258,6 +423,24 @@ type ListUsersUnauthorizedResponseBody struct {
 // ListUsersNotFoundResponseBody is the type of the "admin" service "ListUsers"
 // endpoint HTTP response body for the "not_found" error.
 type ListUsersNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListUsersBadRequestResponseBody is the type of the "admin" service
+// "ListUsers" endpoint HTTP response body for the "bad_request" error.
+type ListUsersBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -329,6 +512,16 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 	return body
 }
 
+// NewPresignChallFileUploadRequestBody builds the HTTP request body from the
+// payload of the "PresignChallFileUpload" endpoint of the "admin" service.
+func NewPresignChallFileUploadRequestBody(p *admin.PresignChallFileUploadPayload) *PresignChallFileUploadRequestBody {
+	body := &PresignChallFileUploadRequestBody{
+		Md5:      p.Md5,
+		Filename: p.Filename,
+	}
+	return body
+}
+
 // NewCreateMonthlyChallengeRequestBody builds the HTTP request body from the
 // payload of the "CreateMonthlyChallenge" endpoint of the "admin" service.
 func NewCreateMonthlyChallengeRequestBody(p *admin.CreateMonthlyChallengePayload) *CreateMonthlyChallengeRequestBody {
@@ -382,6 +575,21 @@ func NewListChallengesNotFound(body *ListChallengesNotFoundResponseBody) *goa.Se
 	return v
 }
 
+// NewListChallengesBadRequest builds a admin service ListChallenges endpoint
+// bad_request error.
+func NewListChallengesBadRequest(body *ListChallengesBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
 // NewCreateChallengeUnauthorized builds a admin service CreateChallenge
 // endpoint unauthorized error.
 func NewCreateChallengeUnauthorized(body *CreateChallengeUnauthorizedResponseBody) *goa.ServiceError {
@@ -400,6 +608,76 @@ func NewCreateChallengeUnauthorized(body *CreateChallengeUnauthorizedResponseBod
 // NewCreateChallengeNotFound builds a admin service CreateChallenge endpoint
 // not_found error.
 func NewCreateChallengeNotFound(body *CreateChallengeNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateChallengeBadRequest builds a admin service CreateChallenge endpoint
+// bad_request error.
+func NewCreateChallengeBadRequest(body *CreateChallengeBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewPresignChallFileUploadResultOK builds a "admin" service
+// "PresignChallFileUpload" endpoint result from a HTTP "OK" response.
+func NewPresignChallFileUploadResultOK(body *PresignChallFileUploadResponseBody) *admin.PresignChallFileUploadResult {
+	v := &admin.PresignChallFileUploadResult{
+		URL: *body.URL,
+	}
+
+	return v
+}
+
+// NewPresignChallFileUploadUnauthorized builds a admin service
+// PresignChallFileUpload endpoint unauthorized error.
+func NewPresignChallFileUploadUnauthorized(body *PresignChallFileUploadUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewPresignChallFileUploadNotFound builds a admin service
+// PresignChallFileUpload endpoint not_found error.
+func NewPresignChallFileUploadNotFound(body *PresignChallFileUploadNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewPresignChallFileUploadBadRequest builds a admin service
+// PresignChallFileUpload endpoint bad_request error.
+func NewPresignChallFileUploadBadRequest(body *PresignChallFileUploadBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -453,6 +731,21 @@ func NewListMonthlyChallengesNotFound(body *ListMonthlyChallengesNotFoundRespons
 	return v
 }
 
+// NewListMonthlyChallengesBadRequest builds a admin service
+// ListMonthlyChallenges endpoint bad_request error.
+func NewListMonthlyChallengesBadRequest(body *ListMonthlyChallengesBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
 // NewDeleteMonthlyChallengeUnauthorized builds a admin service
 // DeleteMonthlyChallenge endpoint unauthorized error.
 func NewDeleteMonthlyChallengeUnauthorized(body *DeleteMonthlyChallengeUnauthorizedResponseBody) *goa.ServiceError {
@@ -483,6 +776,21 @@ func NewDeleteMonthlyChallengeNotFound(body *DeleteMonthlyChallengeNotFoundRespo
 	return v
 }
 
+// NewDeleteMonthlyChallengeBadRequest builds a admin service
+// DeleteMonthlyChallenge endpoint bad_request error.
+func NewDeleteMonthlyChallengeBadRequest(body *DeleteMonthlyChallengeBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
 // NewCreateMonthlyChallengeUnauthorized builds a admin service
 // CreateMonthlyChallenge endpoint unauthorized error.
 func NewCreateMonthlyChallengeUnauthorized(body *CreateMonthlyChallengeUnauthorizedResponseBody) *goa.ServiceError {
@@ -501,6 +809,21 @@ func NewCreateMonthlyChallengeUnauthorized(body *CreateMonthlyChallengeUnauthori
 // NewCreateMonthlyChallengeNotFound builds a admin service
 // CreateMonthlyChallenge endpoint not_found error.
 func NewCreateMonthlyChallengeNotFound(body *CreateMonthlyChallengeNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateMonthlyChallengeBadRequest builds a admin service
+// CreateMonthlyChallenge endpoint bad_request error.
+func NewCreateMonthlyChallengeBadRequest(body *CreateMonthlyChallengeBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -554,6 +877,30 @@ func NewListUsersNotFound(body *ListUsersNotFoundResponseBody) *goa.ServiceError
 	return v
 }
 
+// NewListUsersBadRequest builds a admin service ListUsers endpoint bad_request
+// error.
+func NewListUsersBadRequest(body *ListUsersBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// ValidatePresignChallFileUploadResponseBody runs the validations defined on
+// PresignChallFileUploadResponseBody
+func ValidatePresignChallFileUploadResponseBody(body *PresignChallFileUploadResponseBody) (err error) {
+	if body.URL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
+	}
+	return
+}
+
 // ValidateListChallengesUnauthorizedResponseBody runs the validations defined
 // on ListChallenges_unauthorized_Response_Body
 func ValidateListChallengesUnauthorizedResponseBody(body *ListChallengesUnauthorizedResponseBody) (err error) {
@@ -581,6 +928,30 @@ func ValidateListChallengesUnauthorizedResponseBody(body *ListChallengesUnauthor
 // ValidateListChallengesNotFoundResponseBody runs the validations defined on
 // ListChallenges_not_found_Response_Body
 func ValidateListChallengesNotFoundResponseBody(body *ListChallengesNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListChallengesBadRequestResponseBody runs the validations defined on
+// ListChallenges_bad_request_Response_Body
+func ValidateListChallengesBadRequestResponseBody(body *ListChallengesBadRequestResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
@@ -650,6 +1021,102 @@ func ValidateCreateChallengeNotFoundResponseBody(body *CreateChallengeNotFoundRe
 	return
 }
 
+// ValidateCreateChallengeBadRequestResponseBody runs the validations defined
+// on CreateChallenge_bad_request_Response_Body
+func ValidateCreateChallengeBadRequestResponseBody(body *CreateChallengeBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidatePresignChallFileUploadUnauthorizedResponseBody runs the validations
+// defined on PresignChallFileUpload_unauthorized_Response_Body
+func ValidatePresignChallFileUploadUnauthorizedResponseBody(body *PresignChallFileUploadUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidatePresignChallFileUploadNotFoundResponseBody runs the validations
+// defined on PresignChallFileUpload_not_found_Response_Body
+func ValidatePresignChallFileUploadNotFoundResponseBody(body *PresignChallFileUploadNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidatePresignChallFileUploadBadRequestResponseBody runs the validations
+// defined on PresignChallFileUpload_bad_request_Response_Body
+func ValidatePresignChallFileUploadBadRequestResponseBody(body *PresignChallFileUploadBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateListMonthlyChallengesUnauthorizedResponseBody runs the validations
 // defined on ListMonthlyChallenges_unauthorized_Response_Body
 func ValidateListMonthlyChallengesUnauthorizedResponseBody(body *ListMonthlyChallengesUnauthorizedResponseBody) (err error) {
@@ -677,6 +1144,30 @@ func ValidateListMonthlyChallengesUnauthorizedResponseBody(body *ListMonthlyChal
 // ValidateListMonthlyChallengesNotFoundResponseBody runs the validations
 // defined on ListMonthlyChallenges_not_found_Response_Body
 func ValidateListMonthlyChallengesNotFoundResponseBody(body *ListMonthlyChallengesNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListMonthlyChallengesBadRequestResponseBody runs the validations
+// defined on ListMonthlyChallenges_bad_request_Response_Body
+func ValidateListMonthlyChallengesBadRequestResponseBody(body *ListMonthlyChallengesBadRequestResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
@@ -746,6 +1237,30 @@ func ValidateDeleteMonthlyChallengeNotFoundResponseBody(body *DeleteMonthlyChall
 	return
 }
 
+// ValidateDeleteMonthlyChallengeBadRequestResponseBody runs the validations
+// defined on DeleteMonthlyChallenge_bad_request_Response_Body
+func ValidateDeleteMonthlyChallengeBadRequestResponseBody(body *DeleteMonthlyChallengeBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateCreateMonthlyChallengeUnauthorizedResponseBody runs the validations
 // defined on CreateMonthlyChallenge_unauthorized_Response_Body
 func ValidateCreateMonthlyChallengeUnauthorizedResponseBody(body *CreateMonthlyChallengeUnauthorizedResponseBody) (err error) {
@@ -794,6 +1309,30 @@ func ValidateCreateMonthlyChallengeNotFoundResponseBody(body *CreateMonthlyChall
 	return
 }
 
+// ValidateCreateMonthlyChallengeBadRequestResponseBody runs the validations
+// defined on CreateMonthlyChallenge_bad_request_Response_Body
+func ValidateCreateMonthlyChallengeBadRequestResponseBody(body *CreateMonthlyChallengeBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateListUsersUnauthorizedResponseBody runs the validations defined on
 // ListUsers_unauthorized_Response_Body
 func ValidateListUsersUnauthorizedResponseBody(body *ListUsersUnauthorizedResponseBody) (err error) {
@@ -821,6 +1360,30 @@ func ValidateListUsersUnauthorizedResponseBody(body *ListUsersUnauthorizedRespon
 // ValidateListUsersNotFoundResponseBody runs the validations defined on
 // ListUsers_not_found_Response_Body
 func ValidateListUsersNotFoundResponseBody(body *ListUsersNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListUsersBadRequestResponseBody runs the validations defined on
+// ListUsers_bad_request_Response_Body
+func ValidateListUsersBadRequestResponseBody(body *ListUsersBadRequestResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}

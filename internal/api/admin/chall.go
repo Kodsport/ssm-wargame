@@ -2,7 +2,12 @@ package admin
 
 import (
 	"context"
+	"errors"
+	"time"
 
+	"github.com/aws/aws-sdk-go/aws/awserr"
+	"github.com/aws/aws-sdk-go/aws/request"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
@@ -55,4 +60,91 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 	}
 
 	return nil
+}
+
+func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignChallFileUploadPayload) (*spec.PresignChallFileUploadResult, error) {
+
+	log := s.log.With(zap.String("challengeID", req.ChallengeID), utils.C(ctx))
+
+	challID := uuid.MustParse(req.ChallengeID) // uuid format already validated
+
+	exists, err := db.New(s.db).ChallengeExists(ctx, challID)
+	if err != nil {
+		log.Error("could not exec ChallengeExists")
+		return nil, err
+	}
+
+	if !exists {
+		return nil, spec.MakeNotFound(errors.New("could not find challenge"))
+	}
+
+	log.Info("signing url")
+
+	objectKey := req.ChallengeID + "/" + req.Filename
+
+	r, _ := s.s3.PutObjectRequest(&s3.PutObjectInput{
+		Bucket:     &s.cfg.S3.Bucket,
+		Key:        &objectKey,
+		ContentMD5: &req.Md5,
+	})
+
+	url, err := r.Presign(time.Second * 20)
+	if err != nil {
+		log.Error("could not sign url", zap.Error(err))
+		return nil, err
+	}
+
+	fileID := uuid.New()
+
+	err = db.New(s.db).InsertFile(ctx, db.InsertFileParams{
+		ID:          fileID,
+		ChallengeID: challID,
+		Fname:       req.Filename,
+		Bucket:      s.cfg.S3.Bucket,
+		Key:         objectKey,
+		Md5:         req.Md5,
+	})
+
+	if err != nil {
+		log.Error("could not insert file", zap.Error(err))
+		return nil, err
+	}
+
+	go s.objectWait(context.Background(), fileID, s.cfg.S3.Bucket, objectKey)
+
+	return &spec.PresignChallFileUploadResult{
+		URL: url,
+	}, nil
+}
+
+func (s *service) objectWait(ctx context.Context, fileID uuid.UUID, bucket, key string) {
+
+	log := s.log.With(zap.String("fileID", fileID.String()))
+
+	err := s.s3.WaitUntilObjectExistsWithContext(ctx, &s3.HeadObjectInput{
+		Bucket: &bucket,
+		Key:    &key,
+	}, request.WithWaiterDelay(request.ConstantWaiterDelay(time.Second*5)), request.WithWaiterMaxAttempts(5))
+
+	if err == nil {
+		err = db.New(s.db).FileMarkUploaded(ctx, fileID)
+		if err != nil {
+			log.Error("could not mark file as uploaded", zap.Error(err))
+		}
+		return
+	}
+
+	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "ResourceNotReady" {
+		log.Info("file was not uploaded", zap.String("fileID", fileID.String()))
+
+		err = db.New(s.db).DeleteFile(ctx, fileID)
+		if err != nil {
+			log.Error("could not delete non-uploaded file", zap.Error(err))
+		}
+
+		return
+	}
+
+	log.Warn("could not head object", zap.Error(err), zap.String("fileID", fileID.String()))
+
 }

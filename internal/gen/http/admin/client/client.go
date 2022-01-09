@@ -25,6 +25,10 @@ type Client struct {
 	// CreateChallenge endpoint.
 	CreateChallengeDoer goahttp.Doer
 
+	// PresignChallFileUpload Doer is the HTTP client used to make requests to the
+	// PresignChallFileUpload endpoint.
+	PresignChallFileUploadDoer goahttp.Doer
+
 	// ListMonthlyChallenges Doer is the HTTP client used to make requests to the
 	// ListMonthlyChallenges endpoint.
 	ListMonthlyChallengesDoer goahttp.Doer
@@ -63,6 +67,7 @@ func NewClient(
 	return &Client{
 		ListChallengesDoer:         doer,
 		CreateChallengeDoer:        doer,
+		PresignChallFileUploadDoer: doer,
 		ListMonthlyChallengesDoer:  doer,
 		DeleteMonthlyChallengeDoer: doer,
 		CreateMonthlyChallengeDoer: doer,
@@ -118,6 +123,30 @@ func (c *Client) CreateChallenge() goa.Endpoint {
 		resp, err := c.CreateChallengeDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "CreateChallenge", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// PresignChallFileUpload returns an endpoint that makes HTTP requests to the
+// admin service PresignChallFileUpload server.
+func (c *Client) PresignChallFileUpload() goa.Endpoint {
+	var (
+		encodeRequest  = EncodePresignChallFileUploadRequest(c.encoder)
+		decodeResponse = DecodePresignChallFileUploadResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildPresignChallFileUploadRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.PresignChallFileUploadDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "PresignChallFileUpload", err)
 		}
 		return decodeResponse(resp)
 	}

@@ -6,6 +6,10 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
@@ -63,6 +67,18 @@ func realMain() error {
 
 	auther := auth.New(cfg, log, conn)
 
+	sess, err := session.NewSession(&aws.Config{
+		Region:           aws.String("auto"),
+		Endpoint:         &cfg.S3.Endpoint,
+		Credentials:      credentials.NewStaticCredentials(cfg.S3.KeyID, cfg.S3.KeySecret, ""),
+		S3ForcePathStyle: aws.Bool(true),
+	})
+	if err != nil {
+		return err
+	}
+
+	s3c := s3.New(sess)
+
 	{
 		svc := challenge_service.NewService(conn, log, auther)
 		endpoints := challenge_transport.NewEndpoints(svc)
@@ -78,7 +94,7 @@ func realMain() error {
 		auth_server.Mount(mux, s)
 	}
 	{
-		svc := admin_service.NewService(conn, log, auther)
+		svc := admin_service.NewService(conn, log, auther, s3c, cfg)
 		endpoints := admin_transport.NewEndpoints(svc)
 		s := admin_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())

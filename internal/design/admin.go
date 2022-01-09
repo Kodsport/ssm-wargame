@@ -5,11 +5,15 @@ import . "goa.design/goa/v3/dsl"
 var _ = Service("admin", func() {
 	Error("unauthorized")
 	Error("not_found")
+	Error("bad_request")
 	HTTP(func() {
 		Response("unauthorized", StatusForbidden, func() {
 			Description("When the user does not have the required role")
 		})
 		Response("not_found", StatusNotFound, func() {
+			Description("Resource not found")
+		})
+		Response("bad_request", StatusBadRequest, func() {
 			Description("Resource not found")
 		})
 
@@ -36,6 +40,30 @@ var _ = Service("admin", func() {
 		HTTP(func() {
 			POST("/challenges")
 			Response(StatusCreated)
+		})
+	})
+
+	Method("PresignChallFileUpload", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(ChallengeIDArtifact)
+			Attribute("md5", String, "MD5 hash of the file content in base64", func() {
+				Example("cq02dBbcuugBHM1oKyvMlQ==")
+			})
+			Attribute("filename", String, func() {
+				Example("decryptor.exe")
+			})
+			Required("md5", "filename")
+		})
+		Result(func() {
+			Attribute("url", String, "Signed PutObject URL ", func() {
+				Example("https://s3-endpoint.example/bucket/key?signature=xxx")
+			})
+			Required("url")
+		})
+		HTTP(func() {
+			POST("/challenges/{challengeID}/file_url")
+			Response(StatusOK)
 		})
 	})
 

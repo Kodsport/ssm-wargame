@@ -25,7 +25,7 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `admin (list-challenges|create-challenge|list-monthly-challenges|delete-monthly-challenge|create-monthly-challenge|list-users)
+	return `admin (list-challenges|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|create-monthly-challenge|list-users)
 auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-monthly-challenges|submit-flag)
 `
@@ -57,6 +57,11 @@ func ParseEndpoint(
 		adminCreateChallengeFlags     = flag.NewFlagSet("create-challenge", flag.ExitOnError)
 		adminCreateChallengeBodyFlag  = adminCreateChallengeFlags.String("body", "REQUIRED", "")
 		adminCreateChallengeTokenFlag = adminCreateChallengeFlags.String("token", "REQUIRED", "")
+
+		adminPresignChallFileUploadFlags           = flag.NewFlagSet("presign-chall-file-upload", flag.ExitOnError)
+		adminPresignChallFileUploadBodyFlag        = adminPresignChallFileUploadFlags.String("body", "REQUIRED", "")
+		adminPresignChallFileUploadChallengeIDFlag = adminPresignChallFileUploadFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
+		adminPresignChallFileUploadTokenFlag       = adminPresignChallFileUploadFlags.String("token", "REQUIRED", "")
 
 		adminListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
 		adminListMonthlyChallengesTokenFlag = adminListMonthlyChallengesFlags.String("token", "REQUIRED", "")
@@ -95,6 +100,7 @@ func ParseEndpoint(
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
 	adminCreateChallengeFlags.Usage = adminCreateChallengeUsage
+	adminPresignChallFileUploadFlags.Usage = adminPresignChallFileUploadUsage
 	adminListMonthlyChallengesFlags.Usage = adminListMonthlyChallengesUsage
 	adminDeleteMonthlyChallengeFlags.Usage = adminDeleteMonthlyChallengeUsage
 	adminCreateMonthlyChallengeFlags.Usage = adminCreateMonthlyChallengeUsage
@@ -152,6 +158,9 @@ func ParseEndpoint(
 
 			case "create-challenge":
 				epf = adminCreateChallengeFlags
+
+			case "presign-chall-file-upload":
+				epf = adminPresignChallFileUploadFlags
 
 			case "list-monthly-challenges":
 				epf = adminListMonthlyChallengesFlags
@@ -219,6 +228,9 @@ func ParseEndpoint(
 			case "create-challenge":
 				endpoint = c.CreateChallenge()
 				data, err = adminc.BuildCreateChallengePayload(*adminCreateChallengeBodyFlag, *adminCreateChallengeTokenFlag)
+			case "presign-chall-file-upload":
+				endpoint = c.PresignChallFileUpload()
+				data, err = adminc.BuildPresignChallFileUploadPayload(*adminPresignChallFileUploadBodyFlag, *adminPresignChallFileUploadChallengeIDFlag, *adminPresignChallFileUploadTokenFlag)
 			case "list-monthly-challenges":
 				endpoint = c.ListMonthlyChallenges()
 				data, err = adminc.BuildListMonthlyChallengesPayload(*adminListMonthlyChallengesTokenFlag)
@@ -273,6 +285,7 @@ Usage:
 COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
     create-challenge: CreateChallenge implements CreateChallenge.
+    presign-chall-file-upload: PresignChallFileUpload implements PresignChallFileUpload.
     list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
     delete-monthly-challenge: DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
     create-monthly-challenge: CreateMonthlyChallenge implements CreateMonthlyChallenge.
@@ -307,6 +320,22 @@ Example:
       "slug": "pwnme",
       "title": "pwnme"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminPresignChallFileUploadUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin presign-chall-file-upload -body JSON -challenge-id STRING -token STRING
+
+PresignChallFileUpload implements PresignChallFileUpload.
+    -body JSON: 
+    -challenge-id STRING: ID of a challenge
+    -token STRING: 
+
+Example:
+    %[1]s admin presign-chall-file-upload --body '{
+      "filename": "decryptor.exe",
+      "md5": "407a31aa693dbd161f39e36ed0efdb74"
+   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgtype"
 )
 
 type Category struct {
@@ -24,8 +23,6 @@ type Challenge struct {
 	Description string
 	Score       int32
 	Published   bool
-	Services    pgtype.JSON
-	Files       pgtype.JSON
 	CtfEventID  uuid.NullUUID
 	CreatedAt   time.Time
 	UpdatedAt   sql.NullTime
@@ -42,12 +39,15 @@ type ChallengeCategory struct {
 }
 
 type ChallengeFile struct {
-	ID          uuid.UUID
-	ChallengeID uuid.UUID
-	Url         string
-	Filename    string
-	CreatedAt   time.Time
-	UpdatedAt   sql.NullTime
+	ID           uuid.UUID
+	ChallengeID  uuid.NullUUID
+	FriendlyName string
+	Bucket       string
+	Key          string
+	Md5          string
+	Uploaded     bool
+	CreatedAt    time.Time
+	UpdatedAt    sql.NullTime
 }
 
 type ChallengeService struct {

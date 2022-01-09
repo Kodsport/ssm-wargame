@@ -62,6 +62,7 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 // DecodeListChallengesResponse may return the following errors:
 //	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
 //	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- "bad_request" (type *goa.ServiceError): http.StatusBadRequest
 //	- error: internal error
 func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -123,6 +124,20 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 				return nil, goahttp.ErrValidationError("admin", "ListChallenges", err)
 			}
 			return nil, NewListChallengesNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ListChallengesBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListChallenges", err)
+			}
+			err = ValidateListChallengesBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListChallenges", err)
+			}
+			return nil, NewListChallengesBadRequest(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "ListChallenges", resp.StatusCode, string(body))
@@ -175,6 +190,7 @@ func EncodeCreateChallengeRequest(encoder func(*http.Request) goahttp.Encoder) f
 // DecodeCreateChallengeResponse may return the following errors:
 //	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
 //	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- "bad_request" (type *goa.ServiceError): http.StatusBadRequest
 //	- error: internal error
 func DecodeCreateChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -221,9 +237,160 @@ func DecodeCreateChallengeResponse(decoder func(*http.Response) goahttp.Decoder,
 				return nil, goahttp.ErrValidationError("admin", "CreateChallenge", err)
 			}
 			return nil, NewCreateChallengeNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body CreateChallengeBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateChallenge", err)
+			}
+			err = ValidateCreateChallengeBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateChallenge", err)
+			}
+			return nil, NewCreateChallengeBadRequest(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "CreateChallenge", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildPresignChallFileUploadRequest instantiates a HTTP request object with
+// method and path set to call the "admin" service "PresignChallFileUpload"
+// endpoint
+func (c *Client) BuildPresignChallFileUploadRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		challengeID string
+	)
+	{
+		p, ok := v.(*admin.PresignChallFileUploadPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "PresignChallFileUpload", "*admin.PresignChallFileUploadPayload", v)
+		}
+		challengeID = p.ChallengeID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: PresignChallFileUploadAdminPath(challengeID)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "PresignChallFileUpload", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodePresignChallFileUploadRequest returns an encoder for requests sent to
+// the admin PresignChallFileUpload server.
+func EncodePresignChallFileUploadRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.PresignChallFileUploadPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "PresignChallFileUpload", "*admin.PresignChallFileUploadPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewPresignChallFileUploadRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "PresignChallFileUpload", err)
+		}
+		return nil
+	}
+}
+
+// DecodePresignChallFileUploadResponse returns a decoder for responses
+// returned by the admin PresignChallFileUpload endpoint. restoreBody controls
+// whether the response body should be restored after having been read.
+// DecodePresignChallFileUploadResponse may return the following errors:
+//	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//	- error: internal error
+func DecodePresignChallFileUploadResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body PresignChallFileUploadResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "PresignChallFileUpload", err)
+			}
+			err = ValidatePresignChallFileUploadResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "PresignChallFileUpload", err)
+			}
+			res := NewPresignChallFileUploadResultOK(&body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body PresignChallFileUploadUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "PresignChallFileUpload", err)
+			}
+			err = ValidatePresignChallFileUploadUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "PresignChallFileUpload", err)
+			}
+			return nil, NewPresignChallFileUploadUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body PresignChallFileUploadNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "PresignChallFileUpload", err)
+			}
+			err = ValidatePresignChallFileUploadNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "PresignChallFileUpload", err)
+			}
+			return nil, NewPresignChallFileUploadNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body PresignChallFileUploadBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "PresignChallFileUpload", err)
+			}
+			err = ValidatePresignChallFileUploadBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "PresignChallFileUpload", err)
+			}
+			return nil, NewPresignChallFileUploadBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "PresignChallFileUpload", resp.StatusCode, string(body))
 		}
 	}
 }
@@ -270,6 +437,7 @@ func EncodeListMonthlyChallengesRequest(encoder func(*http.Request) goahttp.Enco
 // DecodeListMonthlyChallengesResponse may return the following errors:
 //	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
 //	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- "bad_request" (type *goa.ServiceError): http.StatusBadRequest
 //	- error: internal error
 func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -335,6 +503,20 @@ func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.De
 				return nil, goahttp.ErrValidationError("admin", "ListMonthlyChallenges", err)
 			}
 			return nil, NewListMonthlyChallengesNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ListMonthlyChallengesBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListMonthlyChallenges", err)
+			}
+			err = ValidateListMonthlyChallengesBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListMonthlyChallenges", err)
+			}
+			return nil, NewListMonthlyChallengesBadRequest(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "ListMonthlyChallenges", resp.StatusCode, string(body))
@@ -394,6 +576,7 @@ func EncodeDeleteMonthlyChallengeRequest(encoder func(*http.Request) goahttp.Enc
 // DecodeDeleteMonthlyChallengeResponse may return the following errors:
 //	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
 //	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- "bad_request" (type *goa.ServiceError): http.StatusBadRequest
 //	- error: internal error
 func DecodeDeleteMonthlyChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -440,6 +623,20 @@ func DecodeDeleteMonthlyChallengeResponse(decoder func(*http.Response) goahttp.D
 				return nil, goahttp.ErrValidationError("admin", "DeleteMonthlyChallenge", err)
 			}
 			return nil, NewDeleteMonthlyChallengeNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body DeleteMonthlyChallengeBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteMonthlyChallenge", err)
+			}
+			err = ValidateDeleteMonthlyChallengeBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteMonthlyChallenge", err)
+			}
+			return nil, NewDeleteMonthlyChallengeBadRequest(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "DeleteMonthlyChallenge", resp.StatusCode, string(body))
@@ -493,6 +690,7 @@ func EncodeCreateMonthlyChallengeRequest(encoder func(*http.Request) goahttp.Enc
 // DecodeCreateMonthlyChallengeResponse may return the following errors:
 //	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
 //	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- "bad_request" (type *goa.ServiceError): http.StatusBadRequest
 //	- error: internal error
 func DecodeCreateMonthlyChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -539,6 +737,20 @@ func DecodeCreateMonthlyChallengeResponse(decoder func(*http.Response) goahttp.D
 				return nil, goahttp.ErrValidationError("admin", "CreateMonthlyChallenge", err)
 			}
 			return nil, NewCreateMonthlyChallengeNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body CreateMonthlyChallengeBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateMonthlyChallenge", err)
+			}
+			err = ValidateCreateMonthlyChallengeBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateMonthlyChallenge", err)
+			}
+			return nil, NewCreateMonthlyChallengeBadRequest(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "CreateMonthlyChallenge", resp.StatusCode, string(body))
@@ -587,6 +799,7 @@ func EncodeListUsersRequest(encoder func(*http.Request) goahttp.Encoder) func(*h
 // DecodeListUsersResponse may return the following errors:
 //	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
 //	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- "bad_request" (type *goa.ServiceError): http.StatusBadRequest
 //	- error: internal error
 func DecodeListUsersResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
@@ -652,6 +865,20 @@ func DecodeListUsersResponse(decoder func(*http.Response) goahttp.Decoder, resto
 				return nil, goahttp.ErrValidationError("admin", "ListUsers", err)
 			}
 			return nil, NewListUsersNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ListUsersBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListUsers", err)
+			}
+			err = ValidateListUsersBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListUsers", err)
+			}
+			return nil, NewListUsersBadRequest(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "ListUsers", resp.StatusCode, string(body))

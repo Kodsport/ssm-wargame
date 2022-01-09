@@ -28,3 +28,15 @@ INSERT INTO monthly_challenges (challenge_id, start_date, end_date, display_mont
 
 -- name: DeleteMonthlyChallenge :exec
 DELETE FROM monthly_challenges WHERE challenge_id = $1;
+
+-- name: ChallengeExists :one
+SELECT EXISTS(SELECT 1 FROM challenges WHERE id = $1);
+
+-- name: InsertFile :exec
+INSERT INTO challenge_files (id, challenge_id, friendly_name, bucket, key, md5, uploaded) VALUES (@id::uuid, @challenge_id::uuid, @fname::text, @bucket::text, @key::text, @md5::text, false);
+
+-- name: FileMarkUploaded :exec
+UPDATE challenge_files SET uploaded = true, updated_at = NOW() WHERE id = $1;
+
+-- name: DeleteFile :exec
+DELETE FROM challenge_files WHERE id = $1;

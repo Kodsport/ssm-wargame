@@ -54,6 +54,40 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 	return v, nil
 }
 
+// BuildPresignChallFileUploadPayload builds the payload for the admin
+// PresignChallFileUpload endpoint from CLI flags.
+func BuildPresignChallFileUploadPayload(adminPresignChallFileUploadBody string, adminPresignChallFileUploadChallengeID string, adminPresignChallFileUploadToken string) (*admin.PresignChallFileUploadPayload, error) {
+	var err error
+	var body PresignChallFileUploadRequestBody
+	{
+		err = json.Unmarshal([]byte(adminPresignChallFileUploadBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"filename\": \"decryptor.exe\",\n      \"md5\": \"407a31aa693dbd161f39e36ed0efdb74\"\n   }'")
+		}
+	}
+	var challengeID string
+	{
+		challengeID = adminPresignChallFileUploadChallengeID
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminPresignChallFileUploadToken
+	}
+	v := &admin.PresignChallFileUploadPayload{
+		Md5:      body.Md5,
+		Filename: body.Filename,
+	}
+	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildListMonthlyChallengesPayload builds the payload for the admin
 // ListMonthlyChallenges endpoint from CLI flags.
 func BuildListMonthlyChallengesPayload(adminListMonthlyChallengesToken string) (*admin.ListMonthlyChallengesPayload, error) {

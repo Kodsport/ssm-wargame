@@ -49,6 +49,16 @@ paths:
                 slug: pwnme
                 solves: 3
                 title: pwnme
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
         "403":
           description: When the user does not have the required role
           content:
@@ -90,6 +100,83 @@ paths:
       responses:
         "201":
           description: Created response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/challenges/{challengeID}/file_url:
+    post:
+      tags:
+      - admin
+      summary: PresignChallFileUpload admin
+      operationId: admin#PresignChallFileUpload
+      parameters:
+      - name: challengeID
+        in: path
+        description: ID of a challenge
+        required: true
+        schema:
+          type: string
+          description: ID of a challenge
+          example: 195229b0-b15f-4ee5-9a99-94bfff492967
+          format: uuid
+        example: 195229b0-b15f-4ee5-9a99-94bfff492967
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PresignChallFileUploadRequestBody'
+            example:
+              filename: decryptor.exe
+              md5: 407a31aa693dbd161f39e36ed0efdb74
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignChallFileUploadResponseBody'
+              example:
+                url: https://s3-endpoint.example/bucket/key?signature=xxx
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
         "403":
           description: When the user does not have the required role
           content:
@@ -137,9 +224,6 @@ paths:
                 - display_month: Januari/Februari
                   end_date: "2006-02-01"
                   start_date: "2006-02-01"
-                - display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  start_date: "2006-02-01"
               example:
               - display_month: Januari/Februari
                 end_date: "2006-02-01"
@@ -147,9 +231,16 @@ paths:
               - display_month: Januari/Februari
                 end_date: "2006-02-01"
                 start_date: "2006-02-01"
-              - display_month: Januari/Februari
-                end_date: "2006-02-01"
-                start_date: "2006-02-01"
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
         "403":
           description: When the user does not have the required role
           content:
@@ -191,6 +282,16 @@ paths:
       responses:
         "204":
           description: No Content response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
         "403":
           description: When the user does not have the required role
           content:
@@ -233,6 +334,16 @@ paths:
       responses:
         "204":
           description: No Content response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
         "403":
           description: When the user does not have the required role
           content:
@@ -292,6 +403,24 @@ paths:
                 first_name: Movitz
                 id: uuid todo
                 last_name: Sunar
+              - email: movitz.sunar@ssm.example
+                first_name: Movitz
+                id: uuid todo
+                last_name: Sunar
+              - email: movitz.sunar@ssm.example
+                first_name: Movitz
+                id: uuid todo
+                last_name: Sunar
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
         "403":
           description: When the user does not have the required role
           content:
@@ -350,7 +479,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GenerateDiscordAuthURLResponseBody'
+                $ref: '#/components/schemas/PresignChallFileUploadResponseBody'
               example:
                 url: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
   /challenges:
@@ -591,7 +720,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: false
+          example: true
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -609,11 +738,11 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-          example: true
+          example: false
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: true
+          example: false
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -651,16 +780,6 @@ components:
         jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
       required:
       - jwt
-    GenerateDiscordAuthURLResponseBody:
-      type: object
-      properties:
-        url:
-          type: string
-          example: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
-      example:
-        url: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
-      required:
-      - url
     MonthlyChallengeMeta:
       type: object
       properties:
@@ -684,6 +803,33 @@ components:
       - start_date
       - end_date
       - display_month
+    PresignChallFileUploadRequestBody:
+      type: object
+      properties:
+        filename:
+          type: string
+          example: decryptor.exe
+        md5:
+          type: string
+          description: MD5 hash of the file content
+          example: 407a31aa693dbd161f39e36ed0efdb74
+      example:
+        filename: decryptor.exe
+        md5: 407a31aa693dbd161f39e36ed0efdb74
+      required:
+      - md5
+      - filename
+    PresignChallFileUploadResponseBody:
+      type: object
+      properties:
+        url:
+          type: string
+          description: 'Signed PutObject URL '
+          example: https://s3-endpoint.example/bucket/key?signature=xxx
+      example:
+        url: https://s3-endpoint.example/bucket/key?signature=xxx
+      required:
+      - url
     SsmChallenge:
       type: object
       properties:
@@ -696,6 +842,8 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - {}
+          - {}
           - {}
           - {}
         id:
@@ -714,7 +862,6 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
           - {}
           - {}
           - {}
@@ -737,12 +884,12 @@ components:
         files:
         - {}
         - {}
-        - {}
-        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
+        - {}
+        - {}
         - {}
         - {}
         slug: pwnme
@@ -839,7 +986,6 @@ components:
           example:
           - {}
           - {}
-          - {}
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -885,10 +1031,12 @@ components:
         - {}
         - {}
         - {}
+        - {}
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
+        - {}
         - {}
         - {}
         slug: pwnme
@@ -911,24 +1059,6 @@ components:
       items:
         $ref: '#/components/schemas/SsmMonthlyChallenge'
       example:
-      - description: A heap overflow challenge
-        display_month: Januari/Februari
-        end_date: "2006-02-01"
-        files:
-        - {}
-        - {}
-        - {}
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        start_date: "2006-02-01"
-        title: pwnme
       - description: A heap overflow challenge
         display_month: Januari/Februari
         end_date: "2006-02-01"

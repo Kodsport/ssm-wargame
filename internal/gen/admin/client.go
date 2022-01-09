@@ -17,6 +17,7 @@ import (
 type Client struct {
 	ListChallengesEndpoint         goa.Endpoint
 	CreateChallengeEndpoint        goa.Endpoint
+	PresignChallFileUploadEndpoint goa.Endpoint
 	ListMonthlyChallengesEndpoint  goa.Endpoint
 	DeleteMonthlyChallengeEndpoint goa.Endpoint
 	CreateMonthlyChallengeEndpoint goa.Endpoint
@@ -24,10 +25,11 @@ type Client struct {
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, createChallenge, listMonthlyChallenges, deleteMonthlyChallenge, createMonthlyChallenge, listUsers goa.Endpoint) *Client {
+func NewClient(listChallenges, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, createMonthlyChallenge, listUsers goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:         listChallenges,
 		CreateChallengeEndpoint:        createChallenge,
+		PresignChallFileUploadEndpoint: presignChallFileUpload,
 		ListMonthlyChallengesEndpoint:  listMonthlyChallenges,
 		DeleteMonthlyChallengeEndpoint: deleteMonthlyChallenge,
 		CreateMonthlyChallengeEndpoint: createMonthlyChallenge,
@@ -49,6 +51,17 @@ func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (
 func (c *Client) CreateChallenge(ctx context.Context, p *CreateChallengePayload) (err error) {
 	_, err = c.CreateChallengeEndpoint(ctx, p)
 	return
+}
+
+// PresignChallFileUpload calls the "PresignChallFileUpload" endpoint of the
+// "admin" service.
+func (c *Client) PresignChallFileUpload(ctx context.Context, p *PresignChallFileUploadPayload) (res *PresignChallFileUploadResult, err error) {
+	var ires interface{}
+	ires, err = c.PresignChallFileUploadEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*PresignChallFileUploadResult), nil
 }
 
 // ListMonthlyChallenges calls the "ListMonthlyChallenges" endpoint of the

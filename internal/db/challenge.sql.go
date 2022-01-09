@@ -9,8 +9,27 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgtype"
 )
+
+const challengeExists = `-- name: ChallengeExists :one
+SELECT EXISTS(SELECT 1 FROM challenges WHERE id = $1)
+`
+
+func (q *Queries) ChallengeExists(ctx context.Context, id uuid.UUID) (bool, error) {
+	row := q.db.QueryRow(ctx, challengeExists, id)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const deleteFile = `-- name: DeleteFile :exec
+DELETE FROM challenge_files WHERE id = $1
+`
+
+func (q *Queries) DeleteFile(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteFile, id)
+	return err
+}
 
 const deleteMonthlyChallenge = `-- name: DeleteMonthlyChallenge :exec
 DELETE FROM monthly_challenges WHERE challenge_id = $1
@@ -18,6 +37,15 @@ DELETE FROM monthly_challenges WHERE challenge_id = $1
 
 func (q *Queries) DeleteMonthlyChallenge(ctx context.Context, challengeID uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteMonthlyChallenge, challengeID)
+	return err
+}
+
+const fileMarkUploaded = `-- name: FileMarkUploaded :exec
+UPDATE challenge_files SET uploaded = true, updated_at = NOW() WHERE id = $1
+`
+
+func (q *Queries) FileMarkUploaded(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, fileMarkUploaded, id)
 	return err
 }
 
@@ -83,6 +111,31 @@ func (q *Queries) InsertChallenge(ctx context.Context, arg InsertChallengeParams
 	return err
 }
 
+const insertFile = `-- name: InsertFile :exec
+INSERT INTO challenge_files (id, challenge_id, friendly_name, bucket, key, md5, uploaded) VALUES ($1::uuid, $2::uuid, $3::text, $4::text, $5::text, $6::text, false)
+`
+
+type InsertFileParams struct {
+	ID          uuid.UUID
+	ChallengeID uuid.UUID
+	Fname       string
+	Bucket      string
+	Key         string
+	Md5         string
+}
+
+func (q *Queries) InsertFile(ctx context.Context, arg InsertFileParams) error {
+	_, err := q.db.Exec(ctx, insertFile,
+		arg.ID,
+		arg.ChallengeID,
+		arg.Fname,
+		arg.Bucket,
+		arg.Key,
+		arg.Md5,
+	)
+	return err
+}
+
 const insertMonthlyChallenge = `-- name: InsertMonthlyChallenge :exec
 INSERT INTO monthly_challenges (challenge_id, start_date, end_date, display_month) VALUES ($1, $2, $3, $4)
 `
@@ -119,7 +172,7 @@ func (q *Queries) InsertSolve(ctx context.Context, arg InsertSolveParams) error 
 }
 
 const listChallengesWithSolves = `-- name: ListChallengesWithSolves :many
-SELECT c.id, c.slug, c.title, c.description, c.score, c.published, c.services, c.files, c.ctf_event_id, c.created_at, c.updated_at, COUNT(us.user_id) num_solves 
+SELECT c.id, c.slug, c.title, c.description, c.score, c.published, c.ctf_event_id, c.created_at, c.updated_at, COUNT(us.user_id) num_solves 
 FROM challenges c LEFT JOIN user_solves us ON us.challenge_id = c.id 
 WHERE (NOT c.published = $1::bool OR c.published = true)
 GROUP BY c.id
@@ -132,8 +185,6 @@ type ListChallengesWithSolvesRow struct {
 	Description string
 	Score       int32
 	Published   bool
-	Services    pgtype.JSON
-	Files       pgtype.JSON
 	CtfEventID  uuid.NullUUID
 	CreatedAt   time.Time
 	UpdatedAt   sql.NullTime
@@ -156,8 +207,6 @@ func (q *Queries) ListChallengesWithSolves(ctx context.Context, showUnpublished 
 			&i.Description,
 			&i.Score,
 			&i.Published,
-			&i.Services,
-			&i.Files,
 			&i.CtfEventID,
 			&i.CreatedAt,
 			&i.UpdatedAt,

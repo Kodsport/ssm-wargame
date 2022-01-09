@@ -20,6 +20,12 @@ type Config struct {
 			RedirectURL  string `env:"DISCORD_OAUTH_REDIRECT_URL, required=true"`
 		}
 	}
+	S3 struct {
+		Bucket    string `env:"S3_BUCKET"`
+		Endpoint  string `env:"S3_ENDPOINT"`
+		KeyID     string `env:"S3_KEY_ID"`
+		KeySecret string `env:"S3_KEY_SECRET"`
+	}
 	JWTSecret    string `env:"JWT_SECRET, required=true"`
 	MigrationDir string `env:"MIGRATION_DIR"`
 	Debug        bool   `env:"DEBUG, default=false"`

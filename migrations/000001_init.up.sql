@@ -45,8 +45,6 @@ CREATE TABLE challenges (
     description TEXT NOT NULL,
     score INT NOT NULL CHECK (score >= 0),
     published BOOLEAN NOT NULL,
-    services JSON, -- om de är attribut
-    files JSON, -- om de är attribut, alternativ nedan
     ctf_event_id UUID REFERENCES ctf_events(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
@@ -54,9 +52,6 @@ CREATE TABLE challenges (
 
 CREATE INDEX challenges_ctf_event_id_idx ON challenges ( ctf_event_id );
 
--- <alternativt> om vi gör servies och files till tabeller
-
--- är lite osäker på denna
 CREATE TABLE challenge_services (
     id UUID PRIMARY KEY,
     challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
@@ -73,16 +68,19 @@ CREATE INDEX challenge_services_challenge_id_idx ON challenge_services ( challen
 
 CREATE TABLE challenge_files (
     id UUID PRIMARY KEY,
-    challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
-    url TEXT NOT NULL,
-    filename TEXT NOT NULL,
+    challenge_id UUID REFERENCES challenges(id) ON DELETE SET NULL,
+    friendly_name TEXT NOT NULL,
+    bucket TEXT NOT NULL,
+    key TEXT NOT NULL,
+    md5 TEXT NOT NULL,
+    uploaded BOOLEAN NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ,
+
+    UNIQUE (bucket, key)
 );
 
 CREATE INDEX challenge_files_challenge_id_idx ON challenge_files ( challenge_id );
-
--- </alternativ>
 
 CREATE TABLE flags (
     id UUID PRIMARY KEY,

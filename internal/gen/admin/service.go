@@ -21,6 +21,8 @@ type Service interface {
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, err error)
 	// CreateChallenge implements CreateChallenge.
 	CreateChallenge(context.Context, *CreateChallengePayload) (err error)
+	// PresignChallFileUpload implements PresignChallFileUpload.
+	PresignChallFileUpload(context.Context, *PresignChallFileUploadPayload) (res *PresignChallFileUploadResult, err error)
 	// ListMonthlyChallenges implements ListMonthlyChallenges.
 	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallengeMeta, err error)
 	// DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
@@ -45,7 +47,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [6]string{"ListChallenges", "CreateChallenge", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "CreateMonthlyChallenge", "ListUsers"}
+var MethodNames = [7]string{"ListChallenges", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "CreateMonthlyChallenge", "ListUsers"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -69,6 +71,24 @@ type CreateChallengePayload struct {
 	// The number of points given to the solver
 	Score int32
 	Token string
+}
+
+// PresignChallFileUploadPayload is the payload type of the admin service
+// PresignChallFileUpload method.
+type PresignChallFileUploadPayload struct {
+	// MD5 hash of the file content
+	Md5      string
+	Filename string
+	Token    string
+	// ID of a challenge
+	ChallengeID string
+}
+
+// PresignChallFileUploadResult is the result type of the admin service
+// PresignChallFileUpload method.
+type PresignChallFileUploadResult struct {
+	// Signed PutObject URL
+	URL string
 }
 
 // ListMonthlyChallengesPayload is the payload type of the admin service
@@ -157,6 +177,15 @@ func MakeUnauthorized(err error) *goa.ServiceError {
 func MakeNotFound(err error) *goa.ServiceError {
 	return &goa.ServiceError{
 		Name:    "not_found",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
+}
+
+// MakeBadRequest builds a goa.ServiceError from an error.
+func MakeBadRequest(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "bad_request",
 		ID:      goa.NewErrorID(),
 		Message: err.Error(),
 	}
