@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 	"go.uber.org/zap"
@@ -51,11 +51,11 @@ func realMain() error {
 	}
 
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s", cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Port, cfg.DB.DBName, cfg.DB.SSLMode)
-	conn, err := pgx.Connect(context.Background(), connStr)
+	pool, err := pgxpool.Connect(context.Background(), connStr)
 	if err != nil {
 		return err
 	}
-	defer conn.Close(context.Background())
+	defer pool.Close()
 
 	log, err := zap.NewDevelopment()
 	if err != nil {
@@ -65,7 +65,7 @@ func realMain() error {
 
 	mux := goahttp.NewMuxer()
 
-	auther := auth.New(cfg, log, conn)
+	auther := auth.New(cfg, log, pool)
 
 	sess, err := session.NewSession(&aws.Config{
 		Region:           aws.String("auto"),
@@ -80,21 +80,21 @@ func realMain() error {
 	s3c := s3.New(sess)
 
 	{
-		svc := challenge_service.NewService(conn, log, auther)
+		svc := challenge_service.NewService(pool, log, auther)
 		endpoints := challenge_transport.NewEndpoints(svc)
 		s := challenge_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
 		challenge_server.Mount(mux, s)
 	}
 	{
-		svc := auth_service.NewService(conn, log, cfg)
+		svc := auth_service.NewService(pool, log, cfg)
 		endpoints := auth_transport.NewEndpoints(svc)
 		s := auth_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
 		auth_server.Mount(mux, s)
 	}
 	{
-		svc := admin_service.NewService(conn, log, auther, s3c, cfg)
+		svc := admin_service.NewService(pool, log, auther, s3c, cfg)
 		endpoints := admin_transport.NewEndpoints(svc)
 		s := admin_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())

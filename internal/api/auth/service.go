@@ -8,6 +8,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/auth"
@@ -19,14 +20,14 @@ import (
 )
 
 type service struct {
-	db        *pgx.Conn
+	db        *pgxpool.Pool
 	q         *db.Queries
 	log       *zap.Logger
 	config    *oauth2.Config
 	jwtSecret []byte
 }
 
-func NewService(conn *pgx.Conn, log *zap.Logger, cfg *config.Config) spec.Service {
+func NewService(conn *pgxpool.Pool, log *zap.Logger, cfg *config.Config) spec.Service {
 
 	config := &oauth2.Config{
 		ClientID:     cfg.OAuth.Discord.ClientID,

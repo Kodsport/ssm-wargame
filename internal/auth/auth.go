@@ -7,6 +7,7 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	"go.uber.org/zap"
@@ -22,14 +23,14 @@ const (
 type Auther struct {
 	jwtSecret []byte
 	log       *zap.Logger
-	conn      *pgx.Conn
+	db        *pgxpool.Pool
 }
 
-func New(cfg *config.Config, log *zap.Logger, conn *pgx.Conn) *Auther {
+func New(cfg *config.Config, log *zap.Logger, db *pgxpool.Pool) *Auther {
 	return &Auther{
 		jwtSecret: []byte(cfg.JWTSecret),
 		log:       log.Named("auth-middleware"),
-		conn:      conn,
+		db:        db,
 	}
 }
 
@@ -54,7 +55,7 @@ func (s *Auther) JWTAuth(ctx context.Context, token string, schema *security.JWT
 
 	userID := uuid.MustParse(claims.Subject)
 
-	user, err := db.New(s.conn).UserByID(ctx, userID)
+	user, err := db.New(s.db).UserByID(ctx, userID)
 	if err == pgx.ErrNoRows {
 		s.log.Warn("subject from valid jwt doesn't exist in DB, cross-env token usage or security issue?", zap.String("subject", userID.String()))
 		return nil, errors.New("user not found")
