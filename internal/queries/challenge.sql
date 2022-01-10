@@ -9,7 +9,7 @@ GROUP BY c.id;
 SELECT EXISTS(SELECT 1 FROM flags WHERE challenge_id = $1 AND flag = $2);
 
 -- name: InsertAttempt :exec
-INSERT INTO submissions (user_id, challenge_id, successful, input) VALUES ($1, $2, $3, $4);
+INSERT INTO submissions (id, user_id, challenge_id, successful, input) VALUES ($1, $2, $3, $4, $5);
 
 -- name: InsertSolve :exec
 INSERT INTO user_solves (user_id, challenge_id) VALUES ($1, $2);

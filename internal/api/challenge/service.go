@@ -140,6 +140,7 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 	}
 
 	err = txq.InsertAttempt(ctx, db.InsertAttemptParams{
+		ID:          uuid.New(),
 		UserID:      user.ID,
 		ChallengeID: challID,
 		Successful:  flagCorrect,
@@ -151,7 +152,7 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 
 	if flagCorrect {
 		err = txq.InsertSolve(ctx, db.InsertSolveParams{
-			UserID:      uuid.MustParse(""),
+			UserID:      user.ID,
 			ChallengeID: challID,
 		})
 		if err != nil {

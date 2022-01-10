@@ -100,10 +100,11 @@ func (q *Queries) GetChallFiles(ctx context.Context, ids []uuid.UUID) ([]Challen
 }
 
 const insertAttempt = `-- name: InsertAttempt :exec
-INSERT INTO submissions (user_id, challenge_id, successful, input) VALUES ($1, $2, $3, $4)
+INSERT INTO submissions (id, user_id, challenge_id, successful, input) VALUES ($1, $2, $3, $4, $5)
 `
 
 type InsertAttemptParams struct {
+	ID          uuid.UUID
 	UserID      uuid.UUID
 	ChallengeID uuid.UUID
 	Successful  bool
@@ -112,6 +113,7 @@ type InsertAttemptParams struct {
 
 func (q *Queries) InsertAttempt(ctx context.Context, arg InsertAttemptParams) error {
 	_, err := q.db.Exec(ctx, insertAttempt,
+		arg.ID,
 		arg.UserID,
 		arg.ChallengeID,
 		arg.Successful,
