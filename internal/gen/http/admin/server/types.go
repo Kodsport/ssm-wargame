@@ -29,7 +29,7 @@ type CreateChallengeRequestBody struct {
 // PresignChallFileUploadRequestBody is the type of the "admin" service
 // "PresignChallFileUpload" endpoint HTTP request body.
 type PresignChallFileUploadRequestBody struct {
-	// MD5 hash of the file content
+	// MD5 hash of the file content in base64
 	Md5      *string `form:"md5,omitempty" json:"md5,omitempty" xml:"md5,omitempty"`
 	Filename *string `form:"filename,omitempty" json:"filename,omitempty" xml:"filename,omitempty"`
 }
@@ -480,6 +480,8 @@ type ChallengeServiceResponse struct {
 
 // ChallengeFilesResponse is used to define fields on response body types.
 type ChallengeFilesResponse struct {
+	Filename string `form:"filename" json:"filename" xml:"filename"`
+	URL      string `form:"url" json:"url" xml:"url"`
 }
 
 // MonthlyChallengeMetaResponse is used to define fields on response body types.

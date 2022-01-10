@@ -29,7 +29,7 @@ type CreateChallengeRequestBody struct {
 // PresignChallFileUploadRequestBody is the type of the "admin" service
 // "PresignChallFileUpload" endpoint HTTP request body.
 type PresignChallFileUploadRequestBody struct {
-	// MD5 hash of the file content
+	// MD5 hash of the file content in base64
 	Md5      string `form:"md5" json:"md5" xml:"md5"`
 	Filename string `form:"filename" json:"filename" xml:"filename"`
 }
@@ -480,6 +480,8 @@ type ChallengeServiceResponse struct {
 
 // ChallengeFilesResponse is used to define fields on response body types.
 type ChallengeFilesResponse struct {
+	Filename *string `form:"filename,omitempty" json:"filename,omitempty" xml:"filename,omitempty"`
+	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
 }
 
 // MonthlyChallengeMetaResponse is used to define fields on response body types.
@@ -1428,6 +1430,25 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	for _, e := range body.Files {
+		if e != nil {
+			if err2 := ValidateChallengeFilesResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// ValidateChallengeFilesResponse runs the validations defined on
+// ChallengeFilesResponse
+func ValidateChallengeFilesResponse(body *ChallengeFilesResponse) (err error) {
+	if body.Filename == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("filename", "body"))
+	}
+	if body.URL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
 	}
 	return
 }

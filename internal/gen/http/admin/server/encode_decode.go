@@ -744,7 +744,10 @@ func marshalAdminviewsChallengeFilesViewToChallengeFilesResponse(v *adminviews.C
 	if v == nil {
 		return nil
 	}
-	res := &ChallengeFilesResponse{}
+	res := &ChallengeFilesResponse{
+		Filename: *v.Filename,
+		URL:      *v.URL,
+	}
 
 	return res
 }

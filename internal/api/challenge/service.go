@@ -3,7 +3,9 @@ package challenge
 import (
 	"context"
 	"errors"
+	"time"
 
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -18,13 +20,15 @@ type service struct {
 	spec.Auther
 	db  *pgxpool.Pool
 	log *zap.Logger
+	s3  *s3.S3
 }
 
-func NewService(conn *pgxpool.Pool, log *zap.Logger, auther spec.Auther) spec.Service {
+func NewService(conn *pgxpool.Pool, log *zap.Logger, auther spec.Auther, s3c *s3.S3) spec.Service {
 	return &service{
 		Auther: auther,
 		db:     conn,
 		log:    log,
+		s3:     s3c,
 	}
 }
 
@@ -34,10 +38,29 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
 
-	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, false)
+	db := db.New(s.db)
+
+	challs, err := db.ListChallengesWithSolves(ctx, false)
 	if err != nil {
+		s.log.Error("could not list challs", zap.Error(err), utils.C(ctx))
 		return nil, err
 	}
+
+	ids := make([]uuid.UUID, len(challs))
+	for i, chall := range challs {
+		ids[i] = chall.ID
+	}
+
+	files, err := db.GetChallFiles(ctx, ids)
+	if err != nil {
+		s.log.Error("could not list files", zap.Error(err), utils.C(ctx))
+		return nil, err
+	}
+
+	return s.assembleChallResponse(challs, files), nil
+}
+
+func (s *service) assembleChallResponse(challs []db.ListChallengesWithSolvesRow, files []db.ChallengeFile) spec.SsmChallengeCollection {
 
 	res := make(spec.SsmChallengeCollection, len(challs))
 	for i, c := range challs {
@@ -52,7 +75,35 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		}
 	}
 
-	return res, nil
+	for _, file := range files {
+		for i, r := range res {
+			if r.ID != file.ChallengeID.UUID.String() {
+				continue
+			}
+
+			if res[i].Files == nil {
+				res[i].Files = []*spec.ChallengeFiles{}
+			}
+
+			req, _ := s.s3.GetObjectRequest(&s3.GetObjectInput{
+				Bucket: &file.Bucket,
+				Key:    &file.Key,
+			})
+
+			url, err := req.Presign(time.Hour * 4)
+
+			if err != nil {
+				s.log.Warn("could not sign url", zap.Error(err))
+			}
+
+			res[i].Files = append(res[i].Files, &spec.ChallengeFiles{
+				Filename: file.FriendlyName,
+				URL:      url, // TODO: this should be restructured, cache signed url in db?
+			})
+		}
+	}
+
+	return res
 }
 
 func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) error {

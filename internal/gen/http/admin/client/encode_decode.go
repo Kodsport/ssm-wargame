@@ -933,7 +933,10 @@ func unmarshalChallengeFilesResponseToAdminviewsChallengeFilesView(v *ChallengeF
 	if v == nil {
 		return nil
 	}
-	res := &adminviews.ChallengeFilesView{}
+	res := &adminviews.ChallengeFilesView{
+		Filename: v.Filename,
+		URL:      v.URL,
+	}
 
 	return res
 }

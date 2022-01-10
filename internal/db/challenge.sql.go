@@ -65,6 +65,40 @@ func (q *Queries) FlagExists(ctx context.Context, arg FlagExistsParams) (bool, e
 	return exists, err
 }
 
+const getChallFiles = `-- name: GetChallFiles :many
+SELECT id, challenge_id, friendly_name, bucket, key, md5, uploaded, created_at, updated_at FROM challenge_files WHERE uploaded = true AND challenge_id = ANY($1::uuid[])
+`
+
+func (q *Queries) GetChallFiles(ctx context.Context, ids []uuid.UUID) ([]ChallengeFile, error) {
+	rows, err := q.db.Query(ctx, getChallFiles, ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ChallengeFile
+	for rows.Next() {
+		var i ChallengeFile
+		if err := rows.Scan(
+			&i.ID,
+			&i.ChallengeID,
+			&i.FriendlyName,
+			&i.Bucket,
+			&i.Key,
+			&i.Md5,
+			&i.Uploaded,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const insertAttempt = `-- name: InsertAttempt :exec
 INSERT INTO submissions (user_id, challenge_id, successful, input) VALUES ($1, $2, $3, $4)
 `

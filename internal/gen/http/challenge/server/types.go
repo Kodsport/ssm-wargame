@@ -89,6 +89,8 @@ type ChallengeServiceResponse struct {
 
 // ChallengeFilesResponse is used to define fields on response body types.
 type ChallengeFilesResponse struct {
+	Filename string `form:"filename" json:"filename" xml:"filename"`
+	URL      string `form:"url" json:"url" xml:"url"`
 }
 
 // SsmMonthlyChallengeResponse is used to define fields on response body types.

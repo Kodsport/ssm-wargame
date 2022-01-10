@@ -23,9 +23,12 @@ paths:
               example:
               - description: A heap overflow challenge
                 files:
-                - {}
-                - {}
-                - {}
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -37,9 +40,12 @@ paths:
                 title: pwnme
               - description: A heap overflow challenge
                 files:
-                - {}
-                - {}
-                - {}
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -157,7 +163,7 @@ paths:
               $ref: '#/components/schemas/PresignChallFileUploadRequestBody'
             example:
               filename: decryptor.exe
-              md5: 407a31aa693dbd161f39e36ed0efdb74
+              md5: cq02dBbcuugBHM1oKyvMlQ==
       responses:
         "200":
           description: OK response.
@@ -498,9 +504,12 @@ paths:
               example:
               - description: A heap overflow challenge
                 files:
-                - {}
-                - {}
-                - {}
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -512,9 +521,12 @@ paths:
                 title: pwnme
               - description: A heap overflow challenge
                 files:
-                - {}
-                - {}
-                - {}
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -594,9 +606,12 @@ paths:
                 display_month: Januari/Februari
                 end_date: "2006-02-01"
                 files:
-                - {}
-                - {}
-                - {}
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -612,9 +627,12 @@ paths:
                 display_month: Januari/Februari
                 end_date: "2006-02-01"
                 files:
-                - {}
-                - {}
-                - {}
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -630,9 +648,12 @@ paths:
                 display_month: Januari/Februari
                 end_date: "2006-02-01"
                 files:
-                - {}
-                - {}
-                - {}
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
@@ -648,6 +669,21 @@ paths:
       - jwt_header_Authorization: []
 components:
   schemas:
+    ChallengeFiles:
+      type: object
+      properties:
+        filename:
+          type: string
+          example: decryptor.exe
+        url:
+          type: string
+          example: https://s3/bucket/key?signature
+      example:
+        filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      required:
+      - filename
+      - url
     ChallengeService:
       type: object
       example: {}
@@ -811,11 +847,11 @@ components:
           example: decryptor.exe
         md5:
           type: string
-          description: MD5 hash of the file content
-          example: 407a31aa693dbd161f39e36ed0efdb74
+          description: MD5 hash of the file content in base64
+          example: cq02dBbcuugBHM1oKyvMlQ==
       example:
         filename: decryptor.exe
-        md5: 407a31aa693dbd161f39e36ed0efdb74
+        md5: cq02dBbcuugBHM1oKyvMlQ==
       required:
       - md5
       - filename
@@ -840,12 +876,16 @@ components:
         files:
           type: array
           items:
-            $ref: '#/components/schemas/ChallengeService'
+            $ref: '#/components/schemas/ChallengeFiles'
           example:
-          - {}
-          - {}
-          - {}
-          - {}
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -882,8 +922,10 @@ components:
       example:
         description: A heap overflow challenge
         files:
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -910,9 +952,12 @@ components:
       example:
       - description: A heap overflow challenge
         files:
-        - {}
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -924,9 +969,12 @@ components:
         title: pwnme
       - description: A heap overflow challenge
         files:
-        - {}
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -938,9 +986,12 @@ components:
         title: pwnme
       - description: A heap overflow challenge
         files:
-        - {}
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -952,9 +1003,12 @@ components:
         title: pwnme
       - description: A heap overflow challenge
         files:
-        - {}
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -982,10 +1036,12 @@ components:
         files:
           type: array
           items:
-            $ref: '#/components/schemas/ChallengeService'
+            $ref: '#/components/schemas/ChallengeFiles'
           example:
-          - {}
-          - {}
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -1028,10 +1084,14 @@ components:
         display_month: Januari/Februari
         end_date: "2006-02-01"
         files:
-        - {}
-        - {}
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -1063,9 +1123,12 @@ components:
         display_month: Januari/Februari
         end_date: "2006-02-01"
         files:
-        - {}
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
@@ -1081,9 +1144,12 @@ components:
         display_month: Januari/Februari
         end_date: "2006-02-01"
         files:
-        - {}
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50

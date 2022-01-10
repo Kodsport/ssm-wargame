@@ -334,7 +334,7 @@ PresignChallFileUpload implements PresignChallFileUpload.
 Example:
     %[1]s admin presign-chall-file-upload --body '{
       "filename": "decryptor.exe",
-      "md5": "407a31aa693dbd161f39e36ed0efdb74"
+      "md5": "cq02dBbcuugBHM1oKyvMlQ=="
    }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }

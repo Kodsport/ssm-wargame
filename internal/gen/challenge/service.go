@@ -92,6 +92,8 @@ type ChallengeService struct {
 }
 
 type ChallengeFiles struct {
+	Filename string
+	URL      string
 }
 
 // A monthly challenge
@@ -318,7 +320,10 @@ func transformChallengeviewsChallengeFilesViewToChallengeFiles(v *challengeviews
 	if v == nil {
 		return nil
 	}
-	res := &ChallengeFiles{}
+	res := &ChallengeFiles{
+		Filename: *v.Filename,
+		URL:      *v.URL,
+	}
 
 	return res
 }
@@ -341,7 +346,10 @@ func transformChallengeFilesToChallengeviewsChallengeFilesView(v *ChallengeFiles
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.ChallengeFilesView{}
+	res := &challengeviews.ChallengeFilesView{
+		Filename: &v.Filename,
+		URL:      &v.URL,
+	}
 
 	return res
 }

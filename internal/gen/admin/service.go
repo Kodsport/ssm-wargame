@@ -76,7 +76,7 @@ type CreateChallengePayload struct {
 // PresignChallFileUploadPayload is the payload type of the admin service
 // PresignChallFileUpload method.
 type PresignChallFileUploadPayload struct {
-	// MD5 hash of the file content
+	// MD5 hash of the file content in base64
 	Md5      string
 	Filename string
 	Token    string
@@ -146,6 +146,8 @@ type ChallengeService struct {
 }
 
 type ChallengeFiles struct {
+	Filename string
+	URL      string
 }
 
 type MonthlyChallengeMeta struct {
@@ -309,7 +311,10 @@ func transformAdminviewsChallengeFilesViewToChallengeFiles(v *adminviews.Challen
 	if v == nil {
 		return nil
 	}
-	res := &ChallengeFiles{}
+	res := &ChallengeFiles{
+		Filename: *v.Filename,
+		URL:      *v.URL,
+	}
 
 	return res
 }
@@ -331,7 +336,10 @@ func transformChallengeFilesToAdminviewsChallengeFilesView(v *ChallengeFiles) *a
 	if v == nil {
 		return nil
 	}
-	res := &adminviews.ChallengeFilesView{}
+	res := &adminviews.ChallengeFilesView{
+		Filename: &v.Filename,
+		URL:      &v.URL,
+	}
 
 	return res
 }

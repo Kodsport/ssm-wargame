@@ -62,7 +62,7 @@ func BuildPresignChallFileUploadPayload(adminPresignChallFileUploadBody string, 
 	{
 		err = json.Unmarshal([]byte(adminPresignChallFileUploadBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"filename\": \"decryptor.exe\",\n      \"md5\": \"407a31aa693dbd161f39e36ed0efdb74\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"filename\": \"decryptor.exe\",\n      \"md5\": \"cq02dBbcuugBHM1oKyvMlQ==\"\n   }'")
 		}
 	}
 	var challengeID string

@@ -80,7 +80,7 @@ func realMain() error {
 	s3c := s3.New(sess)
 
 	{
-		svc := challenge_service.NewService(pool, log, auther)
+		svc := challenge_service.NewService(pool, log, auther, s3c)
 		endpoints := challenge_transport.NewEndpoints(svc)
 		s := challenge_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())

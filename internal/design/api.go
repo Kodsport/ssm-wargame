@@ -51,7 +51,13 @@ var ChallengeService = Type("ChallengeService", func() {
 })
 
 var ChallengeFiles = Type("ChallengeFiles", func() {
-
+	Attribute("filename", String, func() {
+		Example("decryptor.exe")
+	})
+	Attribute("url", String, func() {
+		Example("https://s3/bucket/key?signature")
+	})
+	Required("filename", "url")
 })
 
 var MonthlyChallengeMeta = Type("MonthlyChallengeMeta", func() {

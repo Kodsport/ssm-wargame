@@ -40,3 +40,6 @@ UPDATE challenge_files SET uploaded = true, updated_at = NOW() WHERE id = $1;
 
 -- name: DeleteFile :exec
 DELETE FROM challenge_files WHERE id = $1;
+
+-- name: GetChallFiles :many
+SELECT * FROM challenge_files WHERE uploaded = true AND challenge_id = ANY(@ids::uuid[]);

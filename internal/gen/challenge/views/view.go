@@ -57,6 +57,8 @@ type ChallengeServiceView struct {
 
 // ChallengeFilesView is a type that runs validations on a projected type.
 type ChallengeFilesView struct {
+	Filename *string
+	URL      *string
 }
 
 // SsmMonthlyChallengeCollectionView is a type that runs validations on a
@@ -206,6 +208,13 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	if result.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
 	}
+	for _, e := range result.Files {
+		if e != nil {
+			if err2 := ValidateChallengeFilesView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
 	return
 }
 
@@ -219,7 +228,12 @@ func ValidateChallengeServiceView(result *ChallengeServiceView) (err error) {
 // ValidateChallengeFilesView runs the validations defined on
 // ChallengeFilesView.
 func ValidateChallengeFilesView(result *ChallengeFilesView) (err error) {
-
+	if result.Filename == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("filename", "result"))
+	}
+	if result.URL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("url", "result"))
+	}
 	return
 }
 

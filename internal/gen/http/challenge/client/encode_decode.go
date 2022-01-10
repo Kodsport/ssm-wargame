@@ -331,7 +331,10 @@ func unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(v *Challe
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.ChallengeFilesView{}
+	res := &challengeviews.ChallengeFilesView{
+		Filename: v.Filename,
+		URL:      v.URL,
+	}
 
 	return res
 }

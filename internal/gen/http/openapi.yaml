@@ -1382,11 +1382,11 @@ definitions:
         example: decryptor.exe
       md5:
         type: string
-        description: MD5 hash of the file content
-        example: 407a31aa693dbd161f39e36ed0efdb74
+        description: MD5 hash of the file content in base64
+        example: cq02dBbcuugBHM1oKyvMlQ==
     example:
       filename: decryptor.exe
-      md5: 407a31aa693dbd161f39e36ed0efdb74
+      md5: cq02dBbcuugBHM1oKyvMlQ==
     required:
     - md5
     - filename
@@ -1459,10 +1459,14 @@ definitions:
     example:
     - description: A heap overflow challenge
       files:
-      - {}
-      - {}
-      - {}
-      - {}
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
@@ -1476,10 +1480,14 @@ definitions:
       title: pwnme
     - description: A heap overflow challenge
       files:
-      - {}
-      - {}
-      - {}
-      - {}
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
@@ -1533,7 +1541,19 @@ definitions:
   ChallengeFilesResponse:
     title: ChallengeFilesResponse
     type: object
-    example: {}
+    properties:
+      filename:
+        type: string
+        example: decryptor.exe
+      url:
+        type: string
+        example: https://s3/bucket/key?signature
+    example:
+      filename: decryptor.exe
+      url: https://s3/bucket/key?signature
+    required:
+    - filename
+    - url
   ChallengeServiceResponse:
     title: ChallengeServiceResponse
     type: object
@@ -1549,10 +1569,14 @@ definitions:
     example:
     - description: A heap overflow challenge
       files:
-      - {}
-      - {}
-      - {}
-      - {}
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
@@ -1566,10 +1590,14 @@ definitions:
       title: pwnme
     - description: A heap overflow challenge
       files:
-      - {}
-      - {}
-      - {}
-      - {}
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
@@ -1583,10 +1611,14 @@ definitions:
       title: pwnme
     - description: A heap overflow challenge
       files:
-      - {}
-      - {}
-      - {}
-      - {}
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
@@ -1600,10 +1632,14 @@ definitions:
       title: pwnme
     - description: A heap overflow challenge
       files:
-      - {}
-      - {}
-      - {}
-      - {}
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
@@ -1775,8 +1811,10 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeFilesResponse'
         example:
-        - {}
-        - {}
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
       id:
         type: string
         example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -1813,8 +1851,10 @@ definitions:
     example:
       description: A heap overflow challenge
       files:
-      - {}
-      - {}
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
