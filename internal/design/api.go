@@ -51,7 +51,10 @@ var User = ResultType("application/vnd.ssm.user", func() {
 	Attribute("last_name", String, func() {
 		Example("Sunar")
 	})
-	Required("id", "email", "first_name", "last_name")
+	Attribute("role", String, func() {
+		Example("admin")
+	})
+	Required("id", "email", "first_name", "last_name", "role")
 })
 
 var ChallengeService = Type("ChallengeService", func() {

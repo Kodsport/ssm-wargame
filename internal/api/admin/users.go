@@ -24,6 +24,7 @@ func (s *service) ListUsers(ctx context.Context, req *spec.ListUsersPayload) ([]
 			Email:     u.Email,
 			FirstName: u.FirstName.String,
 			LastName:  u.LastName.String,
+			Role:      u.Role,
 		}
 	}
 

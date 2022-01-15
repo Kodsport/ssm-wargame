@@ -2209,17 +2209,22 @@ definitions:
       last_name:
         type: string
         example: Sunar
+      role:
+        type: string
+        example: admin
     description: SsmUserResponse result type (default view)
     example:
       email: movitz.sunar@ssm.example
       first_name: Movitz
       id: uuid todo
       last_name: Sunar
+      role: admin
     required:
     - id
     - email
     - first_name
     - last_name
+    - role
 securityDefinitions:
   jwt_header_Authorization:
     type: apiKey

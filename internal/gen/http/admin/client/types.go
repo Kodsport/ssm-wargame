@@ -562,6 +562,7 @@ type SsmUserResponse struct {
 	Email     *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
 	FirstName *string `form:"first_name,omitempty" json:"first_name,omitempty" xml:"first_name,omitempty"`
 	LastName  *string `form:"last_name,omitempty" json:"last_name,omitempty" xml:"last_name,omitempty"`
+	Role      *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
 }
 
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
@@ -1679,6 +1680,9 @@ func ValidateSsmUserResponse(body *SsmUserResponse) (err error) {
 	}
 	if body.LastName == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("last_name", "body"))
+	}
+	if body.Role == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("role", "body"))
 	}
 	return
 }

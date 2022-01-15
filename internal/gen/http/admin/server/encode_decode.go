@@ -869,6 +869,7 @@ func marshalAdminSsmUserToSsmUserResponse(v *admin.SsmUser) *SsmUserResponse {
 		Email:     v.Email,
 		FirstName: v.FirstName,
 		LastName:  v.LastName,
+		Role:      v.Role,
 	}
 
 	return res

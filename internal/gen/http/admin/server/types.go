@@ -562,6 +562,7 @@ type SsmUserResponse struct {
 	Email     string `form:"email" json:"email" xml:"email"`
 	FirstName string `form:"first_name" json:"first_name" xml:"first_name"`
 	LastName  string `form:"last_name" json:"last_name" xml:"last_name"`
+	Role      string `form:"role" json:"role" xml:"role"`
 }
 
 // NewSsmAdminChallengeResponseCollection builds the HTTP response body from

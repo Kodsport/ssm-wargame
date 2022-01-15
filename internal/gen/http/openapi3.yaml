@@ -478,19 +478,23 @@ paths:
                   first_name: Movitz
                   id: uuid todo
                   last_name: Sunar
+                  role: admin
                 - email: movitz.sunar@ssm.example
                   first_name: Movitz
                   id: uuid todo
                   last_name: Sunar
+                  role: admin
               example:
               - email: movitz.sunar@ssm.example
                 first_name: Movitz
                 id: uuid todo
                 last_name: Sunar
+                role: admin
               - email: movitz.sunar@ssm.example
                 first_name: Movitz
                 id: uuid todo
                 last_name: Sunar
+                role: admin
         "400":
           description: Resource not found
           content:
@@ -1552,16 +1556,21 @@ components:
         last_name:
           type: string
           example: Sunar
+        role:
+          type: string
+          example: admin
       example:
         email: movitz.sunar@ssm.example
         first_name: Movitz
         id: uuid todo
         last_name: Sunar
+        role: admin
       required:
       - id
       - email
       - first_name
       - last_name
+      - role
     SubmitFlagRequestBody:
       type: object
       properties:
