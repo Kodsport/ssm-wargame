@@ -18,6 +18,7 @@ import (
 	challenge "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
 	goahttp "goa.design/goa/v3/http"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // BuildListChallengesRequest instantiates a HTTP request object with method
@@ -160,13 +161,17 @@ func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.De
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("challenge", "ListMonthlyChallenges", err)
 			}
-			p := NewListMonthlyChallengesSsmMonthlyChallengeCollectionOK(body)
-			view := "default"
-			vres := challengeviews.SsmMonthlyChallengeCollection{Projected: p, View: view}
-			if err = challengeviews.ValidateSsmMonthlyChallengeCollection(vres); err != nil {
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateMonthlyChallengeMetaResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
 				return nil, goahttp.ErrValidationError("challenge", "ListMonthlyChallenges", err)
 			}
-			res := challenge.NewSsmMonthlyChallengeCollection(vres)
+			res := NewListMonthlyChallengesMonthlyChallengeMetaOK(body)
 			return res, nil
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
@@ -339,33 +344,14 @@ func unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(v *Challe
 	return res
 }
 
-// unmarshalSsmMonthlyChallengeResponseToChallengeviewsSsmMonthlyChallengeView
-// builds a value of type *challengeviews.SsmMonthlyChallengeView from a value
-// of type *SsmMonthlyChallengeResponse.
-func unmarshalSsmMonthlyChallengeResponseToChallengeviewsSsmMonthlyChallengeView(v *SsmMonthlyChallengeResponse) *challengeviews.SsmMonthlyChallengeView {
-	res := &challengeviews.SsmMonthlyChallengeView{
-		DisplayMonth: v.DisplayMonth,
-		StartDate:    v.StartDate,
-		EndDate:      v.EndDate,
-		ID:           v.ID,
-		Slug:         v.Slug,
-		Title:        v.Title,
-		Description:  v.Description,
-		Score:        v.Score,
-		Published:    v.Published,
-		Solves:       v.Solves,
-	}
-	if v.Services != nil {
-		res.Services = make([]*challengeviews.ChallengeServiceView, len(v.Services))
-		for i, val := range v.Services {
-			res.Services[i] = unmarshalChallengeServiceResponseToChallengeviewsChallengeServiceView(val)
-		}
-	}
-	if v.Files != nil {
-		res.Files = make([]*challengeviews.ChallengeFilesView, len(v.Files))
-		for i, val := range v.Files {
-			res.Files[i] = unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(val)
-		}
+// unmarshalMonthlyChallengeMetaResponseToChallengeMonthlyChallengeMeta builds
+// a value of type *challenge.MonthlyChallengeMeta from a value of type
+// *MonthlyChallengeMetaResponse.
+func unmarshalMonthlyChallengeMetaResponseToChallengeMonthlyChallengeMeta(v *MonthlyChallengeMetaResponse) *challenge.MonthlyChallengeMeta {
+	res := &challenge.MonthlyChallengeMeta{
+		DisplayMonth: *v.DisplayMonth,
+		StartDate:    *v.StartDate,
+		EndDate:      *v.EndDate,
 	}
 
 	return res

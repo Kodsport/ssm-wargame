@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"strings"
 
+	challenge "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
@@ -58,9 +59,9 @@ func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 // returned by the challenge ListMonthlyChallenges endpoint.
 func EncodeListMonthlyChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(challengeviews.SsmMonthlyChallengeCollection)
+		res, _ := v.([]*challenge.MonthlyChallengeMeta)
 		enc := encoder(ctx, w)
-		body := NewSsmMonthlyChallengeResponseCollection(res.Projected)
+		body := NewListMonthlyChallengesResponseBody(res)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
@@ -242,14 +243,14 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 	return res
 }
 
-// marshalChallengeviewsSsmMonthlyChallengeViewToSsmMonthlyChallengeResponse
-// builds a value of type *SsmMonthlyChallengeResponse from a value of type
-// *challengeviews.SsmMonthlyChallengeView.
-func marshalChallengeviewsSsmMonthlyChallengeViewToSsmMonthlyChallengeResponse(v *challengeviews.SsmMonthlyChallengeView) *SsmMonthlyChallengeResponse {
-	res := &SsmMonthlyChallengeResponse{
-		DisplayMonth: *v.DisplayMonth,
-		StartDate:    *v.StartDate,
-		EndDate:      *v.EndDate,
+// marshalChallengeMonthlyChallengeMetaToMonthlyChallengeMetaResponse builds a
+// value of type *MonthlyChallengeMetaResponse from a value of type
+// *challenge.MonthlyChallengeMeta.
+func marshalChallengeMonthlyChallengeMetaToMonthlyChallengeMetaResponse(v *challenge.MonthlyChallengeMeta) *MonthlyChallengeMetaResponse {
+	res := &MonthlyChallengeMetaResponse{
+		DisplayMonth: v.DisplayMonth,
+		StartDate:    v.StartDate,
+		EndDate:      v.EndDate,
 	}
 
 	return res

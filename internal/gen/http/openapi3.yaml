@@ -310,12 +310,6 @@ paths:
                 - display_month: Januari/Februari
                   end_date: "2006-02-01"
                   start_date: "2006-02-01"
-                - display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  start_date: "2006-02-01"
-                - display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  start_date: "2006-02-01"
               example:
               - display_month: Januari/Februari
                 end_date: "2006-02-01"
@@ -474,6 +468,16 @@ paths:
                 items:
                   $ref: '#/components/schemas/SsmUser'
                 example:
+                - email: movitz.sunar@ssm.example
+                  first_name: Movitz
+                  id: uuid todo
+                  last_name: Sunar
+                  role: admin
+                - email: movitz.sunar@ssm.example
+                  first_name: Movitz
+                  id: uuid todo
+                  last_name: Sunar
+                  role: admin
                 - email: movitz.sunar@ssm.example
                   first_name: Movitz
                   id: uuid todo
@@ -698,88 +702,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SsmMonthlyChallengeCollection'
+                type: array
+                items:
+                  $ref: '#/components/schemas/MonthlyChallengeMeta'
+                example:
+                - display_month: Januari/Februari
+                  end_date: "2006-02-01"
+                  start_date: "2006-02-01"
+                - display_month: Januari/Februari
+                  end_date: "2006-02-01"
+                  start_date: "2006-02-01"
               example:
-              - description: A heap overflow challenge
-                display_month: Januari/Februari
+              - display_month: Januari/Februari
                 end_date: "2006-02-01"
-                files:
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
                 start_date: "2006-02-01"
-                title: pwnme
-              - description: A heap overflow challenge
-                display_month: Januari/Februari
+              - display_month: Januari/Februari
                 end_date: "2006-02-01"
-                files:
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
                 start_date: "2006-02-01"
-                title: pwnme
-              - description: A heap overflow challenge
-                display_month: Januari/Februari
+              - display_month: Januari/Februari
                 end_date: "2006-02-01"
-                files:
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
                 start_date: "2006-02-01"
-                title: pwnme
-              - description: A heap overflow challenge
-                display_month: Januari/Februari
-                end_date: "2006-02-01"
-                files:
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
-                score: 50
-                services:
-                - {}
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                start_date: "2006-02-01"
-                title: pwnme
       security:
       - jwt_header_Authorization: []
 components:
@@ -913,7 +855,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: true
+          example: false
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -935,7 +877,7 @@ components:
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: false
+          example: true
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -1056,6 +998,13 @@ components:
             md5: cq02dBbcuugBHM1oKyvMlQ==
             size: 87123
             url: https://s3/bucket/key?signature
+          - bucket: ssm-prod-bucket
+            filename: decryptor.exe
+            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+            key: file.exe
+            md5: cq02dBbcuugBHM1oKyvMlQ==
+            size: 87123
+            url: https://s3/bucket/key?signature
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -1072,7 +1021,6 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
           - {}
           - {}
         slug:
@@ -1092,13 +1040,6 @@ components:
       example:
         description: A heap overflow challenge
         files:
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
         - bucket: ssm-prod-bucket
           filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -1232,38 +1173,6 @@ components:
         slug: pwnme
         solves: 3
         title: pwnme
-      - description: A heap overflow challenge
-        files:
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
     SsmChallenge:
       type: object
       properties:
@@ -1276,8 +1185,6 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeFiles'
           example:
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
@@ -1302,7 +1209,6 @@ components:
           example:
           - {}
           - {}
-          - {}
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -1324,10 +1230,13 @@ components:
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         published: true
         score: 50
         services:
+        - {}
         - {}
         - {}
         - {}
@@ -1382,164 +1291,6 @@ components:
         - {}
         slug: pwnme
         solves: 3
-        title: pwnme
-    SsmMonthlyChallenge:
-      type: object
-      properties:
-        description:
-          type: string
-          description: A short text describing the challenge
-          example: A heap overflow challenge
-        display_month:
-          type: string
-          description: The month(s) that the challenge is assigned for
-          example: Januari/Februari
-        end_date:
-          type: string
-          description: Ending date of the monthly challenge
-          example: "2006-02-01"
-        files:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChallengeFiles'
-          example:
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-        id:
-          type: string
-          example: e721a338-44de-4de8-a562-43d2db5f4115
-        published:
-          type: boolean
-          example: true
-        score:
-          type: integer
-          description: The number of points given to the solver
-          example: 50
-          format: int32
-        services:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChallengeService'
-          example:
-          - {}
-          - {}
-        slug:
-          type: string
-          description: A unique string that can be used in URLs
-          example: pwnme
-        solves:
-          type: integer
-          description: The numer of people who solved the challenge
-          example: 3
-          format: int64
-        start_date:
-          type: string
-          description: Starting date of the monthly challenge
-          example: "2006-02-01"
-        title:
-          type: string
-          description: Title displayed to user
-          example: pwnme
-      description: A monthly challenge
-      example:
-        description: A heap overflow challenge
-        display_month: Januari/Februari
-        end_date: "2006-02-01"
-        files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        start_date: "2006-02-01"
-        title: pwnme
-      required:
-      - start_date
-      - end_date
-      - display_month
-      - id
-      - title
-      - description
-      - score
-      - published
-      - slug
-      - solves
-    SsmMonthlyChallengeCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/SsmMonthlyChallenge'
-      example:
-      - description: A heap overflow challenge
-        display_month: Januari/Februari
-        end_date: "2006-02-01"
-        files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        start_date: "2006-02-01"
-        title: pwnme
-      - description: A heap overflow challenge
-        display_month: Januari/Februari
-        end_date: "2006-02-01"
-        files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        start_date: "2006-02-01"
-        title: pwnme
-      - description: A heap overflow challenge
-        display_month: Januari/Februari
-        end_date: "2006-02-01"
-        files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        start_date: "2006-02-01"
         title: pwnme
     SsmUser:
       type: object

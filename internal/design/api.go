@@ -114,17 +114,6 @@ var MonthlyChallengeMeta = Type("MonthlyChallengeMeta", func() {
 	Required("start_date", "end_date", "display_month")
 })
 
-var MonthlyChallenge = ResultType("application/vnd.ssm.monthly.challenge", func() {
-	Description("A monthly challenge")
-
-	Extend(ResultChallenge)
-
-	Reference(MonthlyChallengeMeta)
-	Attribute("display_month")
-	Attribute("start_date")
-	Attribute("end_date")
-
-})
 var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", func() {
 	Description("A Wargame challenge")
 	Reference(Challenge)

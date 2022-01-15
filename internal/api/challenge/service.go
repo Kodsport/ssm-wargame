@@ -32,8 +32,24 @@ func NewService(conn *pgxpool.Pool, log *zap.Logger, auther spec.Auther, s3c *s3
 	}
 }
 
-func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) (spec.SsmMonthlyChallengeCollection, error) {
-	return nil, nil
+func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) ([]*spec.MonthlyChallengeMeta, error) {
+
+	challs, err := db.New(s.db).ListMonthlyChallenges(ctx)
+	if err != nil {
+		s.log.Error("could not list monthly challs", zap.Error(err), utils.C(ctx))
+		return nil, err
+	}
+
+	res := make([]*spec.MonthlyChallengeMeta, len(challs))
+	for i, chall := range challs {
+		res[i] = &spec.MonthlyChallengeMeta{
+			DisplayMonth: chall.DisplayMonth.Format("2006-01-02"),
+			StartDate:    chall.StartDate.Format("2006-01-02"),
+			EndDate:      chall.EndDate.Format("2006-01-02"),
+		}
+	}
+
+	return res, nil
 }
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {

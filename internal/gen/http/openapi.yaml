@@ -428,7 +428,9 @@ paths:
         "200":
           description: OK response.
           schema:
-            $ref: '#/definitions/ChallengeSsmMonthlyChallengeResponseCollection'
+            type: array
+            items:
+              $ref: '#/definitions/MonthlyChallengeMetaResponse'
       schemes:
       - http
       security:
@@ -1695,17 +1697,12 @@ definitions:
         md5: cq02dBbcuugBHM1oKyvMlQ==
         size: 87123
         url: https://s3/bucket/key?signature
-      - bucket: ssm-prod-bucket
-        filename: decryptor.exe
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        key: file.exe
-        md5: cq02dBbcuugBHM1oKyvMlQ==
-        size: 87123
-        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
+      - {}
+      - {}
       - {}
       - {}
       slug: pwnme
@@ -1727,17 +1724,12 @@ definitions:
         md5: cq02dBbcuugBHM1oKyvMlQ==
         size: 87123
         url: https://s3/bucket/key?signature
-      - bucket: ssm-prod-bucket
-        filename: decryptor.exe
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        key: file.exe
-        md5: cq02dBbcuugBHM1oKyvMlQ==
-        size: 87123
-        url: https://s3/bucket/key?signature
       id: e721a338-44de-4de8-a562-43d2db5f4115
       published: true
       score: 50
       services:
+      - {}
+      - {}
       - {}
       - {}
       slug: pwnme
@@ -1843,21 +1835,6 @@ definitions:
       slug: pwnme
       solves: 3
       title: pwnme
-  ChallengeSsmMonthlyChallengeResponseCollection:
-    title: 'Mediatype identifier: application/vnd.ssm.monthly.challenge; type=collection;
-      view=default'
-    type: array
-    items:
-      $ref: '#/definitions/SsmMonthlyChallengeResponse'
-    description: ListMonthlyChallengesResponseBody is the result type for an array
-      of SsmMonthlyChallengeResponse (default view)
-    example:
-    - display_month: Januari/Februari
-      end_date: "2006-02-01"
-      start_date: "2006-02-01"
-    - display_month: Januari/Februari
-      end_date: "2006-02-01"
-      start_date: "2006-02-01"
   ChallengeSubmitFlagAlreadySolvedResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -1865,7 +1842,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1883,18 +1860,18 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: SubmitFlag_already_solved_Response_Body result type (default view)
     example:
       fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: false
     required:
     - name
@@ -1932,15 +1909,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: SubmitFlag_incorrect_flag_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -2168,31 +2145,6 @@ definitions:
     - published
     - slug
     - solves
-  SsmMonthlyChallengeResponse:
-    title: 'Mediatype identifier: application/vnd.ssm.monthly.challenge; view=default'
-    type: object
-    properties:
-      display_month:
-        type: string
-        description: The month(s) that the challenge is assigned for
-        example: Januari/Februari
-      end_date:
-        type: string
-        description: Ending date of the monthly challenge
-        example: "2006-02-01"
-      start_date:
-        type: string
-        description: Starting date of the monthly challenge
-        example: "2006-02-01"
-    description: A monthly challenge (default view)
-    example:
-      display_month: Januari/Februari
-      end_date: "2006-02-01"
-      start_date: "2006-02-01"
-    required:
-    - start_date
-    - end_date
-    - display_month
   SsmUserResponse:
     title: 'Mediatype identifier: application/vnd.ssm.user; view=default'
     type: object

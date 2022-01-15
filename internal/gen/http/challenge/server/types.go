@@ -25,9 +25,9 @@ type SubmitFlagRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
 
-// SsmMonthlyChallengeResponseCollection is the type of the "challenge" service
+// ListMonthlyChallengesResponseBody is the type of the "challenge" service
 // "ListMonthlyChallenges" endpoint HTTP response body.
-type SsmMonthlyChallengeResponseCollection []*SsmMonthlyChallengeResponse
+type ListMonthlyChallengesResponseBody []*MonthlyChallengeMetaResponse
 
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
@@ -93,8 +93,8 @@ type ChallengeFilesResponse struct {
 	URL      string `form:"url" json:"url" xml:"url"`
 }
 
-// SsmMonthlyChallengeResponse is used to define fields on response body types.
-type SsmMonthlyChallengeResponse struct {
+// MonthlyChallengeMetaResponse is used to define fields on response body types.
+type MonthlyChallengeMetaResponse struct {
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
 	// Starting date of the monthly challenge
@@ -113,13 +113,12 @@ func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollection
 	return body
 }
 
-// NewSsmMonthlyChallengeResponseCollection builds the HTTP response body from
-// the result of the "ListMonthlyChallenges" endpoint of the "challenge"
-// service.
-func NewSsmMonthlyChallengeResponseCollection(res challengeviews.SsmMonthlyChallengeCollectionView) SsmMonthlyChallengeResponseCollection {
-	body := make([]*SsmMonthlyChallengeResponse, len(res))
+// NewListMonthlyChallengesResponseBody builds the HTTP response body from the
+// result of the "ListMonthlyChallenges" endpoint of the "challenge" service.
+func NewListMonthlyChallengesResponseBody(res []*challenge.MonthlyChallengeMeta) ListMonthlyChallengesResponseBody {
+	body := make([]*MonthlyChallengeMetaResponse, len(res))
 	for i, val := range res {
-		body[i] = marshalChallengeviewsSsmMonthlyChallengeViewToSsmMonthlyChallengeResponse(val)
+		body[i] = marshalChallengeMonthlyChallengeMetaToMonthlyChallengeMetaResponse(val)
 	}
 	return body
 }
