@@ -24,6 +24,7 @@ type Server struct {
 	PresignChallFileUpload http.Handler
 	ListMonthlyChallenges  http.Handler
 	DeleteMonthlyChallenge http.Handler
+	DeleteFile             http.Handler
 	CreateMonthlyChallenge http.Handler
 	ListUsers              http.Handler
 }
@@ -66,6 +67,7 @@ func New(
 			{"PresignChallFileUpload", "POST", "/admin/challenges/{challengeID}/file_url"},
 			{"ListMonthlyChallenges", "GET", "/admin/monthly_challenges"},
 			{"DeleteMonthlyChallenge", "DELETE", "/admin/monthly_challenges/{challengeID}"},
+			{"DeleteFile", "DELETE", "/admin/files/{fileID}"},
 			{"CreateMonthlyChallenge", "POST", "/admin/monthly_challenges"},
 			{"ListUsers", "GET", "/admin/users"},
 		},
@@ -74,6 +76,7 @@ func New(
 		PresignChallFileUpload: NewPresignChallFileUploadHandler(e.PresignChallFileUpload, mux, decoder, encoder, errhandler, formatter),
 		ListMonthlyChallenges:  NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
 		DeleteMonthlyChallenge: NewDeleteMonthlyChallengeHandler(e.DeleteMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
+		DeleteFile:             NewDeleteFileHandler(e.DeleteFile, mux, decoder, encoder, errhandler, formatter),
 		CreateMonthlyChallenge: NewCreateMonthlyChallengeHandler(e.CreateMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
 		ListUsers:              NewListUsersHandler(e.ListUsers, mux, decoder, encoder, errhandler, formatter),
 	}
@@ -89,6 +92,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.PresignChallFileUpload = m(s.PresignChallFileUpload)
 	s.ListMonthlyChallenges = m(s.ListMonthlyChallenges)
 	s.DeleteMonthlyChallenge = m(s.DeleteMonthlyChallenge)
+	s.DeleteFile = m(s.DeleteFile)
 	s.CreateMonthlyChallenge = m(s.CreateMonthlyChallenge)
 	s.ListUsers = m(s.ListUsers)
 }
@@ -100,6 +104,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountPresignChallFileUploadHandler(mux, h.PresignChallFileUpload)
 	MountListMonthlyChallengesHandler(mux, h.ListMonthlyChallenges)
 	MountDeleteMonthlyChallengeHandler(mux, h.DeleteMonthlyChallenge)
+	MountDeleteFileHandler(mux, h.DeleteFile)
 	MountCreateMonthlyChallengeHandler(mux, h.CreateMonthlyChallenge)
 	MountListUsersHandler(mux, h.ListUsers)
 }
@@ -338,6 +343,57 @@ func NewDeleteMonthlyChallengeHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteMonthlyChallenge")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteFileHandler configures the mux to serve the "admin" service
+// "DeleteFile" endpoint.
+func MountDeleteFileHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/admin/files/{fileID}", f)
+}
+
+// NewDeleteFileHandler creates a HTTP handler which loads the HTTP request and
+// calls the "admin" service "DeleteFile" endpoint.
+func NewDeleteFileHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteFileRequest(mux, decoder)
+		encodeResponse = EncodeDeleteFileResponse(encoder)
+		encodeError    = EncodeDeleteFileError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteFile")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

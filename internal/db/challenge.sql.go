@@ -49,6 +49,41 @@ func (q *Queries) FileMarkUploaded(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const files = `-- name: Files :many
+SELECT id, challenge_id, friendly_name, bucket, key, md5, uploaded, size, created_at, updated_at FROM challenge_files WHERE challenge_id IS NOT NULL
+`
+
+func (q *Queries) Files(ctx context.Context) ([]ChallengeFile, error) {
+	rows, err := q.db.Query(ctx, files)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ChallengeFile
+	for rows.Next() {
+		var i ChallengeFile
+		if err := rows.Scan(
+			&i.ID,
+			&i.ChallengeID,
+			&i.FriendlyName,
+			&i.Bucket,
+			&i.Key,
+			&i.Md5,
+			&i.Uploaded,
+			&i.Size,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const flagExists = `-- name: FlagExists :one
 SELECT EXISTS(SELECT 1 FROM flags WHERE challenge_id = $1 AND flag = $2)
 `
@@ -66,7 +101,7 @@ func (q *Queries) FlagExists(ctx context.Context, arg FlagExistsParams) (bool, e
 }
 
 const getChallFiles = `-- name: GetChallFiles :many
-SELECT id, challenge_id, friendly_name, bucket, key, md5, uploaded, created_at, updated_at FROM challenge_files WHERE uploaded = true AND challenge_id = ANY($1::uuid[])
+SELECT id, challenge_id, friendly_name, bucket, key, md5, uploaded, size, created_at, updated_at FROM challenge_files WHERE uploaded = true AND challenge_id = ANY($1::uuid[])
 `
 
 func (q *Queries) GetChallFiles(ctx context.Context, ids []uuid.UUID) ([]ChallengeFile, error) {
@@ -86,6 +121,7 @@ func (q *Queries) GetChallFiles(ctx context.Context, ids []uuid.UUID) ([]Challen
 			&i.Key,
 			&i.Md5,
 			&i.Uploaded,
+			&i.Size,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -97,6 +133,28 @@ func (q *Queries) GetChallFiles(ctx context.Context, ids []uuid.UUID) ([]Challen
 		return nil, err
 	}
 	return items, nil
+}
+
+const getFile = `-- name: GetFile :one
+SELECT id, challenge_id, friendly_name, bucket, key, md5, uploaded, size, created_at, updated_at FROM challenge_files WHERE id = $1
+`
+
+func (q *Queries) GetFile(ctx context.Context, id uuid.UUID) (ChallengeFile, error) {
+	row := q.db.QueryRow(ctx, getFile, id)
+	var i ChallengeFile
+	err := row.Scan(
+		&i.ID,
+		&i.ChallengeID,
+		&i.FriendlyName,
+		&i.Bucket,
+		&i.Key,
+		&i.Md5,
+		&i.Uploaded,
+		&i.Size,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const insertAttempt = `-- name: InsertAttempt :exec
@@ -148,7 +206,7 @@ func (q *Queries) InsertChallenge(ctx context.Context, arg InsertChallengeParams
 }
 
 const insertFile = `-- name: InsertFile :exec
-INSERT INTO challenge_files (id, challenge_id, friendly_name, bucket, key, md5, uploaded) VALUES ($1::uuid, $2::uuid, $3::text, $4::text, $5::text, $6::text, false)
+INSERT INTO challenge_files (id, challenge_id, friendly_name, bucket, key, md5, size, uploaded) VALUES ($1::uuid, $2::uuid, $3::text, $4::text, $5::text, $6::text, $7::bigint, false)
 `
 
 type InsertFileParams struct {
@@ -158,6 +216,7 @@ type InsertFileParams struct {
 	Bucket      string
 	Key         string
 	Md5         string
+	Size        int64
 }
 
 func (q *Queries) InsertFile(ctx context.Context, arg InsertFileParams) error {
@@ -168,6 +227,7 @@ func (q *Queries) InsertFile(ctx context.Context, arg InsertFileParams) error {
 		arg.Bucket,
 		arg.Key,
 		arg.Md5,
+		arg.Size,
 	)
 	return err
 }

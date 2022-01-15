@@ -25,7 +25,7 @@ var _ = Service("admin", func() {
 		Payload(func() {
 			Extend(TokenPayload)
 		})
-		Result(CollectionOf(ResultChallenge))
+		Result(CollectionOf(ResultAdminChallenge))
 		HTTP(func() {
 			GET("/challenges")
 			Response(StatusOK)
@@ -53,7 +53,11 @@ var _ = Service("admin", func() {
 			Attribute("filename", String, func() {
 				Example("decryptor.exe")
 			})
-			Required("md5", "filename")
+			Attribute("size", Int64, func() {
+				Example(41239)
+				Description("the files number of bytes")
+			})
+			Required("md5", "filename", "size")
 		})
 		Result(func() {
 			Attribute("url", String, "Signed PutObject URL ", func() {
@@ -84,6 +88,16 @@ var _ = Service("admin", func() {
 		})
 		HTTP(func() {
 			DELETE("/monthly_challenges/{challengeID}")
+		})
+	})
+
+	Method("DeleteFile", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(FileIDArtifact)
+		})
+		HTTP(func() {
+			DELETE("/files/{fileID}")
 		})
 	})
 

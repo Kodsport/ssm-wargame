@@ -88,13 +88,13 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("admin", "ListChallenges", err)
 			}
-			p := NewListChallengesSsmChallengeCollectionOK(body)
+			p := NewListChallengesSsmAdminChallengeCollectionOK(body)
 			view := "default"
-			vres := adminviews.SsmChallengeCollection{Projected: p, View: view}
-			if err = adminviews.ValidateSsmChallengeCollection(vres); err != nil {
+			vres := adminviews.SsmAdminChallengeCollection{Projected: p, View: view}
+			if err = adminviews.ValidateSsmAdminChallengeCollection(vres); err != nil {
 				return nil, goahttp.ErrValidationError("admin", "ListChallenges", err)
 			}
-			res := admin.NewSsmChallengeCollection(vres)
+			res := admin.NewSsmAdminChallengeCollection(vres)
 			return res, nil
 		case http.StatusForbidden:
 			var (
@@ -644,6 +644,125 @@ func DecodeDeleteMonthlyChallengeResponse(decoder func(*http.Response) goahttp.D
 	}
 }
 
+// BuildDeleteFileRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "DeleteFile" endpoint
+func (c *Client) BuildDeleteFileRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		fileID string
+	)
+	{
+		p, ok := v.(*admin.DeleteFilePayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "DeleteFile", "*admin.DeleteFilePayload", v)
+		}
+		fileID = p.FileID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteFileAdminPath(fileID)}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "DeleteFile", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeDeleteFileRequest returns an encoder for requests sent to the admin
+// DeleteFile server.
+func EncodeDeleteFileRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.DeleteFilePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "DeleteFile", "*admin.DeleteFilePayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeDeleteFileResponse returns a decoder for responses returned by the
+// admin DeleteFile endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeDeleteFileResponse may return the following errors:
+//	- "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//	- "not_found" (type *goa.ServiceError): http.StatusNotFound
+//	- "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//	- error: internal error
+func DecodeDeleteFileResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body DeleteFileUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteFile", err)
+			}
+			err = ValidateDeleteFileUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteFile", err)
+			}
+			return nil, NewDeleteFileUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body DeleteFileNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteFile", err)
+			}
+			err = ValidateDeleteFileNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteFile", err)
+			}
+			return nil, NewDeleteFileNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body DeleteFileBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteFile", err)
+			}
+			err = ValidateDeleteFileBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteFile", err)
+			}
+			return nil, NewDeleteFileBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "DeleteFile", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildCreateMonthlyChallengeRequest instantiates a HTTP request object with
 // method and path set to call the "admin" service "CreateMonthlyChallenge"
 // endpoint
@@ -886,10 +1005,11 @@ func DecodeListUsersResponse(decoder func(*http.Response) goahttp.Decoder, resto
 	}
 }
 
-// unmarshalSsmChallengeResponseToAdminviewsSsmChallengeView builds a value of
-// type *adminviews.SsmChallengeView from a value of type *SsmChallengeResponse.
-func unmarshalSsmChallengeResponseToAdminviewsSsmChallengeView(v *SsmChallengeResponse) *adminviews.SsmChallengeView {
-	res := &adminviews.SsmChallengeView{
+// unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView builds a
+// value of type *adminviews.SsmAdminChallengeView from a value of type
+// *SsmAdminChallengeResponse.
+func unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView(v *SsmAdminChallengeResponse) *adminviews.SsmAdminChallengeView {
+	res := &adminviews.SsmAdminChallengeView{
 		ID:          v.ID,
 		Slug:        v.Slug,
 		Title:       v.Title,
@@ -904,11 +1024,9 @@ func unmarshalSsmChallengeResponseToAdminviewsSsmChallengeView(v *SsmChallengeRe
 			res.Services[i] = unmarshalChallengeServiceResponseToAdminviewsChallengeServiceView(val)
 		}
 	}
-	if v.Files != nil {
-		res.Files = make([]*adminviews.ChallengeFilesView, len(v.Files))
-		for i, val := range v.Files {
-			res.Files[i] = unmarshalChallengeFilesResponseToAdminviewsChallengeFilesView(val)
-		}
+	res.Files = make([]*adminviews.AdminChallengeFilesView, len(v.Files))
+	for i, val := range v.Files {
+		res.Files[i] = unmarshalAdminChallengeFilesResponseToAdminviewsAdminChallengeFilesView(val)
 	}
 
 	return res
@@ -926,16 +1044,18 @@ func unmarshalChallengeServiceResponseToAdminviewsChallengeServiceView(v *Challe
 	return res
 }
 
-// unmarshalChallengeFilesResponseToAdminviewsChallengeFilesView builds a value
-// of type *adminviews.ChallengeFilesView from a value of type
-// *ChallengeFilesResponse.
-func unmarshalChallengeFilesResponseToAdminviewsChallengeFilesView(v *ChallengeFilesResponse) *adminviews.ChallengeFilesView {
-	if v == nil {
-		return nil
-	}
-	res := &adminviews.ChallengeFilesView{
+// unmarshalAdminChallengeFilesResponseToAdminviewsAdminChallengeFilesView
+// builds a value of type *adminviews.AdminChallengeFilesView from a value of
+// type *AdminChallengeFilesResponse.
+func unmarshalAdminChallengeFilesResponseToAdminviewsAdminChallengeFilesView(v *AdminChallengeFilesResponse) *adminviews.AdminChallengeFilesView {
+	res := &adminviews.AdminChallengeFilesView{
+		ID:       v.ID,
 		Filename: v.Filename,
 		URL:      v.URL,
+		Bucket:   v.Bucket,
+		Key:      v.Key,
+		Size:     v.Size,
+		Md5:      v.Md5,
 	}
 
 	return res

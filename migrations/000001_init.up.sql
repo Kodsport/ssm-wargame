@@ -74,6 +74,7 @@ CREATE TABLE challenge_files (
     key TEXT NOT NULL,
     md5 TEXT NOT NULL,
     uploaded BOOLEAN NOT NULL,
+    size BIGINT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ,
 

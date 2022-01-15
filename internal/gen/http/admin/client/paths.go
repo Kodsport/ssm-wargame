@@ -36,6 +36,11 @@ func DeleteMonthlyChallengeAdminPath(challengeID string) string {
 	return fmt.Sprintf("/admin/monthly_challenges/%v", challengeID)
 }
 
+// DeleteFileAdminPath returns the URL path to the admin service DeleteFile HTTP endpoint.
+func DeleteFileAdminPath(fileID string) string {
+	return fmt.Sprintf("/admin/files/%v", fileID)
+}
+
 // CreateMonthlyChallengeAdminPath returns the URL path to the admin service CreateMonthlyChallenge HTTP endpoint.
 func CreateMonthlyChallengeAdminPath() string {
 	return "/admin/monthly_challenges"

@@ -18,7 +18,7 @@ import (
 // Service is the admin service interface.
 type Service interface {
 	// ListChallenges implements ListChallenges.
-	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, err error)
+	ListChallenges(context.Context, *ListChallengesPayload) (res SsmAdminChallengeCollection, err error)
 	// CreateChallenge implements CreateChallenge.
 	CreateChallenge(context.Context, *CreateChallengePayload) (err error)
 	// PresignChallFileUpload implements PresignChallFileUpload.
@@ -27,6 +27,8 @@ type Service interface {
 	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallengeMeta, err error)
 	// DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
 	DeleteMonthlyChallenge(context.Context, *DeleteMonthlyChallengePayload) (err error)
+	// DeleteFile implements DeleteFile.
+	DeleteFile(context.Context, *DeleteFilePayload) (err error)
 	// CreateMonthlyChallenge implements CreateMonthlyChallenge.
 	CreateMonthlyChallenge(context.Context, *CreateMonthlyChallengePayload) (err error)
 	// ListUsers implements ListUsers.
@@ -47,7 +49,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [7]string{"ListChallenges", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "CreateMonthlyChallenge", "ListUsers"}
+var MethodNames = [8]string{"ListChallenges", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -55,9 +57,9 @@ type ListChallengesPayload struct {
 	Token string
 }
 
-// SsmChallengeCollection is the result type of the admin service
+// SsmAdminChallengeCollection is the result type of the admin service
 // ListChallenges method.
-type SsmChallengeCollection []*SsmChallenge
+type SsmAdminChallengeCollection []*SsmAdminChallenge
 
 // CreateChallengePayload is the payload type of the admin service
 // CreateChallenge method.
@@ -79,7 +81,9 @@ type PresignChallFileUploadPayload struct {
 	// MD5 hash of the file content in base64
 	Md5      string
 	Filename string
-	Token    string
+	// the files number of bytes
+	Size  int64
+	Token string
 	// ID of a challenge
 	ChallengeID string
 }
@@ -105,6 +109,13 @@ type DeleteMonthlyChallengePayload struct {
 	ChallengeID string
 }
 
+// DeleteFilePayload is the payload type of the admin service DeleteFile method.
+type DeleteFilePayload struct {
+	Token string
+	// ID of a file
+	FileID string
+}
+
 // CreateMonthlyChallengePayload is the payload type of the admin service
 // CreateMonthlyChallenge method.
 type CreateMonthlyChallengePayload struct {
@@ -125,7 +136,7 @@ type ListUsersPayload struct {
 }
 
 // A Wargame challenge
-type SsmChallenge struct {
+type SsmAdminChallenge struct {
 	ID string
 	// A unique string that can be used in URLs
 	Slug string
@@ -136,7 +147,7 @@ type SsmChallenge struct {
 	// The number of points given to the solver
 	Score     int32
 	Services  []*ChallengeService
-	Files     []*ChallengeFiles
+	Files     []*AdminChallengeFiles
 	Published bool
 	// The numer of people who solved the challenge
 	Solves int64
@@ -145,9 +156,15 @@ type SsmChallenge struct {
 type ChallengeService struct {
 }
 
-type ChallengeFiles struct {
+type AdminChallengeFiles struct {
+	ID       string
 	Filename string
 	URL      string
+	Bucket   string
+	Key      string
+	Size     int64
+	// MD5 hash of the file content in base64
+	Md5 string
 }
 
 type MonthlyChallengeMeta struct {
@@ -193,44 +210,46 @@ func MakeBadRequest(err error) *goa.ServiceError {
 	}
 }
 
-// NewSsmChallengeCollection initializes result type SsmChallengeCollection
-// from viewed result type SsmChallengeCollection.
-func NewSsmChallengeCollection(vres adminviews.SsmChallengeCollection) SsmChallengeCollection {
-	return newSsmChallengeCollection(vres.Projected)
+// NewSsmAdminChallengeCollection initializes result type
+// SsmAdminChallengeCollection from viewed result type
+// SsmAdminChallengeCollection.
+func NewSsmAdminChallengeCollection(vres adminviews.SsmAdminChallengeCollection) SsmAdminChallengeCollection {
+	return newSsmAdminChallengeCollection(vres.Projected)
 }
 
-// NewViewedSsmChallengeCollection initializes viewed result type
-// SsmChallengeCollection from result type SsmChallengeCollection using the
-// given view.
-func NewViewedSsmChallengeCollection(res SsmChallengeCollection, view string) adminviews.SsmChallengeCollection {
-	p := newSsmChallengeCollectionView(res)
-	return adminviews.SsmChallengeCollection{Projected: p, View: "default"}
+// NewViewedSsmAdminChallengeCollection initializes viewed result type
+// SsmAdminChallengeCollection from result type SsmAdminChallengeCollection
+// using the given view.
+func NewViewedSsmAdminChallengeCollection(res SsmAdminChallengeCollection, view string) adminviews.SsmAdminChallengeCollection {
+	p := newSsmAdminChallengeCollectionView(res)
+	return adminviews.SsmAdminChallengeCollection{Projected: p, View: "default"}
 }
 
-// newSsmChallengeCollection converts projected type SsmChallengeCollection to
-// service type SsmChallengeCollection.
-func newSsmChallengeCollection(vres adminviews.SsmChallengeCollectionView) SsmChallengeCollection {
-	res := make(SsmChallengeCollection, len(vres))
+// newSsmAdminChallengeCollection converts projected type
+// SsmAdminChallengeCollection to service type SsmAdminChallengeCollection.
+func newSsmAdminChallengeCollection(vres adminviews.SsmAdminChallengeCollectionView) SsmAdminChallengeCollection {
+	res := make(SsmAdminChallengeCollection, len(vres))
 	for i, n := range vres {
-		res[i] = newSsmChallenge(n)
+		res[i] = newSsmAdminChallenge(n)
 	}
 	return res
 }
 
-// newSsmChallengeCollectionView projects result type SsmChallengeCollection to
-// projected type SsmChallengeCollectionView using the "default" view.
-func newSsmChallengeCollectionView(res SsmChallengeCollection) adminviews.SsmChallengeCollectionView {
-	vres := make(adminviews.SsmChallengeCollectionView, len(res))
+// newSsmAdminChallengeCollectionView projects result type
+// SsmAdminChallengeCollection to projected type
+// SsmAdminChallengeCollectionView using the "default" view.
+func newSsmAdminChallengeCollectionView(res SsmAdminChallengeCollection) adminviews.SsmAdminChallengeCollectionView {
+	vres := make(adminviews.SsmAdminChallengeCollectionView, len(res))
 	for i, n := range res {
-		vres[i] = newSsmChallengeView(n)
+		vres[i] = newSsmAdminChallengeView(n)
 	}
 	return vres
 }
 
-// newSsmChallenge converts projected type SsmChallenge to service type
-// SsmChallenge.
-func newSsmChallenge(vres *adminviews.SsmChallengeView) *SsmChallenge {
-	res := &SsmChallenge{}
+// newSsmAdminChallenge converts projected type SsmAdminChallenge to service
+// type SsmAdminChallenge.
+func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChallenge {
+	res := &SsmAdminChallenge{}
 	if vres.ID != nil {
 		res.ID = *vres.ID
 	}
@@ -259,18 +278,18 @@ func newSsmChallenge(vres *adminviews.SsmChallengeView) *SsmChallenge {
 		}
 	}
 	if vres.Files != nil {
-		res.Files = make([]*ChallengeFiles, len(vres.Files))
+		res.Files = make([]*AdminChallengeFiles, len(vres.Files))
 		for i, val := range vres.Files {
-			res.Files[i] = transformAdminviewsChallengeFilesViewToChallengeFiles(val)
+			res.Files[i] = transformAdminviewsAdminChallengeFilesViewToAdminChallengeFiles(val)
 		}
 	}
 	return res
 }
 
-// newSsmChallengeView projects result type SsmChallenge to projected type
-// SsmChallengeView using the "default" view.
-func newSsmChallengeView(res *SsmChallenge) *adminviews.SsmChallengeView {
-	vres := &adminviews.SsmChallengeView{
+// newSsmAdminChallengeView projects result type SsmAdminChallenge to projected
+// type SsmAdminChallengeView using the "default" view.
+func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChallengeView {
+	vres := &adminviews.SsmAdminChallengeView{
 		ID:          &res.ID,
 		Slug:        &res.Slug,
 		Title:       &res.Title,
@@ -286,9 +305,9 @@ func newSsmChallengeView(res *SsmChallenge) *adminviews.SsmChallengeView {
 		}
 	}
 	if res.Files != nil {
-		vres.Files = make([]*adminviews.ChallengeFilesView, len(res.Files))
+		vres.Files = make([]*adminviews.AdminChallengeFilesView, len(res.Files))
 		for i, val := range res.Files {
-			vres.Files[i] = transformChallengeFilesToAdminviewsChallengeFilesView(val)
+			vres.Files[i] = transformAdminChallengeFilesToAdminviewsAdminChallengeFilesView(val)
 		}
 	}
 	return vres
@@ -305,15 +324,21 @@ func transformAdminviewsChallengeServiceViewToChallengeService(v *adminviews.Cha
 	return res
 }
 
-// transformAdminviewsChallengeFilesViewToChallengeFiles builds a value of type
-// *ChallengeFiles from a value of type *adminviews.ChallengeFilesView.
-func transformAdminviewsChallengeFilesViewToChallengeFiles(v *adminviews.ChallengeFilesView) *ChallengeFiles {
+// transformAdminviewsAdminChallengeFilesViewToAdminChallengeFiles builds a
+// value of type *AdminChallengeFiles from a value of type
+// *adminviews.AdminChallengeFilesView.
+func transformAdminviewsAdminChallengeFilesViewToAdminChallengeFiles(v *adminviews.AdminChallengeFilesView) *AdminChallengeFiles {
 	if v == nil {
 		return nil
 	}
-	res := &ChallengeFiles{
+	res := &AdminChallengeFiles{
+		ID:       *v.ID,
 		Filename: *v.Filename,
 		URL:      *v.URL,
+		Bucket:   *v.Bucket,
+		Key:      *v.Key,
+		Size:     *v.Size,
+		Md5:      *v.Md5,
 	}
 
 	return res
@@ -330,15 +355,18 @@ func transformChallengeServiceToAdminviewsChallengeServiceView(v *ChallengeServi
 	return res
 }
 
-// transformChallengeFilesToAdminviewsChallengeFilesView builds a value of type
-// *adminviews.ChallengeFilesView from a value of type *ChallengeFiles.
-func transformChallengeFilesToAdminviewsChallengeFilesView(v *ChallengeFiles) *adminviews.ChallengeFilesView {
-	if v == nil {
-		return nil
-	}
-	res := &adminviews.ChallengeFilesView{
+// transformAdminChallengeFilesToAdminviewsAdminChallengeFilesView builds a
+// value of type *adminviews.AdminChallengeFilesView from a value of type
+// *AdminChallengeFiles.
+func transformAdminChallengeFilesToAdminviewsAdminChallengeFilesView(v *AdminChallengeFiles) *adminviews.AdminChallengeFilesView {
+	res := &adminviews.AdminChallengeFilesView{
+		ID:       &v.ID,
 		Filename: &v.Filename,
 		URL:      &v.URL,
+		Bucket:   &v.Bucket,
+		Key:      &v.Key,
+		Size:     &v.Size,
+		Md5:      &v.Md5,
 	}
 
 	return res

@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
 	"go.uber.org/zap"
@@ -16,7 +17,7 @@ import (
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
 )
 
-func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
+func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmAdminChallengeCollection, error) {
 
 	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, true)
 	if err != nil {
@@ -24,10 +25,16 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		return nil, err
 	}
 
-	res := make(spec.SsmChallengeCollection, len(challs))
+	files, err := db.New(s.db).Files(ctx)
+	if err != nil {
+		s.log.Warn("could not list files", zap.Error(err), utils.C(ctx))
+		return nil, err
+	}
+
+	res := make(spec.SsmAdminChallengeCollection, len(challs))
 
 	for i, chall := range challs {
-		res[i] = &spec.SsmChallenge{
+		res[i] = &spec.SsmAdminChallenge{
 			ID:          chall.ID.String(),
 			Slug:        chall.Slug,
 			Title:       chall.Title,
@@ -35,6 +42,40 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Score:       chall.Score,
 			Solves:      chall.NumSolves,
 			Published:   chall.Published,
+		}
+
+	}
+
+	for _, file := range files {
+		for i, chall := range res {
+			if chall.ID != file.ChallengeID.UUID.String() {
+				continue
+			}
+
+			if res[i].Files == nil {
+				res[i].Files = make([]*spec.AdminChallengeFiles, 0, 1)
+			}
+
+			req, _ := s.s3.GetObjectRequest(&s3.GetObjectInput{
+				Bucket: &file.Bucket,
+				Key:    &file.Key,
+			})
+
+			url, err := req.Presign(time.Hour * 4)
+
+			if err != nil {
+				s.log.Warn("could not sign url", zap.Error(err), utils.C(ctx))
+			}
+
+			res[i].Files = append(res[i].Files, &spec.AdminChallengeFiles{
+				ID:       file.ID.String(),
+				Filename: file.FriendlyName,
+				Bucket:   file.Bucket,
+				URL:      url,
+				Key:      file.Key,
+				Size:     file.Size,
+				Md5:      file.Md5,
+			})
 		}
 
 	}
@@ -83,9 +124,10 @@ func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignC
 	objectKey := req.ChallengeID + "/" + req.Filename
 
 	r, _ := s.s3.PutObjectRequest(&s3.PutObjectInput{
-		Bucket:     &s.cfg.S3.Bucket,
-		Key:        &objectKey,
-		ContentMD5: &req.Md5,
+		Bucket:        &s.cfg.S3.Bucket,
+		Key:           &objectKey,
+		ContentMD5:    &req.Md5,
+		ContentLength: &req.Size,
 	})
 
 	url, err := r.Presign(time.Second * 20)
@@ -103,6 +145,7 @@ func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignC
 		Bucket:      s.cfg.S3.Bucket,
 		Key:         objectKey,
 		Md5:         req.Md5,
+		Size:        req.Size,
 	})
 
 	if err != nil {
@@ -154,4 +197,55 @@ func (s *service) checkUploaded(ctx context.Context, fileID uuid.UUID, bucket, k
 
 	log.Warn("could not head object", zap.Error(err), zap.String("fileID", fileID.String()))
 
+}
+
+func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) error {
+	fileID := uuid.MustParse(req.FileID)
+	log := s.log.With(zap.String("fileID", req.FileID), utils.C(ctx))
+	log.Info("deleting file")
+
+	tx, err := s.db.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		log.Error("could not open tx", zap.Error(err))
+		return err
+	}
+	txQ := db.New(tx)
+	defer tx.Rollback(ctx)
+
+	file, err := txQ.GetFile(ctx, fileID)
+	if err == pgx.ErrNoRows {
+		return spec.MakeNotFound(errors.New("could not find file"))
+	}
+	if err != nil {
+		log.Error("could not get file", zap.Error(err))
+		return err
+	}
+
+	err = txQ.DeleteFile(ctx, fileID)
+	if err != nil {
+		log.Error("could not delete file", zap.Error(err))
+		return err
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		log.Error("could not commit file deletion", zap.Error(err))
+		return err
+	}
+
+	out, err := s.s3.DeleteObjectWithContext(ctx, &s3.DeleteObjectInput{
+		Bucket: &file.Bucket,
+		Key:    &file.Key,
+	})
+
+	if err != nil {
+		log.Error("delete object errored", zap.Error(err))
+		return err
+	}
+
+	if out.DeleteMarker != nil && !*out.DeleteMarker {
+		log.Warn("s3 file was not deleted")
+	}
+
+	return nil
 }

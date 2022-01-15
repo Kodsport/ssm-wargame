@@ -25,7 +25,7 @@ import (
 //    command (subcommand1|subcommand2|...)
 //
 func UsageCommands() string {
-	return `admin (list-challenges|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|create-monthly-challenge|list-users)
+	return `admin (list-challenges|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users)
 auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-monthly-challenges|submit-flag)
 `
@@ -70,6 +70,10 @@ func ParseEndpoint(
 		adminDeleteMonthlyChallengeChallengeIDFlag = adminDeleteMonthlyChallengeFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
 		adminDeleteMonthlyChallengeTokenFlag       = adminDeleteMonthlyChallengeFlags.String("token", "REQUIRED", "")
 
+		adminDeleteFileFlags      = flag.NewFlagSet("delete-file", flag.ExitOnError)
+		adminDeleteFileFileIDFlag = adminDeleteFileFlags.String("file-id", "REQUIRED", "ID of a file")
+		adminDeleteFileTokenFlag  = adminDeleteFileFlags.String("token", "REQUIRED", "")
+
 		adminCreateMonthlyChallengeFlags     = flag.NewFlagSet("create-monthly-challenge", flag.ExitOnError)
 		adminCreateMonthlyChallengeBodyFlag  = adminCreateMonthlyChallengeFlags.String("body", "REQUIRED", "")
 		adminCreateMonthlyChallengeTokenFlag = adminCreateMonthlyChallengeFlags.String("token", "REQUIRED", "")
@@ -103,6 +107,7 @@ func ParseEndpoint(
 	adminPresignChallFileUploadFlags.Usage = adminPresignChallFileUploadUsage
 	adminListMonthlyChallengesFlags.Usage = adminListMonthlyChallengesUsage
 	adminDeleteMonthlyChallengeFlags.Usage = adminDeleteMonthlyChallengeUsage
+	adminDeleteFileFlags.Usage = adminDeleteFileUsage
 	adminCreateMonthlyChallengeFlags.Usage = adminCreateMonthlyChallengeUsage
 	adminListUsersFlags.Usage = adminListUsersUsage
 
@@ -167,6 +172,9 @@ func ParseEndpoint(
 
 			case "delete-monthly-challenge":
 				epf = adminDeleteMonthlyChallengeFlags
+
+			case "delete-file":
+				epf = adminDeleteFileFlags
 
 			case "create-monthly-challenge":
 				epf = adminCreateMonthlyChallengeFlags
@@ -237,6 +245,9 @@ func ParseEndpoint(
 			case "delete-monthly-challenge":
 				endpoint = c.DeleteMonthlyChallenge()
 				data, err = adminc.BuildDeleteMonthlyChallengePayload(*adminDeleteMonthlyChallengeChallengeIDFlag, *adminDeleteMonthlyChallengeTokenFlag)
+			case "delete-file":
+				endpoint = c.DeleteFile()
+				data, err = adminc.BuildDeleteFilePayload(*adminDeleteFileFileIDFlag, *adminDeleteFileTokenFlag)
 			case "create-monthly-challenge":
 				endpoint = c.CreateMonthlyChallenge()
 				data, err = adminc.BuildCreateMonthlyChallengePayload(*adminCreateMonthlyChallengeBodyFlag, *adminCreateMonthlyChallengeTokenFlag)
@@ -288,6 +299,7 @@ COMMAND:
     presign-chall-file-upload: PresignChallFileUpload implements PresignChallFileUpload.
     list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
     delete-monthly-challenge: DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
+    delete-file: DeleteFile implements DeleteFile.
     create-monthly-challenge: CreateMonthlyChallenge implements CreateMonthlyChallenge.
     list-users: ListUsers implements ListUsers.
 
@@ -334,7 +346,8 @@ PresignChallFileUpload implements PresignChallFileUpload.
 Example:
     %[1]s admin presign-chall-file-upload --body '{
       "filename": "decryptor.exe",
-      "md5": "cq02dBbcuugBHM1oKyvMlQ=="
+      "md5": "cq02dBbcuugBHM1oKyvMlQ==",
+      "size": 41239
    }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -359,6 +372,18 @@ DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
 
 Example:
     %[1]s admin delete-monthly-challenge --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminDeleteFileUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin delete-file -file-id STRING -token STRING
+
+DeleteFile implements DeleteFile.
+    -file-id STRING: ID of a file
+    -token STRING: 
+
+Example:
+    %[1]s admin delete-file --file-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

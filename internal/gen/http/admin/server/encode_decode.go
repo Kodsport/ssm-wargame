@@ -23,9 +23,9 @@ import (
 // the admin ListChallenges endpoint.
 func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(adminviews.SsmChallengeCollection)
+		res := v.(adminviews.SsmAdminChallengeCollection)
 		enc := encoder(ctx, w)
-		body := NewSsmChallengeResponseCollection(res.Projected)
+		body := NewSsmAdminChallengeResponseCollection(res.Projected)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
@@ -505,6 +505,99 @@ func EncodeDeleteMonthlyChallengeError(encoder func(context.Context, http.Respon
 	}
 }
 
+// EncodeDeleteFileResponse returns an encoder for responses returned by the
+// admin DeleteFile endpoint.
+func EncodeDeleteFileResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusNoContent)
+		return nil
+	}
+}
+
+// DecodeDeleteFileRequest returns a decoder for requests sent to the admin
+// DeleteFile endpoint.
+func DecodeDeleteFileRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			fileID string
+			token  string
+			err    error
+
+			params = mux.Vars(r)
+		)
+		fileID = params["fileID"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("fileID", fileID, goa.FormatUUID))
+
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewDeleteFilePayload(fileID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeDeleteFileError returns an encoder for errors returned by the
+// DeleteFile admin endpoint.
+func EncodeDeleteFileError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewDeleteFileUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewDeleteFileNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewDeleteFileBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeCreateMonthlyChallengeResponse returns an encoder for responses
 // returned by the admin CreateMonthlyChallenge endpoint.
 func EncodeCreateMonthlyChallengeResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -697,10 +790,11 @@ func EncodeListUsersError(encoder func(context.Context, http.ResponseWriter) goa
 	}
 }
 
-// marshalAdminviewsSsmChallengeViewToSsmChallengeResponse builds a value of
-// type *SsmChallengeResponse from a value of type *adminviews.SsmChallengeView.
-func marshalAdminviewsSsmChallengeViewToSsmChallengeResponse(v *adminviews.SsmChallengeView) *SsmChallengeResponse {
-	res := &SsmChallengeResponse{
+// marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse builds a
+// value of type *SsmAdminChallengeResponse from a value of type
+// *adminviews.SsmAdminChallengeView.
+func marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(v *adminviews.SsmAdminChallengeView) *SsmAdminChallengeResponse {
+	res := &SsmAdminChallengeResponse{
 		ID:          *v.ID,
 		Slug:        *v.Slug,
 		Title:       *v.Title,
@@ -716,9 +810,9 @@ func marshalAdminviewsSsmChallengeViewToSsmChallengeResponse(v *adminviews.SsmCh
 		}
 	}
 	if v.Files != nil {
-		res.Files = make([]*ChallengeFilesResponse, len(v.Files))
+		res.Files = make([]*AdminChallengeFilesResponse, len(v.Files))
 		for i, val := range v.Files {
-			res.Files[i] = marshalAdminviewsChallengeFilesViewToChallengeFilesResponse(val)
+			res.Files[i] = marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse(val)
 		}
 	}
 
@@ -737,16 +831,18 @@ func marshalAdminviewsChallengeServiceViewToChallengeServiceResponse(v *adminvie
 	return res
 }
 
-// marshalAdminviewsChallengeFilesViewToChallengeFilesResponse builds a value
-// of type *ChallengeFilesResponse from a value of type
-// *adminviews.ChallengeFilesView.
-func marshalAdminviewsChallengeFilesViewToChallengeFilesResponse(v *adminviews.ChallengeFilesView) *ChallengeFilesResponse {
-	if v == nil {
-		return nil
-	}
-	res := &ChallengeFilesResponse{
+// marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse builds
+// a value of type *AdminChallengeFilesResponse from a value of type
+// *adminviews.AdminChallengeFilesView.
+func marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse(v *adminviews.AdminChallengeFilesView) *AdminChallengeFilesResponse {
+	res := &AdminChallengeFilesResponse{
+		ID:       *v.ID,
 		Filename: *v.Filename,
 		URL:      *v.URL,
+		Bucket:   *v.Bucket,
+		Key:      *v.Key,
+		Size:     *v.Size,
+		Md5:      *v.Md5,
 	}
 
 	return res

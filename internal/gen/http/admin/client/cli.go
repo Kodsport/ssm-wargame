@@ -62,7 +62,7 @@ func BuildPresignChallFileUploadPayload(adminPresignChallFileUploadBody string, 
 	{
 		err = json.Unmarshal([]byte(adminPresignChallFileUploadBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"filename\": \"decryptor.exe\",\n      \"md5\": \"cq02dBbcuugBHM1oKyvMlQ==\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"filename\": \"decryptor.exe\",\n      \"md5\": \"cq02dBbcuugBHM1oKyvMlQ==\",\n      \"size\": 41239\n   }'")
 		}
 	}
 	var challengeID string
@@ -81,6 +81,7 @@ func BuildPresignChallFileUploadPayload(adminPresignChallFileUploadBody string, 
 	v := &admin.PresignChallFileUploadPayload{
 		Md5:      body.Md5,
 		Filename: body.Filename,
+		Size:     body.Size,
 	}
 	v.ChallengeID = challengeID
 	v.Token = token
@@ -120,6 +121,30 @@ func BuildDeleteMonthlyChallengePayload(adminDeleteMonthlyChallengeChallengeID s
 	}
 	v := &admin.DeleteMonthlyChallengePayload{}
 	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteFilePayload builds the payload for the admin DeleteFile endpoint
+// from CLI flags.
+func BuildDeleteFilePayload(adminDeleteFileFileID string, adminDeleteFileToken string) (*admin.DeleteFilePayload, error) {
+	var err error
+	var fileID string
+	{
+		fileID = adminDeleteFileFileID
+		err = goa.MergeErrors(err, goa.ValidateFormat("fileID", fileID, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminDeleteFileToken
+	}
+	v := &admin.DeleteFilePayload{}
+	v.FileID = fileID
 	v.Token = token
 
 	return v, nil

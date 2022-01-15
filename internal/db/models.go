@@ -46,6 +46,7 @@ type ChallengeFile struct {
 	Key          string
 	Md5          string
 	Uploaded     bool
+	Size         int64
 	CreatedAt    time.Time
 	UpdatedAt    sql.NullTime
 }

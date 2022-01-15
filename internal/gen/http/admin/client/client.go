@@ -37,6 +37,10 @@ type Client struct {
 	// DeleteMonthlyChallenge endpoint.
 	DeleteMonthlyChallengeDoer goahttp.Doer
 
+	// DeleteFile Doer is the HTTP client used to make requests to the DeleteFile
+	// endpoint.
+	DeleteFileDoer goahttp.Doer
+
 	// CreateMonthlyChallenge Doer is the HTTP client used to make requests to the
 	// CreateMonthlyChallenge endpoint.
 	CreateMonthlyChallengeDoer goahttp.Doer
@@ -70,6 +74,7 @@ func NewClient(
 		PresignChallFileUploadDoer: doer,
 		ListMonthlyChallengesDoer:  doer,
 		DeleteMonthlyChallengeDoer: doer,
+		DeleteFileDoer:             doer,
 		CreateMonthlyChallengeDoer: doer,
 		ListUsersDoer:              doer,
 		RestoreResponseBody:        restoreBody,
@@ -195,6 +200,30 @@ func (c *Client) DeleteMonthlyChallenge() goa.Endpoint {
 		resp, err := c.DeleteMonthlyChallengeDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "DeleteMonthlyChallenge", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// DeleteFile returns an endpoint that makes HTTP requests to the admin service
+// DeleteFile server.
+func (c *Client) DeleteFile() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeDeleteFileRequest(c.encoder)
+		decodeResponse = DecodeDeleteFileResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildDeleteFileRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.DeleteFileDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "DeleteFile", err)
 		}
 		return decodeResponse(resp)
 	}

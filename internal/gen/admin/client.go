@@ -20,31 +20,33 @@ type Client struct {
 	PresignChallFileUploadEndpoint goa.Endpoint
 	ListMonthlyChallengesEndpoint  goa.Endpoint
 	DeleteMonthlyChallengeEndpoint goa.Endpoint
+	DeleteFileEndpoint             goa.Endpoint
 	CreateMonthlyChallengeEndpoint goa.Endpoint
 	ListUsersEndpoint              goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, createMonthlyChallenge, listUsers goa.Endpoint) *Client {
+func NewClient(listChallenges, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:         listChallenges,
 		CreateChallengeEndpoint:        createChallenge,
 		PresignChallFileUploadEndpoint: presignChallFileUpload,
 		ListMonthlyChallengesEndpoint:  listMonthlyChallenges,
 		DeleteMonthlyChallengeEndpoint: deleteMonthlyChallenge,
+		DeleteFileEndpoint:             deleteFile,
 		CreateMonthlyChallengeEndpoint: createMonthlyChallenge,
 		ListUsersEndpoint:              listUsers,
 	}
 }
 
 // ListChallenges calls the "ListChallenges" endpoint of the "admin" service.
-func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (res SsmChallengeCollection, err error) {
+func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (res SsmAdminChallengeCollection, err error) {
 	var ires interface{}
 	ires, err = c.ListChallengesEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(SsmChallengeCollection), nil
+	return ires.(SsmAdminChallengeCollection), nil
 }
 
 // CreateChallenge calls the "CreateChallenge" endpoint of the "admin" service.
@@ -79,6 +81,12 @@ func (c *Client) ListMonthlyChallenges(ctx context.Context, p *ListMonthlyChalle
 // "admin" service.
 func (c *Client) DeleteMonthlyChallenge(ctx context.Context, p *DeleteMonthlyChallengePayload) (err error) {
 	_, err = c.DeleteMonthlyChallengeEndpoint(ctx, p)
+	return
+}
+
+// DeleteFile calls the "DeleteFile" endpoint of the "admin" service.
+func (c *Client) DeleteFile(ctx context.Context, p *DeleteFilePayload) (err error) {
+	_, err = c.DeleteFileEndpoint(ctx, p)
 	return
 }
 

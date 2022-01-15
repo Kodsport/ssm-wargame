@@ -32,6 +32,8 @@ type PresignChallFileUploadRequestBody struct {
 	// MD5 hash of the file content in base64
 	Md5      string `form:"md5" json:"md5" xml:"md5"`
 	Filename string `form:"filename" json:"filename" xml:"filename"`
+	// the files number of bytes
+	Size int64 `form:"size" json:"size" xml:"size"`
 }
 
 // CreateMonthlyChallengeRequestBody is the type of the "admin" service
@@ -49,7 +51,7 @@ type CreateMonthlyChallengeRequestBody struct {
 
 // ListChallengesResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
-type ListChallengesResponseBody []*SsmChallengeResponse
+type ListChallengesResponseBody []*SsmAdminChallengeResponse
 
 // PresignChallFileUploadResponseBody is the type of the "admin" service
 // "PresignChallFileUpload" endpoint HTTP response body.
@@ -345,6 +347,60 @@ type DeleteMonthlyChallengeBadRequestResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// DeleteFileUnauthorizedResponseBody is the type of the "admin" service
+// "DeleteFile" endpoint HTTP response body for the "unauthorized" error.
+type DeleteFileUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteFileNotFoundResponseBody is the type of the "admin" service
+// "DeleteFile" endpoint HTTP response body for the "not_found" error.
+type DeleteFileNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteFileBadRequestResponseBody is the type of the "admin" service
+// "DeleteFile" endpoint HTTP response body for the "bad_request" error.
+type DeleteFileBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // CreateMonthlyChallengeUnauthorizedResponseBody is the type of the "admin"
 // service "CreateMonthlyChallenge" endpoint HTTP response body for the
 // "unauthorized" error.
@@ -456,8 +512,8 @@ type ListUsersBadRequestResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
-// SsmChallengeResponse is used to define fields on response body types.
-type SsmChallengeResponse struct {
+// SsmAdminChallengeResponse is used to define fields on response body types.
+type SsmAdminChallengeResponse struct {
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// A unique string that can be used in URLs
 	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
@@ -466,10 +522,10 @@ type SsmChallengeResponse struct {
 	// A short text describing the challenge
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	// The number of points given to the solver
-	Score     *int32                      `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-	Services  []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files     []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
-	Published *bool                       `form:"published,omitempty" json:"published,omitempty" xml:"published,omitempty"`
+	Score     *int32                         `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	Services  []*ChallengeServiceResponse    `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files     []*AdminChallengeFilesResponse `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	Published *bool                          `form:"published,omitempty" json:"published,omitempty" xml:"published,omitempty"`
 	// The numer of people who solved the challenge
 	Solves *int64 `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
 }
@@ -478,10 +534,16 @@ type SsmChallengeResponse struct {
 type ChallengeServiceResponse struct {
 }
 
-// ChallengeFilesResponse is used to define fields on response body types.
-type ChallengeFilesResponse struct {
+// AdminChallengeFilesResponse is used to define fields on response body types.
+type AdminChallengeFilesResponse struct {
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Filename *string `form:"filename,omitempty" json:"filename,omitempty" xml:"filename,omitempty"`
 	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
+	Bucket   *string `form:"bucket,omitempty" json:"bucket,omitempty" xml:"bucket,omitempty"`
+	Key      *string `form:"key,omitempty" json:"key,omitempty" xml:"key,omitempty"`
+	Size     *int64  `form:"size,omitempty" json:"size,omitempty" xml:"size,omitempty"`
+	// MD5 hash of the file content in base64
+	Md5 *string `form:"md5,omitempty" json:"md5,omitempty" xml:"md5,omitempty"`
 }
 
 // MonthlyChallengeMetaResponse is used to define fields on response body types.
@@ -520,6 +582,7 @@ func NewPresignChallFileUploadRequestBody(p *admin.PresignChallFileUploadPayload
 	body := &PresignChallFileUploadRequestBody{
 		Md5:      p.Md5,
 		Filename: p.Filename,
+		Size:     p.Size,
 	}
 	return body
 }
@@ -536,12 +599,12 @@ func NewCreateMonthlyChallengeRequestBody(p *admin.CreateMonthlyChallengePayload
 	return body
 }
 
-// NewListChallengesSsmChallengeCollectionOK builds a "admin" service
+// NewListChallengesSsmAdminChallengeCollectionOK builds a "admin" service
 // "ListChallenges" endpoint result from a HTTP "OK" response.
-func NewListChallengesSsmChallengeCollectionOK(body ListChallengesResponseBody) adminviews.SsmChallengeCollectionView {
-	v := make([]*adminviews.SsmChallengeView, len(body))
+func NewListChallengesSsmAdminChallengeCollectionOK(body ListChallengesResponseBody) adminviews.SsmAdminChallengeCollectionView {
+	v := make([]*adminviews.SsmAdminChallengeView, len(body))
 	for i, val := range body {
-		v[i] = unmarshalSsmChallengeResponseToAdminviewsSsmChallengeView(val)
+		v[i] = unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView(val)
 	}
 
 	return v
@@ -781,6 +844,51 @@ func NewDeleteMonthlyChallengeNotFound(body *DeleteMonthlyChallengeNotFoundRespo
 // NewDeleteMonthlyChallengeBadRequest builds a admin service
 // DeleteMonthlyChallenge endpoint bad_request error.
 func NewDeleteMonthlyChallengeBadRequest(body *DeleteMonthlyChallengeBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteFileUnauthorized builds a admin service DeleteFile endpoint
+// unauthorized error.
+func NewDeleteFileUnauthorized(body *DeleteFileUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteFileNotFound builds a admin service DeleteFile endpoint not_found
+// error.
+func NewDeleteFileNotFound(body *DeleteFileNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteFileBadRequest builds a admin service DeleteFile endpoint
+// bad_request error.
+func NewDeleteFileBadRequest(body *DeleteFileBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -1263,6 +1371,78 @@ func ValidateDeleteMonthlyChallengeBadRequestResponseBody(body *DeleteMonthlyCha
 	return
 }
 
+// ValidateDeleteFileUnauthorizedResponseBody runs the validations defined on
+// DeleteFile_unauthorized_Response_Body
+func ValidateDeleteFileUnauthorizedResponseBody(body *DeleteFileUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteFileNotFoundResponseBody runs the validations defined on
+// DeleteFile_not_found_Response_Body
+func ValidateDeleteFileNotFoundResponseBody(body *DeleteFileNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteFileBadRequestResponseBody runs the validations defined on
+// DeleteFile_bad_request_Response_Body
+func ValidateDeleteFileBadRequestResponseBody(body *DeleteFileBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateCreateMonthlyChallengeUnauthorizedResponseBody runs the validations
 // defined on CreateMonthlyChallenge_unauthorized_Response_Body
 func ValidateCreateMonthlyChallengeUnauthorizedResponseBody(body *CreateMonthlyChallengeUnauthorizedResponseBody) (err error) {
@@ -1407,9 +1587,12 @@ func ValidateListUsersBadRequestResponseBody(body *ListUsersBadRequestResponseBo
 	return
 }
 
-// ValidateSsmChallengeResponse runs the validations defined on
-// SsmChallengeResponse
-func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
+// ValidateSsmAdminChallengeResponse runs the validations defined on
+// SsmAdminChallengeResponse
+func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err error) {
+	if body.Files == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("files", "body"))
+	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
@@ -1433,7 +1616,7 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	for _, e := range body.Files {
 		if e != nil {
-			if err2 := ValidateChallengeFilesResponse(e); err2 != nil {
+			if err2 := ValidateAdminChallengeFilesResponse(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
@@ -1441,14 +1624,29 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	return
 }
 
-// ValidateChallengeFilesResponse runs the validations defined on
-// ChallengeFilesResponse
-func ValidateChallengeFilesResponse(body *ChallengeFilesResponse) (err error) {
+// ValidateAdminChallengeFilesResponse runs the validations defined on
+// AdminChallengeFilesResponse
+func ValidateAdminChallengeFilesResponse(body *AdminChallengeFilesResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
 	if body.Filename == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("filename", "body"))
 	}
 	if body.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
+	}
+	if body.Key == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("key", "body"))
+	}
+	if body.Bucket == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("bucket", "body"))
+	}
+	if body.Size == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("size", "body"))
+	}
+	if body.Md5 == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("md5", "body"))
 	}
 	return
 }

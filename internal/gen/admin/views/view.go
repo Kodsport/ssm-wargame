@@ -11,21 +11,21 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
-// SsmChallengeCollection is the viewed result type that is projected based on
-// a view.
-type SsmChallengeCollection struct {
+// SsmAdminChallengeCollection is the viewed result type that is projected
+// based on a view.
+type SsmAdminChallengeCollection struct {
 	// Type to project
-	Projected SsmChallengeCollectionView
+	Projected SsmAdminChallengeCollectionView
 	// View to render
 	View string
 }
 
-// SsmChallengeCollectionView is a type that runs validations on a projected
-// type.
-type SsmChallengeCollectionView []*SsmChallengeView
+// SsmAdminChallengeCollectionView is a type that runs validations on a
+// projected type.
+type SsmAdminChallengeCollectionView []*SsmAdminChallengeView
 
-// SsmChallengeView is a type that runs validations on a projected type.
-type SsmChallengeView struct {
+// SsmAdminChallengeView is a type that runs validations on a projected type.
+type SsmAdminChallengeView struct {
 	ID *string
 	// A unique string that can be used in URLs
 	Slug *string
@@ -36,7 +36,7 @@ type SsmChallengeView struct {
 	// The number of points given to the solver
 	Score     *int32
 	Services  []*ChallengeServiceView
-	Files     []*ChallengeFilesView
+	Files     []*AdminChallengeFilesView
 	Published *bool
 	// The numer of people who solved the challenge
 	Solves *int64
@@ -46,16 +46,22 @@ type SsmChallengeView struct {
 type ChallengeServiceView struct {
 }
 
-// ChallengeFilesView is a type that runs validations on a projected type.
-type ChallengeFilesView struct {
+// AdminChallengeFilesView is a type that runs validations on a projected type.
+type AdminChallengeFilesView struct {
+	ID       *string
 	Filename *string
 	URL      *string
+	Bucket   *string
+	Key      *string
+	Size     *int64
+	// MD5 hash of the file content in base64
+	Md5 *string
 }
 
 var (
-	// SsmChallengeCollectionMap is a map indexing the attribute names of
-	// SsmChallengeCollection by view name.
-	SsmChallengeCollectionMap = map[string][]string{
+	// SsmAdminChallengeCollectionMap is a map indexing the attribute names of
+	// SsmAdminChallengeCollection by view name.
+	SsmAdminChallengeCollectionMap = map[string][]string{
 		"default": {
 			"id",
 			"slug",
@@ -68,9 +74,9 @@ var (
 			"solves",
 		},
 	}
-	// SsmChallengeMap is a map indexing the attribute names of SsmChallenge by
-	// view name.
-	SsmChallengeMap = map[string][]string{
+	// SsmAdminChallengeMap is a map indexing the attribute names of
+	// SsmAdminChallenge by view name.
+	SsmAdminChallengeMap = map[string][]string{
 		"default": {
 			"id",
 			"slug",
@@ -85,32 +91,35 @@ var (
 	}
 )
 
-// ValidateSsmChallengeCollection runs the validations defined on the viewed
-// result type SsmChallengeCollection.
-func ValidateSsmChallengeCollection(result SsmChallengeCollection) (err error) {
+// ValidateSsmAdminChallengeCollection runs the validations defined on the
+// viewed result type SsmAdminChallengeCollection.
+func ValidateSsmAdminChallengeCollection(result SsmAdminChallengeCollection) (err error) {
 	switch result.View {
 	case "default", "":
-		err = ValidateSsmChallengeCollectionView(result.Projected)
+		err = ValidateSsmAdminChallengeCollectionView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
 	return
 }
 
-// ValidateSsmChallengeCollectionView runs the validations defined on
-// SsmChallengeCollectionView using the "default" view.
-func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err error) {
+// ValidateSsmAdminChallengeCollectionView runs the validations defined on
+// SsmAdminChallengeCollectionView using the "default" view.
+func ValidateSsmAdminChallengeCollectionView(result SsmAdminChallengeCollectionView) (err error) {
 	for _, item := range result {
-		if err2 := ValidateSsmChallengeView(item); err2 != nil {
+		if err2 := ValidateSsmAdminChallengeView(item); err2 != nil {
 			err = goa.MergeErrors(err, err2)
 		}
 	}
 	return
 }
 
-// ValidateSsmChallengeView runs the validations defined on SsmChallengeView
-// using the "default" view.
-func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
+// ValidateSsmAdminChallengeView runs the validations defined on
+// SsmAdminChallengeView using the "default" view.
+func ValidateSsmAdminChallengeView(result *SsmAdminChallengeView) (err error) {
+	if result.Files == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("files", "result"))
+	}
 	if result.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
@@ -134,7 +143,7 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	}
 	for _, e := range result.Files {
 		if e != nil {
-			if err2 := ValidateChallengeFilesView(e); err2 != nil {
+			if err2 := ValidateAdminChallengeFilesView(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
@@ -149,14 +158,29 @@ func ValidateChallengeServiceView(result *ChallengeServiceView) (err error) {
 	return
 }
 
-// ValidateChallengeFilesView runs the validations defined on
-// ChallengeFilesView.
-func ValidateChallengeFilesView(result *ChallengeFilesView) (err error) {
+// ValidateAdminChallengeFilesView runs the validations defined on
+// AdminChallengeFilesView.
+func ValidateAdminChallengeFilesView(result *AdminChallengeFilesView) (err error) {
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
 	if result.Filename == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("filename", "result"))
 	}
 	if result.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "result"))
+	}
+	if result.Key == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("key", "result"))
+	}
+	if result.Bucket == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("bucket", "result"))
+	}
+	if result.Size == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("size", "result"))
+	}
+	if result.Md5 == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("md5", "result"))
 	}
 	return
 }

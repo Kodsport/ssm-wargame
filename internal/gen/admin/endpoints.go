@@ -21,6 +21,7 @@ type Endpoints struct {
 	PresignChallFileUpload goa.Endpoint
 	ListMonthlyChallenges  goa.Endpoint
 	DeleteMonthlyChallenge goa.Endpoint
+	DeleteFile             goa.Endpoint
 	CreateMonthlyChallenge goa.Endpoint
 	ListUsers              goa.Endpoint
 }
@@ -35,6 +36,7 @@ func NewEndpoints(s Service) *Endpoints {
 		PresignChallFileUpload: NewPresignChallFileUploadEndpoint(s, a.JWTAuth),
 		ListMonthlyChallenges:  NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
 		DeleteMonthlyChallenge: NewDeleteMonthlyChallengeEndpoint(s, a.JWTAuth),
+		DeleteFile:             NewDeleteFileEndpoint(s, a.JWTAuth),
 		CreateMonthlyChallenge: NewCreateMonthlyChallengeEndpoint(s, a.JWTAuth),
 		ListUsers:              NewListUsersEndpoint(s, a.JWTAuth),
 	}
@@ -47,6 +49,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.PresignChallFileUpload = m(e.PresignChallFileUpload)
 	e.ListMonthlyChallenges = m(e.ListMonthlyChallenges)
 	e.DeleteMonthlyChallenge = m(e.DeleteMonthlyChallenge)
+	e.DeleteFile = m(e.DeleteFile)
 	e.CreateMonthlyChallenge = m(e.CreateMonthlyChallenge)
 	e.ListUsers = m(e.ListUsers)
 }
@@ -70,7 +73,7 @@ func NewListChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 		if err != nil {
 			return nil, err
 		}
-		vres := NewViewedSsmChallengeCollection(res, "default")
+		vres := NewViewedSsmAdminChallengeCollection(res, "default")
 		return vres, nil
 	}
 }
@@ -148,6 +151,25 @@ func NewDeleteMonthlyChallengeEndpoint(s Service, authJWTFn security.AuthJWTFunc
 			return nil, err
 		}
 		return nil, s.DeleteMonthlyChallenge(ctx, p)
+	}
+}
+
+// NewDeleteFileEndpoint returns an endpoint function that calls the method
+// "DeleteFile" of service "admin".
+func NewDeleteFileEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*DeleteFilePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.DeleteFile(ctx, p)
 	}
 }
 

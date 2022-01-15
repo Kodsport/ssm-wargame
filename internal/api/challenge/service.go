@@ -60,6 +60,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	return s.assembleChallResponse(challs, files), nil
 }
 
+// ugly ) :
 func (s *service) assembleChallResponse(challs []db.ListChallengesWithSolvesRow, files []db.ChallengeFile) spec.SsmChallengeCollection {
 
 	res := make(spec.SsmChallengeCollection, len(challs))
@@ -82,7 +83,7 @@ func (s *service) assembleChallResponse(challs []db.ListChallengesWithSolvesRow,
 			}
 
 			if res[i].Files == nil {
-				res[i].Files = []*spec.ChallengeFiles{}
+				res[i].Files = make([]*spec.ChallengeFiles, 0, 1)
 			}
 
 			req, _ := s.s3.GetObjectRequest(&s3.GetObjectInput{

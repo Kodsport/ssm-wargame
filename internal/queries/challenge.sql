@@ -33,13 +33,19 @@ DELETE FROM monthly_challenges WHERE challenge_id = $1;
 SELECT EXISTS(SELECT 1 FROM challenges WHERE id = $1);
 
 -- name: InsertFile :exec
-INSERT INTO challenge_files (id, challenge_id, friendly_name, bucket, key, md5, uploaded) VALUES (@id::uuid, @challenge_id::uuid, @fname::text, @bucket::text, @key::text, @md5::text, false);
+INSERT INTO challenge_files (id, challenge_id, friendly_name, bucket, key, md5, size, uploaded) VALUES (@id::uuid, @challenge_id::uuid, @fname::text, @bucket::text, @key::text, @md5::text, @size::bigint, false);
 
 -- name: FileMarkUploaded :exec
 UPDATE challenge_files SET uploaded = true, updated_at = NOW() WHERE id = $1;
+
+-- name: GetFile :one
+SELECT * FROM challenge_files WHERE id = $1;
 
 -- name: DeleteFile :exec
 DELETE FROM challenge_files WHERE id = $1;
 
 -- name: GetChallFiles :many
 SELECT * FROM challenge_files WHERE uploaded = true AND challenge_id = ANY(@ids::uuid[]);
+
+-- name: Files :many
+SELECT * FROM challenge_files WHERE challenge_id IS NOT NULL;
