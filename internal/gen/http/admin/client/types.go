@@ -39,14 +39,13 @@ type PresignChallFileUploadRequestBody struct {
 // CreateMonthlyChallengeRequestBody is the type of the "admin" service
 // "CreateMonthlyChallenge" endpoint HTTP request body.
 type CreateMonthlyChallengeRequestBody struct {
+	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
 	// Starting date of the monthly challenge
 	StartDate string `form:"start_date" json:"start_date" xml:"start_date"`
 	// Ending date of the monthly challenge
 	EndDate string `form:"end_date" json:"end_date" xml:"end_date"`
-	// ID of a challenge
-	ChallengeID string `form:"challengeID" json:"challengeID" xml:"challengeID"`
 }
 
 // ListChallengesResponseBody is the type of the "admin" service
@@ -548,6 +547,7 @@ type AdminChallengeFilesResponse struct {
 
 // MonthlyChallengeMetaResponse is used to define fields on response body types.
 type MonthlyChallengeMetaResponse struct {
+	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
 	// Starting date of the monthly challenge
@@ -592,10 +592,10 @@ func NewPresignChallFileUploadRequestBody(p *admin.PresignChallFileUploadPayload
 // payload of the "CreateMonthlyChallenge" endpoint of the "admin" service.
 func NewCreateMonthlyChallengeRequestBody(p *admin.CreateMonthlyChallengePayload) *CreateMonthlyChallengeRequestBody {
 	body := &CreateMonthlyChallengeRequestBody{
+		ChallengeID:  p.ChallengeID,
 		DisplayMonth: p.DisplayMonth,
 		StartDate:    p.StartDate,
 		EndDate:      p.EndDate,
-		ChallengeID:  p.ChallengeID,
 	}
 	return body
 }
@@ -1663,6 +1663,12 @@ func ValidateMonthlyChallengeMetaResponse(body *MonthlyChallengeMetaResponse) (e
 	}
 	if body.DisplayMonth == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("display_month", "body"))
+	}
+	if body.ChallengeID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "body"))
+	}
+	if body.ChallengeID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))
 	}
 	return
 }

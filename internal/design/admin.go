@@ -105,7 +105,6 @@ var _ = Service("admin", func() {
 		Payload(func() {
 			Extend(TokenPayload)
 			Extend(MonthlyChallengeMeta)
-			Extend(ChallengeIDArtifact)
 		})
 		HTTP(func() {
 			POST("/monthly_challenges")

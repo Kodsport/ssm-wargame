@@ -853,6 +853,7 @@ func marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse(v *ad
 // *admin.MonthlyChallengeMeta.
 func marshalAdminMonthlyChallengeMetaToMonthlyChallengeMetaResponse(v *admin.MonthlyChallengeMeta) *MonthlyChallengeMetaResponse {
 	res := &MonthlyChallengeMetaResponse{
+		ChallengeID:  v.ChallengeID,
 		DisplayMonth: v.DisplayMonth,
 		StartDate:    v.StartDate,
 		EndDate:      v.EndDate,

@@ -396,7 +396,7 @@ CreateMonthlyChallenge implements CreateMonthlyChallenge.
 
 Example:
     %[1]s admin create-monthly-challenge --body '{
-      "challengeID": "195229b0-b15f-4ee5-9a99-94bfff492967",
+      "challenge_id": "85163218-8735-42ed-a7a6-42a9de2294df",
       "display_month": "Januari/Februari",
       "end_date": "2006-02-01",
       "start_date": "2006-02-01"

@@ -1066,6 +1066,7 @@ func unmarshalAdminChallengeFilesResponseToAdminviewsAdminChallengeFilesView(v *
 // *MonthlyChallengeMetaResponse.
 func unmarshalMonthlyChallengeMetaResponseToAdminMonthlyChallengeMeta(v *MonthlyChallengeMetaResponse) *admin.MonthlyChallengeMeta {
 	res := &admin.MonthlyChallengeMeta{
+		ChallengeID:  *v.ChallengeID,
 		DisplayMonth: *v.DisplayMonth,
 		StartDate:    *v.StartDate,
 		EndDate:      *v.EndDate,

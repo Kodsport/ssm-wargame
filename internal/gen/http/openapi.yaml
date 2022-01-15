@@ -225,7 +225,7 @@ paths:
           - start_date
           - end_date
           - display_month
-          - challengeID
+          - challenge_id
       responses:
         "204":
           description: No Content response.
@@ -744,10 +744,9 @@ definitions:
     title: AdminCreateMonthlyChallengeRequestBody
     type: object
     properties:
-      challengeID:
+      challenge_id:
         type: string
-        description: ID of a challenge
-        example: 195229b0-b15f-4ee5-9a99-94bfff492967
+        example: 85163218-8735-42ed-a7a6-42a9de2294df
         format: uuid
       display_month:
         type: string
@@ -762,7 +761,7 @@ definitions:
         description: Starting date of the monthly challenge
         example: "2006-02-01"
     example:
-      challengeID: 195229b0-b15f-4ee5-9a99-94bfff492967
+      challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
       display_month: Januari/Februari
       end_date: "2006-02-01"
       start_date: "2006-02-01"
@@ -770,7 +769,7 @@ definitions:
     - start_date
     - end_date
     - display_month
-    - challengeID
+    - challenge_id
   AdminCreateMonthlyChallengeUnauthorizedResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -1941,6 +1940,10 @@ definitions:
     title: MonthlyChallengeMetaResponse
     type: object
     properties:
+      challenge_id:
+        type: string
+        example: 85163218-8735-42ed-a7a6-42a9de2294df
+        format: uuid
       display_month:
         type: string
         description: The month(s) that the challenge is assigned for
@@ -1954,6 +1957,7 @@ definitions:
         description: Starting date of the monthly challenge
         example: "2006-02-01"
     example:
+      challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
       display_month: Januari/Februari
       end_date: "2006-02-01"
       start_date: "2006-02-01"
@@ -1961,6 +1965,7 @@ definitions:
     - start_date
     - end_date
     - display_month
+    - challenge_id
   SsmAdminChallengeResponse:
     title: 'Mediatype identifier: application/vnd.ssm.admin.challenge; view=default'
     type: object

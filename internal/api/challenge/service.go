@@ -43,6 +43,7 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 	res := make([]*spec.MonthlyChallengeMeta, len(challs))
 	for i, chall := range challs {
 		res[i] = &spec.MonthlyChallengeMeta{
+			ChallengeID:  chall.ChallengeID.String(),
 			DisplayMonth: chall.DisplayMonth.Format("2006-01-02"),
 			StartDate:    chall.StartDate.Format("2006-01-02"),
 			EndDate:      chall.EndDate.Format("2006-01-02"),

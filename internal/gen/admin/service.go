@@ -119,15 +119,14 @@ type DeleteFilePayload struct {
 // CreateMonthlyChallengePayload is the payload type of the admin service
 // CreateMonthlyChallenge method.
 type CreateMonthlyChallengePayload struct {
-	Token string
+	Token       string
+	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string
 	// Starting date of the monthly challenge
 	StartDate string
 	// Ending date of the monthly challenge
 	EndDate string
-	// ID of a challenge
-	ChallengeID string
 }
 
 // ListUsersPayload is the payload type of the admin service ListUsers method.
@@ -168,6 +167,7 @@ type AdminChallengeFiles struct {
 }
 
 type MonthlyChallengeMeta struct {
+	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string
 	// Starting date of the monthly challenge

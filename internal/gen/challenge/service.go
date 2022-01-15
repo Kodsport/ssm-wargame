@@ -93,6 +93,7 @@ type ChallengeFiles struct {
 }
 
 type MonthlyChallengeMeta struct {
+	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string
 	// Starting date of the monthly challenge

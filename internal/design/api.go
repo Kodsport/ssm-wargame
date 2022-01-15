@@ -98,6 +98,10 @@ var AdminChallengeFiles = Type("AdminChallengeFiles", func() {
 })
 
 var MonthlyChallengeMeta = Type("MonthlyChallengeMeta", func() {
+	Attribute("challenge_id", String, func() {
+		Example("85163218-8735-42ed-a7a6-42a9de2294df")
+		Format(FormatUUID)
+	})
 	Attribute("display_month", String, func() {
 		Description("The month(s) that the challenge is assigned for")
 		Example("Januari/Februari")
@@ -111,7 +115,7 @@ var MonthlyChallengeMeta = Type("MonthlyChallengeMeta", func() {
 		Example("2006-02-01")
 	})
 
-	Required("start_date", "end_date", "display_month")
+	Required("start_date", "end_date", "display_month", "challenge_id")
 })
 
 var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", func() {

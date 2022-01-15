@@ -93,6 +93,7 @@ type ChallengeFilesResponse struct {
 
 // MonthlyChallengeMetaResponse is used to define fields on response body types.
 type MonthlyChallengeMetaResponse struct {
+	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
 	// Starting date of the monthly challenge
@@ -267,6 +268,12 @@ func ValidateMonthlyChallengeMetaResponse(body *MonthlyChallengeMetaResponse) (e
 	}
 	if body.DisplayMonth == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("display_month", "body"))
+	}
+	if body.ChallengeID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "body"))
+	}
+	if body.ChallengeID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))
 	}
 	return
 }

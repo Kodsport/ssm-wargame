@@ -95,6 +95,7 @@ type ChallengeFilesResponse struct {
 
 // MonthlyChallengeMetaResponse is used to define fields on response body types.
 type MonthlyChallengeMetaResponse struct {
+	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
 	// Starting date of the monthly challenge

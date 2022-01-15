@@ -349,6 +349,7 @@ func unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(v *Challe
 // *MonthlyChallengeMetaResponse.
 func unmarshalMonthlyChallengeMetaResponseToChallengeMonthlyChallengeMeta(v *MonthlyChallengeMetaResponse) *challenge.MonthlyChallengeMeta {
 	res := &challenge.MonthlyChallengeMeta{
+		ChallengeID:  *v.ChallengeID,
 		DisplayMonth: *v.DisplayMonth,
 		StartDate:    *v.StartDate,
 		EndDate:      *v.EndDate,
