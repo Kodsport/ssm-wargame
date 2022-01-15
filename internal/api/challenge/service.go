@@ -57,12 +57,6 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		return nil, err
 	}
 
-	return s.assembleChallResponse(challs, files), nil
-}
-
-// ugly ) :
-func (s *service) assembleChallResponse(challs []db.ListChallengesWithSolvesRow, files []db.ChallengeFile) spec.SsmChallengeCollection {
-
 	res := make(spec.SsmChallengeCollection, len(challs))
 	for i, c := range challs {
 		res[i] = &spec.SsmChallenge{
@@ -104,7 +98,7 @@ func (s *service) assembleChallResponse(challs []db.ListChallengesWithSolvesRow,
 		}
 	}
 
-	return res
+	return res, nil
 }
 
 func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) error {
