@@ -14,7 +14,6 @@ import (
 )
 
 func (s *service) CreateMonthlyChallenge(ctx context.Context, req *spec.CreateMonthlyChallengePayload) error {
-
 	// time format/resolution TBD
 	startDate, err := time.Parse("2006-01-02", req.StartDate)
 	if err != nil {
@@ -45,7 +44,6 @@ func (s *service) CreateMonthlyChallenge(ctx context.Context, req *spec.CreateMo
 }
 
 func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) ([]*spec.MonthlyChallengeMeta, error) {
-
 	challs, err := db.New(s.db).ListMonthlyChallenges(ctx)
 	if err != nil {
 		s.log.Warn("could not list monthly challs", zap.Error(err), utils.C(ctx))
@@ -66,7 +64,6 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 }
 
 func (s *service) DeleteMonthlyChallenge(ctx context.Context, req *spec.DeleteMonthlyChallengePayload) error {
-
 	err := db.New(s.db).DeleteMonthlyChallenge(ctx, uuid.MustParse(req.ChallengeID))
 	if err == pgx.ErrNoRows {
 		return spec.MakeNotFound(errors.New("monthly challenge not found"))

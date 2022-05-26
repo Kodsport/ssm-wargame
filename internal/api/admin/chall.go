@@ -18,7 +18,6 @@ import (
 )
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmAdminChallengeCollection, error) {
-
 	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, true)
 	if err != nil {
 		s.log.Warn("could not list challs", zap.Error(err), utils.C(ctx))
@@ -43,7 +42,6 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Solves:      chall.NumSolves,
 			Published:   chall.Published,
 		}
-
 	}
 
 	for _, file := range files {
@@ -62,7 +60,6 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			})
 
 			url, err := req.Presign(time.Hour * 4)
-
 			if err != nil {
 				s.log.Warn("could not sign url", zap.Error(err), utils.C(ctx))
 			}
@@ -77,14 +74,12 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				Md5:      file.Md5,
 			})
 		}
-
 	}
 
 	return res, nil
 }
 
 func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallengePayload) error {
-
 	q := db.New(s.db)
 
 	err := q.InsertChallenge(ctx, db.InsertChallengeParams{
@@ -104,7 +99,6 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 }
 
 func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignChallFileUploadPayload) (*spec.PresignChallFileUploadResult, error) {
-
 	log := s.log.With(zap.String("challengeID", req.ChallengeID), utils.C(ctx))
 
 	challID := uuid.MustParse(req.ChallengeID) // uuid format already validated
@@ -168,7 +162,6 @@ func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignC
 }
 
 func (s *service) checkUploaded(ctx context.Context, fileID uuid.UUID, bucket, key string) {
-
 	log := s.log.With(zap.String("fileID", fileID.String()))
 
 	err := s.s3.WaitUntilObjectExistsWithContext(ctx, &s3.HeadObjectInput{
@@ -196,7 +189,6 @@ func (s *service) checkUploaded(ctx context.Context, fileID uuid.UUID, bucket, k
 	}
 
 	log.Warn("could not head object", zap.Error(err), zap.String("fileID", fileID.String()))
-
 }
 
 func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) error {
@@ -210,7 +202,7 @@ func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) e
 		return err
 	}
 	txQ := db.New(tx)
-	defer tx.Rollback(ctx)
+	defer tx.Rollback(ctx) //nolint:errcheck
 
 	file, err := txQ.GetFile(ctx, fileID)
 	if err == pgx.ErrNoRows {
@@ -237,7 +229,6 @@ func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) e
 		Bucket: &file.Bucket,
 		Key:    &file.Key,
 	})
-
 	if err != nil {
 		log.Error("delete object errored", zap.Error(err))
 		return err

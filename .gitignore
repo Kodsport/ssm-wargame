@@ -1,1 +1,2 @@
 .env
+cmd/api/__debug_bin

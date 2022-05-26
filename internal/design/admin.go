@@ -120,5 +120,4 @@ var _ = Service("admin", func() {
 			GET("/users")
 		})
 	})
-
 })

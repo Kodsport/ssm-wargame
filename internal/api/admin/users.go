@@ -10,7 +10,6 @@ import (
 )
 
 func (s *service) ListUsers(ctx context.Context, req *spec.ListUsersPayload) ([]*spec.SsmUser, error) {
-
 	users, err := db.New(s.db).Users(ctx)
 	if err != nil {
 		s.log.Warn("could not list users", zap.Error(err), utils.C(ctx))

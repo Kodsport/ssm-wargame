@@ -43,5 +43,4 @@ func (s *service) JWTAuth(ctx context.Context, token string, schema *security.JW
 	}
 
 	return ctx, nil
-
 }

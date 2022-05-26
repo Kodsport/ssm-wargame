@@ -28,7 +28,6 @@ type service struct {
 }
 
 func NewService(conn *pgxpool.Pool, log *zap.Logger, cfg *config.Config) spec.Service {
-
 	config := &oauth2.Config{
 		ClientID:     cfg.OAuth.Discord.ClientID,
 		ClientSecret: cfg.OAuth.Discord.ClientSecret,
@@ -57,7 +56,6 @@ func (s *service) GenerateDiscordAuthURL(ctx context.Context) (*spec.GenerateDis
 }
 
 func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscordPayload) (*spec.ExchangeDiscordResult, error) {
-
 	if req.State != "state_todo" {
 		return nil, errors.New("invalid state")
 	}
@@ -117,5 +115,4 @@ func (s *service) genJWT(userID uuid.UUID) (string, error) {
 	})
 
 	return jwtToken.SignedString(s.jwtSecret)
-
 }

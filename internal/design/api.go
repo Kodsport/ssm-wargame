@@ -58,7 +58,6 @@ var User = ResultType("application/vnd.ssm.user", func() {
 })
 
 var ChallengeService = Type("ChallengeService", func() {
-
 })
 
 var ChallengeFiles = Type("ChallengeFiles", func() {
@@ -136,7 +135,6 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("files", ArrayOf(AdminChallengeFiles))
 
 	Required("files")
-
 })
 
 var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
@@ -153,7 +151,6 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Attribute("files")
 	Attribute("published")
 	Attribute("solves")
-
 })
 
 var CreateChallengePayload = Type("CreateChallengePayload", func() {
@@ -163,7 +160,6 @@ var CreateChallengePayload = Type("CreateChallengePayload", func() {
 	Attribute("title")
 	Attribute("description")
 	Attribute("score")
-
 })
 
 var Challenge = Type("Challenge", func() {

@@ -33,7 +33,6 @@ func NewService(conn *pgxpool.Pool, log *zap.Logger, auther spec.Auther, s3c *s3
 }
 
 func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) ([]*spec.MonthlyChallengeMeta, error) {
-
 	challs, err := db.New(s.db).ListMonthlyChallenges(ctx)
 	if err != nil {
 		s.log.Error("could not list monthly challs", zap.Error(err), utils.C(ctx))
@@ -54,7 +53,6 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 }
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
-
 	db := db.New(s.db)
 
 	challs, err := db.ListChallengesWithSolves(ctx, false)
@@ -103,7 +101,6 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			})
 
 			url, err := req.Presign(time.Hour * 4)
-
 			if err != nil {
 				s.log.Warn("could not sign url", zap.Error(err))
 			}
@@ -119,12 +116,11 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 }
 
 func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) error {
-
 	tx, err := s.db.BeginTx(ctx, pgx.TxOptions{})
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback(ctx)
+	defer tx.Rollback(ctx) //nolint:errcheck
 	txq := (&db.Queries{}).WithTx(tx)
 
 	user := auth.GetUser(ctx)
@@ -183,5 +179,4 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 	}
 
 	return nil
-
 }

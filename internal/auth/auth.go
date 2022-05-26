@@ -44,7 +44,6 @@ func (s *Auther) JWTAuth(ctx context.Context, token string, schema *security.JWT
 		// limit alg?
 		return s.jwtSecret, nil
 	})
-
 	if err != nil {
 		return nil, err
 	}

@@ -43,7 +43,6 @@ func main() {
 }
 
 func realMain() error {
-
 	godotenv.Load()
 	cfg, err := config.Get()
 	if err != nil {
