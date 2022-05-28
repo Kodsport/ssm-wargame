@@ -302,25 +302,37 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MonthlyChallengeMeta'
+                  $ref: '#/components/schemas/MonthlyChallenge'
                 example:
                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: A heap overflow challenge
                   display_month: Januari/Februari
                   end_date: "2006-02-01"
+                  slug: pwnme
                   start_date: "2006-02-01"
+                  title: pwnme
                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: A heap overflow challenge
                   display_month: Januari/Februari
                   end_date: "2006-02-01"
+                  slug: pwnme
                   start_date: "2006-02-01"
+                  title: pwnme
               example:
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: A heap overflow challenge
                 display_month: Januari/Februari
                 end_date: "2006-02-01"
+                slug: pwnme
                 start_date: "2006-02-01"
+                title: pwnme
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: A heap overflow challenge
                 display_month: Januari/Februari
                 end_date: "2006-02-01"
+                slug: pwnme
                 start_date: "2006-02-01"
+                title: pwnme
         "400":
           description: Resource not found
           content:
@@ -363,12 +375,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MonthlyChallengeMeta'
+              $ref: '#/components/schemas/MonthlyChallenge'
             example:
               challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+              description: A heap overflow challenge
               display_month: Januari/Februari
               end_date: "2006-02-01"
+              slug: pwnme
               start_date: "2006-02-01"
+              title: pwnme
       responses:
         "204":
           description: No Content response.
@@ -708,29 +723,44 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/MonthlyChallengeMeta'
+                  $ref: '#/components/schemas/MonthlyChallenge'
                 example:
                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: A heap overflow challenge
                   display_month: Januari/Februari
                   end_date: "2006-02-01"
+                  slug: pwnme
                   start_date: "2006-02-01"
+                  title: pwnme
                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: A heap overflow challenge
                   display_month: Januari/Februari
                   end_date: "2006-02-01"
+                  slug: pwnme
                   start_date: "2006-02-01"
+                  title: pwnme
               example:
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: A heap overflow challenge
                 display_month: Januari/Februari
                 end_date: "2006-02-01"
+                slug: pwnme
                 start_date: "2006-02-01"
+                title: pwnme
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: A heap overflow challenge
                 display_month: Januari/Februari
                 end_date: "2006-02-01"
+                slug: pwnme
                 start_date: "2006-02-01"
+                title: pwnme
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: A heap overflow challenge
                 display_month: Januari/Februari
                 end_date: "2006-02-01"
+                slug: pwnme
                 start_date: "2006-02-01"
+                title: pwnme
       security:
       - jwt_header_Authorization: []
 components:
@@ -894,13 +924,17 @@ components:
         jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
       required:
       - jwt
-    MonthlyChallengeMeta:
+    MonthlyChallenge:
       type: object
       properties:
         challenge_id:
           type: string
           example: 85163218-8735-42ed-a7a6-42a9de2294df
           format: uuid
+        description:
+          type: string
+          description: A short text describing the challenge
+          example: A heap overflow challenge
         display_month:
           type: string
           description: The month(s) that the challenge is assigned for
@@ -909,20 +943,38 @@ components:
           type: string
           description: Ending date of the monthly challenge
           example: "2006-02-01"
+        slug:
+          type: string
+          description: A unique string that can be used in URLs
+          example: pwnme
         start_date:
           type: string
           description: Starting date of the monthly challenge
           example: "2006-02-01"
+        title:
+          type: string
+          description: Title displayed to user
+          example: pwnme
       example:
         challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description: A heap overflow challenge
         display_month: Januari/Februari
         end_date: "2006-02-01"
+        slug: pwnme
         start_date: "2006-02-01"
+        title: pwnme
       required:
       - start_date
       - end_date
       - display_month
       - challenge_id
+      - id
+      - title
+      - description
+      - score
+      - published
+      - slug
+      - solves
     PresignChallFileUploadRequestBody:
       type: object
       properties:

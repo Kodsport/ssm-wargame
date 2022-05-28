@@ -27,7 +27,7 @@ type SsmChallengeResponseCollection []*SsmChallengeResponse
 
 // ListMonthlyChallengesResponseBody is the type of the "challenge" service
 // "ListMonthlyChallenges" endpoint HTTP response body.
-type ListMonthlyChallengesResponseBody []*MonthlyChallengeMetaResponse
+type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
 
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
@@ -93,8 +93,14 @@ type ChallengeFilesResponse struct {
 	URL      string `form:"url" json:"url" xml:"url"`
 }
 
-// MonthlyChallengeMetaResponse is used to define fields on response body types.
-type MonthlyChallengeMetaResponse struct {
+// MonthlyChallengeResponse is used to define fields on response body types.
+type MonthlyChallengeResponse struct {
+	// A unique string that can be used in URLs
+	Slug string `form:"slug" json:"slug" xml:"slug"`
+	// Title displayed to user
+	Title string `form:"title" json:"title" xml:"title"`
+	// A short text describing the challenge
+	Description string `form:"description" json:"description" xml:"description"`
 	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
@@ -116,10 +122,10 @@ func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollection
 
 // NewListMonthlyChallengesResponseBody builds the HTTP response body from the
 // result of the "ListMonthlyChallenges" endpoint of the "challenge" service.
-func NewListMonthlyChallengesResponseBody(res []*challenge.MonthlyChallengeMeta) ListMonthlyChallengesResponseBody {
-	body := make([]*MonthlyChallengeMetaResponse, len(res))
+func NewListMonthlyChallengesResponseBody(res []*challenge.MonthlyChallenge) ListMonthlyChallengesResponseBody {
+	body := make([]*MonthlyChallengeResponse, len(res))
 	for i, val := range res {
-		body[i] = marshalChallengeMonthlyChallengeMetaToMonthlyChallengeMetaResponse(val)
+		body[i] = marshalChallengeMonthlyChallengeToMonthlyChallengeResponse(val)
 	}
 	return body
 }

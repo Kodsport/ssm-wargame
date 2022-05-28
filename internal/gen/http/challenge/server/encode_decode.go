@@ -59,7 +59,7 @@ func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 // returned by the challenge ListMonthlyChallenges endpoint.
 func EncodeListMonthlyChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res, _ := v.([]*challenge.MonthlyChallengeMeta)
+		res, _ := v.([]*challenge.MonthlyChallenge)
 		enc := encoder(ctx, w)
 		body := NewListMonthlyChallengesResponseBody(res)
 		w.WriteHeader(http.StatusOK)
@@ -243,11 +243,14 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 	return res
 }
 
-// marshalChallengeMonthlyChallengeMetaToMonthlyChallengeMetaResponse builds a
-// value of type *MonthlyChallengeMetaResponse from a value of type
-// *challenge.MonthlyChallengeMeta.
-func marshalChallengeMonthlyChallengeMetaToMonthlyChallengeMetaResponse(v *challenge.MonthlyChallengeMeta) *MonthlyChallengeMetaResponse {
-	res := &MonthlyChallengeMetaResponse{
+// marshalChallengeMonthlyChallengeToMonthlyChallengeResponse builds a value of
+// type *MonthlyChallengeResponse from a value of type
+// *challenge.MonthlyChallenge.
+func marshalChallengeMonthlyChallengeToMonthlyChallengeResponse(v *challenge.MonthlyChallenge) *MonthlyChallengeResponse {
+	res := &MonthlyChallengeResponse{
+		Slug:         v.Slug,
+		Title:        v.Title,
+		Description:  v.Description,
 		ChallengeID:  v.ChallengeID,
 		DisplayMonth: v.DisplayMonth,
 		StartDate:    v.StartDate,

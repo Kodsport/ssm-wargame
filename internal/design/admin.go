@@ -75,7 +75,7 @@ var _ = Service("admin", func() {
 		Payload(func() {
 			Extend(TokenPayload)
 		})
-		Result(ArrayOf(MonthlyChallengeMeta))
+		Result(ArrayOf(MonthlyChallenge))
 		HTTP(func() {
 			GET("/monthly_challenges")
 		})
@@ -104,7 +104,7 @@ var _ = Service("admin", func() {
 	Method("CreateMonthlyChallenge", func() {
 		Payload(func() {
 			Extend(TokenPayload)
-			Extend(MonthlyChallengeMeta)
+			Extend(MonthlyChallenge)
 		})
 		HTTP(func() {
 			POST("/monthly_challenges")

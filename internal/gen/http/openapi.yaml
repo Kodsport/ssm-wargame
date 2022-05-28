@@ -189,7 +189,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/MonthlyChallengeMetaResponse'
+              $ref: '#/definitions/MonthlyChallengeResponse'
         "400":
           description: Resource not found
           schema:
@@ -226,6 +226,13 @@ paths:
           - end_date
           - display_month
           - challenge_id
+          - id
+          - title
+          - description
+          - score
+          - published
+          - slug
+          - solves
       responses:
         "204":
           description: No Content response.
@@ -430,7 +437,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/MonthlyChallengeMetaResponse'
+              $ref: '#/definitions/MonthlyChallengeResponse'
       schemes:
       - http
       security:
@@ -748,6 +755,10 @@ definitions:
         type: string
         example: 85163218-8735-42ed-a7a6-42a9de2294df
         format: uuid
+      description:
+        type: string
+        description: A short text describing the challenge
+        example: A heap overflow challenge
       display_month:
         type: string
         description: The month(s) that the challenge is assigned for
@@ -756,20 +767,38 @@ definitions:
         type: string
         description: Ending date of the monthly challenge
         example: "2006-02-01"
+      slug:
+        type: string
+        description: A unique string that can be used in URLs
+        example: pwnme
       start_date:
         type: string
         description: Starting date of the monthly challenge
         example: "2006-02-01"
+      title:
+        type: string
+        description: Title displayed to user
+        example: pwnme
     example:
       challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+      description: A heap overflow challenge
       display_month: Januari/Februari
       end_date: "2006-02-01"
+      slug: pwnme
       start_date: "2006-02-01"
+      title: pwnme
     required:
     - start_date
     - end_date
     - display_month
     - challenge_id
+    - id
+    - title
+    - description
+    - score
+    - published
+    - slug
+    - solves
   AdminCreateMonthlyChallengeUnauthorizedResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -1936,14 +1965,18 @@ definitions:
       flag: SSM{flag}
     required:
     - flag
-  MonthlyChallengeMetaResponse:
-    title: MonthlyChallengeMetaResponse
+  MonthlyChallengeResponse:
+    title: MonthlyChallengeResponse
     type: object
     properties:
       challenge_id:
         type: string
         example: 85163218-8735-42ed-a7a6-42a9de2294df
         format: uuid
+      description:
+        type: string
+        description: A short text describing the challenge
+        example: A heap overflow challenge
       display_month:
         type: string
         description: The month(s) that the challenge is assigned for
@@ -1952,20 +1985,38 @@ definitions:
         type: string
         description: Ending date of the monthly challenge
         example: "2006-02-01"
+      slug:
+        type: string
+        description: A unique string that can be used in URLs
+        example: pwnme
       start_date:
         type: string
         description: Starting date of the monthly challenge
         example: "2006-02-01"
+      title:
+        type: string
+        description: Title displayed to user
+        example: pwnme
     example:
       challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+      description: A heap overflow challenge
       display_month: Januari/Februari
       end_date: "2006-02-01"
+      slug: pwnme
       start_date: "2006-02-01"
+      title: pwnme
     required:
     - start_date
     - end_date
     - display_month
     - challenge_id
+    - id
+    - title
+    - description
+    - score
+    - published
+    - slug
+    - solves
   SsmAdminChallengeResponse:
     title: 'Mediatype identifier: application/vnd.ssm.admin.challenge; view=default'
     type: object

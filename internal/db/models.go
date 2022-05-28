@@ -83,7 +83,7 @@ type MonthlyChallenge struct {
 	ChallengeID  uuid.UUID
 	StartDate    time.Time
 	EndDate      time.Time
-	DisplayMonth time.Time
+	DisplayMonth string
 	CreatedAt    time.Time
 	UpdatedAt    sql.NullTime
 }

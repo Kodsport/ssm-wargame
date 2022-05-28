@@ -96,7 +96,13 @@ var AdminChallengeFiles = Type("AdminChallengeFiles", func() {
 	Required("id", "filename", "url", "key", "bucket", "size", "md5")
 })
 
-var MonthlyChallengeMeta = Type("MonthlyChallengeMeta", func() {
+var MonthlyChallenge = Type("MonthlyChallenge", func() {
+	Reference(Challenge)
+
+	Attribute("slug")
+	Attribute("title")
+	Attribute("description")
+
 	Attribute("challenge_id", String, func() {
 		Example("85163218-8735-42ed-a7a6-42a9de2294df")
 		Format(FormatUUID)

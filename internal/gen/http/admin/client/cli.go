@@ -158,7 +158,7 @@ func BuildCreateMonthlyChallengePayload(adminCreateMonthlyChallengeBody string, 
 	{
 		err = json.Unmarshal([]byte(adminCreateMonthlyChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_id\": \"85163218-8735-42ed-a7a6-42a9de2294df\",\n      \"display_month\": \"Januari/Februari\",\n      \"end_date\": \"2006-02-01\",\n      \"start_date\": \"2006-02-01\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_id\": \"85163218-8735-42ed-a7a6-42a9de2294df\",\n      \"description\": \"A heap overflow challenge\",\n      \"display_month\": \"Januari/Februari\",\n      \"end_date\": \"2006-02-01\",\n      \"slug\": \"pwnme\",\n      \"start_date\": \"2006-02-01\",\n      \"title\": \"pwnme\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 
@@ -171,6 +171,9 @@ func BuildCreateMonthlyChallengePayload(adminCreateMonthlyChallengeBody string, 
 		token = adminCreateMonthlyChallengeToken
 	}
 	v := &admin.CreateMonthlyChallengePayload{
+		Slug:         body.Slug,
+		Title:        body.Title,
+		Description:  body.Description,
 		ChallengeID:  body.ChallengeID,
 		DisplayMonth: body.DisplayMonth,
 		StartDate:    body.StartDate,

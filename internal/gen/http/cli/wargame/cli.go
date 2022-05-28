@@ -397,9 +397,12 @@ CreateMonthlyChallenge implements CreateMonthlyChallenge.
 Example:
     %[1]s admin create-monthly-challenge --body '{
       "challenge_id": "85163218-8735-42ed-a7a6-42a9de2294df",
+      "description": "A heap overflow challenge",
       "display_month": "Januari/Februari",
       "end_date": "2006-02-01",
-      "start_date": "2006-02-01"
+      "slug": "pwnme",
+      "start_date": "2006-02-01",
+      "title": "pwnme"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }

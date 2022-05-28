@@ -39,6 +39,12 @@ type PresignChallFileUploadRequestBody struct {
 // CreateMonthlyChallengeRequestBody is the type of the "admin" service
 // "CreateMonthlyChallenge" endpoint HTTP request body.
 type CreateMonthlyChallengeRequestBody struct {
+	// A unique string that can be used in URLs
+	Slug string `form:"slug" json:"slug" xml:"slug"`
+	// Title displayed to user
+	Title string `form:"title" json:"title" xml:"title"`
+	// A short text describing the challenge
+	Description string `form:"description" json:"description" xml:"description"`
 	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
@@ -61,7 +67,7 @@ type PresignChallFileUploadResponseBody struct {
 
 // ListMonthlyChallengesResponseBody is the type of the "admin" service
 // "ListMonthlyChallenges" endpoint HTTP response body.
-type ListMonthlyChallengesResponseBody []*MonthlyChallengeMetaResponse
+type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
 
 // ListUsersResponseBody is the type of the "admin" service "ListUsers"
 // endpoint HTTP response body.
@@ -545,8 +551,14 @@ type AdminChallengeFilesResponse struct {
 	Md5 *string `form:"md5,omitempty" json:"md5,omitempty" xml:"md5,omitempty"`
 }
 
-// MonthlyChallengeMetaResponse is used to define fields on response body types.
-type MonthlyChallengeMetaResponse struct {
+// MonthlyChallengeResponse is used to define fields on response body types.
+type MonthlyChallengeResponse struct {
+	// A unique string that can be used in URLs
+	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Title displayed to user
+	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// A short text describing the challenge
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
@@ -592,6 +604,9 @@ func NewPresignChallFileUploadRequestBody(p *admin.PresignChallFileUploadPayload
 // payload of the "CreateMonthlyChallenge" endpoint of the "admin" service.
 func NewCreateMonthlyChallengeRequestBody(p *admin.CreateMonthlyChallengePayload) *CreateMonthlyChallengeRequestBody {
 	body := &CreateMonthlyChallengeRequestBody{
+		Slug:         p.Slug,
+		Title:        p.Title,
+		Description:  p.Description,
 		ChallengeID:  p.ChallengeID,
 		DisplayMonth: p.DisplayMonth,
 		StartDate:    p.StartDate,
@@ -756,12 +771,12 @@ func NewPresignChallFileUploadBadRequest(body *PresignChallFileUploadBadRequestR
 	return v
 }
 
-// NewListMonthlyChallengesMonthlyChallengeMetaOK builds a "admin" service
+// NewListMonthlyChallengesMonthlyChallengeOK builds a "admin" service
 // "ListMonthlyChallenges" endpoint result from a HTTP "OK" response.
-func NewListMonthlyChallengesMonthlyChallengeMetaOK(body []*MonthlyChallengeMetaResponse) []*admin.MonthlyChallengeMeta {
-	v := make([]*admin.MonthlyChallengeMeta, len(body))
+func NewListMonthlyChallengesMonthlyChallengeOK(body []*MonthlyChallengeResponse) []*admin.MonthlyChallenge {
+	v := make([]*admin.MonthlyChallenge, len(body))
 	for i, val := range body {
-		v[i] = unmarshalMonthlyChallengeMetaResponseToAdminMonthlyChallengeMeta(val)
+		v[i] = unmarshalMonthlyChallengeResponseToAdminMonthlyChallenge(val)
 	}
 
 	return v
@@ -1652,9 +1667,9 @@ func ValidateAdminChallengeFilesResponse(body *AdminChallengeFilesResponse) (err
 	return
 }
 
-// ValidateMonthlyChallengeMetaResponse runs the validations defined on
-// MonthlyChallengeMetaResponse
-func ValidateMonthlyChallengeMetaResponse(body *MonthlyChallengeMetaResponse) (err error) {
+// ValidateMonthlyChallengeResponse runs the validations defined on
+// MonthlyChallengeResponse
+func ValidateMonthlyChallengeResponse(body *MonthlyChallengeResponse) (err error) {
 	if body.StartDate == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("start_date", "body"))
 	}
@@ -1666,6 +1681,15 @@ func ValidateMonthlyChallengeMetaResponse(body *MonthlyChallengeMetaResponse) (e
 	}
 	if body.ChallengeID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "body"))
+	}
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
 	}
 	if body.ChallengeID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))

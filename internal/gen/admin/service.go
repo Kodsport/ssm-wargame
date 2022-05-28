@@ -24,7 +24,7 @@ type Service interface {
 	// PresignChallFileUpload implements PresignChallFileUpload.
 	PresignChallFileUpload(context.Context, *PresignChallFileUploadPayload) (res *PresignChallFileUploadResult, err error)
 	// ListMonthlyChallenges implements ListMonthlyChallenges.
-	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallengeMeta, err error)
+	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallenge, err error)
 	// DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
 	DeleteMonthlyChallenge(context.Context, *DeleteMonthlyChallengePayload) (err error)
 	// DeleteFile implements DeleteFile.
@@ -119,7 +119,13 @@ type DeleteFilePayload struct {
 // CreateMonthlyChallengePayload is the payload type of the admin service
 // CreateMonthlyChallenge method.
 type CreateMonthlyChallengePayload struct {
-	Token       string
+	Token string
+	// A unique string that can be used in URLs
+	Slug string
+	// Title displayed to user
+	Title string
+	// A short text describing the challenge
+	Description string
 	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string
@@ -166,7 +172,13 @@ type AdminChallengeFiles struct {
 	Md5 string
 }
 
-type MonthlyChallengeMeta struct {
+type MonthlyChallenge struct {
+	// A unique string that can be used in URLs
+	Slug string
+	// Title displayed to user
+	Title string
+	// A short text describing the challenge
+	Description string
 	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string

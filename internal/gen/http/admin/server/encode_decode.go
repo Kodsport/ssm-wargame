@@ -326,7 +326,7 @@ func EncodePresignChallFileUploadError(encoder func(context.Context, http.Respon
 // returned by the admin ListMonthlyChallenges endpoint.
 func EncodeListMonthlyChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res, _ := v.([]*admin.MonthlyChallengeMeta)
+		res, _ := v.([]*admin.MonthlyChallenge)
 		enc := encoder(ctx, w)
 		body := NewListMonthlyChallengesResponseBody(res)
 		w.WriteHeader(http.StatusOK)
@@ -848,11 +848,13 @@ func marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse(v *ad
 	return res
 }
 
-// marshalAdminMonthlyChallengeMetaToMonthlyChallengeMetaResponse builds a
-// value of type *MonthlyChallengeMetaResponse from a value of type
-// *admin.MonthlyChallengeMeta.
-func marshalAdminMonthlyChallengeMetaToMonthlyChallengeMetaResponse(v *admin.MonthlyChallengeMeta) *MonthlyChallengeMetaResponse {
-	res := &MonthlyChallengeMetaResponse{
+// marshalAdminMonthlyChallengeToMonthlyChallengeResponse builds a value of
+// type *MonthlyChallengeResponse from a value of type *admin.MonthlyChallenge.
+func marshalAdminMonthlyChallengeToMonthlyChallengeResponse(v *admin.MonthlyChallenge) *MonthlyChallengeResponse {
+	res := &MonthlyChallengeResponse{
+		Slug:         v.Slug,
+		Title:        v.Title,
+		Description:  v.Description,
 		ChallengeID:  v.ChallengeID,
 		DisplayMonth: v.DisplayMonth,
 		StartDate:    v.StartDate,

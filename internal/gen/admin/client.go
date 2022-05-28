@@ -68,13 +68,13 @@ func (c *Client) PresignChallFileUpload(ctx context.Context, p *PresignChallFile
 
 // ListMonthlyChallenges calls the "ListMonthlyChallenges" endpoint of the
 // "admin" service.
-func (c *Client) ListMonthlyChallenges(ctx context.Context, p *ListMonthlyChallengesPayload) (res []*MonthlyChallengeMeta, err error) {
+func (c *Client) ListMonthlyChallenges(ctx context.Context, p *ListMonthlyChallengesPayload) (res []*MonthlyChallenge, err error) {
 	var ires interface{}
 	ires, err = c.ListMonthlyChallengesEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.([]*MonthlyChallengeMeta), nil
+	return ires.([]*MonthlyChallenge), nil
 }
 
 // DeleteMonthlyChallenge calls the "DeleteMonthlyChallenge" endpoint of the

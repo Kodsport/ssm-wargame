@@ -23,16 +23,12 @@ func (s *service) CreateMonthlyChallenge(ctx context.Context, req *spec.CreateMo
 	if err != nil {
 		return err
 	}
-	displayDate, err := time.Parse("2006-01-02", req.DisplayMonth)
-	if err != nil {
-		return err
-	}
 
 	err = db.New(s.db).InsertMonthlyChallenge(ctx, db.InsertMonthlyChallengeParams{
 		ChallengeID:  uuid.MustParse(req.ChallengeID),
 		StartDate:    startDate,
 		EndDate:      endDate,
-		DisplayMonth: displayDate,
+		DisplayMonth: req.DisplayMonth,
 	})
 
 	if err != nil {
@@ -43,20 +39,24 @@ func (s *service) CreateMonthlyChallenge(ctx context.Context, req *spec.CreateMo
 	return nil
 }
 
-func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) ([]*spec.MonthlyChallengeMeta, error) {
+func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) ([]*spec.MonthlyChallenge, error) {
 	challs, err := db.New(s.db).ListMonthlyChallenges(ctx)
 	if err != nil {
 		s.log.Warn("could not list monthly challs", zap.Error(err), utils.C(ctx))
 		return nil, err
 	}
 
-	res := make([]*spec.MonthlyChallengeMeta, len(challs))
+	res := make([]*spec.MonthlyChallenge, len(challs))
 
 	for i, chall := range challs {
-		res[i] = &spec.MonthlyChallengeMeta{
-			DisplayMonth: chall.DisplayMonth.Format("2006-01-02"), // detta kanske ska vara fritext
+		res[i] = &spec.MonthlyChallenge{
+			DisplayMonth: chall.DisplayMonth,
 			StartDate:    chall.StartDate.Format("2006-01-02"),
 			EndDate:      chall.EndDate.Format("2006-01-02"),
+			Slug:         chall.Slug,
+			Title:        chall.Title,
+			Description:  chall.Description,
+			ChallengeID:  chall.ChallengeID.String(),
 		}
 	}
 

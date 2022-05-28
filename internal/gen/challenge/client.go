@@ -42,13 +42,13 @@ func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (
 
 // ListMonthlyChallenges calls the "ListMonthlyChallenges" endpoint of the
 // "challenge" service.
-func (c *Client) ListMonthlyChallenges(ctx context.Context, p *ListMonthlyChallengesPayload) (res []*MonthlyChallengeMeta, err error) {
+func (c *Client) ListMonthlyChallenges(ctx context.Context, p *ListMonthlyChallengesPayload) (res []*MonthlyChallenge, err error) {
 	var ires interface{}
 	ires, err = c.ListMonthlyChallengesEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.([]*MonthlyChallengeMeta), nil
+	return ires.([]*MonthlyChallenge), nil
 }
 
 // SubmitFlag calls the "SubmitFlag" endpoint of the "challenge" service.

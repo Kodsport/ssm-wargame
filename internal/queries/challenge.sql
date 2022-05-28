@@ -21,7 +21,7 @@ SELECT EXISTS (SELECT * FROM user_solves WHERE challenge_id = $1 AND user_id = $
 INSERT INTO challenges (id, title, slug, description, score, published) VALUES ($1, $2, $3, $4, $5, $6);
 
 -- name: ListMonthlyChallenges :many
-SELECT * FROM monthly_challenges;
+SELECT * FROM monthly_challenges mc JOIN challenges c ON mc.challenge_id = c.id;
 
 -- name: InsertMonthlyChallenge :exec
 INSERT INTO monthly_challenges (challenge_id, start_date, end_date, display_month) VALUES ($1, $2, $3, $4);

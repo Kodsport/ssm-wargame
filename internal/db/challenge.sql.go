@@ -240,7 +240,7 @@ type InsertMonthlyChallengeParams struct {
 	ChallengeID  uuid.UUID
 	StartDate    time.Time
 	EndDate      time.Time
-	DisplayMonth time.Time
+	DisplayMonth string
 }
 
 func (q *Queries) InsertMonthlyChallenge(ctx context.Context, arg InsertMonthlyChallengeParams) error {
@@ -319,18 +319,36 @@ func (q *Queries) ListChallengesWithSolves(ctx context.Context, showUnpublished 
 }
 
 const listMonthlyChallenges = `-- name: ListMonthlyChallenges :many
-SELECT challenge_id, start_date, end_date, display_month, created_at, updated_at FROM monthly_challenges
+SELECT challenge_id, start_date, end_date, display_month, mc.created_at, mc.updated_at, id, slug, title, description, score, published, ctf_event_id, c.created_at, c.updated_at FROM monthly_challenges mc JOIN challenges c ON mc.challenge_id = c.id
 `
 
-func (q *Queries) ListMonthlyChallenges(ctx context.Context) ([]MonthlyChallenge, error) {
+type ListMonthlyChallengesRow struct {
+	ChallengeID  uuid.UUID
+	StartDate    time.Time
+	EndDate      time.Time
+	DisplayMonth string
+	CreatedAt    time.Time
+	UpdatedAt    sql.NullTime
+	ID           uuid.UUID
+	Slug         string
+	Title        string
+	Description  string
+	Score        int32
+	Published    bool
+	CtfEventID   uuid.NullUUID
+	CreatedAt_2  time.Time
+	UpdatedAt_2  sql.NullTime
+}
+
+func (q *Queries) ListMonthlyChallenges(ctx context.Context) ([]ListMonthlyChallengesRow, error) {
 	rows, err := q.db.Query(ctx, listMonthlyChallenges)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []MonthlyChallenge
+	var items []ListMonthlyChallengesRow
 	for rows.Next() {
-		var i MonthlyChallenge
+		var i ListMonthlyChallengesRow
 		if err := rows.Scan(
 			&i.ChallengeID,
 			&i.StartDate,
@@ -338,6 +356,15 @@ func (q *Queries) ListMonthlyChallenges(ctx context.Context) ([]MonthlyChallenge
 			&i.DisplayMonth,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.ID,
+			&i.Slug,
+			&i.Title,
+			&i.Description,
+			&i.Score,
+			&i.Published,
+			&i.CtfEventID,
+			&i.CreatedAt_2,
+			&i.UpdatedAt_2,
 		); err != nil {
 			return nil, err
 		}

@@ -97,12 +97,11 @@ CREATE TABLE monthly_challenges (
     challenge_id UUID PRIMARY KEY REFERENCES challenges(id) ON DELETE CASCADE,
     start_date TIMESTAMPTZ NOT NULL,
     end_date TIMESTAMPTZ NOT NULL,
-    display_month DATE NOT NULL,
+    display_month TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ,
 
-    CHECK (start_date < end_date),
-    CHECK (display_month BETWEEN start_date AND end_date)
+    CHECK (start_date < end_date)
 );
 
 CREATE TABLE submissions (

@@ -465,7 +465,7 @@ func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.De
 			}
 			for _, e := range body {
 				if e != nil {
-					if err2 := ValidateMonthlyChallengeMetaResponse(e); err2 != nil {
+					if err2 := ValidateMonthlyChallengeResponse(e); err2 != nil {
 						err = goa.MergeErrors(err, err2)
 					}
 				}
@@ -473,7 +473,7 @@ func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.De
 			if err != nil {
 				return nil, goahttp.ErrValidationError("admin", "ListMonthlyChallenges", err)
 			}
-			res := NewListMonthlyChallengesMonthlyChallengeMetaOK(body)
+			res := NewListMonthlyChallengesMonthlyChallengeOK(body)
 			return res, nil
 		case http.StatusForbidden:
 			var (
@@ -1061,11 +1061,13 @@ func unmarshalAdminChallengeFilesResponseToAdminviewsAdminChallengeFilesView(v *
 	return res
 }
 
-// unmarshalMonthlyChallengeMetaResponseToAdminMonthlyChallengeMeta builds a
-// value of type *admin.MonthlyChallengeMeta from a value of type
-// *MonthlyChallengeMetaResponse.
-func unmarshalMonthlyChallengeMetaResponseToAdminMonthlyChallengeMeta(v *MonthlyChallengeMetaResponse) *admin.MonthlyChallengeMeta {
-	res := &admin.MonthlyChallengeMeta{
+// unmarshalMonthlyChallengeResponseToAdminMonthlyChallenge builds a value of
+// type *admin.MonthlyChallenge from a value of type *MonthlyChallengeResponse.
+func unmarshalMonthlyChallengeResponseToAdminMonthlyChallenge(v *MonthlyChallengeResponse) *admin.MonthlyChallenge {
+	res := &admin.MonthlyChallenge{
+		Slug:         *v.Slug,
+		Title:        *v.Title,
+		Description:  *v.Description,
 		ChallengeID:  *v.ChallengeID,
 		DisplayMonth: *v.DisplayMonth,
 		StartDate:    *v.StartDate,

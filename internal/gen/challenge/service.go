@@ -20,7 +20,7 @@ type Service interface {
 	// ListChallenges implements ListChallenges.
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, err error)
 	// ListMonthlyChallenges implements ListMonthlyChallenges.
-	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallengeMeta, err error)
+	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallenge, err error)
 	// SubmitFlag implements SubmitFlag.
 	SubmitFlag(context.Context, *SubmitFlagPayload) (err error)
 }
@@ -92,7 +92,13 @@ type ChallengeFiles struct {
 	URL      string
 }
 
-type MonthlyChallengeMeta struct {
+type MonthlyChallenge struct {
+	// A unique string that can be used in URLs
+	Slug string
+	// Title displayed to user
+	Title string
+	// A short text describing the challenge
+	Description string
 	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string

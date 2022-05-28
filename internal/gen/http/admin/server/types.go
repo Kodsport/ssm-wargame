@@ -39,6 +39,12 @@ type PresignChallFileUploadRequestBody struct {
 // CreateMonthlyChallengeRequestBody is the type of the "admin" service
 // "CreateMonthlyChallenge" endpoint HTTP request body.
 type CreateMonthlyChallengeRequestBody struct {
+	// A unique string that can be used in URLs
+	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Title displayed to user
+	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// A short text describing the challenge
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
@@ -61,7 +67,7 @@ type PresignChallFileUploadResponseBody struct {
 
 // ListMonthlyChallengesResponseBody is the type of the "admin" service
 // "ListMonthlyChallenges" endpoint HTTP response body.
-type ListMonthlyChallengesResponseBody []*MonthlyChallengeMetaResponse
+type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
 
 // ListUsersResponseBody is the type of the "admin" service "ListUsers"
 // endpoint HTTP response body.
@@ -545,8 +551,14 @@ type AdminChallengeFilesResponse struct {
 	Md5 string `form:"md5" json:"md5" xml:"md5"`
 }
 
-// MonthlyChallengeMetaResponse is used to define fields on response body types.
-type MonthlyChallengeMetaResponse struct {
+// MonthlyChallengeResponse is used to define fields on response body types.
+type MonthlyChallengeResponse struct {
+	// A unique string that can be used in URLs
+	Slug string `form:"slug" json:"slug" xml:"slug"`
+	// Title displayed to user
+	Title string `form:"title" json:"title" xml:"title"`
+	// A short text describing the challenge
+	Description string `form:"description" json:"description" xml:"description"`
 	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
@@ -586,10 +598,10 @@ func NewPresignChallFileUploadResponseBody(res *admin.PresignChallFileUploadResu
 
 // NewListMonthlyChallengesResponseBody builds the HTTP response body from the
 // result of the "ListMonthlyChallenges" endpoint of the "admin" service.
-func NewListMonthlyChallengesResponseBody(res []*admin.MonthlyChallengeMeta) ListMonthlyChallengesResponseBody {
-	body := make([]*MonthlyChallengeMetaResponse, len(res))
+func NewListMonthlyChallengesResponseBody(res []*admin.MonthlyChallenge) ListMonthlyChallengesResponseBody {
+	body := make([]*MonthlyChallengeResponse, len(res))
 	for i, val := range res {
-		body[i] = marshalAdminMonthlyChallengeMetaToMonthlyChallengeMetaResponse(val)
+		body[i] = marshalAdminMonthlyChallengeToMonthlyChallengeResponse(val)
 	}
 	return body
 }
@@ -1021,6 +1033,9 @@ func NewDeleteFilePayload(fileID string, token string) *admin.DeleteFilePayload 
 // CreateMonthlyChallenge endpoint payload.
 func NewCreateMonthlyChallengePayload(body *CreateMonthlyChallengeRequestBody, token string) *admin.CreateMonthlyChallengePayload {
 	v := &admin.CreateMonthlyChallengePayload{
+		Slug:         *body.Slug,
+		Title:        *body.Title,
+		Description:  *body.Description,
 		ChallengeID:  *body.ChallengeID,
 		DisplayMonth: *body.DisplayMonth,
 		StartDate:    *body.StartDate,
@@ -1086,6 +1101,15 @@ func ValidateCreateMonthlyChallengeRequestBody(body *CreateMonthlyChallengeReque
 	}
 	if body.ChallengeID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "body"))
+	}
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
 	}
 	if body.ChallengeID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))
