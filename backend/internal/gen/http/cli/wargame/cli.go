@@ -24,7 +24,7 @@ import (
 //
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
-	return `admin (list-challenges|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users)
+	return `admin (list-challenges|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag)
 auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-monthly-challenges|submit-flag)
 `
@@ -80,6 +80,16 @@ func ParseEndpoint(
 		adminListUsersFlags     = flag.NewFlagSet("list-users", flag.ExitOnError)
 		adminListUsersTokenFlag = adminListUsersFlags.String("token", "REQUIRED", "")
 
+		adminAddFlagFlags           = flag.NewFlagSet("add-flag", flag.ExitOnError)
+		adminAddFlagBodyFlag        = adminAddFlagFlags.String("body", "REQUIRED", "")
+		adminAddFlagChallengeIDFlag = adminAddFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
+		adminAddFlagTokenFlag       = adminAddFlagFlags.String("token", "REQUIRED", "")
+
+		adminDeleteFlagFlags           = flag.NewFlagSet("delete-flag", flag.ExitOnError)
+		adminDeleteFlagChallengeIDFlag = adminDeleteFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
+		adminDeleteFlagFlagIDFlag      = adminDeleteFlagFlags.String("flag-id", "REQUIRED", "")
+		adminDeleteFlagTokenFlag       = adminDeleteFlagFlags.String("token", "REQUIRED", "")
+
 		authFlags = flag.NewFlagSet("auth", flag.ContinueOnError)
 
 		authGenerateDiscordAuthURLFlags = flag.NewFlagSet("generate-discord-auth-url", flag.ExitOnError)
@@ -109,6 +119,8 @@ func ParseEndpoint(
 	adminDeleteFileFlags.Usage = adminDeleteFileUsage
 	adminCreateMonthlyChallengeFlags.Usage = adminCreateMonthlyChallengeUsage
 	adminListUsersFlags.Usage = adminListUsersUsage
+	adminAddFlagFlags.Usage = adminAddFlagUsage
+	adminDeleteFlagFlags.Usage = adminDeleteFlagUsage
 
 	authFlags.Usage = authUsage
 	authGenerateDiscordAuthURLFlags.Usage = authGenerateDiscordAuthURLUsage
@@ -180,6 +192,12 @@ func ParseEndpoint(
 
 			case "list-users":
 				epf = adminListUsersFlags
+
+			case "add-flag":
+				epf = adminAddFlagFlags
+
+			case "delete-flag":
+				epf = adminDeleteFlagFlags
 
 			}
 
@@ -253,6 +271,12 @@ func ParseEndpoint(
 			case "list-users":
 				endpoint = c.ListUsers()
 				data, err = adminc.BuildListUsersPayload(*adminListUsersTokenFlag)
+			case "add-flag":
+				endpoint = c.AddFlag()
+				data, err = adminc.BuildAddFlagPayload(*adminAddFlagBodyFlag, *adminAddFlagChallengeIDFlag, *adminAddFlagTokenFlag)
+			case "delete-flag":
+				endpoint = c.DeleteFlag()
+				data, err = adminc.BuildDeleteFlagPayload(*adminDeleteFlagChallengeIDFlag, *adminDeleteFlagFlagIDFlag, *adminDeleteFlagTokenFlag)
 			}
 		case "auth":
 			c := authc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -301,6 +325,8 @@ COMMAND:
     delete-file: DeleteFile implements DeleteFile.
     create-monthly-challenge: CreateMonthlyChallenge implements CreateMonthlyChallenge.
     list-users: ListUsers implements ListUsers.
+    add-flag: AddFlag implements AddFlag.
+    delete-flag: DeleteFlag implements DeleteFlag.
 
 Additional help:
     %[1]s admin COMMAND --help
@@ -414,6 +440,34 @@ ListUsers implements ListUsers.
 
 Example:
     %[1]s admin list-users --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminAddFlagUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin add-flag -body JSON -challenge-id STRING -token STRING
+
+AddFlag implements AddFlag.
+    -body JSON: 
+    -challenge-id STRING: ID of a challenge
+    -token STRING: 
+
+Example:
+    %[1]s admin add-flag --body '{
+      "flag": "SSM{...}"
+   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminDeleteFlagUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin delete-flag -challenge-id STRING -flag-id STRING -token STRING
+
+DeleteFlag implements DeleteFlag.
+    -challenge-id STRING: ID of a challenge
+    -flag-id STRING: 
+    -token STRING: 
+
+Example:
+    %[1]s admin delete-flag --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --flag-id "ac1c4362-c121-45a3-9745-8f8160a55f96" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

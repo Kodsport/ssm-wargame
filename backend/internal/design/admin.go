@@ -120,4 +120,35 @@ var _ = Service("admin", func() {
 			GET("/users")
 		})
 	})
+
+	Method("AddFlag", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("flag", String, func() {
+				Example("SSM{...}")
+			})
+			Extend(ChallengeIDArtifact)
+			Required("flag")
+		})
+
+		HTTP(func() {
+			POST("/challenges/{challengeID}/flags")
+		})
+	})
+
+	Method("DeleteFlag", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("flagID", String, func() {
+				Example("ac1c4362-c121-45a3-9745-8f8160a55f96")
+				Format(FormatUUID)
+			})
+			Extend(ChallengeIDArtifact)
+			Required("flagID")
+		})
+
+		HTTP(func() {
+			DELETE("/challenges/{challengeID}/flags/{flagID}")
+		})
+	})
 })

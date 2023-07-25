@@ -192,3 +192,67 @@ func BuildListUsersPayload(adminListUsersToken string) (*admin.ListUsersPayload,
 
 	return v, nil
 }
+
+// BuildAddFlagPayload builds the payload for the admin AddFlag endpoint from
+// CLI flags.
+func BuildAddFlagPayload(adminAddFlagBody string, adminAddFlagChallengeID string, adminAddFlagToken string) (*admin.AddFlagPayload, error) {
+	var err error
+	var body AddFlagRequestBody
+	{
+		err = json.Unmarshal([]byte(adminAddFlagBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"flag\": \"SSM{...}\"\n   }'")
+		}
+	}
+	var challengeID string
+	{
+		challengeID = adminAddFlagChallengeID
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminAddFlagToken
+	}
+	v := &admin.AddFlagPayload{
+		Flag: body.Flag,
+	}
+	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteFlagPayload builds the payload for the admin DeleteFlag endpoint
+// from CLI flags.
+func BuildDeleteFlagPayload(adminDeleteFlagChallengeID string, adminDeleteFlagFlagID string, adminDeleteFlagToken string) (*admin.DeleteFlagPayload, error) {
+	var err error
+	var challengeID string
+	{
+		challengeID = adminDeleteFlagChallengeID
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+		if err != nil {
+			return nil, err
+		}
+	}
+	var flagID string
+	{
+		flagID = adminDeleteFlagFlagID
+		err = goa.MergeErrors(err, goa.ValidateFormat("flagID", flagID, goa.FormatUUID))
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminDeleteFlagToken
+	}
+	v := &admin.DeleteFlagPayload{}
+	v.ChallengeID = challengeID
+	v.FlagID = flagID
+	v.Token = token
+
+	return v, nil
+}

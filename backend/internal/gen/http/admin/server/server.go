@@ -27,6 +27,8 @@ type Server struct {
 	DeleteFile             http.Handler
 	CreateMonthlyChallenge http.Handler
 	ListUsers              http.Handler
+	AddFlag                http.Handler
+	DeleteFlag             http.Handler
 }
 
 // MountPoint holds information about the mounted endpoints.
@@ -64,6 +66,8 @@ func New(
 			{"DeleteFile", "DELETE", "/admin/files/{fileID}"},
 			{"CreateMonthlyChallenge", "POST", "/admin/monthly_challenges"},
 			{"ListUsers", "GET", "/admin/users"},
+			{"AddFlag", "POST", "/admin/challenges/{challengeID}/flags"},
+			{"DeleteFlag", "DELETE", "/admin/challenges/{challengeID}/flags/{flagID}"},
 		},
 		ListChallenges:         NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		CreateChallenge:        NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
@@ -73,6 +77,8 @@ func New(
 		DeleteFile:             NewDeleteFileHandler(e.DeleteFile, mux, decoder, encoder, errhandler, formatter),
 		CreateMonthlyChallenge: NewCreateMonthlyChallengeHandler(e.CreateMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
 		ListUsers:              NewListUsersHandler(e.ListUsers, mux, decoder, encoder, errhandler, formatter),
+		AddFlag:                NewAddFlagHandler(e.AddFlag, mux, decoder, encoder, errhandler, formatter),
+		DeleteFlag:             NewDeleteFlagHandler(e.DeleteFlag, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -89,6 +95,8 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.DeleteFile = m(s.DeleteFile)
 	s.CreateMonthlyChallenge = m(s.CreateMonthlyChallenge)
 	s.ListUsers = m(s.ListUsers)
+	s.AddFlag = m(s.AddFlag)
+	s.DeleteFlag = m(s.DeleteFlag)
 }
 
 // MethodNames returns the methods served.
@@ -104,6 +112,8 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountDeleteFileHandler(mux, h.DeleteFile)
 	MountCreateMonthlyChallengeHandler(mux, h.CreateMonthlyChallenge)
 	MountListUsersHandler(mux, h.ListUsers)
+	MountAddFlagHandler(mux, h.AddFlag)
+	MountDeleteFlagHandler(mux, h.DeleteFlag)
 }
 
 // Mount configures the mux to serve the admin endpoints.
@@ -498,6 +508,108 @@ func NewListUsersHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "ListUsers")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountAddFlagHandler configures the mux to serve the "admin" service
+// "AddFlag" endpoint.
+func MountAddFlagHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/challenges/{challengeID}/flags", f)
+}
+
+// NewAddFlagHandler creates a HTTP handler which loads the HTTP request and
+// calls the "admin" service "AddFlag" endpoint.
+func NewAddFlagHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(ctx context.Context, err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeAddFlagRequest(mux, decoder)
+		encodeResponse = EncodeAddFlagResponse(encoder)
+		encodeError    = EncodeAddFlagError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "AddFlag")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteFlagHandler configures the mux to serve the "admin" service
+// "DeleteFlag" endpoint.
+func MountDeleteFlagHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/admin/challenges/{challengeID}/flags/{flagID}", f)
+}
+
+// NewDeleteFlagHandler creates a HTTP handler which loads the HTTP request and
+// calls the "admin" service "DeleteFlag" endpoint.
+func NewDeleteFlagHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(ctx context.Context, err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteFlagRequest(mux, decoder)
+		encodeResponse = EncodeDeleteFlagResponse(encoder)
+		encodeError    = EncodeDeleteFlagError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteFlag")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

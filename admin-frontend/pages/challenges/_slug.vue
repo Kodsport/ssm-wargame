@@ -42,8 +42,62 @@
         </div>
       </form>
 
+      <div>
+        <h5 class="border-top">Flags</h5>
 
-      <div v-if="chall.files.length">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Flag</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="flag in chall.flags" :key="flag.id">
+              <td>{{ flag.flag }}</td>
+              <td>
+                <button class="btn btn-danger" @click="deleteFlag(flag.id)">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div>
+          <h1>Add flag</h1>
+          <input class="form-control" type="text" v-model="newFlag">
+          <p
+            class="btn btn-primary"
+            @click="addFlag"
+          >
+            Add
+          </p>
+        </div>
+
+
+        <h1>Upload file</h1>
+        <div class="form-group">
+          <input
+            ref="file"
+            class="form-control-file"
+            type="file"
+            @change="checkFile"
+          />
+        </div>
+        <p
+          class="btn btn-primary"
+          v-bind:class="{
+            disabled: !hasFile,
+          }"
+          @click="uploadFile"
+        >
+          Upload
+        </p>
+
+      </div>
+
+      <div v-if="chall.files?.length">
         <h5 class="border-top">Files</h5>
         <table class="table">
           <thead>
@@ -107,6 +161,7 @@ export default Vue.extend({
     return {
       hasFile: false,
       form: {},
+      newFlag: "",
     };
   },
   computed: {
@@ -175,6 +230,21 @@ export default Vue.extend({
       await this.$axios.delete(`/admin/files/${fileId}`);
       this.$store.dispatch("challenges/fetchChallenges");
     },
+    async addFlag() {
+      await this.$axios.post(`/admin/challenges/${this.chall.id}/flags`, {
+        flag: this.newFlag
+      })
+      this.$store.dispatch("challenges/fetchChallenges");
+      this.newFlag = ""
+    },
+    async deleteFlag(flagId: string) {
+      await this.$axios.delete(`/admin/challenges/${this.chall.id}/flags/${flagId}`)
+      this.$store.dispatch("challenges/fetchChallenges");
+
+      if (this.newFlag == "") {
+        this.newFlag = this.chall.flags.find((f: any) => f.id == flagId).flag
+      }
+    }
   },
 });
 </script>

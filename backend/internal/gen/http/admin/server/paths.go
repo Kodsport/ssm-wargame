@@ -50,3 +50,13 @@ func CreateMonthlyChallengeAdminPath() string {
 func ListUsersAdminPath() string {
 	return "/admin/users"
 }
+
+// AddFlagAdminPath returns the URL path to the admin service AddFlag HTTP endpoint.
+func AddFlagAdminPath(challengeID string) string {
+	return fmt.Sprintf("/admin/challenges/%v/flags", challengeID)
+}
+
+// DeleteFlagAdminPath returns the URL path to the admin service DeleteFlag HTTP endpoint.
+func DeleteFlagAdminPath(challengeID string, flagID string) string {
+	return fmt.Sprintf("/admin/challenges/%v/flags/%v", challengeID, flagID)
+}

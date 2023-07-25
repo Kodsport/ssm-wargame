@@ -54,6 +54,12 @@ type CreateMonthlyChallengeRequestBody struct {
 	EndDate *string `form:"end_date,omitempty" json:"end_date,omitempty" xml:"end_date,omitempty"`
 }
 
+// AddFlagRequestBody is the type of the "admin" service "AddFlag" endpoint
+// HTTP request body.
+type AddFlagRequestBody struct {
+	Flag *string `form:"flag,omitempty" json:"flag,omitempty" xml:"flag,omitempty"`
+}
+
 // SsmAdminChallengeResponseCollection is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
 type SsmAdminChallengeResponseCollection []*SsmAdminChallengeResponse
@@ -502,6 +508,114 @@ type ListUsersNotFoundResponseBody struct {
 // ListUsersBadRequestResponseBody is the type of the "admin" service
 // "ListUsers" endpoint HTTP response body for the "bad_request" error.
 type ListUsersBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AddFlagUnauthorizedResponseBody is the type of the "admin" service "AddFlag"
+// endpoint HTTP response body for the "unauthorized" error.
+type AddFlagUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AddFlagNotFoundResponseBody is the type of the "admin" service "AddFlag"
+// endpoint HTTP response body for the "not_found" error.
+type AddFlagNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AddFlagBadRequestResponseBody is the type of the "admin" service "AddFlag"
+// endpoint HTTP response body for the "bad_request" error.
+type AddFlagBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteFlagUnauthorizedResponseBody is the type of the "admin" service
+// "DeleteFlag" endpoint HTTP response body for the "unauthorized" error.
+type DeleteFlagUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteFlagNotFoundResponseBody is the type of the "admin" service
+// "DeleteFlag" endpoint HTTP response body for the "not_found" error.
+type DeleteFlagNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteFlagBadRequestResponseBody is the type of the "admin" service
+// "DeleteFlag" endpoint HTTP response body for the "bad_request" error.
+type DeleteFlagBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -971,6 +1085,90 @@ func NewListUsersBadRequestResponseBody(res *goa.ServiceError) *ListUsersBadRequ
 	return body
 }
 
+// NewAddFlagUnauthorizedResponseBody builds the HTTP response body from the
+// result of the "AddFlag" endpoint of the "admin" service.
+func NewAddFlagUnauthorizedResponseBody(res *goa.ServiceError) *AddFlagUnauthorizedResponseBody {
+	body := &AddFlagUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAddFlagNotFoundResponseBody builds the HTTP response body from the result
+// of the "AddFlag" endpoint of the "admin" service.
+func NewAddFlagNotFoundResponseBody(res *goa.ServiceError) *AddFlagNotFoundResponseBody {
+	body := &AddFlagNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAddFlagBadRequestResponseBody builds the HTTP response body from the
+// result of the "AddFlag" endpoint of the "admin" service.
+func NewAddFlagBadRequestResponseBody(res *goa.ServiceError) *AddFlagBadRequestResponseBody {
+	body := &AddFlagBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteFlagUnauthorizedResponseBody builds the HTTP response body from the
+// result of the "DeleteFlag" endpoint of the "admin" service.
+func NewDeleteFlagUnauthorizedResponseBody(res *goa.ServiceError) *DeleteFlagUnauthorizedResponseBody {
+	body := &DeleteFlagUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteFlagNotFoundResponseBody builds the HTTP response body from the
+// result of the "DeleteFlag" endpoint of the "admin" service.
+func NewDeleteFlagNotFoundResponseBody(res *goa.ServiceError) *DeleteFlagNotFoundResponseBody {
+	body := &DeleteFlagNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteFlagBadRequestResponseBody builds the HTTP response body from the
+// result of the "DeleteFlag" endpoint of the "admin" service.
+func NewDeleteFlagBadRequestResponseBody(res *goa.ServiceError) *DeleteFlagBadRequestResponseBody {
+	body := &DeleteFlagBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewListChallengesPayload builds a admin service ListChallenges endpoint
 // payload.
 func NewListChallengesPayload(token string) *admin.ListChallengesPayload {
@@ -1061,6 +1259,27 @@ func NewListUsersPayload(token string) *admin.ListUsersPayload {
 	return v
 }
 
+// NewAddFlagPayload builds a admin service AddFlag endpoint payload.
+func NewAddFlagPayload(body *AddFlagRequestBody, challengeID string, token string) *admin.AddFlagPayload {
+	v := &admin.AddFlagPayload{
+		Flag: *body.Flag,
+	}
+	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v
+}
+
+// NewDeleteFlagPayload builds a admin service DeleteFlag endpoint payload.
+func NewDeleteFlagPayload(challengeID string, flagID string, token string) *admin.DeleteFlagPayload {
+	v := &admin.DeleteFlagPayload{}
+	v.ChallengeID = challengeID
+	v.FlagID = flagID
+	v.Token = token
+
+	return v
+}
+
 // ValidateCreateChallengeRequestBody runs the validations defined on
 // CreateChallengeRequestBody
 func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err error) {
@@ -1120,6 +1339,14 @@ func ValidateCreateMonthlyChallengeRequestBody(body *CreateMonthlyChallengeReque
 	}
 	if body.ChallengeID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateAddFlagRequestBody runs the validations defined on AddFlagRequestBody
+func ValidateAddFlagRequestBody(body *AddFlagRequestBody) (err error) {
+	if body.Flag == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "body"))
 	}
 	return
 }

@@ -24,6 +24,8 @@ type Endpoints struct {
 	DeleteFile             goa.Endpoint
 	CreateMonthlyChallenge goa.Endpoint
 	ListUsers              goa.Endpoint
+	AddFlag                goa.Endpoint
+	DeleteFlag             goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "admin" service with endpoints.
@@ -39,6 +41,8 @@ func NewEndpoints(s Service) *Endpoints {
 		DeleteFile:             NewDeleteFileEndpoint(s, a.JWTAuth),
 		CreateMonthlyChallenge: NewCreateMonthlyChallengeEndpoint(s, a.JWTAuth),
 		ListUsers:              NewListUsersEndpoint(s, a.JWTAuth),
+		AddFlag:                NewAddFlagEndpoint(s, a.JWTAuth),
+		DeleteFlag:             NewDeleteFlagEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -52,6 +56,8 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.DeleteFile = m(e.DeleteFile)
 	e.CreateMonthlyChallenge = m(e.CreateMonthlyChallenge)
 	e.ListUsers = m(e.ListUsers)
+	e.AddFlag = m(e.AddFlag)
+	e.DeleteFlag = m(e.DeleteFlag)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -208,5 +214,43 @@ func NewListUsersEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoin
 			return nil, err
 		}
 		return s.ListUsers(ctx, p)
+	}
+}
+
+// NewAddFlagEndpoint returns an endpoint function that calls the method
+// "AddFlag" of service "admin".
+func NewAddFlagEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req any) (any, error) {
+		p := req.(*AddFlagPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.AddFlag(ctx, p)
+	}
+}
+
+// NewDeleteFlagEndpoint returns an endpoint function that calls the method
+// "DeleteFlag" of service "admin".
+func NewDeleteFlagEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req any) (any, error) {
+		p := req.(*DeleteFlagPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.DeleteFlag(ctx, p)
 	}
 }

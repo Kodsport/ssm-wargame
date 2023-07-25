@@ -1005,6 +1005,250 @@ func DecodeListUsersResponse(decoder func(*http.Response) goahttp.Decoder, resto
 	}
 }
 
+// BuildAddFlagRequest instantiates a HTTP request object with method and path
+// set to call the "admin" service "AddFlag" endpoint
+func (c *Client) BuildAddFlagRequest(ctx context.Context, v any) (*http.Request, error) {
+	var (
+		challengeID string
+	)
+	{
+		p, ok := v.(*admin.AddFlagPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "AddFlag", "*admin.AddFlagPayload", v)
+		}
+		challengeID = p.ChallengeID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: AddFlagAdminPath(challengeID)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "AddFlag", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeAddFlagRequest returns an encoder for requests sent to the admin
+// AddFlag server.
+func EncodeAddFlagRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, any) error {
+	return func(req *http.Request, v any) error {
+		p, ok := v.(*admin.AddFlagPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "AddFlag", "*admin.AddFlagPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewAddFlagRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "AddFlag", err)
+		}
+		return nil
+	}
+}
+
+// DecodeAddFlagResponse returns a decoder for responses returned by the admin
+// AddFlag endpoint. restoreBody controls whether the response body should be
+// restored after having been read.
+// DecodeAddFlagResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeAddFlagResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
+	return func(resp *http.Response) (any, error) {
+		if restoreBody {
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body AddFlagUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "AddFlag", err)
+			}
+			err = ValidateAddFlagUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "AddFlag", err)
+			}
+			return nil, NewAddFlagUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body AddFlagNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "AddFlag", err)
+			}
+			err = ValidateAddFlagNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "AddFlag", err)
+			}
+			return nil, NewAddFlagNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body AddFlagBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "AddFlag", err)
+			}
+			err = ValidateAddFlagBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "AddFlag", err)
+			}
+			return nil, NewAddFlagBadRequest(&body)
+		default:
+			body, _ := io.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "AddFlag", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildDeleteFlagRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "DeleteFlag" endpoint
+func (c *Client) BuildDeleteFlagRequest(ctx context.Context, v any) (*http.Request, error) {
+	var (
+		challengeID string
+		flagID      string
+	)
+	{
+		p, ok := v.(*admin.DeleteFlagPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "DeleteFlag", "*admin.DeleteFlagPayload", v)
+		}
+		challengeID = p.ChallengeID
+		flagID = p.FlagID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteFlagAdminPath(challengeID, flagID)}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "DeleteFlag", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeDeleteFlagRequest returns an encoder for requests sent to the admin
+// DeleteFlag server.
+func EncodeDeleteFlagRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, any) error {
+	return func(req *http.Request, v any) error {
+		p, ok := v.(*admin.DeleteFlagPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "DeleteFlag", "*admin.DeleteFlagPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeDeleteFlagResponse returns a decoder for responses returned by the
+// admin DeleteFlag endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeDeleteFlagResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeDeleteFlagResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (any, error) {
+	return func(resp *http.Response) (any, error) {
+		if restoreBody {
+			b, err := io.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = io.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body DeleteFlagUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteFlag", err)
+			}
+			err = ValidateDeleteFlagUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteFlag", err)
+			}
+			return nil, NewDeleteFlagUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body DeleteFlagNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteFlag", err)
+			}
+			err = ValidateDeleteFlagNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteFlag", err)
+			}
+			return nil, NewDeleteFlagNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body DeleteFlagBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteFlag", err)
+			}
+			err = ValidateDeleteFlagBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteFlag", err)
+			}
+			return nil, NewDeleteFlagBadRequest(&body)
+		default:
+			body, _ := io.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "DeleteFlag", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView builds a
 // value of type *adminviews.SsmAdminChallengeView from a value of type
 // *SsmAdminChallengeResponse.

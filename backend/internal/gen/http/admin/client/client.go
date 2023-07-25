@@ -49,6 +49,14 @@ type Client struct {
 	// endpoint.
 	ListUsersDoer goahttp.Doer
 
+	// AddFlag Doer is the HTTP client used to make requests to the AddFlag
+	// endpoint.
+	AddFlagDoer goahttp.Doer
+
+	// DeleteFlag Doer is the HTTP client used to make requests to the DeleteFlag
+	// endpoint.
+	DeleteFlagDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -77,6 +85,8 @@ func NewClient(
 		DeleteFileDoer:             doer,
 		CreateMonthlyChallengeDoer: doer,
 		ListUsersDoer:              doer,
+		AddFlagDoer:                doer,
+		DeleteFlagDoer:             doer,
 		RestoreResponseBody:        restoreBody,
 		scheme:                     scheme,
 		host:                       host,
@@ -272,6 +282,54 @@ func (c *Client) ListUsers() goa.Endpoint {
 		resp, err := c.ListUsersDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "ListUsers", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// AddFlag returns an endpoint that makes HTTP requests to the admin service
+// AddFlag server.
+func (c *Client) AddFlag() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeAddFlagRequest(c.encoder)
+		decodeResponse = DecodeAddFlagResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v any) (any, error) {
+		req, err := c.BuildAddFlagRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.AddFlagDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "AddFlag", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// DeleteFlag returns an endpoint that makes HTTP requests to the admin service
+// DeleteFlag server.
+func (c *Client) DeleteFlag() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeDeleteFlagRequest(c.encoder)
+		decodeResponse = DecodeDeleteFlagResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v any) (any, error) {
+		req, err := c.BuildDeleteFlagRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.DeleteFlagDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "DeleteFlag", err)
 		}
 		return decodeResponse(resp)
 	}

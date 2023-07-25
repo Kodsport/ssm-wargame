@@ -51,6 +51,14 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Published:   chall.Published,
 		}
 
+		res[i].Flags = make([]*spec.AdminChallengeFlag, len(chall.R.Flags))
+		for i2, v := range chall.R.Flags {
+			res[i].Flags[i2] = &spec.AdminChallengeFlag{
+				ID:   v.ID,
+				Flag: v.Flag,
+			}
+		}
+
 		res[i].Files = make([]*spec.AdminChallengeFiles, len(chall.R.ChallengeFiles))
 		for i2, file := range chall.R.ChallengeFiles {
 

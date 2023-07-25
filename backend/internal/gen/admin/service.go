@@ -33,6 +33,10 @@ type Service interface {
 	CreateMonthlyChallenge(context.Context, *CreateMonthlyChallengePayload) (err error)
 	// ListUsers implements ListUsers.
 	ListUsers(context.Context, *ListUsersPayload) (res []*SsmUser, err error)
+	// AddFlag implements AddFlag.
+	AddFlag(context.Context, *AddFlagPayload) (err error)
+	// DeleteFlag implements DeleteFlag.
+	DeleteFlag(context.Context, *DeleteFlagPayload) (err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -49,7 +53,15 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [8]string{"ListChallenges", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers"}
+var MethodNames = [10]string{"ListChallenges", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag"}
+
+// AddFlagPayload is the payload type of the admin service AddFlag method.
+type AddFlagPayload struct {
+	Flag  string
+	Token string
+	// ID of a challenge
+	ChallengeID string
+}
 
 type AdminChallengeFiles struct {
 	ID       string
@@ -108,6 +120,14 @@ type DeleteFilePayload struct {
 	Token string
 	// ID of a file
 	FileID string
+}
+
+// DeleteFlagPayload is the payload type of the admin service DeleteFlag method.
+type DeleteFlagPayload struct {
+	FlagID string
+	Token  string
+	// ID of a challenge
+	ChallengeID string
 }
 
 // DeleteMonthlyChallengePayload is the payload type of the admin service

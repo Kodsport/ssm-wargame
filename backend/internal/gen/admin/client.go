@@ -23,10 +23,12 @@ type Client struct {
 	DeleteFileEndpoint             goa.Endpoint
 	CreateMonthlyChallengeEndpoint goa.Endpoint
 	ListUsersEndpoint              goa.Endpoint
+	AddFlagEndpoint                goa.Endpoint
+	DeleteFlagEndpoint             goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers goa.Endpoint) *Client {
+func NewClient(listChallenges, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:         listChallenges,
 		CreateChallengeEndpoint:        createChallenge,
@@ -36,6 +38,8 @@ func NewClient(listChallenges, createChallenge, presignChallFileUpload, listMont
 		DeleteFileEndpoint:             deleteFile,
 		CreateMonthlyChallengeEndpoint: createMonthlyChallenge,
 		ListUsersEndpoint:              listUsers,
+		AddFlagEndpoint:                addFlag,
+		DeleteFlagEndpoint:             deleteFlag,
 	}
 }
 
@@ -145,4 +149,26 @@ func (c *Client) ListUsers(ctx context.Context, p *ListUsersPayload) (res []*Ssm
 		return
 	}
 	return ires.([]*SsmUser), nil
+}
+
+// AddFlag calls the "AddFlag" endpoint of the "admin" service.
+// AddFlag may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError)
+//   - "not_found" (type *goa.ServiceError)
+//   - "bad_request" (type *goa.ServiceError)
+//   - error: internal error
+func (c *Client) AddFlag(ctx context.Context, p *AddFlagPayload) (err error) {
+	_, err = c.AddFlagEndpoint(ctx, p)
+	return
+}
+
+// DeleteFlag calls the "DeleteFlag" endpoint of the "admin" service.
+// DeleteFlag may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError)
+//   - "not_found" (type *goa.ServiceError)
+//   - "bad_request" (type *goa.ServiceError)
+//   - error: internal error
+func (c *Client) DeleteFlag(ctx context.Context, p *DeleteFlagPayload) (err error) {
+	_, err = c.DeleteFlagEndpoint(ctx, p)
+	return
 }
