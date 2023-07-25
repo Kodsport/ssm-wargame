@@ -25,6 +25,10 @@ type Client struct {
 	// CreateChallenge endpoint.
 	CreateChallengeDoer goahttp.Doer
 
+	// UpdateChallenge Doer is the HTTP client used to make requests to the
+	// UpdateChallenge endpoint.
+	UpdateChallengeDoer goahttp.Doer
+
 	// PresignChallFileUpload Doer is the HTTP client used to make requests to the
 	// PresignChallFileUpload endpoint.
 	PresignChallFileUploadDoer goahttp.Doer
@@ -79,6 +83,7 @@ func NewClient(
 	return &Client{
 		ListChallengesDoer:         doer,
 		CreateChallengeDoer:        doer,
+		UpdateChallengeDoer:        doer,
 		PresignChallFileUploadDoer: doer,
 		ListMonthlyChallengesDoer:  doer,
 		DeleteMonthlyChallengeDoer: doer,
@@ -138,6 +143,30 @@ func (c *Client) CreateChallenge() goa.Endpoint {
 		resp, err := c.CreateChallengeDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "CreateChallenge", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// UpdateChallenge returns an endpoint that makes HTTP requests to the admin
+// service UpdateChallenge server.
+func (c *Client) UpdateChallenge() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeUpdateChallengeRequest(c.encoder)
+		decodeResponse = DecodeUpdateChallengeResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v any) (any, error) {
+		req, err := c.BuildUpdateChallengeRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.UpdateChallengeDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "UpdateChallenge", err)
 		}
 		return decodeResponse(resp)
 	}

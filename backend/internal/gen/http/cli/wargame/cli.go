@@ -24,7 +24,7 @@ import (
 //
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
-	return `admin (list-challenges|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag)
+	return `admin (list-challenges|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag)
 auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-monthly-challenges|submit-flag)
 `
@@ -56,6 +56,11 @@ func ParseEndpoint(
 		adminCreateChallengeFlags     = flag.NewFlagSet("create-challenge", flag.ExitOnError)
 		adminCreateChallengeBodyFlag  = adminCreateChallengeFlags.String("body", "REQUIRED", "")
 		adminCreateChallengeTokenFlag = adminCreateChallengeFlags.String("token", "REQUIRED", "")
+
+		adminUpdateChallengeFlags           = flag.NewFlagSet("update-challenge", flag.ExitOnError)
+		adminUpdateChallengeBodyFlag        = adminUpdateChallengeFlags.String("body", "REQUIRED", "")
+		adminUpdateChallengeChallengeIDFlag = adminUpdateChallengeFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
+		adminUpdateChallengeTokenFlag       = adminUpdateChallengeFlags.String("token", "REQUIRED", "")
 
 		adminPresignChallFileUploadFlags           = flag.NewFlagSet("presign-chall-file-upload", flag.ExitOnError)
 		adminPresignChallFileUploadBodyFlag        = adminPresignChallFileUploadFlags.String("body", "REQUIRED", "")
@@ -113,6 +118,7 @@ func ParseEndpoint(
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
 	adminCreateChallengeFlags.Usage = adminCreateChallengeUsage
+	adminUpdateChallengeFlags.Usage = adminUpdateChallengeUsage
 	adminPresignChallFileUploadFlags.Usage = adminPresignChallFileUploadUsage
 	adminListMonthlyChallengesFlags.Usage = adminListMonthlyChallengesUsage
 	adminDeleteMonthlyChallengeFlags.Usage = adminDeleteMonthlyChallengeUsage
@@ -174,6 +180,9 @@ func ParseEndpoint(
 
 			case "create-challenge":
 				epf = adminCreateChallengeFlags
+
+			case "update-challenge":
+				epf = adminUpdateChallengeFlags
 
 			case "presign-chall-file-upload":
 				epf = adminPresignChallFileUploadFlags
@@ -253,6 +262,9 @@ func ParseEndpoint(
 			case "create-challenge":
 				endpoint = c.CreateChallenge()
 				data, err = adminc.BuildCreateChallengePayload(*adminCreateChallengeBodyFlag, *adminCreateChallengeTokenFlag)
+			case "update-challenge":
+				endpoint = c.UpdateChallenge()
+				data, err = adminc.BuildUpdateChallengePayload(*adminUpdateChallengeBodyFlag, *adminUpdateChallengeChallengeIDFlag, *adminUpdateChallengeTokenFlag)
 			case "presign-chall-file-upload":
 				endpoint = c.PresignChallFileUpload()
 				data, err = adminc.BuildPresignChallFileUploadPayload(*adminPresignChallFileUploadBodyFlag, *adminPresignChallFileUploadChallengeIDFlag, *adminPresignChallFileUploadTokenFlag)
@@ -319,6 +331,7 @@ Usage:
 COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
     create-challenge: CreateChallenge implements CreateChallenge.
+    update-challenge: UpdateChallenge implements UpdateChallenge.
     presign-chall-file-upload: PresignChallFileUpload implements PresignChallFileUpload.
     list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
     delete-monthly-challenge: DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
@@ -357,6 +370,24 @@ Example:
       "slug": "pwnme",
       "title": "pwnme"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminUpdateChallengeUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin update-challenge -body JSON -challenge-id STRING -token STRING
+
+UpdateChallenge implements UpdateChallenge.
+    -body JSON: 
+    -challenge-id STRING: ID of a challenge
+    -token STRING: 
+
+Example:
+    %[1]s admin update-challenge --body '{
+      "description": "A heap overflow challenge",
+      "score": 50,
+      "slug": "pwnme",
+      "title": "pwnme"
+   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

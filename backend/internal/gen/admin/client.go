@@ -17,6 +17,7 @@ import (
 type Client struct {
 	ListChallengesEndpoint         goa.Endpoint
 	CreateChallengeEndpoint        goa.Endpoint
+	UpdateChallengeEndpoint        goa.Endpoint
 	PresignChallFileUploadEndpoint goa.Endpoint
 	ListMonthlyChallengesEndpoint  goa.Endpoint
 	DeleteMonthlyChallengeEndpoint goa.Endpoint
@@ -28,10 +29,11 @@ type Client struct {
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag goa.Endpoint) *Client {
+func NewClient(listChallenges, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:         listChallenges,
 		CreateChallengeEndpoint:        createChallenge,
+		UpdateChallengeEndpoint:        updateChallenge,
 		PresignChallFileUploadEndpoint: presignChallFileUpload,
 		ListMonthlyChallengesEndpoint:  listMonthlyChallenges,
 		DeleteMonthlyChallengeEndpoint: deleteMonthlyChallenge,
@@ -66,6 +68,17 @@ func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (
 //   - error: internal error
 func (c *Client) CreateChallenge(ctx context.Context, p *CreateChallengePayload) (err error) {
 	_, err = c.CreateChallengeEndpoint(ctx, p)
+	return
+}
+
+// UpdateChallenge calls the "UpdateChallenge" endpoint of the "admin" service.
+// UpdateChallenge may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError)
+//   - "not_found" (type *goa.ServiceError)
+//   - "bad_request" (type *goa.ServiceError)
+//   - error: internal error
+func (c *Client) UpdateChallenge(ctx context.Context, p *UpdateChallengePayload) (err error) {
+	_, err = c.UpdateChallengeEndpoint(ctx, p)
 	return
 }
 

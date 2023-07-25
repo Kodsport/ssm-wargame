@@ -21,6 +21,7 @@ type Server struct {
 	Mounts                 []*MountPoint
 	ListChallenges         http.Handler
 	CreateChallenge        http.Handler
+	UpdateChallenge        http.Handler
 	PresignChallFileUpload http.Handler
 	ListMonthlyChallenges  http.Handler
 	DeleteMonthlyChallenge http.Handler
@@ -60,6 +61,7 @@ func New(
 		Mounts: []*MountPoint{
 			{"ListChallenges", "GET", "/admin/challenges"},
 			{"CreateChallenge", "POST", "/admin/challenges"},
+			{"UpdateChallenge", "PUT", "/admin/challenges/{challengeID}"},
 			{"PresignChallFileUpload", "POST", "/admin/challenges/{challengeID}/file_url"},
 			{"ListMonthlyChallenges", "GET", "/admin/monthly_challenges"},
 			{"DeleteMonthlyChallenge", "DELETE", "/admin/monthly_challenges/{challengeID}"},
@@ -71,6 +73,7 @@ func New(
 		},
 		ListChallenges:         NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		CreateChallenge:        NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
+		UpdateChallenge:        NewUpdateChallengeHandler(e.UpdateChallenge, mux, decoder, encoder, errhandler, formatter),
 		PresignChallFileUpload: NewPresignChallFileUploadHandler(e.PresignChallFileUpload, mux, decoder, encoder, errhandler, formatter),
 		ListMonthlyChallenges:  NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
 		DeleteMonthlyChallenge: NewDeleteMonthlyChallengeHandler(e.DeleteMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
@@ -89,6 +92,7 @@ func (s *Server) Service() string { return "admin" }
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListChallenges = m(s.ListChallenges)
 	s.CreateChallenge = m(s.CreateChallenge)
+	s.UpdateChallenge = m(s.UpdateChallenge)
 	s.PresignChallFileUpload = m(s.PresignChallFileUpload)
 	s.ListMonthlyChallenges = m(s.ListMonthlyChallenges)
 	s.DeleteMonthlyChallenge = m(s.DeleteMonthlyChallenge)
@@ -106,6 +110,7 @@ func (s *Server) MethodNames() []string { return admin.MethodNames[:] }
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountListChallengesHandler(mux, h.ListChallenges)
 	MountCreateChallengeHandler(mux, h.CreateChallenge)
+	MountUpdateChallengeHandler(mux, h.UpdateChallenge)
 	MountPresignChallFileUploadHandler(mux, h.PresignChallFileUpload)
 	MountListMonthlyChallengesHandler(mux, h.ListMonthlyChallenges)
 	MountDeleteMonthlyChallengeHandler(mux, h.DeleteMonthlyChallenge)
@@ -202,6 +207,57 @@ func NewCreateChallengeHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "CreateChallenge")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateChallengeHandler configures the mux to serve the "admin" service
+// "UpdateChallenge" endpoint.
+func MountUpdateChallengeHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("PUT", "/admin/challenges/{challengeID}", f)
+}
+
+// NewUpdateChallengeHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "UpdateChallenge" endpoint.
+func NewUpdateChallengeHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(ctx context.Context, err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateChallengeRequest(mux, decoder)
+		encodeResponse = EncodeUpdateChallengeResponse(encoder)
+		encodeError    = EncodeUpdateChallengeError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateChallenge")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

@@ -54,6 +54,41 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 	return v, nil
 }
 
+// BuildUpdateChallengePayload builds the payload for the admin UpdateChallenge
+// endpoint from CLI flags.
+func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateChallengeChallengeID string, adminUpdateChallengeToken string) (*admin.UpdateChallengePayload, error) {
+	var err error
+	var body UpdateChallengeRequestBody
+	{
+		err = json.Unmarshal([]byte(adminUpdateChallengeBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"A heap overflow challenge\",\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+		}
+	}
+	var challengeID string
+	{
+		challengeID = adminUpdateChallengeChallengeID
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminUpdateChallengeToken
+	}
+	v := &admin.UpdateChallengePayload{
+		Slug:        body.Slug,
+		Title:       body.Title,
+		Description: body.Description,
+		Score:       body.Score,
+	}
+	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildPresignChallFileUploadPayload builds the payload for the admin
 // PresignChallFileUpload endpoint from CLI flags.
 func BuildPresignChallFileUploadPayload(adminPresignChallFileUploadBody string, adminPresignChallFileUploadChallengeID string, adminPresignChallFileUploadToken string) (*admin.PresignChallFileUploadPayload, error) {

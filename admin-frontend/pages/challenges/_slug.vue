@@ -45,7 +45,7 @@
       <div>
         <h5 class="border-top">Flags</h5>
 
-        <table class="table">
+        <table v-if="chall.flags?.length" class="table">
           <thead>
             <tr>
               <th>Flag</th>
@@ -64,36 +64,23 @@
           </tbody>
         </table>
 
-        <div>
-          <h1>Add flag</h1>
-          <input class="form-control" type="text" v-model="newFlag">
-          <p
-            class="btn btn-primary"
-            @click="addFlag"
-          >
-            Add
-          </p>
-        </div>
+        <div class="pb-4">
+          <div class="row">
+            <div class="col">
+              <input class="form-control" placeholder="SSM{..." type="text" v-model="newFlag">
 
-
-        <h1>Upload file</h1>
-        <div class="form-group">
-          <input
-            ref="file"
-            class="form-control-file"
-            type="file"
-            @change="checkFile"
-          />
+            </div>
+            <div class="col">
+              <button
+              class="btn btn-primary"
+              @click="addFlag"
+              >
+              Add
+            </button>
+</div>
+              
+          </div>
         </div>
-        <p
-          class="btn btn-primary"
-          v-bind:class="{
-            disabled: !hasFile,
-          }"
-          @click="uploadFile"
-        >
-          Upload
-        </p>
 
       </div>
 
@@ -214,7 +201,11 @@ export default Vue.extend({
       // @ts-ignore
       this.hasFile = this.$refs.file?.files.length !== 0;
     },
-    updateChall() {},
+    async updateChall() {
+        await this.$axios.put(`/admin/challenges/${this.chall.id}`, this.form);
+        this.$store.dispatch("challenges/fetchChallenges");
+        this.$router.replace(`/challenges/${this.form.slug}`)
+    },
     fileSize(size: number): String {
       if (size === 0) {
         return "0 Bytes";

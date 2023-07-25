@@ -26,6 +26,19 @@ type CreateChallengeRequestBody struct {
 	Score int32 `form:"score" json:"score" xml:"score"`
 }
 
+// UpdateChallengeRequestBody is the type of the "admin" service
+// "UpdateChallenge" endpoint HTTP request body.
+type UpdateChallengeRequestBody struct {
+	// A unique string that can be used in URLs
+	Slug string `form:"slug" json:"slug" xml:"slug"`
+	// Title displayed to user
+	Title string `form:"title" json:"title" xml:"title"`
+	// A short text describing the challenge
+	Description string `form:"description" json:"description" xml:"description"`
+	// The number of points given to the solver
+	Score int32 `form:"score" json:"score" xml:"score"`
+}
+
 // PresignChallFileUploadRequestBody is the type of the "admin" service
 // "PresignChallFileUpload" endpoint HTTP request body.
 type PresignChallFileUploadRequestBody struct {
@@ -172,6 +185,60 @@ type CreateChallengeNotFoundResponseBody struct {
 // CreateChallengeBadRequestResponseBody is the type of the "admin" service
 // "CreateChallenge" endpoint HTTP response body for the "bad_request" error.
 type CreateChallengeBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateChallengeUnauthorizedResponseBody is the type of the "admin" service
+// "UpdateChallenge" endpoint HTTP response body for the "unauthorized" error.
+type UpdateChallengeUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateChallengeNotFoundResponseBody is the type of the "admin" service
+// "UpdateChallenge" endpoint HTTP response body for the "not_found" error.
+type UpdateChallengeNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateChallengeBadRequestResponseBody is the type of the "admin" service
+// "UpdateChallenge" endpoint HTTP response body for the "bad_request" error.
+type UpdateChallengeBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -710,6 +777,18 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 	return body
 }
 
+// NewUpdateChallengeRequestBody builds the HTTP request body from the payload
+// of the "UpdateChallenge" endpoint of the "admin" service.
+func NewUpdateChallengeRequestBody(p *admin.UpdateChallengePayload) *UpdateChallengeRequestBody {
+	body := &UpdateChallengeRequestBody{
+		Slug:        p.Slug,
+		Title:       p.Title,
+		Description: p.Description,
+		Score:       p.Score,
+	}
+	return body
+}
+
 // NewPresignChallFileUploadRequestBody builds the HTTP request body from the
 // payload of the "PresignChallFileUpload" endpoint of the "admin" service.
 func NewPresignChallFileUploadRequestBody(p *admin.PresignChallFileUploadPayload) *PresignChallFileUploadRequestBody {
@@ -834,6 +913,51 @@ func NewCreateChallengeNotFound(body *CreateChallengeNotFoundResponseBody) *goa.
 // NewCreateChallengeBadRequest builds a admin service CreateChallenge endpoint
 // bad_request error.
 func NewCreateChallengeBadRequest(body *CreateChallengeBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateChallengeUnauthorized builds a admin service UpdateChallenge
+// endpoint unauthorized error.
+func NewUpdateChallengeUnauthorized(body *UpdateChallengeUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateChallengeNotFound builds a admin service UpdateChallenge endpoint
+// not_found error.
+func NewUpdateChallengeNotFound(body *UpdateChallengeNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateChallengeBadRequest builds a admin service UpdateChallenge endpoint
+// bad_request error.
+func NewUpdateChallengeBadRequest(body *UpdateChallengeBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -1369,6 +1493,78 @@ func ValidateCreateChallengeNotFoundResponseBody(body *CreateChallengeNotFoundRe
 // ValidateCreateChallengeBadRequestResponseBody runs the validations defined
 // on CreateChallenge_bad_request_Response_Body
 func ValidateCreateChallengeBadRequestResponseBody(body *CreateChallengeBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateChallengeUnauthorizedResponseBody runs the validations defined
+// on UpdateChallenge_unauthorized_Response_Body
+func ValidateUpdateChallengeUnauthorizedResponseBody(body *UpdateChallengeUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateChallengeNotFoundResponseBody runs the validations defined on
+// UpdateChallenge_not_found_Response_Body
+func ValidateUpdateChallengeNotFoundResponseBody(body *UpdateChallengeNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateChallengeBadRequestResponseBody runs the validations defined
+// on UpdateChallenge_bad_request_Response_Body
+func ValidateUpdateChallengeBadRequestResponseBody(body *UpdateChallengeBadRequestResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}

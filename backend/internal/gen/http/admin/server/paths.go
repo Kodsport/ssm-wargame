@@ -21,6 +21,11 @@ func CreateChallengeAdminPath() string {
 	return "/admin/challenges"
 }
 
+// UpdateChallengeAdminPath returns the URL path to the admin service UpdateChallenge HTTP endpoint.
+func UpdateChallengeAdminPath(challengeID string) string {
+	return fmt.Sprintf("/admin/challenges/%v", challengeID)
+}
+
 // PresignChallFileUploadAdminPath returns the URL path to the admin service PresignChallFileUpload HTTP endpoint.
 func PresignChallFileUploadAdminPath(challengeID string) string {
 	return fmt.Sprintf("/admin/challenges/%v/file_url", challengeID)

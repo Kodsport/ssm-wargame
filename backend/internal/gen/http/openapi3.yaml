@@ -154,6 +154,57 @@ paths:
                                 $ref: '#/components/schemas/Error'
             security:
                 - jwt_header_Authorization: []
+    /admin/challenges/{challengeID}:
+        put:
+            tags:
+                - admin
+            summary: UpdateChallenge admin
+            operationId: admin#UpdateChallenge
+            parameters:
+                - name: challengeID
+                  in: path
+                  description: ID of a challenge
+                  required: true
+                  schema:
+                    type: string
+                    description: ID of a challenge
+                    example: 195229b0-b15f-4ee5-9a99-94bfff492967
+                    format: uuid
+                  example: 195229b0-b15f-4ee5-9a99-94bfff492967
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateChallengeRequestBody'
+                        example:
+                            description: A heap overflow challenge
+                            score: 50
+                            slug: pwnme
+                            title: pwnme
+            responses:
+                "201":
+                    description: Created response.
+                "400":
+                    description: 'bad_request: Resource not found'
+                    content:
+                        application/vnd.goa.error:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                "403":
+                    description: 'unauthorized: When the user does not have the required role'
+                    content:
+                        application/vnd.goa.error:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                "404":
+                    description: 'not_found: Resource not found'
+                    content:
+                        application/vnd.goa.error:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+            security:
+                - jwt_header_Authorization: []
     /admin/challenges/{challengeID}/file_url:
         post:
             tags:
@@ -398,13 +449,6 @@ paths:
                                   slug: pwnme
                                   start_date: "2006-02-01"
                                   title: pwnme
-                                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                                  description: A heap overflow challenge
-                                  display_month: Januari/Februari
-                                  end_date: "2006-02-01"
-                                  slug: pwnme
-                                  start_date: "2006-02-01"
-                                  title: pwnme
                 "400":
                     description: 'bad_request: Resource not found'
                     content:
@@ -539,6 +583,11 @@ paths:
                                       last_name: Sunar
                                       role: admin
                             example:
+                                - email: movitz.sunar@ssm.example
+                                  first_name: Movitz
+                                  id: uuid todo
+                                  last_name: Sunar
+                                  role: admin
                                 - email: movitz.sunar@ssm.example
                                   first_name: Movitz
                                   id: uuid todo
@@ -761,21 +810,14 @@ paths:
                                       slug: pwnme
                                       start_date: "2006-02-01"
                                       title: pwnme
-                                    - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                                      description: A heap overflow challenge
-                                      display_month: Januari/Februari
-                                      end_date: "2006-02-01"
-                                      slug: pwnme
-                                      start_date: "2006-02-01"
-                                      title: pwnme
-                                    - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                                      description: A heap overflow challenge
-                                      display_month: Januari/Februari
-                                      end_date: "2006-02-01"
-                                      slug: pwnme
-                                      start_date: "2006-02-01"
-                                      title: pwnme
                             example:
+                                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                                  description: A heap overflow challenge
+                                  display_month: Januari/Februari
+                                  end_date: "2006-02-01"
+                                  slug: pwnme
+                                  start_date: "2006-02-01"
+                                  title: pwnme
                                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                                   description: A heap overflow challenge
                                   display_month: Januari/Februari
@@ -918,7 +960,7 @@ components:
                 fault:
                     type: boolean
                     description: Is the error a server-side fault?
-                    example: true
+                    example: false
                 id:
                     type: string
                     description: ID is a unique identifier for this particular occurrence of the problem.
@@ -938,13 +980,13 @@ components:
                 timeout:
                     type: boolean
                     description: Is the error a timeout?
-                    example: true
+                    example: false
             example:
                 fault: false
                 id: 123abc
                 message: parameter 'p' must be an integer
                 name: bad_request
-                temporary: false
+                temporary: true
                 timeout: true
             required:
                 - name
@@ -1090,11 +1132,20 @@ components:
                           md5: cq02dBbcuugBHM1oKyvMlQ==
                           size: 87123
                           url: https://s3/bucket/key?signature
+                        - bucket: ssm-prod-bucket
+                          filename: decryptor.exe
+                          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                          key: file.exe
+                          md5: cq02dBbcuugBHM1oKyvMlQ==
+                          size: 87123
+                          url: https://s3/bucket/key?signature
                 flags:
                     type: array
                     items:
                         $ref: '#/components/schemas/AdminChallengeFlag'
                     example:
+                        - flag: SSM{yo}
+                          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                         - flag: SSM{yo}
                           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                         - flag: SSM{yo}
@@ -1136,13 +1187,6 @@ components:
             example:
                 description: A heap overflow challenge
                 files:
-                    - bucket: ssm-prod-bucket
-                      filename: decryptor.exe
-                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                      key: file.exe
-                      md5: cq02dBbcuugBHM1oKyvMlQ==
-                      size: 87123
-                      url: https://s3/bucket/key?signature
                     - bucket: ssm-prod-bucket
                       filename: decryptor.exe
                       id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -1265,6 +1309,80 @@ components:
                   slug: pwnme
                   solves: 3
                   title: pwnme
+                - description: A heap overflow challenge
+                  files:
+                    - bucket: ssm-prod-bucket
+                      filename: decryptor.exe
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                      key: file.exe
+                      md5: cq02dBbcuugBHM1oKyvMlQ==
+                      size: 87123
+                      url: https://s3/bucket/key?signature
+                    - bucket: ssm-prod-bucket
+                      filename: decryptor.exe
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                      key: file.exe
+                      md5: cq02dBbcuugBHM1oKyvMlQ==
+                      size: 87123
+                      url: https://s3/bucket/key?signature
+                    - bucket: ssm-prod-bucket
+                      filename: decryptor.exe
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                      key: file.exe
+                      md5: cq02dBbcuugBHM1oKyvMlQ==
+                      size: 87123
+                      url: https://s3/bucket/key?signature
+                  flags:
+                    - flag: SSM{yo}
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                    - flag: SSM{yo}
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  id: e721a338-44de-4de8-a562-43d2db5f4115
+                  published: true
+                  score: 50
+                  services:
+                    - {}
+                    - {}
+                  slug: pwnme
+                  solves: 3
+                  title: pwnme
+                - description: A heap overflow challenge
+                  files:
+                    - bucket: ssm-prod-bucket
+                      filename: decryptor.exe
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                      key: file.exe
+                      md5: cq02dBbcuugBHM1oKyvMlQ==
+                      size: 87123
+                      url: https://s3/bucket/key?signature
+                    - bucket: ssm-prod-bucket
+                      filename: decryptor.exe
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                      key: file.exe
+                      md5: cq02dBbcuugBHM1oKyvMlQ==
+                      size: 87123
+                      url: https://s3/bucket/key?signature
+                    - bucket: ssm-prod-bucket
+                      filename: decryptor.exe
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                      key: file.exe
+                      md5: cq02dBbcuugBHM1oKyvMlQ==
+                      size: 87123
+                      url: https://s3/bucket/key?signature
+                  flags:
+                    - flag: SSM{yo}
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                    - flag: SSM{yo}
+                      id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  id: e721a338-44de-4de8-a562-43d2db5f4115
+                  published: true
+                  score: 50
+                  services:
+                    - {}
+                    - {}
+                  slug: pwnme
+                  solves: 3
+                  title: pwnme
         SsmChallenge:
             type: object
             properties:
@@ -1304,6 +1422,7 @@ components:
                         - {}
                         - {}
                         - {}
+                        - {}
                 slug:
                     type: string
                     description: A unique string that can be used in URLs
@@ -1325,10 +1444,15 @@ components:
                       url: https://s3/bucket/key?signature
                     - filename: decryptor.exe
                       url: https://s3/bucket/key?signature
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 published: true
                 score: 50
                 services:
+                    - {}
                     - {}
                     - {}
                 slug: pwnme
@@ -1347,6 +1471,46 @@ components:
             items:
                 $ref: '#/components/schemas/SsmChallenge'
             example:
+                - description: A heap overflow challenge
+                  files:
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                  id: e721a338-44de-4de8-a562-43d2db5f4115
+                  published: true
+                  score: 50
+                  services:
+                    - {}
+                    - {}
+                    - {}
+                  slug: pwnme
+                  solves: 3
+                  title: pwnme
+                - description: A heap overflow challenge
+                  files:
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                    - filename: decryptor.exe
+                      url: https://s3/bucket/key?signature
+                  id: e721a338-44de-4de8-a562-43d2db5f4115
+                  published: true
+                  score: 50
+                  services:
+                    - {}
+                    - {}
+                    - {}
+                  slug: pwnme
+                  solves: 3
+                  title: pwnme
                 - description: A heap overflow challenge
                   files:
                     - filename: decryptor.exe

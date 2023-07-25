@@ -21,6 +21,8 @@ type Service interface {
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmAdminChallengeCollection, err error)
 	// CreateChallenge implements CreateChallenge.
 	CreateChallenge(context.Context, *CreateChallengePayload) (err error)
+	// UpdateChallenge implements UpdateChallenge.
+	UpdateChallenge(context.Context, *UpdateChallengePayload) (err error)
 	// PresignChallFileUpload implements PresignChallFileUpload.
 	PresignChallFileUpload(context.Context, *PresignChallFileUploadPayload) (res *PresignChallFileUploadResult, err error)
 	// ListMonthlyChallenges implements ListMonthlyChallenges.
@@ -53,7 +55,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [10]string{"ListChallenges", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag"}
+var MethodNames = [11]string{"ListChallenges", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag"}
 
 // AddFlagPayload is the payload type of the admin service AddFlag method.
 type AddFlagPayload struct {
@@ -220,6 +222,22 @@ type SsmUser struct {
 	FirstName string
 	LastName  string
 	Role      string
+}
+
+// UpdateChallengePayload is the payload type of the admin service
+// UpdateChallenge method.
+type UpdateChallengePayload struct {
+	// A unique string that can be used in URLs
+	Slug string
+	// Title displayed to user
+	Title string
+	// A short text describing the challenge
+	Description string
+	// The number of points given to the solver
+	Score int32
+	Token string
+	// ID of a challenge
+	ChallengeID string
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.

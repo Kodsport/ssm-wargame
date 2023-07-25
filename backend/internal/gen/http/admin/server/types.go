@@ -26,6 +26,19 @@ type CreateChallengeRequestBody struct {
 	Score *int32 `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
 }
 
+// UpdateChallengeRequestBody is the type of the "admin" service
+// "UpdateChallenge" endpoint HTTP request body.
+type UpdateChallengeRequestBody struct {
+	// A unique string that can be used in URLs
+	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Title displayed to user
+	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// A short text describing the challenge
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	// The number of points given to the solver
+	Score *int32 `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+}
+
 // PresignChallFileUploadRequestBody is the type of the "admin" service
 // "PresignChallFileUpload" endpoint HTTP request body.
 type PresignChallFileUploadRequestBody struct {
@@ -172,6 +185,60 @@ type CreateChallengeNotFoundResponseBody struct {
 // CreateChallengeBadRequestResponseBody is the type of the "admin" service
 // "CreateChallenge" endpoint HTTP response body for the "bad_request" error.
 type CreateChallengeBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// UpdateChallengeUnauthorizedResponseBody is the type of the "admin" service
+// "UpdateChallenge" endpoint HTTP response body for the "unauthorized" error.
+type UpdateChallengeUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// UpdateChallengeNotFoundResponseBody is the type of the "admin" service
+// "UpdateChallenge" endpoint HTTP response body for the "not_found" error.
+type UpdateChallengeNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// UpdateChallengeBadRequestResponseBody is the type of the "admin" service
+// "UpdateChallenge" endpoint HTTP response body for the "bad_request" error.
+type UpdateChallengeBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -821,6 +888,48 @@ func NewCreateChallengeBadRequestResponseBody(res *goa.ServiceError) *CreateChal
 	return body
 }
 
+// NewUpdateChallengeUnauthorizedResponseBody builds the HTTP response body
+// from the result of the "UpdateChallenge" endpoint of the "admin" service.
+func NewUpdateChallengeUnauthorizedResponseBody(res *goa.ServiceError) *UpdateChallengeUnauthorizedResponseBody {
+	body := &UpdateChallengeUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewUpdateChallengeNotFoundResponseBody builds the HTTP response body from
+// the result of the "UpdateChallenge" endpoint of the "admin" service.
+func NewUpdateChallengeNotFoundResponseBody(res *goa.ServiceError) *UpdateChallengeNotFoundResponseBody {
+	body := &UpdateChallengeNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewUpdateChallengeBadRequestResponseBody builds the HTTP response body from
+// the result of the "UpdateChallenge" endpoint of the "admin" service.
+func NewUpdateChallengeBadRequestResponseBody(res *goa.ServiceError) *UpdateChallengeBadRequestResponseBody {
+	body := &UpdateChallengeBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewPresignChallFileUploadUnauthorizedResponseBody builds the HTTP response
 // body from the result of the "PresignChallFileUpload" endpoint of the "admin"
 // service.
@@ -1192,6 +1301,21 @@ func NewCreateChallengePayload(body *CreateChallengeRequestBody, token string) *
 	return v
 }
 
+// NewUpdateChallengePayload builds a admin service UpdateChallenge endpoint
+// payload.
+func NewUpdateChallengePayload(body *UpdateChallengeRequestBody, challengeID string, token string) *admin.UpdateChallengePayload {
+	v := &admin.UpdateChallengePayload{
+		Slug:        *body.Slug,
+		Title:       *body.Title,
+		Description: *body.Description,
+		Score:       *body.Score,
+	}
+	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v
+}
+
 // NewPresignChallFileUploadPayload builds a admin service
 // PresignChallFileUpload endpoint payload.
 func NewPresignChallFileUploadPayload(body *PresignChallFileUploadRequestBody, challengeID string, token string) *admin.PresignChallFileUploadPayload {
@@ -1283,6 +1407,24 @@ func NewDeleteFlagPayload(challengeID string, flagID string, token string) *admi
 // ValidateCreateChallengeRequestBody runs the validations defined on
 // CreateChallengeRequestBody
 func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err error) {
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	return
+}
+
+// ValidateUpdateChallengeRequestBody runs the validations defined on
+// UpdateChallengeRequestBody
+func ValidateUpdateChallengeRequestBody(body *UpdateChallengeRequestBody) (err error) {
 	if body.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
 	}

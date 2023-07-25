@@ -107,6 +107,26 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 	return nil
 }
 
+func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallengePayload) error {
+
+	n, err := models.Challenges(
+		models.ChallengeWhere.ID.EQ(req.ChallengeID),
+	).UpdateAll(ctx, s.db, models.M{
+		models.ChallengeColumns.Title:       req.Title,
+		models.ChallengeColumns.Score:       req.Score,
+		models.ChallengeColumns.Slug:        req.Slug,
+		models.ChallengeColumns.Description: req.Description,
+	})
+	if err != nil {
+		s.log.Error("could not update chall", zap.Error(err))
+		return err
+	}
+	if n == 0 {
+		return spec.MakeNotFound(errors.New("chall not found"))
+	}
+	return nil
+}
+
 func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignChallFileUploadPayload) (*spec.PresignChallFileUploadResult, error) {
 	log := s.log.With(zap.String("challengeID", req.ChallengeID), utils.C(ctx))
 
