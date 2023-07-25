@@ -5,37 +5,19 @@
       <form @submit.prevent>
         <div class="form-group">
           <label>Title</label>
-          <input
-            class="form-control"
-            placeholder="Enter title"
-            v-model="form.title"
-          />
+          <input class="form-control" placeholder="Enter title" v-model="form.title" />
         </div>
         <div class="form-group">
           <label>Slug (shown in url)</label>
-          <input
-            class="form-control"
-            type="text"
-            placeholder="Enter slug"
-            v-model="form.slug"
-          />
+          <input class="form-control" type="text" placeholder="Enter slug" v-model="form.slug" />
         </div>
         <div class="form-group">
           <label>Score</label>
-          <input
-            class="form-control"
-            type="number"
-            placeholder="Enter score"
-            v-model.number="form.score"
-          />
+          <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.score" />
         </div>
         <div class="form-group">
           <label>Description</label>
-          <textarea
-            class="form-control"
-            placeholder="Enter description"
-            v-bind="form.description"
-          />
+          <textarea class="form-control" placeholder="Enter description" v-bind="form.description" />
         </div>
         <div>
           <p class="btn btn-primary" @click="updateChall">Update</p>
@@ -71,14 +53,11 @@
 
             </div>
             <div class="col">
-              <button
-              class="btn btn-primary"
-              @click="addFlag"
-              >
-              Add
-            </button>
-</div>
-              
+              <button class="btn btn-primary" @click="addFlag">
+                Add
+              </button>
+            </div>
+
           </div>
         </div>
 
@@ -115,20 +94,11 @@
 
       <h1>Upload file</h1>
       <div class="form-group">
-        <input
-          ref="file"
-          class="form-control-file"
-          type="file"
-          @change="checkFile"
-        />
+        <input ref="file" class="form-control-file" type="file" @change="checkFile" />
       </div>
-      <p
-        class="btn btn-primary"
-        v-bind:class="{
-          disabled: !hasFile,
-        }"
-        @click="uploadFile"
-      >
+      <p class="btn btn-primary" v-bind:class="{
+        disabled: !hasFile,
+      }" @click="uploadFile">
         Upload
       </p>
     </div>
@@ -202,9 +172,9 @@ export default Vue.extend({
       this.hasFile = this.$refs.file?.files.length !== 0;
     },
     async updateChall() {
-        await this.$axios.put(`/admin/challenges/${this.chall.id}`, this.form);
-        this.$store.dispatch("challenges/fetchChallenges");
-        this.$router.replace(`/challenges/${this.form.slug}`)
+      await this.$axios.put(`/admin/challenges/${this.chall.id}`, this.form);
+      this.$store.dispatch("challenges/fetchChallenges");
+      this.$router.replace(`/challenges/${this.form.slug}`)
     },
     fileSize(size: number): String {
       if (size === 0) {
