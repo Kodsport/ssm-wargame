@@ -3,11 +3,11 @@ package auth
 import (
 	"context"
 
-	"github.com/sakerhetsm/ssm-wargame/internal/db"
+	"github.com/sakerhetsm/ssm-wargame/internal/models"
 )
 
 func HasRole(ctx context.Context, roles ...string) bool {
-	user := ctx.Value(UserKey).(*db.User)
+	user := ctx.Value(UserKey).(*models.User)
 
 	for _, role := range roles {
 		if role == user.Role {
@@ -17,11 +17,11 @@ func HasRole(ctx context.Context, roles ...string) bool {
 	return false
 }
 
-func GetUser(ctx context.Context) *db.User {
-	return ctx.Value(UserKey).(*db.User)
+func GetUser(ctx context.Context) *models.User {
+	return ctx.Value(UserKey).(*models.User)
 }
 
 func IsAuthed(ctx context.Context) bool {
-	_, ok := ctx.Value(UserKey).(*db.User)
+	_, ok := ctx.Value(UserKey).(*models.User)
 	return ok
 }

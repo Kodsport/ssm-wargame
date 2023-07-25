@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,10 +10,11 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 	"go.uber.org/zap"
+
+	_ "github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql/driver"
 
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
@@ -50,11 +51,10 @@ func realMain() error {
 	}
 
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s", cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Port, cfg.DB.DBName, cfg.DB.SSLMode)
-	pool, err := pgxpool.Connect(context.Background(), connStr)
+	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		return err
 	}
-	defer pool.Close()
 
 	log, err := zap.NewDevelopment()
 	if err != nil {
@@ -64,7 +64,7 @@ func realMain() error {
 
 	mux := goahttp.NewMuxer()
 
-	auther := auth.New(cfg, log, pool)
+	auther := auth.New(cfg, log, db)
 
 	sess, err := session.NewSession(&aws.Config{
 		Region:           aws.String("auto"),
@@ -79,21 +79,21 @@ func realMain() error {
 	s3c := s3.New(sess)
 
 	{
-		svc := challenge_service.NewService(pool, log, auther, s3c)
+		svc := challenge_service.NewService(db, log, auther, s3c)
 		endpoints := challenge_transport.NewEndpoints(svc)
 		s := challenge_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
 		challenge_server.Mount(mux, s)
 	}
 	{
-		svc := auth_service.NewService(pool, log, cfg)
+		svc := auth_service.NewService(db, log, cfg)
 		endpoints := auth_transport.NewEndpoints(svc)
 		s := auth_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
 		auth_server.Mount(mux, s)
 	}
 	{
-		svc := admin_service.NewService(pool, log, auther, s3c, cfg)
+		svc := admin_service.NewService(db, log, auther, s3c, cfg)
 		endpoints := admin_transport.NewEndpoints(svc)
 		s := admin_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
@@ -105,7 +105,7 @@ func realMain() error {
 	handler = cors.AllowAll().Handler(handler)
 
 	srv := &http.Server{
-		Addr:    "localhost:8080",
+		Addr:    "localhost:8000",
 		Handler: handler,
 	}
 

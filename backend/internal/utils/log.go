@@ -2,7 +2,7 @@ package utils
 
 import (
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
-	"github.com/sakerhetsm/ssm-wargame/internal/db"
+	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"goa.design/goa/v3/middleware"
@@ -21,9 +21,9 @@ type valuerI struct {
 }
 
 func (v valuerI) MarshalLogObject(enc zapcore.ObjectEncoder) error {
-	user, ok := v.Value(auth.UserKey).(*db.User)
+	user, ok := v.Value(auth.UserKey).(*models.User)
 	if ok {
-		enc.AddString("userID", user.ID.String())
+		enc.AddString("userID", user.ID)
 		enc.AddString("role", user.Role)
 	}
 

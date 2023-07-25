@@ -5,11 +5,11 @@ import (
 	"errors"
 	"time"
 
-	"github.com/google/uuid"
-	"github.com/jackc/pgx/v4"
-	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
+	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
 )
 
@@ -24,12 +24,13 @@ func (s *service) CreateMonthlyChallenge(ctx context.Context, req *spec.CreateMo
 		return err
 	}
 
-	err = db.New(s.db).InsertMonthlyChallenge(ctx, db.InsertMonthlyChallengeParams{
-		ChallengeID:  uuid.MustParse(req.ChallengeID),
+	mc := models.MonthlyChallenge{
+		ChallengeID:  req.ChallengeID,
 		StartDate:    startDate,
 		EndDate:      endDate,
 		DisplayMonth: req.DisplayMonth,
-	})
+	}
+	err = mc.Insert(ctx, s.db, boil.Infer())
 
 	if err != nil {
 		s.log.Warn("could not insert monthly challs", zap.Error(err), utils.C(ctx))
@@ -40,7 +41,9 @@ func (s *service) CreateMonthlyChallenge(ctx context.Context, req *spec.CreateMo
 }
 
 func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) ([]*spec.MonthlyChallenge, error) {
-	challs, err := db.New(s.db).ListMonthlyChallenges(ctx)
+	challs, err := models.MonthlyChallenges(
+		qm.Load(models.MonthlyChallengeRels.Challenge),
+	).All(ctx, s.db)
 	if err != nil {
 		s.log.Warn("could not list monthly challs", zap.Error(err), utils.C(ctx))
 		return nil, err
@@ -53,10 +56,10 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 			DisplayMonth: chall.DisplayMonth,
 			StartDate:    chall.StartDate.Format("2006-01-02"),
 			EndDate:      chall.EndDate.Format("2006-01-02"),
-			Slug:         chall.Slug,
-			Title:        chall.Title,
-			Description:  chall.Description,
-			ChallengeID:  chall.ChallengeID.String(),
+			Slug:         chall.R.Challenge.Slug,
+			Title:        chall.R.Challenge.Title,
+			Description:  chall.R.Challenge.Description,
+			ChallengeID:  chall.ChallengeID,
 		}
 	}
 
@@ -64,13 +67,16 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 }
 
 func (s *service) DeleteMonthlyChallenge(ctx context.Context, req *spec.DeleteMonthlyChallengePayload) error {
-	err := db.New(s.db).DeleteMonthlyChallenge(ctx, uuid.MustParse(req.ChallengeID))
-	if err == pgx.ErrNoRows {
-		return spec.MakeNotFound(errors.New("monthly challenge not found"))
-	}
+	n, err := models.MonthlyChallenges(
+		models.MonthlyChallengeWhere.ChallengeID.EQ(req.ChallengeID),
+	).DeleteAll(ctx, s.db)
+
 	if err != nil {
 		s.log.Warn("could not delete monthly chall", zap.Error(err), utils.C(ctx))
 		return err
+	}
+	if n == 0 {
+		return spec.MakeNotFound(errors.New("monthly challenge not found"))
 	}
 
 	return nil

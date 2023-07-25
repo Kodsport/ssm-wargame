@@ -2,9 +2,9 @@ package admin
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
 	"go.uber.org/zap"
@@ -16,13 +16,13 @@ import (
 
 type service struct {
 	auther spec.Auther
-	db     *pgxpool.Pool
+	db     *sql.DB
 	log    *zap.Logger
 	s3     *s3.S3
 	cfg    *config.Config
 }
 
-func NewService(conn *pgxpool.Pool, log *zap.Logger, auther spec.Auther, s3c *s3.S3, cfg *config.Config) spec.Service {
+func NewService(conn *sql.DB, log *zap.Logger, auther spec.Auther, s3c *s3.S3, cfg *config.Config) spec.Service {
 	return &service{
 		auther: auther,
 		db:     conn,

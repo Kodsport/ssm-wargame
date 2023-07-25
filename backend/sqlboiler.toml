@@ -1,0 +1,13 @@
+output   = "internal/models"
+wipe     = true
+no-tests = true
+
+[psql]
+dbname = "ssm_wargame"
+host   = "localhost"
+port   = 5432
+user   = "postgres"
+pass   = ""
+schema = "public"
+blacklist = ["migrations", "other"]
+sslmode = "disable"

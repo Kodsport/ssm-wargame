@@ -2,6 +2,7 @@ package admin
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"time"
 
@@ -10,23 +11,30 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/sakerhetsm/ssm-wargame/internal/db"
+	"github.com/sakerhetsm/ssm-wargame/internal/custommodels"
+	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
+	"github.com/volatiletech/null/v8"
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
 
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
 )
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmAdminChallengeCollection, error) {
-	challs, err := db.New(s.db).ListChallengesWithSolves(ctx, true)
+
+	challs := make([]*custommodels.ChallWithSovles, 0)
+	err := models.NewQuery(
+		qm.Select("c.*, COUNT(us.user_id) num_solves"),
+		qm.From("challenges c"),
+		qm.LeftOuterJoin("user_solves us ON us.challenge_id = c.id"),
+		qm.GroupBy("c.id"),
+		qm.Load(models.ChallengeRels.Flags),
+		qm.Load(models.ChallengeRels.ChallengeFiles),
+	).Bind(ctx, s.db, &challs)
 	if err != nil {
 		s.log.Warn("could not list challs", zap.Error(err), utils.C(ctx))
-		return nil, err
-	}
-
-	files, err := db.New(s.db).Files(ctx)
-	if err != nil {
-		s.log.Warn("could not list files", zap.Error(err), utils.C(ctx))
 		return nil, err
 	}
 
@@ -34,25 +42,17 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 	for i, chall := range challs {
 		res[i] = &spec.SsmAdminChallenge{
-			ID:          chall.ID.String(),
+			ID:          chall.ID,
 			Slug:        chall.Slug,
 			Title:       chall.Title,
 			Description: chall.Description,
-			Score:       chall.Score,
-			Solves:      chall.NumSolves,
+			Score:       int32(chall.Score),
+			Solves:      int64(chall.NumSolves),
 			Published:   chall.Published,
 		}
-	}
 
-	for _, file := range files {
-		for i, chall := range res {
-			if chall.ID != file.ChallengeID.UUID.String() {
-				continue
-			}
-
-			if res[i].Files == nil {
-				res[i].Files = make([]*spec.AdminChallengeFiles, 0, 1)
-			}
+		res[i].Files = make([]*spec.AdminChallengeFiles, len(chall.R.ChallengeFiles))
+		for i2, file := range chall.R.ChallengeFiles {
 
 			req, _ := s.s3.GetObjectRequest(&s3.GetObjectInput{
 				Bucket: &file.Bucket,
@@ -64,15 +64,15 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				s.log.Warn("could not sign url", zap.Error(err), utils.C(ctx))
 			}
 
-			res[i].Files = append(res[i].Files, &spec.AdminChallengeFiles{
-				ID:       file.ID.String(),
+			res[i].Files[i2] = &spec.AdminChallengeFiles{
+				ID:       file.ID,
 				Filename: file.FriendlyName,
 				Bucket:   file.Bucket,
 				URL:      url,
 				Key:      file.Key,
 				Size:     file.Size,
-				Md5:      file.Md5,
-			})
+				Md5:      file.MD5,
+			}
 		}
 	}
 
@@ -80,16 +80,17 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 }
 
 func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallengePayload) error {
-	q := db.New(s.db)
 
-	err := q.InsertChallenge(ctx, db.InsertChallengeParams{
-		ID:          uuid.New(),
+	chall := models.Challenge{
+		ID:          uuid.New().String(),
 		Title:       req.Title,
 		Slug:        req.Slug,
 		Description: req.Description,
-		Score:       req.Score,
+		Score:       int(req.Score),
 		Published:   false,
-	})
+	}
+
+	err := chall.Insert(ctx, s.db, boil.Infer())
 	if err != nil {
 		s.log.Error("inserting challenge", zap.Error(err), utils.C(ctx))
 		return err
@@ -101,9 +102,7 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignChallFileUploadPayload) (*spec.PresignChallFileUploadResult, error) {
 	log := s.log.With(zap.String("challengeID", req.ChallengeID), utils.C(ctx))
 
-	challID := uuid.MustParse(req.ChallengeID) // uuid format already validated
-
-	exists, err := db.New(s.db).ChallengeExists(ctx, challID)
+	exists, err := models.ChallengeExists(ctx, s.db, req.ChallengeID)
 	if err != nil {
 		log.Error("could not exec ChallengeExists")
 		return nil, err
@@ -132,15 +131,16 @@ func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignC
 
 	fileID := uuid.New()
 
-	err = db.New(s.db).InsertFile(ctx, db.InsertFileParams{
-		ID:          fileID,
-		ChallengeID: challID,
-		Fname:       req.Filename,
-		Bucket:      s.cfg.S3.Bucket,
-		Key:         objectKey,
-		Md5:         req.Md5,
-		Size:        req.Size,
-	})
+	file := models.ChallengeFile{
+		ID:           fileID.String(),
+		ChallengeID:  null.StringFrom(req.ChallengeID),
+		FriendlyName: req.Filename,
+		Bucket:       s.cfg.S3.Bucket,
+		Key:          objectKey,
+		MD5:          req.Md5,
+		Size:         req.Size,
+	}
+	err = file.Insert(ctx, s.db, boil.Infer())
 
 	if err != nil {
 		log.Error("could not insert file", zap.Error(err))
@@ -170,7 +170,9 @@ func (s *service) checkUploaded(ctx context.Context, fileID uuid.UUID, bucket, k
 	}, request.WithWaiterDelay(request.ConstantWaiterDelay(time.Second*5)), request.WithWaiterMaxAttempts(5))
 
 	if err == nil {
-		err = db.New(s.db).FileMarkUploaded(ctx, fileID)
+		_, err = models.ChallengeFiles(
+			models.ChallengeFileWhere.ID.EQ(fileID.String()),
+		).UpdateAll(ctx, s.db, models.M{models.ChallengeFileColumns.Uploaded: true})
 		if err != nil {
 			log.Error("could not mark file as uploaded", zap.Error(err))
 		}
@@ -180,7 +182,9 @@ func (s *service) checkUploaded(ctx context.Context, fileID uuid.UUID, bucket, k
 	if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "ResourceNotReady" {
 		log.Info("file was not uploaded", zap.String("fileID", fileID.String()))
 
-		err = db.New(s.db).DeleteFile(ctx, fileID)
+		_, err = models.ChallengeFiles(
+			models.ChallengeFileWhere.ID.EQ(fileID.String()),
+		).DeleteAll(ctx, s.db)
 		if err != nil {
 			log.Error("could not delete non-uploaded file", zap.Error(err))
 		}
@@ -196,15 +200,16 @@ func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) e
 	log := s.log.With(zap.String("fileID", req.FileID), utils.C(ctx))
 	log.Info("deleting file")
 
-	tx, err := s.db.BeginTx(ctx, pgx.TxOptions{})
+	tx, err := s.db.BeginTx(ctx, &sql.TxOptions{})
 	if err != nil {
 		log.Error("could not open tx", zap.Error(err))
 		return err
 	}
-	txQ := db.New(tx)
-	defer tx.Rollback(ctx) //nolint:errcheck
+	defer tx.Rollback() //nolint:errcheck
 
-	file, err := txQ.GetFile(ctx, fileID)
+	file, err := models.ChallengeFiles(
+		models.ChallengeFileWhere.ID.EQ(fileID.String()),
+	).One(ctx, tx)
 	if err == pgx.ErrNoRows {
 		return spec.MakeNotFound(errors.New("could not find file"))
 	}
@@ -213,13 +218,13 @@ func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) e
 		return err
 	}
 
-	err = txQ.DeleteFile(ctx, fileID)
+	_, err = file.Delete(ctx, tx)
 	if err != nil {
 		log.Error("could not delete file", zap.Error(err))
 		return err
 	}
 
-	err = tx.Commit(ctx)
+	err = tx.Commit()
 	if err != nil {
 		log.Error("could not commit file deletion", zap.Error(err))
 		return err

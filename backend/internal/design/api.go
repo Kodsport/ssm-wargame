@@ -70,7 +70,7 @@ var ChallengeFiles = Type("ChallengeFiles", func() {
 	Required("filename", "url")
 })
 
-var AdminChallengeFiles = Type("AdminChallengeFiles", func() {
+var AdminChallengeFile = Type("AdminChallengeFiles", func() {
 	Attribute("id", String, func() {
 		Example("71333e34-4c6b-483e-b3c7-c77d73008cca")
 	})
@@ -94,6 +94,17 @@ var AdminChallengeFiles = Type("AdminChallengeFiles", func() {
 	})
 
 	Required("id", "filename", "url", "key", "bucket", "size", "md5")
+})
+
+var AdminChallengeFlag = Type("AdminChallengeFlag", func() {
+	Attribute("id", String, func() {
+		Example("71333e34-4c6b-483e-b3c7-c77d73008cca")
+	})
+	Attribute("flag", String, func() {
+		Example("SSM{yo}")
+	})
+
+	Required("id", "flag")
 })
 
 var MonthlyChallenge = Type("MonthlyChallenge", func() {
@@ -138,7 +149,8 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("published")
 	Attribute("solves")
 
-	Attribute("files", ArrayOf(AdminChallengeFiles))
+	Attribute("files", ArrayOf(AdminChallengeFile))
+	Attribute("flags", ArrayOf(AdminChallengeFlag))
 
 	Required("files")
 })

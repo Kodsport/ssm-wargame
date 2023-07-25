@@ -2,17 +2,20 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
-	"github.com/sakerhetsm/ssm-wargame/internal/db"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/auth"
+	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
+	"github.com/volatiletech/null/v8"
+	"github.com/volatiletech/sqlboiler/v4/boil"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 
@@ -20,14 +23,13 @@ import (
 )
 
 type service struct {
-	db        *pgxpool.Pool
-	q         *db.Queries
+	db        *sql.DB
 	log       *zap.Logger
 	config    *oauth2.Config
 	jwtSecret []byte
 }
 
-func NewService(conn *pgxpool.Pool, log *zap.Logger, cfg *config.Config) spec.Service {
+func NewService(conn *sql.DB, log *zap.Logger, cfg *config.Config) spec.Service {
 	config := &oauth2.Config{
 		ClientID:     cfg.OAuth.Discord.ClientID,
 		ClientSecret: cfg.OAuth.Discord.ClientSecret,
@@ -41,7 +43,6 @@ func NewService(conn *pgxpool.Pool, log *zap.Logger, cfg *config.Config) spec.Se
 
 	return &service{
 		db:        conn,
-		q:         db.New(conn),
 		log:       log,
 		config:    config,
 		jwtSecret: []byte(cfg.JWTSecret),
@@ -77,19 +78,26 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscord
 	}
 
 	// Checks if the user already exists, insert them if not
-	userID, err := s.q.UserIDByDiscordID(ctx, dcUser.ID)
+	user, err := models.Users(
+		models.UserWhere.DiscordID.EQ(null.StringFrom(dcUser.ID)),
+		qm.Select(models.UserColumns.ID),
+	).One(ctx, s.db)
 	if err != nil && err != pgx.ErrNoRows {
 		s.log.Error("db err", zap.Error(err), zap.String("discordID", dcUser.ID), utils.C(ctx))
 		return nil, err
 	}
+	userID := user.ID
 
 	if err == pgx.ErrNoRows {
-		userID = uuid.New()
-		err = s.q.InsertUserDiscord(ctx, db.InsertUserDiscordParams{
+		userID = uuid.New().String()
+		user := models.User{
 			ID:        userID,
-			DiscordID: dcUser.ID,
+			DiscordID: null.StringFrom(dcUser.ID),
 			Email:     dcUser.Email,
-		})
+			Role:      "solver",
+		}
+		err = user.Insert(ctx, s.db, boil.Infer())
+
 		if err != nil {
 			s.log.Error("could not insert new user", zap.Error(err), zap.String("discordID", dcUser.ID), utils.C(ctx))
 			return nil, err
@@ -106,10 +114,10 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscord
 	}, nil
 }
 
-func (s *service) genJWT(userID uuid.UUID) (string, error) {
+func (s *service) genJWT(userID string) (string, error) {
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
 		// Id: uuid.NewString(), // don't store, but might be useful for log context
-		Subject:   userID.String(),
+		Subject:   userID,
 		ExpiresAt: time.Now().Add(time.Hour * 24 * 4).Unix(),
 		NotBefore: time.Now().Unix(),
 	})

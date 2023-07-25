@@ -2,14 +2,13 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
-	"github.com/sakerhetsm/ssm-wargame/internal/db"
+	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"go.uber.org/zap"
 	"goa.design/goa/v3/security"
 )
@@ -23,10 +22,10 @@ const (
 type Auther struct {
 	jwtSecret []byte
 	log       *zap.Logger
-	db        *pgxpool.Pool
+	db        *sql.DB
 }
 
-func New(cfg *config.Config, log *zap.Logger, db *pgxpool.Pool) *Auther {
+func New(cfg *config.Config, log *zap.Logger, db *sql.DB) *Auther {
 	return &Auther{
 		jwtSecret: []byte(cfg.JWTSecret),
 		log:       log.Named("auth-middleware"),
@@ -52,19 +51,19 @@ func (s *Auther) JWTAuth(ctx context.Context, token string, schema *security.JWT
 		return nil, errors.New("token invalid")
 	}
 
-	userID := uuid.MustParse(claims.Subject)
-
-	user, err := db.New(s.db).UserByID(ctx, userID)
+	user, err := models.Users(
+		models.UserWhere.ID.EQ(claims.Subject),
+	).One(ctx, s.db)
 	if err == pgx.ErrNoRows {
-		s.log.Warn("subject from valid jwt doesn't exist in DB, cross-env token usage or security issue?", zap.String("subject", userID.String()))
+		s.log.Warn("subject from valid jwt doesn't exist in DB, cross-env token usage or security issue?", zap.String("subject", user.ID))
 		return nil, errors.New("user not found")
 	}
 	if err != nil {
-		s.log.Warn("db err when getting user", zap.String("subject", userID.String()))
+		s.log.Warn("db err when getting user", zap.String("subject", claims.Subject))
 		return nil, err
 	}
 
-	ctx = context.WithValue(ctx, UserKey, &user)
+	ctx = context.WithValue(ctx, UserKey, user)
 
 	return ctx, nil
 }
