@@ -11,7 +11,7 @@
           </li>
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/challenges">
-              Challenge
+              Challenges
             </nuxt-link>
           </li>
           <li class="nav-item">
