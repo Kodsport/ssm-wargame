@@ -31,12 +31,14 @@
           <thead>
             <tr>
               <th>Flag</th>
+              <th>Solves</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="flag in chall.flags" :key="flag.id">
               <td>{{ flag.flag }}</td>
+              <td>TODO</td>
               <td>
                 <button class="btn btn-danger" @click="deleteFlag(flag.id)">
                   Delete
