@@ -3,7 +3,8 @@
     <div class="container-fluid">
       <nuxt-link class="navbar-brand" to="/admin">ssm?</nuxt-link>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ul v-if="auth.user.role == 'admin'" class="navbar-nav me-auto mb-2 mb-lg-0">
+
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/admin/users">
               Users
@@ -19,13 +20,11 @@
               Monthly
             </nuxt-link>
           </li>
-          <li>
-            <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">
-              Login
-            </a>
-            <a v-else class="btn btn-primary" @click="logout">Logout</a>
-          </li>
         </ul>
+        <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">
+          Login
+        </a>
+        <a v-else class="btn btn-primary" @click="logout">Logout</a>
       </div>
     </div>
   </nav>
@@ -37,14 +36,14 @@ const http = useHttp()
 const auth = useAuthStore()
 const router = useRouter()
 
-var isAuthenticated = computed(() => !!auth.token);
+var isAuthenticated = computed(() => auth.token != "");
 
 // temporary hacky solution...
 setInterval(() => {
 
   const jwtData = JSON.parse(atob(auth.token.split('.')[1]))
   if (jwtData * 1000 < Date.now()) {
-    auth.setToken(' ')
+    auth.setToken('')
     localStorage.removeItem('ssm-token')
   }
 
@@ -58,7 +57,7 @@ onMounted(() => {
 })
 
 function logout() {
-  auth.setToken(' ')
+  auth.setToken('')
   localStorage.removeItem('ssm-token')
   router.push('/')
 }
@@ -93,6 +92,7 @@ async function login() {
       });
 
       auth.setToken(resp.jwt)
+      auth.getUser()
       localStorage.setItem('ssm-token', resp.jwt)
     } catch (error) {
       // DOMException is thrown when w is on other domain

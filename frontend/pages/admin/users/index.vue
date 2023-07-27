@@ -27,9 +27,7 @@ onMounted(() => {
     users.getUsers()
 })
 
-definePageMeta({
-    layout: "admin",
-});
+
 
 
 

@@ -31,6 +31,10 @@ import (
 	admin_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
 	admin_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/admin/server"
 
+	user_service "github.com/sakerhetsm/ssm-wargame/internal/api/user"
+	user_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/user/server"
+	user_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
+
 	goahttp "goa.design/goa/v3/http"
 	goahttpmid "goa.design/goa/v3/http/middleware"
 )
@@ -98,6 +102,13 @@ func realMain() error {
 		s := admin_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
 		admin_server.Mount(mux, s)
+	}
+	{
+		svc := user_service.NewService(db, log, auther)
+		endpoints := user_transport.NewEndpoints(svc)
+		s := user_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
+		s.Use(goahttpmid.RequestID())
+		user_server.Mount(mux, s)
 	}
 
 	var handler http.Handler = mux

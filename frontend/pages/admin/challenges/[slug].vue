@@ -129,10 +129,6 @@ const fileInput = ref(null)
 var chall = computed(() => challs.getBySlug(route.params.slug))
 var newFlag = ref("")
 
-definePageMeta({
-  layout: "admin",
-});
-
 onMounted(async () => {
 
   if (!chall.value) {

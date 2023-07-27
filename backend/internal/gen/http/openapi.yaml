@@ -575,6 +575,32 @@ paths:
       - http
       security:
       - jwt_header_Authorization: []
+  /user/self:
+    get:
+      tags:
+      - user
+      summary: GetSelf user
+      operationId: user#GetSelf
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/UserGetSelfResponseBody'
+            required:
+            - id
+            - email
+            - first_name
+            - last_name
+            - role
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
 definitions:
   AdminAddFlagBadRequestResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
@@ -2906,6 +2932,37 @@ definitions:
         type: string
         example: admin
     description: SsmUserResponse result type (default view)
+    example:
+      email: movitz.sunar@ssm.example
+      first_name: Movitz
+      id: uuid todo
+      last_name: Sunar
+      role: admin
+    required:
+    - id
+    - email
+    - first_name
+    - last_name
+    - role
+  UserGetSelfResponseBody:
+    title: UserGetSelfResponseBody
+    type: object
+    properties:
+      email:
+        type: string
+        example: movitz.sunar@ssm.example
+      first_name:
+        type: string
+        example: Movitz
+      id:
+        type: string
+        example: uuid todo
+      last_name:
+        type: string
+        example: Sunar
+      role:
+        type: string
+        example: admin
     example:
       email: movitz.sunar@ssm.example
       first_name: Movitz

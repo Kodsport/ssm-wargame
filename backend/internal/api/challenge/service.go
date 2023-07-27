@@ -61,14 +61,14 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
 	// todo(mosu) code duplication with admin
-	challs := make([]custommodels.ChallWithSovles, 0)
+	challs := make([]*custommodels.ChallWithSovles, 0)
 	err := models.NewQuery(
 		qm.Select("c.*, COUNT(us.user_id) num_solves"),
 		qm.From("challenges c"),
 		qm.LeftOuterJoin("user_solves us ON us.challenge_id = c.id"),
 		qm.GroupBy("c.id"),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
-	).Bind(ctx, s.db, challs)
+	).Bind(ctx, s.db, &challs)
 
 	if err != nil {
 		s.log.Error("could not list challs", zap.Error(err), utils.C(ctx))

@@ -16,6 +16,7 @@ import (
 	adminc "github.com/sakerhetsm/ssm-wargame/internal/gen/http/admin/client"
 	authc "github.com/sakerhetsm/ssm-wargame/internal/gen/http/auth/client"
 	challengec "github.com/sakerhetsm/ssm-wargame/internal/gen/http/challenge/client"
+	userc "github.com/sakerhetsm/ssm-wargame/internal/gen/http/user/client"
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
 )
@@ -27,6 +28,7 @@ func UsageCommands() string {
 	return `admin (list-challenges|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag)
 auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-monthly-challenges|submit-flag)
+user get-self
 `
 }
 
@@ -35,6 +37,7 @@ func UsageExamples() string {
 	return os.Args[0] + ` admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
 		os.Args[0] + ` challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
+		os.Args[0] + ` user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		""
 }
 
@@ -114,6 +117,11 @@ func ParseEndpoint(
 		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
 		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
 		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "REQUIRED", "")
+
+		userFlags = flag.NewFlagSet("user", flag.ContinueOnError)
+
+		userGetSelfFlags     = flag.NewFlagSet("get-self", flag.ExitOnError)
+		userGetSelfTokenFlag = userGetSelfFlags.String("token", "REQUIRED", "")
 	)
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
@@ -137,6 +145,9 @@ func ParseEndpoint(
 	challengeListMonthlyChallengesFlags.Usage = challengeListMonthlyChallengesUsage
 	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
 
+	userFlags.Usage = userUsage
+	userGetSelfFlags.Usage = userGetSelfUsage
+
 	if err := flag.CommandLine.Parse(os.Args[1:]); err != nil {
 		return nil, nil, err
 	}
@@ -158,6 +169,8 @@ func ParseEndpoint(
 			svcf = authFlags
 		case "challenge":
 			svcf = challengeFlags
+		case "user":
+			svcf = userFlags
 		default:
 			return nil, nil, fmt.Errorf("unknown service %q", svcn)
 		}
@@ -230,6 +243,13 @@ func ParseEndpoint(
 
 			case "submit-flag":
 				epf = challengeSubmitFlagFlags
+
+			}
+
+		case "user":
+			switch epn {
+			case "get-self":
+				epf = userGetSelfFlags
 
 			}
 
@@ -312,6 +332,13 @@ func ParseEndpoint(
 			case "submit-flag":
 				endpoint = c.SubmitFlag()
 				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag, *challengeSubmitFlagTokenFlag)
+			}
+		case "user":
+			c := userc.NewClient(scheme, host, doer, enc, dec, restore)
+			switch epn {
+			case "get-self":
+				endpoint = c.GetSelf()
+				data, err = userc.BuildGetSelfPayload(*userGetSelfTokenFlag)
 			}
 		}
 	}
@@ -590,5 +617,29 @@ Example:
     %[1]s challenge submit-flag --body '{
       "flag": "SSM{flag}"
    }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+// userUsage displays the usage of the user command and its subcommands.
+func userUsage() {
+	fmt.Fprintf(os.Stderr, `Service is the user service interface.
+Usage:
+    %[1]s [globalflags] user COMMAND [flags]
+
+COMMAND:
+    get-self: GetSelf implements GetSelf.
+
+Additional help:
+    %[1]s user COMMAND --help
+`, os.Args[0])
+}
+func userGetSelfUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] user get-self -token STRING
+
+GetSelf implements GetSelf.
+    -token STRING: 
+
+Example:
+    %[1]s user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }

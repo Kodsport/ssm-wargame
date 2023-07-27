@@ -985,6 +985,27 @@ paths:
                 title: pwnme
       security:
       - jwt_header_Authorization: []
+  /user/self:
+    get:
+      tags:
+      - user
+      summary: GetSelf user
+      operationId: user#GetSelf
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetSelfResponseBody'
+              example:
+                email: movitz.sunar@ssm.example
+                first_name: Movitz
+                id: uuid todo
+                last_name: Sunar
+                role: admin
+      security:
+      - jwt_header_Authorization: []
 components:
   schemas:
     AddFlagRequestBody:
@@ -1171,6 +1192,36 @@ components:
         jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
       required:
       - jwt
+    GetSelfResponseBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: movitz.sunar@ssm.example
+        first_name:
+          type: string
+          example: Movitz
+        id:
+          type: string
+          example: uuid todo
+        last_name:
+          type: string
+          example: Sunar
+        role:
+          type: string
+          example: admin
+      example:
+        email: movitz.sunar@ssm.example
+        first_name: Movitz
+        id: uuid todo
+        last_name: Sunar
+        role: admin
+      required:
+      - id
+      - email
+      - first_name
+      - last_name
+      - role
     MonthlyChallenge:
       type: object
       properties:
@@ -1687,3 +1738,4 @@ tags:
 - name: admin
 - name: auth
 - name: challenge
+- name: user

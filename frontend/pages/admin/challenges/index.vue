@@ -55,9 +55,7 @@ import { useChallengeStore } from '../../../store/admin/challenges'
 
 const http = useHttp()
 
-definePageMeta({
-    layout: "admin",
-});
+
 
 const store = useChallengeStore()
 

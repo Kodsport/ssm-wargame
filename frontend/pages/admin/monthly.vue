@@ -30,8 +30,6 @@ const chall = useChallengeStore()
 
 const monthlies = ref([]);
 
-definePageMeta({
-    layout: "admin",
-});
+
 
 </script>

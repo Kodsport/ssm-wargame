@@ -11,7 +11,7 @@ const opts: FetchOptions = {
         if (options.body instanceof Object) {
             options.body = JSON.stringify(options.body)
         }
-        if (auth.token) {
+        if (auth.token != "") {
             options.headers = options.headers || {}
             options.headers['Authorization'] = 'Bearer ' + auth.token
         }
