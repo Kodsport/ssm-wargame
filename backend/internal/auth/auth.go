@@ -6,7 +6,6 @@ import (
 	"errors"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/jackc/pgx/v4"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"go.uber.org/zap"
@@ -54,7 +53,7 @@ func (s *Auther) JWTAuth(ctx context.Context, token string, schema *security.JWT
 	user, err := models.Users(
 		models.UserWhere.ID.EQ(claims.Subject),
 	).One(ctx, s.db)
-	if err == pgx.ErrNoRows {
+	if err == sql.ErrNoRows {
 		s.log.Warn("subject from valid jwt doesn't exist in DB, cross-env token usage or security issue?", zap.String("subject", user.ID))
 		return nil, errors.New("user not found")
 	}

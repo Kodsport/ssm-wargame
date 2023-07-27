@@ -8,7 +8,6 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v4"
 	"github.com/sakerhetsm/ssm-wargame/internal/config"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/auth"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
@@ -82,16 +81,14 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscord
 		models.UserWhere.DiscordID.EQ(null.StringFrom(dcUser.ID)),
 		qm.Select(models.UserColumns.ID),
 	).One(ctx, s.db)
-	if err != nil && err != pgx.ErrNoRows {
+	if err != nil && err != sql.ErrNoRows {
 		s.log.Error("db err", zap.Error(err), zap.String("discordID", dcUser.ID), utils.C(ctx))
 		return nil, err
 	}
-	userID := user.ID
 
-	if err == pgx.ErrNoRows {
-		userID = uuid.New().String()
-		user := models.User{
-			ID:        userID,
+	if err == sql.ErrNoRows {
+		user = &models.User{
+			ID:        uuid.New().String(),
 			DiscordID: null.StringFrom(dcUser.ID),
 			Email:     dcUser.Email,
 			Role:      "solver",
@@ -104,7 +101,7 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscord
 		}
 	}
 
-	jwtStr, err := s.genJWT(userID)
+	jwtStr, err := s.genJWT(user.ID)
 	if err != nil {
 		return nil, err
 	}

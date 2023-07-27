@@ -68,6 +68,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.LeftOuterJoin("user_solves us ON us.challenge_id = c.id"),
 		qm.GroupBy("c.id"),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
+		qm.Where("publish_at IS NULL OR publish_at < NOW()"),
 	).Bind(ctx, s.db, &challs)
 
 	if err != nil {
@@ -82,9 +83,8 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Slug:        chall.Slug,
 			Title:       chall.Title,
 			Description: chall.Description,
-			Score:       int32(chall.Score),
-			Solves:      int64(chall.NumSolves),
-			Published:   chall.Published,
+			Score:       chall.Score,
+			Solves:      chall.NumSolves,
 		}
 
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))

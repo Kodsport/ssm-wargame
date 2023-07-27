@@ -34,12 +34,11 @@ type SsmChallengeView struct {
 	// A short text describing the challenge
 	Description *string
 	// The number of points given to the solver
-	Score     *int32
-	Services  []*ChallengeServiceView
-	Files     []*ChallengeFilesView
-	Published *bool
+	Score    *int
+	Services []*ChallengeServiceView
+	Files    []*ChallengeFilesView
 	// The numer of people who solved the challenge
-	Solves *int64
+	Solves *int
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -64,7 +63,6 @@ var (
 			"score",
 			"services",
 			"files",
-			"published",
 			"solves",
 		},
 	}
@@ -79,7 +77,6 @@ var (
 			"score",
 			"services",
 			"files",
-			"published",
 			"solves",
 		},
 	}
@@ -122,9 +119,6 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	}
 	if result.Score == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
-	}
-	if result.Published == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("published", "result"))
 	}
 	if result.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "result"))

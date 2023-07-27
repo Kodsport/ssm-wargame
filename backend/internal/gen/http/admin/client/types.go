@@ -23,7 +23,7 @@ type CreateChallengeRequestBody struct {
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
-	Score int32 `form:"score" json:"score" xml:"score"`
+	Score int `form:"score" json:"score" xml:"score"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -36,7 +36,7 @@ type UpdateChallengeRequestBody struct {
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
-	Score int32 `form:"score" json:"score" xml:"score"`
+	Score int `form:"score" json:"score" xml:"score"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -708,12 +708,13 @@ type SsmAdminChallengeResponse struct {
 	// A short text describing the challenge
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	// The number of points given to the solver
-	Score     *int32                         `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-	Services  []*ChallengeServiceResponse    `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files     []*AdminChallengeFilesResponse `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
-	Published *bool                          `form:"published,omitempty" json:"published,omitempty" xml:"published,omitempty"`
+	Score    *int                           `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	Services []*ChallengeServiceResponse    `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files    []*AdminChallengeFilesResponse `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	// unix timestamp
+	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The numer of people who solved the challenge
-	Solves *int64                        `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+	Solves *int                          `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
 	Flags  []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
 }
 
@@ -2179,9 +2180,6 @@ func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err err
 	}
 	if body.Score == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
-	}
-	if body.Published == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("published", "body"))
 	}
 	if body.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))

@@ -197,7 +197,6 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengevie
 		Title:       *v.Title,
 		Description: *v.Description,
 		Score:       *v.Score,
-		Published:   *v.Published,
 		Solves:      *v.Solves,
 	}
 	if v.Services != nil {

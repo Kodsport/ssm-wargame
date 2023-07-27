@@ -23,7 +23,7 @@ type CreateChallengeRequestBody struct {
 	// A short text describing the challenge
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	// The number of points given to the solver
-	Score *int32 `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	Score *int `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -36,7 +36,7 @@ type UpdateChallengeRequestBody struct {
 	// A short text describing the challenge
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	// The number of points given to the solver
-	Score *int32 `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	Score *int `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -708,12 +708,13 @@ type SsmAdminChallengeResponse struct {
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
-	Score     int32                          `form:"score" json:"score" xml:"score"`
-	Services  []*ChallengeServiceResponse    `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files     []*AdminChallengeFilesResponse `form:"files" json:"files" xml:"files"`
-	Published bool                           `form:"published" json:"published" xml:"published"`
+	Score    int                            `form:"score" json:"score" xml:"score"`
+	Services []*ChallengeServiceResponse    `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files    []*AdminChallengeFilesResponse `form:"files" json:"files" xml:"files"`
+	// unix timestamp
+	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The numer of people who solved the challenge
-	Solves int64                         `form:"solves" json:"solves" xml:"solves"`
+	Solves int                           `form:"solves" json:"solves" xml:"solves"`
 	Flags  []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
 }
 

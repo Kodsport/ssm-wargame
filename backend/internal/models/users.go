@@ -30,7 +30,6 @@ type User struct {
 	LastName  null.String `boil:"last_name" json:"last_name,omitempty" toml:"last_name" yaml:"last_name,omitempty"`
 	Email     string      `boil:"email" json:"email" toml:"email" yaml:"email"`
 	Role      string      `boil:"role" json:"role" toml:"role" yaml:"role"`
-	SchoolID  null.Int    `boil:"school_id" json:"school_id,omitempty" toml:"school_id" yaml:"school_id,omitempty"`
 	CreatedAt time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
@@ -45,7 +44,6 @@ var UserColumns = struct {
 	LastName  string
 	Email     string
 	Role      string
-	SchoolID  string
 	CreatedAt string
 	UpdatedAt string
 }{
@@ -55,7 +53,6 @@ var UserColumns = struct {
 	LastName:  "last_name",
 	Email:     "email",
 	Role:      "role",
-	SchoolID:  "school_id",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
 }
@@ -67,7 +64,6 @@ var UserTableColumns = struct {
 	LastName  string
 	Email     string
 	Role      string
-	SchoolID  string
 	CreatedAt string
 	UpdatedAt string
 }{
@@ -77,7 +73,6 @@ var UserTableColumns = struct {
 	LastName:  "users.last_name",
 	Email:     "users.email",
 	Role:      "users.role",
-	SchoolID:  "users.school_id",
 	CreatedAt: "users.created_at",
 	UpdatedAt: "users.updated_at",
 }
@@ -91,7 +86,6 @@ var UserWhere = struct {
 	LastName  whereHelpernull_String
 	Email     whereHelperstring
 	Role      whereHelperstring
-	SchoolID  whereHelpernull_Int
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpernull_Time
 }{
@@ -101,19 +95,16 @@ var UserWhere = struct {
 	LastName:  whereHelpernull_String{field: "\"users\".\"last_name\""},
 	Email:     whereHelperstring{field: "\"users\".\"email\""},
 	Role:      whereHelperstring{field: "\"users\".\"role\""},
-	SchoolID:  whereHelpernull_Int{field: "\"users\".\"school_id\""},
 	CreatedAt: whereHelpertime_Time{field: "\"users\".\"created_at\""},
 	UpdatedAt: whereHelpernull_Time{field: "\"users\".\"updated_at\""},
 }
 
 // UserRels is where relationship names are stored.
 var UserRels = struct {
-	School      string
 	Challenges  string
 	Submissions string
 	UserSolves  string
 }{
-	School:      "School",
 	Challenges:  "Challenges",
 	Submissions: "Submissions",
 	UserSolves:  "UserSolves",
@@ -121,7 +112,6 @@ var UserRels = struct {
 
 // userR is where relationships are stored.
 type userR struct {
-	School      *School         `boil:"School" json:"School" toml:"School" yaml:"School"`
 	Challenges  ChallengeSlice  `boil:"Challenges" json:"Challenges" toml:"Challenges" yaml:"Challenges"`
 	Submissions SubmissionSlice `boil:"Submissions" json:"Submissions" toml:"Submissions" yaml:"Submissions"`
 	UserSolves  UserSolfSlice   `boil:"UserSolves" json:"UserSolves" toml:"UserSolves" yaml:"UserSolves"`
@@ -130,13 +120,6 @@ type userR struct {
 // NewStruct creates a new relationship struct
 func (*userR) NewStruct() *userR {
 	return &userR{}
-}
-
-func (r *userR) GetSchool() *School {
-	if r == nil {
-		return nil
-	}
-	return r.School
 }
 
 func (r *userR) GetChallenges() ChallengeSlice {
@@ -164,9 +147,9 @@ func (r *userR) GetUserSolves() UserSolfSlice {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "discord_id", "first_name", "last_name", "email", "role", "school_id", "created_at", "updated_at"}
+	userAllColumns            = []string{"id", "discord_id", "first_name", "last_name", "email", "role", "created_at", "updated_at"}
 	userColumnsWithoutDefault = []string{"id", "email", "role"}
-	userColumnsWithDefault    = []string{"discord_id", "first_name", "last_name", "school_id", "created_at", "updated_at"}
+	userColumnsWithDefault    = []string{"discord_id", "first_name", "last_name", "created_at", "updated_at"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )
@@ -449,17 +432,6 @@ func (q userQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool,
 	return count > 0, nil
 }
 
-// School pointed to by the foreign key.
-func (o *User) School(mods ...qm.QueryMod) schoolQuery {
-	queryMods := []qm.QueryMod{
-		qm.Where("\"id\" = ?", o.SchoolID),
-	}
-
-	queryMods = append(queryMods, mods...)
-
-	return Schools(queryMods...)
-}
-
 // Challenges retrieves all the challenge's Challenges with an executor.
 func (o *User) Challenges(mods ...qm.QueryMod) challengeQuery {
 	var queryMods []qm.QueryMod
@@ -501,130 +473,6 @@ func (o *User) UserSolves(mods ...qm.QueryMod) userSolfQuery {
 	)
 
 	return UserSolves(queryMods...)
-}
-
-// LoadSchool allows an eager lookup of values, cached into the
-// loaded structs of the objects. This is for an N-1 relationship.
-func (userL) LoadSchool(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUser interface{}, mods queries.Applicator) error {
-	var slice []*User
-	var object *User
-
-	if singular {
-		var ok bool
-		object, ok = maybeUser.(*User)
-		if !ok {
-			object = new(User)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeUser)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeUser))
-			}
-		}
-	} else {
-		s, ok := maybeUser.(*[]*User)
-		if ok {
-			slice = *s
-		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeUser)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeUser))
-			}
-		}
-	}
-
-	args := make([]interface{}, 0, 1)
-	if singular {
-		if object.R == nil {
-			object.R = &userR{}
-		}
-		if !queries.IsNil(object.SchoolID) {
-			args = append(args, object.SchoolID)
-		}
-
-	} else {
-	Outer:
-		for _, obj := range slice {
-			if obj.R == nil {
-				obj.R = &userR{}
-			}
-
-			for _, a := range args {
-				if queries.Equal(a, obj.SchoolID) {
-					continue Outer
-				}
-			}
-
-			if !queries.IsNil(obj.SchoolID) {
-				args = append(args, obj.SchoolID)
-			}
-
-		}
-	}
-
-	if len(args) == 0 {
-		return nil
-	}
-
-	query := NewQuery(
-		qm.From(`schools`),
-		qm.WhereIn(`schools.id in ?`, args...),
-	)
-	if mods != nil {
-		mods.Apply(query)
-	}
-
-	results, err := query.QueryContext(ctx, e)
-	if err != nil {
-		return errors.Wrap(err, "failed to eager load School")
-	}
-
-	var resultSlice []*School
-	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice School")
-	}
-
-	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results of eager load for schools")
-	}
-	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for schools")
-	}
-
-	if len(schoolAfterSelectHooks) != 0 {
-		for _, obj := range resultSlice {
-			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
-				return err
-			}
-		}
-	}
-
-	if len(resultSlice) == 0 {
-		return nil
-	}
-
-	if singular {
-		foreign := resultSlice[0]
-		object.R.School = foreign
-		if foreign.R == nil {
-			foreign.R = &schoolR{}
-		}
-		foreign.R.Users = append(foreign.R.Users, object)
-		return nil
-	}
-
-	for _, local := range slice {
-		for _, foreign := range resultSlice {
-			if queries.Equal(local.SchoolID, foreign.ID) {
-				local.R.School = foreign
-				if foreign.R == nil {
-					foreign.R = &schoolR{}
-				}
-				foreign.R.Users = append(foreign.R.Users, local)
-				break
-			}
-		}
-	}
-
-	return nil
 }
 
 // LoadChallenges allows an eager lookup of values, cached into the
@@ -683,7 +531,7 @@ func (userL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, singula
 	}
 
 	query := NewQuery(
-		qm.Select("\"challenges\".\"id\", \"challenges\".\"slug\", \"challenges\".\"title\", \"challenges\".\"description\", \"challenges\".\"score\", \"challenges\".\"published\", \"challenges\".\"ctf_event_id\", \"challenges\".\"created_at\", \"challenges\".\"updated_at\", \"a\".\"user_id\""),
+		qm.Select("\"challenges\".\"id\", \"challenges\".\"slug\", \"challenges\".\"title\", \"challenges\".\"description\", \"challenges\".\"score\", \"challenges\".\"publish_at\", \"challenges\".\"ctf_event_id\", \"challenges\".\"created_at\", \"challenges\".\"updated_at\", \"a\".\"user_id\""),
 		qm.From("\"challenges\""),
 		qm.InnerJoin("\"challenge_authors\" as \"a\" on \"challenges\".\"id\" = \"a\".\"challenge_id\""),
 		qm.WhereIn("\"a\".\"user_id\" in ?", args...),
@@ -704,7 +552,7 @@ func (userL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, singula
 		one := new(Challenge)
 		var localJoinCol string
 
-		err = results.Scan(&one.ID, &one.Slug, &one.Title, &one.Description, &one.Score, &one.Published, &one.CTFEventID, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Slug, &one.Title, &one.Description, &one.Score, &one.PublishAt, &one.CTFEventID, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for challenges")
 		}
@@ -983,86 +831,6 @@ func (userL) LoadUserSolves(ctx context.Context, e boil.ContextExecutor, singula
 		}
 	}
 
-	return nil
-}
-
-// SetSchool of the user to the related item.
-// Sets o.R.School to related.
-// Adds o to related.R.Users.
-func (o *User) SetSchool(ctx context.Context, exec boil.ContextExecutor, insert bool, related *School) error {
-	var err error
-	if insert {
-		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
-			return errors.Wrap(err, "failed to insert into foreign table")
-		}
-	}
-
-	updateQuery := fmt.Sprintf(
-		"UPDATE \"users\" SET %s WHERE %s",
-		strmangle.SetParamNames("\"", "\"", 1, []string{"school_id"}),
-		strmangle.WhereClause("\"", "\"", 2, userPrimaryKeyColumns),
-	)
-	values := []interface{}{related.ID, o.ID}
-
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, updateQuery)
-		fmt.Fprintln(writer, values)
-	}
-	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
-		return errors.Wrap(err, "failed to update local table")
-	}
-
-	queries.Assign(&o.SchoolID, related.ID)
-	if o.R == nil {
-		o.R = &userR{
-			School: related,
-		}
-	} else {
-		o.R.School = related
-	}
-
-	if related.R == nil {
-		related.R = &schoolR{
-			Users: UserSlice{o},
-		}
-	} else {
-		related.R.Users = append(related.R.Users, o)
-	}
-
-	return nil
-}
-
-// RemoveSchool relationship.
-// Sets o.R.School to nil.
-// Removes o from all passed in related items' relationships struct.
-func (o *User) RemoveSchool(ctx context.Context, exec boil.ContextExecutor, related *School) error {
-	var err error
-
-	queries.SetScanner(&o.SchoolID, nil)
-	if _, err = o.Update(ctx, exec, boil.Whitelist("school_id")); err != nil {
-		return errors.Wrap(err, "failed to update local table")
-	}
-
-	if o.R != nil {
-		o.R.School = nil
-	}
-	if related == nil || related.R == nil {
-		return nil
-	}
-
-	for i, ri := range related.R.Users {
-		if queries.Equal(o.SchoolID, ri.SchoolID) {
-			continue
-		}
-
-		ln := len(related.R.Users)
-		if ln > 1 && i < ln-1 {
-			related.R.Users[i] = related.R.Users[ln-1]
-		}
-		related.R.Users = related.R.Users[:ln-1]
-		break
-	}
 	return nil
 }
 

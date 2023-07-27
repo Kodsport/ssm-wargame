@@ -146,7 +146,7 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("score")
 	Attribute("services")
 	Attribute("files")
-	Attribute("published")
+	Attribute("publish_at")
 	Attribute("solves")
 
 	Attribute("files", ArrayOf(AdminChallengeFile))
@@ -167,7 +167,6 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Attribute("score")
 	Attribute("services")
 	Attribute("files")
-	Attribute("published")
 	Attribute("solves")
 })
 
@@ -193,44 +192,19 @@ var Challenge = Type("Challenge", func() {
 	Attribute("description", String, "A short text describing the challenge", func() {
 		Example("A heap overflow challenge")
 	})
-	Attribute("score", Int32, "The number of points given to the solver", func() {
+	Attribute("score", Int, "The number of points given to the solver", func() {
 		Example(50)
 	})
-	Attribute("published", Boolean, func() {
-		Example(true)
+	Attribute("publish_at", Int64, func() {
+		Example(1638384718)
+		Description("unix timestamp")
 	})
-	Attribute("solves", Int64, "The numer of people who solved the challenge", func() {
+	Attribute("solves", Int, "The numer of people who solved the challenge", func() {
 		Example(3)
 	})
 
 	Attribute("services", ArrayOf(ChallengeService))
 	Attribute("files", ArrayOf(ChallengeFiles))
-
-	Required("id", "title", "description", "score", "published", "slug", "solves")
-})
-
-var AdminChallenge = Type("AdminChallenge", func() {
-	Attribute("id", String, func() {
-		Example("e721a338-44de-4de8-a562-43d2db5f4115")
-	})
-	Attribute("slug", String, "A unique string that can be used in URLs", func() {
-		Example("pwnme")
-	})
-	Attribute("title", String, "Title displayed to user", func() {
-		Example("pwnme")
-	})
-	Attribute("description", String, "A short text describing the challenge", func() {
-		Example("A heap overflow challenge")
-	})
-	Attribute("score", Int32, "The number of points given to the solver", func() {
-		Example(50)
-	})
-	Attribute("published", Boolean, func() {
-		Example(true)
-	})
-	Attribute("solves", Int64, "The numer of people who solved the challenge", func() {
-		Example(3)
-	})
 
 	Required("id", "title", "description", "score", "published", "slug", "solves")
 })

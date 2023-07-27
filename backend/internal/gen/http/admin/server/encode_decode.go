@@ -1113,7 +1113,7 @@ func marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(v *adminv
 		Title:       *v.Title,
 		Description: *v.Description,
 		Score:       *v.Score,
-		Published:   *v.Published,
+		PublishAt:   v.PublishAt,
 		Solves:      *v.Solves,
 	}
 	if v.Services != nil {

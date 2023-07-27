@@ -1,13 +1,5 @@
 BEGIN;
 
-CREATE TABLE schools (
-    id INT PRIMARY KEY,
-    name TEXT NOT NULL,
-    geographical_area_code INT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ
-);
-
 CREATE TABLE users (
     id UUID PRIMARY KEY,
     discord_id TEXT UNIQUE,
@@ -15,12 +7,9 @@ CREATE TABLE users (
     last_name TEXT,
     email TEXT NOT NULL,
     role TEXT NOT NULL,
-    school_id INT REFERENCES schools(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
-
-CREATE INDEX users_school_id_indx ON users ( school_id );
 
 CREATE TABLE categories (
     id UUID PRIMARY KEY,
@@ -44,7 +33,7 @@ CREATE TABLE challenges (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     score INT NOT NULL CHECK (score >= 0),
-    published BOOLEAN NOT NULL,
+    publish_at TIMESTAMPTZ,
     ctf_event_id UUID REFERENCES ctf_events(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
@@ -86,9 +75,11 @@ CREATE INDEX challenge_files_challenge_id_idx ON challenge_files ( challenge_id 
 CREATE TABLE flags (
     id UUID PRIMARY KEY,
     challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
-    flag TEXT NOT NULL UNIQUE,
+    flag TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ
+    updated_at TIMESTAMPTZ,
+
+    UNIQUE (challenge_id, flag)
 );
 
 CREATE INDEX flags_challenge_id_idx ON flags ( challenge_id );

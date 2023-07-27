@@ -29,7 +29,7 @@ type Challenge struct {
 	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
 	Description string      `boil:"description" json:"description" toml:"description" yaml:"description"`
 	Score       int         `boil:"score" json:"score" toml:"score" yaml:"score"`
-	Published   bool        `boil:"published" json:"published" toml:"published" yaml:"published"`
+	PublishAt   null.Time   `boil:"publish_at" json:"publish_at,omitempty" toml:"publish_at" yaml:"publish_at,omitempty"`
 	CTFEventID  null.String `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
 	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
@@ -44,7 +44,7 @@ var ChallengeColumns = struct {
 	Title       string
 	Description string
 	Score       string
-	Published   string
+	PublishAt   string
 	CTFEventID  string
 	CreatedAt   string
 	UpdatedAt   string
@@ -54,7 +54,7 @@ var ChallengeColumns = struct {
 	Title:       "title",
 	Description: "description",
 	Score:       "score",
-	Published:   "published",
+	PublishAt:   "publish_at",
 	CTFEventID:  "ctf_event_id",
 	CreatedAt:   "created_at",
 	UpdatedAt:   "updated_at",
@@ -66,7 +66,7 @@ var ChallengeTableColumns = struct {
 	Title       string
 	Description string
 	Score       string
-	Published   string
+	PublishAt   string
 	CTFEventID  string
 	CreatedAt   string
 	UpdatedAt   string
@@ -76,7 +76,7 @@ var ChallengeTableColumns = struct {
 	Title:       "challenges.title",
 	Description: "challenges.description",
 	Score:       "challenges.score",
-	Published:   "challenges.published",
+	PublishAt:   "challenges.publish_at",
 	CTFEventID:  "challenges.ctf_event_id",
 	CreatedAt:   "challenges.created_at",
 	UpdatedAt:   "challenges.updated_at",
@@ -113,7 +113,7 @@ var ChallengeWhere = struct {
 	Title       whereHelperstring
 	Description whereHelperstring
 	Score       whereHelperint
-	Published   whereHelperbool
+	PublishAt   whereHelpernull_Time
 	CTFEventID  whereHelpernull_String
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpernull_Time
@@ -123,7 +123,7 @@ var ChallengeWhere = struct {
 	Title:       whereHelperstring{field: "\"challenges\".\"title\""},
 	Description: whereHelperstring{field: "\"challenges\".\"description\""},
 	Score:       whereHelperint{field: "\"challenges\".\"score\""},
-	Published:   whereHelperbool{field: "\"challenges\".\"published\""},
+	PublishAt:   whereHelpernull_Time{field: "\"challenges\".\"publish_at\""},
 	CTFEventID:  whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
 	UpdatedAt:   whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
@@ -237,9 +237,9 @@ func (r *challengeR) GetUserSolves() UserSolfSlice {
 type challengeL struct{}
 
 var (
-	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "published", "ctf_event_id", "created_at", "updated_at"}
-	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "score", "published"}
-	challengeColumnsWithDefault    = []string{"ctf_event_id", "created_at", "updated_at"}
+	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "publish_at", "ctf_event_id", "created_at", "updated_at"}
+	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "score"}
+	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at"}
 	challengePrimaryKeyColumns     = []string{"id"}
 	challengeGeneratedColumns      = []string{}
 )
@@ -941,7 +941,7 @@ func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singula
 	}
 
 	query := NewQuery(
-		qm.Select("\"users\".\"id\", \"users\".\"discord_id\", \"users\".\"first_name\", \"users\".\"last_name\", \"users\".\"email\", \"users\".\"role\", \"users\".\"school_id\", \"users\".\"created_at\", \"users\".\"updated_at\", \"a\".\"challenge_id\""),
+		qm.Select("\"users\".\"id\", \"users\".\"discord_id\", \"users\".\"first_name\", \"users\".\"last_name\", \"users\".\"email\", \"users\".\"role\", \"users\".\"created_at\", \"users\".\"updated_at\", \"a\".\"challenge_id\""),
 		qm.From("\"users\""),
 		qm.InnerJoin("\"challenge_authors\" as \"a\" on \"users\".\"id\" = \"a\".\"user_id\""),
 		qm.WhereIn("\"a\".\"challenge_id\" in ?", args...),
@@ -962,7 +962,7 @@ func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singula
 		one := new(User)
 		var localJoinCol string
 
-		err = results.Scan(&one.ID, &one.DiscordID, &one.FirstName, &one.LastName, &one.Email, &one.Role, &one.SchoolID, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.DiscordID, &one.FirstName, &one.LastName, &one.Email, &one.Role, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for users")
 		}

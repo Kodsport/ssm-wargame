@@ -77,7 +77,7 @@ type CreateChallengePayload struct {
 	// A short text describing the challenge
 	Description string
 	// The number of points given to the solver
-	Score int32
+	Score int
 	Token string
 }
 
@@ -91,7 +91,7 @@ type UpdateChallengePayload struct {
 	// A short text describing the challenge
 	Description string
 	// The number of points given to the solver
-	Score int32
+	Score int
 	Token string
 	// ID of a challenge
 	ChallengeID string
@@ -188,12 +188,13 @@ type SsmAdminChallenge struct {
 	// A short text describing the challenge
 	Description string
 	// The number of points given to the solver
-	Score     int32
-	Services  []*ChallengeService
-	Files     []*AdminChallengeFiles
-	Published bool
+	Score    int
+	Services []*ChallengeService
+	Files    []*AdminChallengeFiles
+	// unix timestamp
+	PublishAt *int64
 	// The numer of people who solved the challenge
-	Solves int64
+	Solves int
 	Flags  []*AdminChallengeFlag
 }
 
@@ -306,7 +307,9 @@ func newSsmAdminChallengeCollectionView(res SsmAdminChallengeCollection) adminvi
 // newSsmAdminChallenge converts projected type SsmAdminChallenge to service
 // type SsmAdminChallenge.
 func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChallenge {
-	res := &SsmAdminChallenge{}
+	res := &SsmAdminChallenge{
+		PublishAt: vres.PublishAt,
+	}
 	if vres.ID != nil {
 		res.ID = *vres.ID
 	}
@@ -321,9 +324,6 @@ func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChall
 	}
 	if vres.Score != nil {
 		res.Score = *vres.Score
-	}
-	if vres.Published != nil {
-		res.Published = *vres.Published
 	}
 	if vres.Solves != nil {
 		res.Solves = *vres.Solves
@@ -358,7 +358,7 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 		Title:       &res.Title,
 		Description: &res.Description,
 		Score:       &res.Score,
-		Published:   &res.Published,
+		PublishAt:   res.PublishAt,
 		Solves:      &res.Solves,
 	}
 	if res.Services != nil {

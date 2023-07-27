@@ -10,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v4"
 	"github.com/sakerhetsm/ssm-wargame/internal/custommodels"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
@@ -46,9 +45,9 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Slug:        chall.Slug,
 			Title:       chall.Title,
 			Description: chall.Description,
-			Score:       int32(chall.Score),
-			Solves:      int64(chall.NumSolves),
-			Published:   chall.Published,
+			Score:       chall.Score,
+			Solves:      chall.NumSolves,
+			PublishAt:   utils.NullTimeToUnix(chall.PublishAt),
 		}
 
 		res[i].Flags = make([]*spec.AdminChallengeFlag, len(chall.R.Flags))
@@ -95,7 +94,7 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 		Slug:        req.Slug,
 		Description: req.Description,
 		Score:       int(req.Score),
-		Published:   false,
+		PublishAt:   null.Time{},
 	}
 
 	err := chall.Insert(ctx, s.db, boil.Infer())
@@ -238,7 +237,7 @@ func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) e
 	file, err := models.ChallengeFiles(
 		models.ChallengeFileWhere.ID.EQ(fileID.String()),
 	).One(ctx, tx)
-	if err == pgx.ErrNoRows {
+	if err == sql.ErrNoRows {
 		return spec.MakeNotFound(errors.New("could not find file"))
 	}
 	if err != nil {

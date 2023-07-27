@@ -50,7 +50,7 @@ paths:
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
+                publish_at: 1638384718
                 score: 50
                 services:
                 - {}
@@ -87,7 +87,7 @@ paths:
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
+                publish_at: 1638384718
                 score: 50
                 services:
                 - {}
@@ -830,7 +830,6 @@ paths:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
                 score: 50
                 services:
                 - {}
@@ -850,7 +849,6 @@ paths:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
                 score: 50
                 services:
                 - {}
@@ -870,7 +868,6 @@ paths:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                published: true
                 score: 50
                 services:
                 - {}
@@ -1104,7 +1101,7 @@ components:
           type: integer
           description: The number of points given to the solver
           example: 50
-          format: int32
+          format: int64
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -1359,14 +1356,16 @@ components:
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
-        published:
-          type: boolean
-          example: true
+        publish_at:
+          type: integer
+          description: unix timestamp
+          example: 1638384718
+          format: int64
         score:
           type: integer
           description: The number of points given to the solver
           example: 50
-          format: int32
+          format: int64
         services:
           type: array
           items:
@@ -1425,7 +1424,7 @@ components:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
+        publish_at: 1638384718
         score: 50
         services:
         - {}
@@ -1476,7 +1475,7 @@ components:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
+        publish_at: 1638384718
         score: 50
         services:
         - {}
@@ -1513,7 +1512,7 @@ components:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
+        publish_at: 1638384718
         score: 50
         services:
         - {}
@@ -1550,7 +1549,7 @@ components:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
+        publish_at: 1638384718
         score: 50
         services:
         - {}
@@ -1579,14 +1578,11 @@ components:
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
-        published:
-          type: boolean
-          example: true
         score:
           type: integer
           description: The number of points given to the solver
           example: 50
-          format: int32
+          format: int64
         services:
           type: array
           items:
@@ -1619,7 +1615,6 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
         score: 50
         services:
         - {}
@@ -1651,7 +1646,6 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
         score: 50
         services:
         - {}
@@ -1671,7 +1665,6 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
         score: 50
         services:
         - {}
@@ -1691,7 +1684,6 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        published: true
         score: 50
         services:
         - {}

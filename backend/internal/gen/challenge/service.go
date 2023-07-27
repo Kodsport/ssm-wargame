@@ -76,12 +76,11 @@ type SsmChallenge struct {
 	// A short text describing the challenge
 	Description string
 	// The number of points given to the solver
-	Score     int32
-	Services  []*ChallengeService
-	Files     []*ChallengeFiles
-	Published bool
+	Score    int
+	Services []*ChallengeService
+	Files    []*ChallengeFiles
 	// The numer of people who solved the challenge
-	Solves int64
+	Solves int
 }
 
 type ChallengeService struct {
@@ -179,9 +178,6 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 	if vres.Score != nil {
 		res.Score = *vres.Score
 	}
-	if vres.Published != nil {
-		res.Published = *vres.Published
-	}
 	if vres.Solves != nil {
 		res.Solves = *vres.Solves
 	}
@@ -209,7 +205,6 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 		Title:       &res.Title,
 		Description: &res.Description,
 		Score:       &res.Score,
-		Published:   &res.Published,
 		Solves:      &res.Solves,
 	}
 	if res.Services != nil {
