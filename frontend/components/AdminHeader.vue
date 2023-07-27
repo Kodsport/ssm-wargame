@@ -23,7 +23,7 @@
             <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">
               Login
             </a>
-            <a v-else class="btn btn-primary" x@click="logout">Logout</a>
+            <a v-else class="btn btn-primary" @click="logout">Logout</a>
           </li>
         </ul>
       </div>
@@ -35,8 +35,20 @@
 import { useAuthStore } from "../store/auth"
 const http = useHttp()
 const auth = useAuthStore()
+const router = useRouter()
 
-var isAuthenticated = ref(false);
+var isAuthenticated = computed(() => !!auth.token);
+
+// temporary hacky solution...
+setInterval(() => {
+
+  const jwtData = JSON.parse(atob(auth.token.split('.')[1]))
+  if (jwtData * 1000 < Date.now()) {
+    auth.setToken(' ')
+    localStorage.removeItem('ssm-token')
+  }
+
+}, 1000)
 
 onMounted(() => {
   const jwt = localStorage.getItem('ssm-token')
@@ -44,6 +56,12 @@ onMounted(() => {
     auth.setToken(jwt)
   }
 })
+
+function logout() {
+  auth.setToken(' ')
+  localStorage.removeItem('ssm-token')
+  router.push('/')
+}
 
 async function login() {
   const x = await http("/auth/discord/url");

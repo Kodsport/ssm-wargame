@@ -51,7 +51,7 @@
   
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useChallengeStore } from '../../../store/challenges'
+import { useChallengeStore } from '../../../store/admin/challenges'
 
 const http = useHttp()
 

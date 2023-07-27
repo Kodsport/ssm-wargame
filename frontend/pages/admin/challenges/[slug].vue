@@ -107,7 +107,7 @@
 
 <script setup lang="ts">
 import md5 from "js-md5";
-import { useChallengeStore } from "../../../store/challenges";
+import { useChallengeStore } from "../../../store/admin/challenges";
 
 const http = useHttp()
 const route = useRoute()

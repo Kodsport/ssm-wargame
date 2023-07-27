@@ -1,5 +1,6 @@
 <template>
-    <div <h1>Monthly challenge</h1>
+    <div>
+        <h1>Monthly challenge</h1>
 
         <table class="table">
             <thead>
@@ -23,11 +24,14 @@
 </template>
   
 <script lang="ts" setup>
-import { useChallengeStore } from '../../store/challenges'
+import { useChallengeStore } from '../../store/admin/challenges'
 
 const chall = useChallengeStore()
 
-const monthlies = ref([])
+const monthlies = ref([]);
 
+definePageMeta({
+    layout: "admin",
+});
 
 </script>

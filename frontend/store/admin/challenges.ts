@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import useHttp from '../composables/use-http'
+import useHttp from '../../composables/use-http'
 const http = useHttp()
 
 export const useChallengeStore = defineStore('challenges', {
