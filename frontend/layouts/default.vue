@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <Header />
-    <Nuxt />
-  </div>
+    <div>
+        default
+        <slot />
+    </div>
 </template>
