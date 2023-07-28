@@ -25,17 +25,17 @@ import (
 
 // School is an object representing the database table.
 type School struct {
-	ID                   int        `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Name                 string     `boil:"name" json:"name" toml:"name" yaml:"name"`
-	GeographicalAreaCode string     `boil:"geographical_area_code" json:"geographical_area_code" toml:"geographical_area_code" yaml:"geographical_area_code"`
-	RawSkolverketData    types.JSON `boil:"raw_skolverket_data" json:"raw_skolverket_data" toml:"raw_skolverket_data" yaml:"raw_skolverket_data"`
-	IsHighSchool         bool       `boil:"is_high_school" json:"is_high_school" toml:"is_high_school" yaml:"is_high_school"`
-	IsElementarySchool   bool       `boil:"is_elementary_school" json:"is_elementary_school" toml:"is_elementary_school" yaml:"is_elementary_school"`
-	Latitude             float64    `boil:"latitude" json:"latitude" toml:"latitude" yaml:"latitude"`
-	Longitude            float64    `boil:"longitude" json:"longitude" toml:"longitude" yaml:"longitude"`
-	Status               string     `boil:"status" json:"status" toml:"status" yaml:"status"`
-	CreatedAt            time.Time  `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt            null.Time  `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	ID                   int          `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Name                 string       `boil:"name" json:"name" toml:"name" yaml:"name"`
+	GeographicalAreaCode string       `boil:"geographical_area_code" json:"geographical_area_code" toml:"geographical_area_code" yaml:"geographical_area_code"`
+	RawSkolverketData    types.JSON   `boil:"raw_skolverket_data" json:"raw_skolverket_data" toml:"raw_skolverket_data" yaml:"raw_skolverket_data"`
+	IsHighSchool         bool         `boil:"is_high_school" json:"is_high_school" toml:"is_high_school" yaml:"is_high_school"`
+	IsElementarySchool   bool         `boil:"is_elementary_school" json:"is_elementary_school" toml:"is_elementary_school" yaml:"is_elementary_school"`
+	Latitude             null.Float64 `boil:"latitude" json:"latitude,omitempty" toml:"latitude" yaml:"latitude,omitempty"`
+	Longitude            null.Float64 `boil:"longitude" json:"longitude,omitempty" toml:"longitude" yaml:"longitude,omitempty"`
+	Status               string       `boil:"status" json:"status" toml:"status" yaml:"status"`
+	CreatedAt            time.Time    `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt            null.Time    `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
 	R *schoolR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L schoolL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -116,34 +116,43 @@ func (w whereHelpertypes_JSON) GTE(x types.JSON) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
 
-type whereHelperfloat64 struct{ field string }
+type whereHelpernull_Float64 struct{ field string }
 
-func (w whereHelperfloat64) EQ(x float64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperfloat64) NEQ(x float64) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.NEQ, x)
+func (w whereHelpernull_Float64) EQ(x null.Float64) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
 }
-func (w whereHelperfloat64) LT(x float64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperfloat64) LTE(x float64) qm.QueryMod {
+func (w whereHelpernull_Float64) NEQ(x null.Float64) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Float64) LT(x null.Float64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Float64) LTE(x null.Float64) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LTE, x)
 }
-func (w whereHelperfloat64) GT(x float64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperfloat64) GTE(x float64) qm.QueryMod {
+func (w whereHelpernull_Float64) GT(x null.Float64) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Float64) GTE(x null.Float64) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
-func (w whereHelperfloat64) IN(slice []float64) qm.QueryMod {
+func (w whereHelpernull_Float64) IN(slice []float64) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
 }
-func (w whereHelperfloat64) NIN(slice []float64) qm.QueryMod {
+func (w whereHelpernull_Float64) NIN(slice []float64) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
+
+func (w whereHelpernull_Float64) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Float64) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 var SchoolWhere = struct {
 	ID                   whereHelperint
@@ -152,8 +161,8 @@ var SchoolWhere = struct {
 	RawSkolverketData    whereHelpertypes_JSON
 	IsHighSchool         whereHelperbool
 	IsElementarySchool   whereHelperbool
-	Latitude             whereHelperfloat64
-	Longitude            whereHelperfloat64
+	Latitude             whereHelpernull_Float64
+	Longitude            whereHelpernull_Float64
 	Status               whereHelperstring
 	CreatedAt            whereHelpertime_Time
 	UpdatedAt            whereHelpernull_Time
@@ -164,8 +173,8 @@ var SchoolWhere = struct {
 	RawSkolverketData:    whereHelpertypes_JSON{field: "\"schools\".\"raw_skolverket_data\""},
 	IsHighSchool:         whereHelperbool{field: "\"schools\".\"is_high_school\""},
 	IsElementarySchool:   whereHelperbool{field: "\"schools\".\"is_elementary_school\""},
-	Latitude:             whereHelperfloat64{field: "\"schools\".\"latitude\""},
-	Longitude:            whereHelperfloat64{field: "\"schools\".\"longitude\""},
+	Latitude:             whereHelpernull_Float64{field: "\"schools\".\"latitude\""},
+	Longitude:            whereHelpernull_Float64{field: "\"schools\".\"longitude\""},
 	Status:               whereHelperstring{field: "\"schools\".\"status\""},
 	CreatedAt:            whereHelpertime_Time{field: "\"schools\".\"created_at\""},
 	UpdatedAt:            whereHelpernull_Time{field: "\"schools\".\"updated_at\""},
@@ -200,8 +209,8 @@ type schoolL struct{}
 
 var (
 	schoolAllColumns            = []string{"id", "name", "geographical_area_code", "raw_skolverket_data", "is_high_school", "is_elementary_school", "latitude", "longitude", "status", "created_at", "updated_at"}
-	schoolColumnsWithoutDefault = []string{"id", "name", "geographical_area_code", "raw_skolverket_data", "is_high_school", "is_elementary_school", "latitude", "longitude", "status"}
-	schoolColumnsWithDefault    = []string{"created_at", "updated_at"}
+	schoolColumnsWithoutDefault = []string{"id", "name", "geographical_area_code", "raw_skolverket_data", "is_high_school", "is_elementary_school", "status"}
+	schoolColumnsWithDefault    = []string{"latitude", "longitude", "created_at", "updated_at"}
 	schoolPrimaryKeyColumns     = []string{"id"}
 	schoolGeneratedColumns      = []string{}
 )

@@ -7,8 +7,8 @@ CREATE TABLE schools (
     raw_skolverket_data JSONB NOT NULL,
     is_high_school BOOLEAN NOT NULL,
     is_elementary_school BOOLEAN NOT NULL,
-    latitude FLOAT NOT NULL,
-    longitude FLOAT NOT NULL,
+    latitude FLOAT,
+    longitude FLOAT,
     status TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ

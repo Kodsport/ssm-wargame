@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
+	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"go.uber.org/zap"
 )
@@ -83,20 +84,6 @@ func (i *Importer) Import() error {
 			continue
 		}
 
-		longStr := unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lng
-		long, err := strconv.ParseFloat(longStr, 32)
-		if err != nil {
-			l.Warn("could not parse long", zap.Error(err), zap.String("long", longStr))
-			continue
-		}
-
-		latStr := unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lat
-		lat, err := strconv.ParseFloat(latStr, 32)
-		if err != nil {
-			l.Warn("could not parse lat", zap.Error(err), zap.String("lat", latStr))
-			continue
-		}
-
 		/*
 			school types
 
@@ -132,11 +119,19 @@ func (i *Importer) Import() error {
 			Name:                 unit.SkolenhetInfo.Namn,
 			GeographicalAreaCode: unit.SkolenhetInfo.Besoksadress.Postnr,
 			Status:               unit.SkolenhetInfo.Status,
-			Latitude:             lat,
-			Longitude:            long,
 			IsHighSchool:         isHighSchool,
 			IsElementarySchool:   isElementarySchool,
 			RawSkolverketData:    data,
+		}
+
+		long, err := strconv.ParseFloat(unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lng, 32)
+		if err == nil {
+			school.Longitude = null.Float64From(long)
+		}
+
+		lat, err := strconv.ParseFloat(unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lat, 32)
+		if err == nil {
+			school.Latitude = null.Float64From(lat)
 		}
 
 		err = school.Upsert(context.Background(), i.db, true, []string{"id"}, boil.Infer(), boil.Infer())
