@@ -50,7 +50,7 @@ func (i *Importer) Import() error {
 	}
 
 	for _, mu := range units.SchoolUnits {
-		time.Sleep(time.Second) // be kind to skolverkets api
+		time.Sleep(time.Millisecond * 200) // be somewhat kind to skolverkets api
 
 		id, err := strconv.Atoi(mu.SchoolUnitCode)
 		if err != nil {
@@ -111,7 +111,6 @@ func (i *Importer) Import() error {
 			if v.Type == "Gymnasieskola" || v.Type == "Gymnasiesarskola" {
 				isHighSchool = true
 			}
-
 		}
 
 		school := models.School{
@@ -122,16 +121,8 @@ func (i *Importer) Import() error {
 			IsHighSchool:         isHighSchool,
 			IsElementarySchool:   isElementarySchool,
 			RawSkolverketData:    data,
-		}
-
-		long, err := strconv.ParseFloat(unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lng, 32)
-		if err == nil {
-			school.Longitude = null.Float64From(long)
-		}
-
-		lat, err := strconv.ParseFloat(unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lat, 32)
-		if err == nil {
-			school.Latitude = null.Float64From(lat)
+			Latitude:             null.Float64FromPtr(unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lng),
+			Longitude:            null.Float64FromPtr(unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lat),
 		}
 
 		err = school.Upsert(context.Background(), i.db, true, []string{"id"}, boil.Infer(), boil.Infer())

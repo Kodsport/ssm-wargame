@@ -21,8 +21,8 @@ type Unit struct {
 		Besoksadress   struct {
 			Postnr  string `json:"Postnr"`
 			GeoData struct {
-				KoordinatWGS84Lat string `json:"Koordinat_WGS84_Lat"`
-				KoordinatWGS84Lng string `json:"Koordinat_WGS84_Lng"`
+				KoordinatWGS84Lat *float64 `json:"Koordinat_WGS84_Lat,string"`
+				KoordinatWGS84Lng *float64 `json:"Koordinat_WGS84_Lng,string"`
 			} `json:"GeoData"`
 		} `json:"Besoksadress"`
 		Skolformer []struct {
