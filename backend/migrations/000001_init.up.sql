@@ -1,5 +1,19 @@
 BEGIN;
 
+CREATE TABLE schools (
+    id INT PRIMARY KEY,
+    name TEXT NOT NULL,
+    geographical_area_code TEXT NOT NULL,
+    raw_skolverket_data JSONB NOT NULL,
+    is_high_school BOOLEAN NOT NULL,
+    is_elementary_school BOOLEAN NOT NULL,
+    latitude FLOAT NOT NULL,
+    longitude FLOAT NOT NULL,
+    status TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ
+);
+
 CREATE TABLE users (
     id UUID PRIMARY KEY,
     discord_id TEXT UNIQUE,
@@ -7,9 +21,12 @@ CREATE TABLE users (
     last_name TEXT,
     email TEXT NOT NULL,
     role TEXT NOT NULL,
+    school_id INT REFERENCES schools(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
+
+CREATE INDEX users_school_id_indx ON users ( school_id );
 
 CREATE TABLE categories (
     id UUID PRIMARY KEY,

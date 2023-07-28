@@ -12,5 +12,6 @@ DROP TABLE challenges;
 DROP TABLE ctf_events;
 DROP TABLE categories;
 DROP TABLE users;
+DROP TABLE schools;
 
 END;

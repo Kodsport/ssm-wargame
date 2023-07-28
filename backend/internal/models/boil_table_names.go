@@ -14,6 +14,7 @@ var TableNames = struct {
 	Flags               string
 	MonthlyChallenges   string
 	SchemaMigrations    string
+	Schools             string
 	Submissions         string
 	UserSolves          string
 	Users               string
@@ -28,6 +29,7 @@ var TableNames = struct {
 	Flags:               "flags",
 	MonthlyChallenges:   "monthly_challenges",
 	SchemaMigrations:    "schema_migrations",
+	Schools:             "schools",
 	Submissions:         "submissions",
 	UserSolves:          "user_solves",
 	Users:               "users",
