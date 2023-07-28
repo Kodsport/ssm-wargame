@@ -78,7 +78,11 @@ type CreateChallengePayload struct {
 	Description string
 	// The number of points given to the solver
 	Score int
-	Token string
+	// unix timestamp
+	PublishAt *int64
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string
+	Token      string
 }
 
 // UpdateChallengePayload is the payload type of the admin service
@@ -92,7 +96,11 @@ type UpdateChallengePayload struct {
 	Description string
 	// The number of points given to the solver
 	Score int
-	Token string
+	// unix timestamp
+	PublishAt *int64
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string
+	Token      string
 	// ID of a challenge
 	ChallengeID string
 }

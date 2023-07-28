@@ -901,10 +901,20 @@ definitions:
     title: AdminCreateChallengeRequestBody
     type: object
     properties:
+      ctf_event_id:
+        type: string
+        description: The ID of the CTF the challenge was taken from
+        example: c397efb2-b171-4d77-9166-d105cf4f521a
+        format: uuid
       description:
         type: string
         description: A short text describing the challenge
         example: A heap overflow challenge
+      publish_at:
+        type: integer
+        description: unix timestamp
+        example: 1638384718
+        format: int64
       score:
         type: integer
         description: The number of points given to the solver
@@ -919,7 +929,9 @@ definitions:
         description: Title displayed to user
         example: pwnme
     example:
+      ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
       description: A heap overflow challenge
+      publish_at: 1638384718
       score: 50
       slug: pwnme
       title: pwnme
@@ -2387,10 +2399,20 @@ definitions:
     title: AdminUpdateChallengeRequestBody
     type: object
     properties:
+      ctf_event_id:
+        type: string
+        description: The ID of the CTF the challenge was taken from
+        example: c397efb2-b171-4d77-9166-d105cf4f521a
+        format: uuid
       description:
         type: string
         description: A short text describing the challenge
         example: A heap overflow challenge
+      publish_at:
+        type: integer
+        description: unix timestamp
+        example: 1638384718
+        format: int64
       score:
         type: integer
         description: The number of points given to the solver
@@ -2405,7 +2427,9 @@ definitions:
         description: Title displayed to user
         example: pwnme
     example:
+      ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
       description: A heap overflow challenge
+      publish_at: 1638384718
       score: 50
       slug: pwnme
       title: pwnme
@@ -2753,6 +2777,7 @@ definitions:
       id:
         type: string
         example: e721a338-44de-4de8-a562-43d2db5f4115
+        format: uuid
       publish_at:
         type: integer
         description: unix timestamp
@@ -2854,6 +2879,7 @@ definitions:
       id:
         type: string
         example: e721a338-44de-4de8-a562-43d2db5f4115
+        format: uuid
       score:
         type: integer
         description: The number of points given to the solver

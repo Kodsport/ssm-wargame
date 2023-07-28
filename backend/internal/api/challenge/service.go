@@ -95,7 +95,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				Key:    &file.Key,
 			})
 
-			url, err := req.Presign(time.Hour * 4)
+			url, err := req.Presign(time.Hour * 1)
 			if err != nil {
 				s.log.Warn("could not sign url", zap.Error(err), utils.C(ctx))
 			}

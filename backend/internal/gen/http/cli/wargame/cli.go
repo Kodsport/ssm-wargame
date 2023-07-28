@@ -392,7 +392,9 @@ CreateChallenge implements CreateChallenge.
 
 Example:
     %[1]s admin create-challenge --body '{
+      "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
+      "publish_at": 1638384718,
       "score": 50,
       "slug": "pwnme",
       "title": "pwnme"
@@ -410,7 +412,9 @@ UpdateChallenge implements UpdateChallenge.
 
 Example:
     %[1]s admin update-challenge --body '{
+      "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
+      "publish_at": 1638384718,
       "score": 50,
       "slug": "pwnme",
       "title": "pwnme"

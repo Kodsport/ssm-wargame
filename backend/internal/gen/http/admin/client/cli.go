@@ -36,7 +36,13 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 	{
 		err = json.Unmarshal([]byte(adminCreateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"A heap overflow challenge\",\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+		}
+		if body.CtfEventID != nil {
+			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
+		}
+		if err != nil {
+			return nil, err
 		}
 	}
 	var token string
@@ -48,6 +54,8 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 		Title:       body.Title,
 		Description: body.Description,
 		Score:       body.Score,
+		PublishAt:   body.PublishAt,
+		CtfEventID:  body.CtfEventID,
 	}
 	v.Token = token
 
@@ -62,7 +70,13 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 	{
 		err = json.Unmarshal([]byte(adminUpdateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"A heap overflow challenge\",\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+		}
+		if body.CtfEventID != nil {
+			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
+		}
+		if err != nil {
+			return nil, err
 		}
 	}
 	var challengeID string
@@ -83,6 +97,8 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 		Title:       body.Title,
 		Description: body.Description,
 		Score:       body.Score,
+		PublishAt:   body.PublishAt,
+		CtfEventID:  body.CtfEventID,
 	}
 	v.ChallengeID = challengeID
 	v.Token = token

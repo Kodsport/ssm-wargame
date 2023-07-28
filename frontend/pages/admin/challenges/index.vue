@@ -20,6 +20,15 @@
                     <textarea class="form-control" placeholder="Enter description" v-model="form.description" />
                 </div>
                 <div>
+                    <label>Publish immediately</label>
+                    <input class="" type="checkbox" v-model="publishImm">
+                </div>
+                <div class="form-group" v-if="!publishImm">
+                    <label>Publish at</label>
+                    <input class="form-control" type="datetime-local" placeholder="Enter publish date"
+                        v-model="form.publishAt" />
+                </div>
+                <div>
                     <button class="btn btn-primary" @click="createChall">Create</button>
                 </div>
             </form>
@@ -65,17 +74,25 @@ onMounted(() => {
 
 const challenges = computed(() => store.challenges)
 
+const publishImm = ref(false)
 const form = ref({
     title: "",
     slug: "",
     score: 0,
-    description: ""
+    description: "",
+    publishAt: ""
 })
 
 async function createChall() {
     await http("/admin/challenges", {
         method: 'POST',
-        body: form.value
+        body: {
+            title: form.value.title,
+            slug: form.value.slug,
+            score: form.value.score,
+            description: form.value.description,
+            publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000
+        }
     });
 
     store.getChallenges()

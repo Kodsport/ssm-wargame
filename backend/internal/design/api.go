@@ -177,11 +177,14 @@ var CreateChallengePayload = Type("CreateChallengePayload", func() {
 	Attribute("title")
 	Attribute("description")
 	Attribute("score")
+	Attribute("publish_at")
+	Attribute("ctf_event_id")
 })
 
 var Challenge = Type("Challenge", func() {
 	Attribute("id", String, func() {
 		Example("e721a338-44de-4de8-a562-43d2db5f4115")
+		Format(FormatUUID)
 	})
 	Attribute("slug", String, "A unique string that can be used in URLs", func() {
 		Example("pwnme")
@@ -203,8 +206,13 @@ var Challenge = Type("Challenge", func() {
 		Example(3)
 	})
 
+	Attribute("ctf_event_id", String, "The ID of the CTF the challenge was taken from", func() {
+		Example("c397efb2-b171-4d77-9166-d105cf4f521a")
+		Format(FormatUUID)
+	})
+
 	Attribute("services", ArrayOf(ChallengeService))
 	Attribute("files", ArrayOf(ChallengeFiles))
 
-	Required("id", "title", "description", "score", "published", "slug", "solves")
+	Required("id", "title", "description", "score", "slug", "solves")
 })

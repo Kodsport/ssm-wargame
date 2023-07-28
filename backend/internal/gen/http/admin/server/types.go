@@ -24,6 +24,10 @@ type CreateChallengeRequestBody struct {
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	// The number of points given to the solver
 	Score *int `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	// unix timestamp
+	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -37,6 +41,10 @@ type UpdateChallengeRequestBody struct {
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	// The number of points given to the solver
 	Score *int `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	// unix timestamp
+	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -1296,6 +1304,8 @@ func NewCreateChallengePayload(body *CreateChallengeRequestBody, token string) *
 		Title:       *body.Title,
 		Description: *body.Description,
 		Score:       *body.Score,
+		PublishAt:   body.PublishAt,
+		CtfEventID:  body.CtfEventID,
 	}
 	v.Token = token
 
@@ -1310,6 +1320,8 @@ func NewUpdateChallengePayload(body *UpdateChallengeRequestBody, challengeID str
 		Title:       *body.Title,
 		Description: *body.Description,
 		Score:       *body.Score,
+		PublishAt:   body.PublishAt,
+		CtfEventID:  body.CtfEventID,
 	}
 	v.ChallengeID = challengeID
 	v.Token = token
@@ -1420,6 +1432,9 @@ func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err e
 	if body.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
 	}
+	if body.CtfEventID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
+	}
 	return
 }
 
@@ -1437,6 +1452,9 @@ func ValidateUpdateChallengeRequestBody(body *UpdateChallengeRequestBody) (err e
 	}
 	if body.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.CtfEventID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
 	}
 	return
 }

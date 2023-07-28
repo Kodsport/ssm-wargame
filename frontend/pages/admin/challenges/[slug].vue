@@ -20,6 +20,14 @@
           <textarea class="form-control" placeholder="Enter description" v-model="form.description" />
         </div>
         <div>
+          <label>Publish immediately</label>
+          <input class="" type="checkbox" v-model="publishImm">
+        </div>
+        <div class="form-group" v-if="!publishImm">
+          <label>Publish at</label>
+          <input class="form-control" type="datetime-local" placeholder="Enter publish date" v-model="form.publishAt" />
+        </div>
+        <div>
           <button class="btn btn-primary" @click="updateChall">Update</button>
         </div>
       </form>
@@ -128,6 +136,7 @@ const fileInput = ref(null)
 
 var chall = computed(() => challs.getBySlug(route.params.slug))
 var newFlag = ref("")
+const publishImm = ref(false)
 
 onMounted(async () => {
 
@@ -140,7 +149,9 @@ onMounted(async () => {
     description: chall.value.description,
     score: chall.value.score,
     slug: chall.value.slug,
+    publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16) // hacky af,pls fix
   };
+  publishImm.value = chall.value.publish_at == null
 })
 
 async function uploadFile() {
@@ -178,7 +189,13 @@ function checkFile() {
 async function updateChall() {
   await http(`/admin/challenges/${chall.value.id}`, {
     method: 'PUT',
-    body: form.value
+    body: {
+      title: form.value.title,
+      description: form.value.description,
+      score: form.value.score,
+      slug: form.value.slug,
+      publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000
+    }
   });
 
   challs.getChallenges()

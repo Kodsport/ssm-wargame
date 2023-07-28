@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <nuxt-link class="navbar-brand" to="/admin">ssm?</nuxt-link>
+      <nuxt-link class="navbar-brand" to="/">ssm?</nuxt-link>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul v-if="auth.user.role == 'admin'" class="navbar-nav me-auto mb-2 mb-lg-0">
 

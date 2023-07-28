@@ -24,6 +24,10 @@ type CreateChallengeRequestBody struct {
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
 	Score int `form:"score" json:"score" xml:"score"`
+	// unix timestamp
+	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -37,6 +41,10 @@ type UpdateChallengeRequestBody struct {
 	Description string `form:"description" json:"description" xml:"description"`
 	// The number of points given to the solver
 	Score int `form:"score" json:"score" xml:"score"`
+	// unix timestamp
+	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -774,6 +782,8 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 		Title:       p.Title,
 		Description: p.Description,
 		Score:       p.Score,
+		PublishAt:   p.PublishAt,
+		CtfEventID:  p.CtfEventID,
 	}
 	return body
 }
@@ -786,6 +796,8 @@ func NewUpdateChallengeRequestBody(p *admin.UpdateChallengePayload) *UpdateChall
 		Title:       p.Title,
 		Description: p.Description,
 		Score:       p.Score,
+		PublishAt:   p.PublishAt,
+		CtfEventID:  p.CtfEventID,
 	}
 	return body
 }
@@ -2186,6 +2198,9 @@ func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err err
 	}
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	for _, e := range body.Files {
 		if e != nil {

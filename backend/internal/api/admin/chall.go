@@ -88,13 +88,19 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallengePayload) error {
 
+	var pubAt null.Time
+	if req.PublishAt != nil {
+		pubAt = null.TimeFrom(time.Unix(*req.PublishAt, 0))
+	}
+
 	chall := models.Challenge{
 		ID:          uuid.New().String(),
 		Title:       req.Title,
 		Slug:        req.Slug,
 		Description: req.Description,
 		Score:       int(req.Score),
-		PublishAt:   null.Time{},
+		PublishAt:   pubAt,
+		CTFEventID:  null.StringFromPtr(req.CtfEventID),
 	}
 
 	err := chall.Insert(ctx, s.db, boil.Infer())
@@ -108,6 +114,11 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 
 func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallengePayload) error {
 
+	var pubAt null.Time
+	if req.PublishAt != nil {
+		pubAt = null.TimeFrom(time.Unix(*req.PublishAt, 0))
+	}
+
 	n, err := models.Challenges(
 		models.ChallengeWhere.ID.EQ(req.ChallengeID),
 	).UpdateAll(ctx, s.db, models.M{
@@ -115,6 +126,8 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 		models.ChallengeColumns.Score:       req.Score,
 		models.ChallengeColumns.Slug:        req.Slug,
 		models.ChallengeColumns.Description: req.Description,
+		models.ChallengeColumns.PublishAt:   pubAt,
+		models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID),
 	})
 	if err != nil {
 		s.log.Error("could not update chall", zap.Error(err))

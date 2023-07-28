@@ -126,6 +126,9 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	if result.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
 	}
+	if result.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
+	}
 	for _, e := range result.Files {
 		if e != nil {
 			if err2 := ValidateChallengeFilesView(e); err2 != nil {

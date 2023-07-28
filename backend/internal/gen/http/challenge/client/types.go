@@ -237,6 +237,9 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
 	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	}
 	for _, e := range body.Files {
 		if e != nil {
 			if err2 := ValidateChallengeFilesResponse(e); err2 != nil {
