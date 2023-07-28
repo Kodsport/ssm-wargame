@@ -18,8 +18,11 @@ import (
 
 // Server lists the user service endpoint HTTP handlers.
 type Server struct {
-	Mounts  []*MountPoint
-	GetSelf http.Handler
+	Mounts        []*MountPoint
+	GetSelf       http.Handler
+	JoinSchool    http.Handler
+	LeaveSchool   http.Handler
+	SearchSchools http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -56,8 +59,14 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"GetSelf", "GET", "/user/self"},
+			{"JoinSchool", "POST", "/user/join_school"},
+			{"LeaveSchool", "POST", "/user/leave_school"},
+			{"SearchSchools", "GET", "/user/schools"},
 		},
-		GetSelf: NewGetSelfHandler(e.GetSelf, mux, decoder, encoder, errhandler, formatter),
+		GetSelf:       NewGetSelfHandler(e.GetSelf, mux, decoder, encoder, errhandler, formatter),
+		JoinSchool:    NewJoinSchoolHandler(e.JoinSchool, mux, decoder, encoder, errhandler, formatter),
+		LeaveSchool:   NewLeaveSchoolHandler(e.LeaveSchool, mux, decoder, encoder, errhandler, formatter),
+		SearchSchools: NewSearchSchoolsHandler(e.SearchSchools, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -67,11 +76,17 @@ func (s *Server) Service() string { return "user" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetSelf = m(s.GetSelf)
+	s.JoinSchool = m(s.JoinSchool)
+	s.LeaveSchool = m(s.LeaveSchool)
+	s.SearchSchools = m(s.SearchSchools)
 }
 
 // Mount configures the mux to serve the user endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetSelfHandler(mux, h.GetSelf)
+	MountJoinSchoolHandler(mux, h.JoinSchool)
+	MountLeaveSchoolHandler(mux, h.LeaveSchool)
+	MountSearchSchoolsHandler(mux, h.SearchSchools)
 }
 
 // MountGetSelfHandler configures the mux to serve the "user" service "GetSelf"
@@ -104,6 +119,159 @@ func NewGetSelfHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "GetSelf")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountJoinSchoolHandler configures the mux to serve the "user" service
+// "JoinSchool" endpoint.
+func MountJoinSchoolHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/user/join_school", f)
+}
+
+// NewJoinSchoolHandler creates a HTTP handler which loads the HTTP request and
+// calls the "user" service "JoinSchool" endpoint.
+func NewJoinSchoolHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeJoinSchoolRequest(mux, decoder)
+		encodeResponse = EncodeJoinSchoolResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "JoinSchool")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountLeaveSchoolHandler configures the mux to serve the "user" service
+// "LeaveSchool" endpoint.
+func MountLeaveSchoolHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/user/leave_school", f)
+}
+
+// NewLeaveSchoolHandler creates a HTTP handler which loads the HTTP request
+// and calls the "user" service "LeaveSchool" endpoint.
+func NewLeaveSchoolHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeLeaveSchoolRequest(mux, decoder)
+		encodeResponse = EncodeLeaveSchoolResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "LeaveSchool")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountSearchSchoolsHandler configures the mux to serve the "user" service
+// "SearchSchools" endpoint.
+func MountSearchSchoolsHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/user/schools", f)
+}
+
+// NewSearchSchoolsHandler creates a HTTP handler which loads the HTTP request
+// and calls the "user" service "SearchSchools" endpoint.
+func NewSearchSchoolsHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeSearchSchoolsRequest(mux, decoder)
+		encodeResponse = EncodeSearchSchoolsResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "SearchSchools")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
 		payload, err := decodeRequest(r)
 		if err != nil {

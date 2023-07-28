@@ -7,6 +7,7 @@ import (
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
+	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
 )
 
@@ -25,13 +26,25 @@ func NewService(conn *sql.DB, log *zap.Logger, auther spec.Auther) spec.Service 
 }
 
 func (s *service) GetSelf(ctx context.Context, req *spec.GetSelfPayload) (*spec.GetSelfResult, error) {
-	user := ctx.Value(auth.UserKey).(*models.User)
+	user := auth.GetUser(ctx)
 
-	return &spec.GetSelfResult{
+	res := &spec.GetSelfResult{
 		ID:        user.ID,
 		Email:     user.Email,
 		FirstName: user.FirstName.String,
 		LastName:  user.LastName.String,
 		Role:      user.Role,
-	}, nil
+		SchoolID:  user.SchoolID.Ptr(),
+	}
+
+	if user.SchoolID.Valid {
+		err := user.L.LoadSchool(ctx, s.db, true, user, qm.Select(models.SchoolColumns.Name))
+		if err != nil {
+			s.log.Error("could not get school", zap.Error(err))
+			return nil, err
+		}
+		res.SchoolName = &user.R.School.Name
+	}
+
+	return res, nil
 }

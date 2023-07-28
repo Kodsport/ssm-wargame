@@ -247,6 +247,7 @@ type SsmUser struct {
 	FirstName string
 	LastName  string
 	Role      string
+	SchoolID  *int
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.

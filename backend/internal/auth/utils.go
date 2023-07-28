@@ -7,7 +7,7 @@ import (
 )
 
 func HasRole(ctx context.Context, roles ...string) bool {
-	user := ctx.Value(UserKey).(*models.User)
+	user := GetUser(ctx)
 
 	for _, role := range roles {
 		if role == user.Role {

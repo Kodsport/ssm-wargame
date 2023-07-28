@@ -17,6 +17,12 @@ import (
 type Service interface {
 	// GetSelf implements GetSelf.
 	GetSelf(context.Context, *GetSelfPayload) (res *GetSelfResult, err error)
+	// JoinSchool implements JoinSchool.
+	JoinSchool(context.Context, *JoinSchoolPayload) (err error)
+	// LeaveSchool implements LeaveSchool.
+	LeaveSchool(context.Context, *LeaveSchoolPayload) (err error)
+	// SearchSchools implements SearchSchools.
+	SearchSchools(context.Context, *SearchSchoolsPayload) (res []*School, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -33,7 +39,7 @@ const ServiceName = "user"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [1]string{"GetSelf"}
+var MethodNames = [4]string{"GetSelf", "JoinSchool", "LeaveSchool", "SearchSchools"}
 
 // GetSelfPayload is the payload type of the user service GetSelf method.
 type GetSelfPayload struct {
@@ -42,9 +48,36 @@ type GetSelfPayload struct {
 
 // GetSelfResult is the result type of the user service GetSelf method.
 type GetSelfResult struct {
-	ID        string
-	Email     string
-	FirstName string
-	LastName  string
-	Role      string
+	SchoolName *string
+	ID         string
+	Email      string
+	FirstName  string
+	LastName   string
+	Role       string
+	SchoolID   *int
+}
+
+// JoinSchoolPayload is the payload type of the user service JoinSchool method.
+type JoinSchoolPayload struct {
+	SchoolID int
+	Token    string
+}
+
+// LeaveSchoolPayload is the payload type of the user service LeaveSchool
+// method.
+type LeaveSchoolPayload struct {
+	Token string
+}
+
+// SearchSchoolsPayload is the payload type of the user service SearchSchools
+// method.
+type SearchSchoolsPayload struct {
+	Q     string
+	Token string
+}
+
+type School struct {
+	ID               int
+	Name             string
+	MunicipalityName string
 }

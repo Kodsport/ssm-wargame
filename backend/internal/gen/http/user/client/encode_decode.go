@@ -17,6 +17,7 @@ import (
 
 	user "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
 	goahttp "goa.design/goa/v3/http"
+	goa "goa.design/goa/v3/pkg"
 )
 
 // BuildGetSelfRequest instantiates a HTTP request object with method and path
@@ -92,4 +93,228 @@ func DecodeGetSelfResponse(decoder func(*http.Response) goahttp.Decoder, restore
 			return nil, goahttp.ErrInvalidResponse("user", "GetSelf", resp.StatusCode, string(body))
 		}
 	}
+}
+
+// BuildJoinSchoolRequest instantiates a HTTP request object with method and
+// path set to call the "user" service "JoinSchool" endpoint
+func (c *Client) BuildJoinSchoolRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: JoinSchoolUserPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("user", "JoinSchool", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeJoinSchoolRequest returns an encoder for requests sent to the user
+// JoinSchool server.
+func EncodeJoinSchoolRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*user.JoinSchoolPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("user", "JoinSchool", "*user.JoinSchoolPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewJoinSchoolRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("user", "JoinSchool", err)
+		}
+		return nil
+	}
+}
+
+// DecodeJoinSchoolResponse returns a decoder for responses returned by the
+// user JoinSchool endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+func DecodeJoinSchoolResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("user", "JoinSchool", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildLeaveSchoolRequest instantiates a HTTP request object with method and
+// path set to call the "user" service "LeaveSchool" endpoint
+func (c *Client) BuildLeaveSchoolRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: LeaveSchoolUserPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("user", "LeaveSchool", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeLeaveSchoolRequest returns an encoder for requests sent to the user
+// LeaveSchool server.
+func EncodeLeaveSchoolRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*user.LeaveSchoolPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("user", "LeaveSchool", "*user.LeaveSchoolPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeLeaveSchoolResponse returns a decoder for responses returned by the
+// user LeaveSchool endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+func DecodeLeaveSchoolResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("user", "LeaveSchool", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildSearchSchoolsRequest instantiates a HTTP request object with method and
+// path set to call the "user" service "SearchSchools" endpoint
+func (c *Client) BuildSearchSchoolsRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: SearchSchoolsUserPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("user", "SearchSchools", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeSearchSchoolsRequest returns an encoder for requests sent to the user
+// SearchSchools server.
+func EncodeSearchSchoolsRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*user.SearchSchoolsPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("user", "SearchSchools", "*user.SearchSchoolsPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		values := req.URL.Query()
+		values.Add("q", p.Q)
+		req.URL.RawQuery = values.Encode()
+		return nil
+	}
+}
+
+// DecodeSearchSchoolsResponse returns a decoder for responses returned by the
+// user SearchSchools endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+func DecodeSearchSchoolsResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body SearchSchoolsResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("user", "SearchSchools", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateSchoolResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("user", "SearchSchools", err)
+			}
+			res := NewSearchSchoolsSchoolOK(body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("user", "SearchSchools", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// unmarshalSchoolResponseToUserSchool builds a value of type *user.School from
+// a value of type *SchoolResponse.
+func unmarshalSchoolResponseToUserSchool(v *SchoolResponse) *user.School {
+	res := &user.School{
+		ID:               *v.ID,
+		Name:             *v.Name,
+		MunicipalityName: *v.MunicipalityName,
+	}
+
+	return res
 }

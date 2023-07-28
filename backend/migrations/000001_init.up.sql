@@ -4,6 +4,7 @@ CREATE TABLE schools (
     id INT PRIMARY KEY,
     name TEXT NOT NULL,
     geographical_area_code TEXT NOT NULL,
+    municipality_name TEXT NOT NULL,
     raw_skolverket_data JSONB NOT NULL,
     is_high_school BOOLEAN NOT NULL,
     is_elementary_school BOOLEAN NOT NULL,
@@ -13,6 +14,8 @@ CREATE TABLE schools (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
+
+CREATE INDEX schools_name_idx ON schools ( name );
 
 CREATE TABLE users (
     id UUID PRIMARY KEY,

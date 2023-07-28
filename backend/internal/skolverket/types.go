@@ -18,7 +18,10 @@ type Unit struct {
 		Inriktningstyp string `json:"Inriktningstyp"`
 		Skolenhetstyp  string `json:"Skolenhetstyp"`
 		SkolaNamn      string `json:"SkolaNamn"`
-		Besoksadress   struct {
+		Kommun         struct {
+			Namn string `json:"Namn"`
+		} `json:"Kommun"`
+		Besoksadress struct {
 			Postnr  string `json:"Postnr"`
 			GeoData struct {
 				KoordinatWGS84Lat *float64 `json:"Koordinat_WGS84_Lat,string"`

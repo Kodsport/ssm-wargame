@@ -1474,6 +1474,7 @@ func unmarshalSsmUserResponseToAdminSsmUser(v *SsmUserResponse) *admin.SsmUser {
 		FirstName: *v.FirstName,
 		LastName:  *v.LastName,
 		Role:      *v.Role,
+		SchoolID:  v.SchoolID,
 	}
 
 	return res

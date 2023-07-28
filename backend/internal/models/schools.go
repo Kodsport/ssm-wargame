@@ -36,6 +36,7 @@ type School struct {
 	Status               string       `boil:"status" json:"status" toml:"status" yaml:"status"`
 	CreatedAt            time.Time    `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt            null.Time    `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	MunicipalityName     string       `boil:"municipality_name" json:"municipality_name" toml:"municipality_name" yaml:"municipality_name"`
 
 	R *schoolR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L schoolL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -53,6 +54,7 @@ var SchoolColumns = struct {
 	Status               string
 	CreatedAt            string
 	UpdatedAt            string
+	MunicipalityName     string
 }{
 	ID:                   "id",
 	Name:                 "name",
@@ -65,6 +67,7 @@ var SchoolColumns = struct {
 	Status:               "status",
 	CreatedAt:            "created_at",
 	UpdatedAt:            "updated_at",
+	MunicipalityName:     "municipality_name",
 }
 
 var SchoolTableColumns = struct {
@@ -79,6 +82,7 @@ var SchoolTableColumns = struct {
 	Status               string
 	CreatedAt            string
 	UpdatedAt            string
+	MunicipalityName     string
 }{
 	ID:                   "schools.id",
 	Name:                 "schools.name",
@@ -91,6 +95,7 @@ var SchoolTableColumns = struct {
 	Status:               "schools.status",
 	CreatedAt:            "schools.created_at",
 	UpdatedAt:            "schools.updated_at",
+	MunicipalityName:     "schools.municipality_name",
 }
 
 // Generated where
@@ -166,6 +171,7 @@ var SchoolWhere = struct {
 	Status               whereHelperstring
 	CreatedAt            whereHelpertime_Time
 	UpdatedAt            whereHelpernull_Time
+	MunicipalityName     whereHelperstring
 }{
 	ID:                   whereHelperint{field: "\"schools\".\"id\""},
 	Name:                 whereHelperstring{field: "\"schools\".\"name\""},
@@ -178,6 +184,7 @@ var SchoolWhere = struct {
 	Status:               whereHelperstring{field: "\"schools\".\"status\""},
 	CreatedAt:            whereHelpertime_Time{field: "\"schools\".\"created_at\""},
 	UpdatedAt:            whereHelpernull_Time{field: "\"schools\".\"updated_at\""},
+	MunicipalityName:     whereHelperstring{field: "\"schools\".\"municipality_name\""},
 }
 
 // SchoolRels is where relationship names are stored.
@@ -208,9 +215,9 @@ func (r *schoolR) GetUsers() UserSlice {
 type schoolL struct{}
 
 var (
-	schoolAllColumns            = []string{"id", "name", "geographical_area_code", "raw_skolverket_data", "is_high_school", "is_elementary_school", "latitude", "longitude", "status", "created_at", "updated_at"}
+	schoolAllColumns            = []string{"id", "name", "geographical_area_code", "raw_skolverket_data", "is_high_school", "is_elementary_school", "latitude", "longitude", "status", "created_at", "updated_at", "municipality_name"}
 	schoolColumnsWithoutDefault = []string{"id", "name", "geographical_area_code", "raw_skolverket_data", "is_high_school", "is_elementary_school", "status"}
-	schoolColumnsWithDefault    = []string{"latitude", "longitude", "created_at", "updated_at"}
+	schoolColumnsWithDefault    = []string{"latitude", "longitude", "created_at", "updated_at", "municipality_name"}
 	schoolPrimaryKeyColumns     = []string{"id"}
 	schoolGeneratedColumns      = []string{}
 )

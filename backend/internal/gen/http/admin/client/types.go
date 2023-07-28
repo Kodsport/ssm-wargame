@@ -772,6 +772,7 @@ type SsmUserResponse struct {
 	FirstName *string `form:"first_name,omitempty" json:"first_name,omitempty" xml:"first_name,omitempty"`
 	LastName  *string `form:"last_name,omitempty" json:"last_name,omitempty" xml:"last_name,omitempty"`
 	Role      *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
+	SchoolID  *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload

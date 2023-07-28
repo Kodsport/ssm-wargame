@@ -15,13 +15,19 @@ import (
 
 // Client is the "user" service client.
 type Client struct {
-	GetSelfEndpoint goa.Endpoint
+	GetSelfEndpoint       goa.Endpoint
+	JoinSchoolEndpoint    goa.Endpoint
+	LeaveSchoolEndpoint   goa.Endpoint
+	SearchSchoolsEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "user" service client given the endpoints.
-func NewClient(getSelf goa.Endpoint) *Client {
+func NewClient(getSelf, joinSchool, leaveSchool, searchSchools goa.Endpoint) *Client {
 	return &Client{
-		GetSelfEndpoint: getSelf,
+		GetSelfEndpoint:       getSelf,
+		JoinSchoolEndpoint:    joinSchool,
+		LeaveSchoolEndpoint:   leaveSchool,
+		SearchSchoolsEndpoint: searchSchools,
 	}
 }
 
@@ -33,4 +39,26 @@ func (c *Client) GetSelf(ctx context.Context, p *GetSelfPayload) (res *GetSelfRe
 		return
 	}
 	return ires.(*GetSelfResult), nil
+}
+
+// JoinSchool calls the "JoinSchool" endpoint of the "user" service.
+func (c *Client) JoinSchool(ctx context.Context, p *JoinSchoolPayload) (err error) {
+	_, err = c.JoinSchoolEndpoint(ctx, p)
+	return
+}
+
+// LeaveSchool calls the "LeaveSchool" endpoint of the "user" service.
+func (c *Client) LeaveSchool(ctx context.Context, p *LeaveSchoolPayload) (err error) {
+	_, err = c.LeaveSchoolEndpoint(ctx, p)
+	return
+}
+
+// SearchSchools calls the "SearchSchools" endpoint of the "user" service.
+func (c *Client) SearchSchools(ctx context.Context, p *SearchSchoolsPayload) (res []*School, err error) {
+	var ires interface{}
+	ires, err = c.SearchSchoolsEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*School), nil
 }

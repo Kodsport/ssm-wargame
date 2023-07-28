@@ -544,20 +544,6 @@ paths:
                 slug: pwnme
                 start_date: "2006-02-01"
                 title: pwnme
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: A heap overflow challenge
-                display_month: Januari/Februari
-                end_date: "2006-02-01"
-                slug: pwnme
-                start_date: "2006-02-01"
-                title: pwnme
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: A heap overflow challenge
-                display_month: Januari/Februari
-                end_date: "2006-02-01"
-                slug: pwnme
-                start_date: "2006-02-01"
-                title: pwnme
         "400":
           description: Resource not found
           content:
@@ -717,27 +703,26 @@ paths:
                   id: uuid todo
                   last_name: Sunar
                   role: admin
+                  school_id: 78433202
                 - email: movitz.sunar@ssm.example
                   first_name: Movitz
                   id: uuid todo
                   last_name: Sunar
                   role: admin
+                  school_id: 78433202
               example:
               - email: movitz.sunar@ssm.example
                 first_name: Movitz
                 id: uuid todo
                 last_name: Sunar
                 role: admin
+                school_id: 78433202
               - email: movitz.sunar@ssm.example
                 first_name: Movitz
                 id: uuid todo
                 last_name: Sunar
                 role: admin
-              - email: movitz.sunar@ssm.example
-                first_name: Movitz
-                id: uuid todo
-                last_name: Sunar
-                role: admin
+                school_id: 78433202
         "400":
           description: Resource not found
           content:
@@ -962,7 +947,21 @@ paths:
                   slug: pwnme
                   start_date: "2006-02-01"
                   title: pwnme
+                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: A heap overflow challenge
+                  display_month: Januari/Februari
+                  end_date: "2006-02-01"
+                  slug: pwnme
+                  start_date: "2006-02-01"
+                  title: pwnme
               example:
+              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: A heap overflow challenge
+                display_month: Januari/Februari
+                end_date: "2006-02-01"
+                slug: pwnme
+                start_date: "2006-02-01"
+                title: pwnme
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 description: A heap overflow challenge
                 display_month: Januari/Februari
@@ -986,6 +985,82 @@ paths:
                 title: pwnme
       security:
       - jwt_header_Authorization: []
+  /user/join_school:
+    post:
+      tags:
+      - user
+      summary: JoinSchool user
+      operationId: user#JoinSchool
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinSchoolRequestBody'
+            example:
+              school_id: 78433202
+      responses:
+        "200":
+          description: OK response.
+      security:
+      - jwt_header_Authorization: []
+  /user/leave_school:
+    post:
+      tags:
+      - user
+      summary: LeaveSchool user
+      operationId: user#LeaveSchool
+      responses:
+        "200":
+          description: OK response.
+      security:
+      - jwt_header_Authorization: []
+  /user/schools:
+    get:
+      tags:
+      - user
+      summary: SearchSchools user
+      operationId: user#SearchSchools
+      parameters:
+      - name: q
+        in: query
+        allowEmptyValue: true
+        required: true
+        schema:
+          type: string
+          example: engelbrektssko
+        example: engelbrektssko
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/School'
+                example:
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
+              example:
+              - id: 78433202
+                municipality_name: Örebro
+                name: Engelbrektsskolan
+              - id: 78433202
+                municipality_name: Örebro
+                name: Engelbrektsskolan
+              - id: 78433202
+                municipality_name: Örebro
+                name: Engelbrektsskolan
+      security:
+      - jwt_header_Authorization: []
   /user/self:
     get:
       tags:
@@ -1005,6 +1080,8 @@ paths:
                 id: uuid todo
                 last_name: Sunar
                 role: admin
+                school_id: 78433202
+                school_name: Voluptatem vel sed consequatur iure.
       security:
       - jwt_header_Authorization: []
 components:
@@ -1136,7 +1213,6 @@ components:
       - title
       - description
       - score
-      - published
       - slug
       - solves
     Error:
@@ -1163,11 +1239,11 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-          example: false
+          example: true
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: true
+          example: false
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -1223,18 +1299,38 @@ components:
         role:
           type: string
           example: admin
+        school_id:
+          type: integer
+          example: 78433202
+          format: int64
+        school_name:
+          type: string
+          example: Neque recusandae vel.
       example:
         email: movitz.sunar@ssm.example
         first_name: Movitz
         id: uuid todo
         last_name: Sunar
         role: admin
+        school_id: 78433202
+        school_name: Quos nesciunt sed quia error quasi earum.
       required:
       - id
       - email
       - first_name
       - last_name
       - role
+    JoinSchoolRequestBody:
+      type: object
+      properties:
+        school_id:
+          type: integer
+          example: 78433202
+          format: int64
+      example:
+        school_id: 78433202
+      required:
+      - school_id
     MonthlyChallenge:
       type: object
       properties:
@@ -1283,7 +1379,6 @@ components:
       - title
       - description
       - score
-      - published
       - slug
       - solves
     PresignChallFileUploadRequestBody:
@@ -1320,6 +1415,27 @@ components:
         url: https://s3-endpoint.example/bucket/key?signature=xxx
       required:
       - url
+    School:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 78433202
+          format: int64
+        municipality_name:
+          type: string
+          example: Örebro
+        name:
+          type: string
+          example: Engelbrektsskolan
+      example:
+        id: 78433202
+        municipality_name: Örebro
+        name: Engelbrektsskolan
+      required:
+      - id
+      - name
+      - municipality_name
     SsmAdminChallenge:
       type: object
       properties:
@@ -1332,13 +1448,6 @@ components:
           items:
             $ref: '#/components/schemas/AdminChallengeFiles'
           example:
-          - bucket: ssm-prod-bucket
-            filename: decryptor.exe
-            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-            key: file.exe
-            md5: cq02dBbcuugBHM1oKyvMlQ==
-            size: 87123
-            url: https://s3/bucket/key?signature
           - bucket: ssm-prod-bucket
             filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -1390,6 +1499,7 @@ components:
           example:
           - {}
           - {}
+          - {}
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -1428,6 +1538,55 @@ components:
           md5: cq02dBbcuugBHM1oKyvMlQ==
           size: 87123
           url: https://s3/bucket/key?signature
+        flags:
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        publish_at: 1638384718
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      required:
+      - files
+      - id
+      - title
+      - description
+      - score
+      - slug
+      - solves
+    SsmAdminChallengeCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/SsmAdminChallenge'
+      example:
+      - description: A heap overflow challenge
+        files:
+        - bucket: ssm-prod-bucket
+          filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          key: file.exe
+          md5: cq02dBbcuugBHM1oKyvMlQ==
+          size: 87123
+          url: https://s3/bucket/key?signature
+        - bucket: ssm-prod-bucket
+          filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          key: file.exe
+          md5: cq02dBbcuugBHM1oKyvMlQ==
+          size: 87123
+          url: https://s3/bucket/key?signature
         - bucket: ssm-prod-bucket
           filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -1449,20 +1608,6 @@ components:
         slug: pwnme
         solves: 3
         title: pwnme
-      required:
-      - files
-      - id
-      - title
-      - description
-      - score
-      - published
-      - slug
-      - solves
-    SsmAdminChallengeCollection:
-      type: array
-      items:
-        $ref: '#/components/schemas/SsmAdminChallenge'
-      example:
       - description: A heap overflow challenge
         files:
         - bucket: ssm-prod-bucket
@@ -1608,7 +1753,6 @@ components:
           example:
           - {}
           - {}
-          - {}
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -1630,11 +1774,11 @@ components:
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
         score: 50
         services:
+        - {}
+        - {}
         - {}
         - {}
         slug: pwnme
@@ -1645,7 +1789,6 @@ components:
       - title
       - description
       - score
-      - published
       - slug
       - solves
     SsmChallengeCollection:
@@ -1653,25 +1796,6 @@ components:
       items:
         $ref: '#/components/schemas/SsmChallenge'
       example:
-      - description: A heap overflow challenge
-        files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        score: 50
-        services:
-        - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
       - description: A heap overflow challenge
         files:
         - filename: decryptor.exe
@@ -1728,12 +1852,17 @@ components:
         role:
           type: string
           example: admin
+        school_id:
+          type: integer
+          example: 78433202
+          format: int64
       example:
         email: movitz.sunar@ssm.example
         first_name: Movitz
         id: uuid todo
         last_name: Sunar
         role: admin
+        school_id: 78433202
       required:
       - id
       - email

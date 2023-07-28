@@ -113,7 +113,7 @@ func realMain() error {
 
 	var handler http.Handler = mux
 
-	handler = cors.AllowAll().Handler(handler)
+	handler = cors.AllowAll().Handler(handler) // TODO
 
 	srv := &http.Server{
 		Addr:    "localhost:8000",

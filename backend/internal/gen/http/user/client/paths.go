@@ -11,3 +11,18 @@ package client
 func GetSelfUserPath() string {
 	return "/user/self"
 }
+
+// JoinSchoolUserPath returns the URL path to the user service JoinSchool HTTP endpoint.
+func JoinSchoolUserPath() string {
+	return "/user/join_school"
+}
+
+// LeaveSchoolUserPath returns the URL path to the user service LeaveSchool HTTP endpoint.
+func LeaveSchoolUserPath() string {
+	return "/user/leave_school"
+}
+
+// SearchSchoolsUserPath returns the URL path to the user service SearchSchools HTTP endpoint.
+func SearchSchoolsUserPath() string {
+	return "/user/schools"
+}

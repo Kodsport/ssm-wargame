@@ -21,6 +21,18 @@ type Client struct {
 	// endpoint.
 	GetSelfDoer goahttp.Doer
 
+	// JoinSchool Doer is the HTTP client used to make requests to the JoinSchool
+	// endpoint.
+	JoinSchoolDoer goahttp.Doer
+
+	// LeaveSchool Doer is the HTTP client used to make requests to the LeaveSchool
+	// endpoint.
+	LeaveSchoolDoer goahttp.Doer
+
+	// SearchSchools Doer is the HTTP client used to make requests to the
+	// SearchSchools endpoint.
+	SearchSchoolsDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -42,6 +54,9 @@ func NewClient(
 ) *Client {
 	return &Client{
 		GetSelfDoer:         doer,
+		JoinSchoolDoer:      doer,
+		LeaveSchoolDoer:     doer,
+		SearchSchoolsDoer:   doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -69,6 +84,78 @@ func (c *Client) GetSelf() goa.Endpoint {
 		resp, err := c.GetSelfDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("user", "GetSelf", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// JoinSchool returns an endpoint that makes HTTP requests to the user service
+// JoinSchool server.
+func (c *Client) JoinSchool() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeJoinSchoolRequest(c.encoder)
+		decodeResponse = DecodeJoinSchoolResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildJoinSchoolRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.JoinSchoolDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("user", "JoinSchool", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// LeaveSchool returns an endpoint that makes HTTP requests to the user service
+// LeaveSchool server.
+func (c *Client) LeaveSchool() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeLeaveSchoolRequest(c.encoder)
+		decodeResponse = DecodeLeaveSchoolResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildLeaveSchoolRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.LeaveSchoolDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("user", "LeaveSchool", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// SearchSchools returns an endpoint that makes HTTP requests to the user
+// service SearchSchools server.
+func (c *Client) SearchSchools() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeSearchSchoolsRequest(c.encoder)
+		decodeResponse = DecodeSearchSchoolsResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildSearchSchoolsRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.SearchSchoolsDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("user", "SearchSchools", err)
 		}
 		return decodeResponse(resp)
 	}

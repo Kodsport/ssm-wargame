@@ -54,7 +54,23 @@ var User = ResultType("application/vnd.ssm.user", func() {
 	Attribute("role", String, func() {
 		Example("admin")
 	})
+	Attribute("school_id", Int, func() {
+		Example(78433202)
+	})
 	Required("id", "email", "first_name", "last_name", "role")
+})
+
+var School = Type("School", func() {
+	Attribute("id", Int, func() {
+		Example(78433202)
+	})
+	Attribute("name", String, func() {
+		Example("Engelbrektsskolan")
+	})
+	Attribute("municipality_name", String, func() {
+		Example("Örebro")
+	})
+	Required("id", "name", "municipality_name")
 })
 
 var ChallengeService = Type("ChallengeService", func() {

@@ -8,6 +8,9 @@
 package client
 
 import (
+	"encoding/json"
+	"fmt"
+
 	user "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
 )
 
@@ -19,6 +22,60 @@ func BuildGetSelfPayload(userGetSelfToken string) (*user.GetSelfPayload, error) 
 		token = userGetSelfToken
 	}
 	v := &user.GetSelfPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildJoinSchoolPayload builds the payload for the user JoinSchool endpoint
+// from CLI flags.
+func BuildJoinSchoolPayload(userJoinSchoolBody string, userJoinSchoolToken string) (*user.JoinSchoolPayload, error) {
+	var err error
+	var body JoinSchoolRequestBody
+	{
+		err = json.Unmarshal([]byte(userJoinSchoolBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"school_id\": 78433202\n   }'")
+		}
+	}
+	var token string
+	{
+		token = userJoinSchoolToken
+	}
+	v := &user.JoinSchoolPayload{
+		SchoolID: body.SchoolID,
+	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildLeaveSchoolPayload builds the payload for the user LeaveSchool endpoint
+// from CLI flags.
+func BuildLeaveSchoolPayload(userLeaveSchoolToken string) (*user.LeaveSchoolPayload, error) {
+	var token string
+	{
+		token = userLeaveSchoolToken
+	}
+	v := &user.LeaveSchoolPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildSearchSchoolsPayload builds the payload for the user SearchSchools
+// endpoint from CLI flags.
+func BuildSearchSchoolsPayload(userSearchSchoolsQ string, userSearchSchoolsToken string) (*user.SearchSchoolsPayload, error) {
+	var q string
+	{
+		q = userSearchSchoolsQ
+	}
+	var token string
+	{
+		token = userSearchSchoolsToken
+	}
+	v := &user.SearchSchoolsPayload{}
+	v.Q = q
 	v.Token = token
 
 	return v, nil
