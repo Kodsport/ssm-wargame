@@ -28,6 +28,7 @@ type CreateChallengeRequestBody struct {
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CategoryID string  `form:"category_id" json:"category_id" xml:"category_id"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -45,6 +46,7 @@ type UpdateChallengeRequestBody struct {
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CategoryID string  `form:"category_id" json:"category_id" xml:"category_id"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -99,6 +101,10 @@ type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
 // ListUsersResponseBody is the type of the "admin" service "ListUsers"
 // endpoint HTTP response body.
 type ListUsersResponseBody []*SsmUserResponse
+
+// ListCategoriesResponseBody is the type of the "admin" service
+// "ListCategories" endpoint HTTP response body.
+type ListCategoriesResponseBody []*CategoryResponse
 
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "unauthorized" error.
@@ -706,6 +712,60 @@ type DeleteFlagBadRequestResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// ListCategoriesUnauthorizedResponseBody is the type of the "admin" service
+// "ListCategories" endpoint HTTP response body for the "unauthorized" error.
+type ListCategoriesUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCategoriesNotFoundResponseBody is the type of the "admin" service
+// "ListCategories" endpoint HTTP response body for the "not_found" error.
+type ListCategoriesNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCategoriesBadRequestResponseBody is the type of the "admin" service
+// "ListCategories" endpoint HTTP response body for the "bad_request" error.
+type ListCategoriesBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
@@ -722,8 +782,9 @@ type SsmAdminChallengeResponse struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The numer of people who solved the challenge
-	Solves *int                          `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
-	Flags  []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
+	Solves     *int                          `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+	Flags      []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
+	CategoryID *string                       `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -775,6 +836,12 @@ type SsmUserResponse struct {
 	SchoolID  *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
+// CategoryResponse is used to define fields on response body types.
+type CategoryResponse struct {
+	ID   *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+}
+
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
 // of the "CreateChallenge" endpoint of the "admin" service.
 func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChallengeRequestBody {
@@ -785,6 +852,7 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 		Score:       p.Score,
 		PublishAt:   p.PublishAt,
 		CtfEventID:  p.CtfEventID,
+		CategoryID:  p.CategoryID,
 	}
 	return body
 }
@@ -799,6 +867,7 @@ func NewUpdateChallengeRequestBody(p *admin.UpdateChallengePayload) *UpdateChall
 		Score:       p.Score,
 		PublishAt:   p.PublishAt,
 		CtfEventID:  p.CtfEventID,
+		CategoryID:  p.CategoryID,
 	}
 	return body
 }
@@ -1363,6 +1432,62 @@ func NewDeleteFlagNotFound(body *DeleteFlagNotFoundResponseBody) *goa.ServiceErr
 // NewDeleteFlagBadRequest builds a admin service DeleteFlag endpoint
 // bad_request error.
 func NewDeleteFlagBadRequest(body *DeleteFlagBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCategoriesCategoryOK builds a "admin" service "ListCategories"
+// endpoint result from a HTTP "OK" response.
+func NewListCategoriesCategoryOK(body []*CategoryResponse) []*admin.Category {
+	v := make([]*admin.Category, len(body))
+	for i, val := range body {
+		v[i] = unmarshalCategoryResponseToAdminCategory(val)
+	}
+
+	return v
+}
+
+// NewListCategoriesUnauthorized builds a admin service ListCategories endpoint
+// unauthorized error.
+func NewListCategoriesUnauthorized(body *ListCategoriesUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCategoriesNotFound builds a admin service ListCategories endpoint
+// not_found error.
+func NewListCategoriesNotFound(body *ListCategoriesNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCategoriesBadRequest builds a admin service ListCategories endpoint
+// bad_request error.
+func NewListCategoriesBadRequest(body *ListCategoriesBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -2176,11 +2301,86 @@ func ValidateDeleteFlagBadRequestResponseBody(body *DeleteFlagBadRequestResponse
 	return
 }
 
+// ValidateListCategoriesUnauthorizedResponseBody runs the validations defined
+// on ListCategories_unauthorized_Response_Body
+func ValidateListCategoriesUnauthorizedResponseBody(body *ListCategoriesUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCategoriesNotFoundResponseBody runs the validations defined on
+// ListCategories_not_found_Response_Body
+func ValidateListCategoriesNotFoundResponseBody(body *ListCategoriesNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCategoriesBadRequestResponseBody runs the validations defined on
+// ListCategories_bad_request_Response_Body
+func ValidateListCategoriesBadRequestResponseBody(body *ListCategoriesBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateSsmAdminChallengeResponse runs the validations defined on
 // SsmAdminChallengeResponse
 func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err error) {
 	if body.Files == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("files", "body"))
+	}
+	if body.CategoryID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("category_id", "body"))
 	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
@@ -2216,6 +2416,9 @@ func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err err
 				err = goa.MergeErrors(err, err2)
 			}
 		}
+	}
+	if body.CategoryID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.category_id", *body.CategoryID, goa.FormatUUID))
 	}
 	return
 }
@@ -2305,6 +2508,20 @@ func ValidateSsmUserResponse(body *SsmUserResponse) (err error) {
 	}
 	if body.Role == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("role", "body"))
+	}
+	return
+}
+
+// ValidateCategoryResponse runs the validations defined on CategoryResponse
+func ValidateCategoryResponse(body *CategoryResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }

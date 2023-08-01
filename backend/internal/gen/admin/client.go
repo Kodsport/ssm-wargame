@@ -26,10 +26,11 @@ type Client struct {
 	ListUsersEndpoint              goa.Endpoint
 	AddFlagEndpoint                goa.Endpoint
 	DeleteFlagEndpoint             goa.Endpoint
+	ListCategoriesEndpoint         goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag goa.Endpoint) *Client {
+func NewClient(listChallenges, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag, listCategories goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:         listChallenges,
 		CreateChallengeEndpoint:        createChallenge,
@@ -42,6 +43,7 @@ func NewClient(listChallenges, createChallenge, updateChallenge, presignChallFil
 		ListUsersEndpoint:              listUsers,
 		AddFlagEndpoint:                addFlag,
 		DeleteFlagEndpoint:             deleteFlag,
+		ListCategoriesEndpoint:         listCategories,
 	}
 }
 
@@ -129,4 +131,14 @@ func (c *Client) AddFlag(ctx context.Context, p *AddFlagPayload) (err error) {
 func (c *Client) DeleteFlag(ctx context.Context, p *DeleteFlagPayload) (err error) {
 	_, err = c.DeleteFlagEndpoint(ctx, p)
 	return
+}
+
+// ListCategories calls the "ListCategories" endpoint of the "admin" service.
+func (c *Client) ListCategories(ctx context.Context, p *ListCategoriesPayload) (res []*Category, err error) {
+	var ires interface{}
+	ires, err = c.ListCategoriesEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*Category), nil
 }

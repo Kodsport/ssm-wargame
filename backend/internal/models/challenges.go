@@ -33,6 +33,7 @@ type Challenge struct {
 	CTFEventID  null.String `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
 	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	CategoryID  string      `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
 
 	R *challengeR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L challengeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -48,6 +49,7 @@ var ChallengeColumns = struct {
 	CTFEventID  string
 	CreatedAt   string
 	UpdatedAt   string
+	CategoryID  string
 }{
 	ID:          "id",
 	Slug:        "slug",
@@ -58,6 +60,7 @@ var ChallengeColumns = struct {
 	CTFEventID:  "ctf_event_id",
 	CreatedAt:   "created_at",
 	UpdatedAt:   "updated_at",
+	CategoryID:  "category_id",
 }
 
 var ChallengeTableColumns = struct {
@@ -70,6 +73,7 @@ var ChallengeTableColumns = struct {
 	CTFEventID  string
 	CreatedAt   string
 	UpdatedAt   string
+	CategoryID  string
 }{
 	ID:          "challenges.id",
 	Slug:        "challenges.slug",
@@ -80,6 +84,7 @@ var ChallengeTableColumns = struct {
 	CTFEventID:  "challenges.ctf_event_id",
 	CreatedAt:   "challenges.created_at",
 	UpdatedAt:   "challenges.updated_at",
+	CategoryID:  "challenges.category_id",
 }
 
 // Generated where
@@ -117,6 +122,7 @@ var ChallengeWhere = struct {
 	CTFEventID  whereHelpernull_String
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpernull_Time
+	CategoryID  whereHelperstring
 }{
 	ID:          whereHelperstring{field: "\"challenges\".\"id\""},
 	Slug:        whereHelperstring{field: "\"challenges\".\"slug\""},
@@ -127,24 +133,25 @@ var ChallengeWhere = struct {
 	CTFEventID:  whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
 	UpdatedAt:   whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
+	CategoryID:  whereHelperstring{field: "\"challenges\".\"category_id\""},
 }
 
 // ChallengeRels is where relationship names are stored.
 var ChallengeRels = struct {
+	Category          string
 	CTFEvent          string
 	MonthlyChallenge  string
 	Users             string
-	Categories        string
 	ChallengeFiles    string
 	ChallengeServices string
 	Flags             string
 	Submissions       string
 	UserSolves        string
 }{
+	Category:          "Category",
 	CTFEvent:          "CTFEvent",
 	MonthlyChallenge:  "MonthlyChallenge",
 	Users:             "Users",
-	Categories:        "Categories",
 	ChallengeFiles:    "ChallengeFiles",
 	ChallengeServices: "ChallengeServices",
 	Flags:             "Flags",
@@ -154,10 +161,10 @@ var ChallengeRels = struct {
 
 // challengeR is where relationships are stored.
 type challengeR struct {
+	Category          *Category             `boil:"Category" json:"Category" toml:"Category" yaml:"Category"`
 	CTFEvent          *CTFEvent             `boil:"CTFEvent" json:"CTFEvent" toml:"CTFEvent" yaml:"CTFEvent"`
 	MonthlyChallenge  *MonthlyChallenge     `boil:"MonthlyChallenge" json:"MonthlyChallenge" toml:"MonthlyChallenge" yaml:"MonthlyChallenge"`
 	Users             UserSlice             `boil:"Users" json:"Users" toml:"Users" yaml:"Users"`
-	Categories        CategorySlice         `boil:"Categories" json:"Categories" toml:"Categories" yaml:"Categories"`
 	ChallengeFiles    ChallengeFileSlice    `boil:"ChallengeFiles" json:"ChallengeFiles" toml:"ChallengeFiles" yaml:"ChallengeFiles"`
 	ChallengeServices ChallengeServiceSlice `boil:"ChallengeServices" json:"ChallengeServices" toml:"ChallengeServices" yaml:"ChallengeServices"`
 	Flags             FlagSlice             `boil:"Flags" json:"Flags" toml:"Flags" yaml:"Flags"`
@@ -168,6 +175,13 @@ type challengeR struct {
 // NewStruct creates a new relationship struct
 func (*challengeR) NewStruct() *challengeR {
 	return &challengeR{}
+}
+
+func (r *challengeR) GetCategory() *Category {
+	if r == nil {
+		return nil
+	}
+	return r.Category
 }
 
 func (r *challengeR) GetCTFEvent() *CTFEvent {
@@ -189,13 +203,6 @@ func (r *challengeR) GetUsers() UserSlice {
 		return nil
 	}
 	return r.Users
-}
-
-func (r *challengeR) GetCategories() CategorySlice {
-	if r == nil {
-		return nil
-	}
-	return r.Categories
 }
 
 func (r *challengeR) GetChallengeFiles() ChallengeFileSlice {
@@ -237,8 +244,8 @@ func (r *challengeR) GetUserSolves() UserSolfSlice {
 type challengeL struct{}
 
 var (
-	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "publish_at", "ctf_event_id", "created_at", "updated_at"}
-	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "score"}
+	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "publish_at", "ctf_event_id", "created_at", "updated_at", "category_id"}
+	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "score", "category_id"}
 	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at"}
 	challengePrimaryKeyColumns     = []string{"id"}
 	challengeGeneratedColumns      = []string{}
@@ -522,6 +529,17 @@ func (q challengeQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (
 	return count > 0, nil
 }
 
+// Category pointed to by the foreign key.
+func (o *Challenge) Category(mods ...qm.QueryMod) categoryQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("\"id\" = ?", o.CategoryID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	return Categories(queryMods...)
+}
+
 // CTFEvent pointed to by the foreign key.
 func (o *Challenge) CTFEvent(mods ...qm.QueryMod) ctfEventQuery {
 	queryMods := []qm.QueryMod{
@@ -557,21 +575,6 @@ func (o *Challenge) Users(mods ...qm.QueryMod) userQuery {
 	)
 
 	return Users(queryMods...)
-}
-
-// Categories retrieves all the category's Categories with an executor.
-func (o *Challenge) Categories(mods ...qm.QueryMod) categoryQuery {
-	var queryMods []qm.QueryMod
-	if len(mods) != 0 {
-		queryMods = append(queryMods, mods...)
-	}
-
-	queryMods = append(queryMods,
-		qm.InnerJoin("\"challenge_categories\" on \"categories\".\"id\" = \"challenge_categories\".\"category_id\""),
-		qm.Where("\"challenge_categories\".\"challenge_id\"=?", o.ID),
-	)
-
-	return Categories(queryMods...)
 }
 
 // ChallengeFiles retrieves all the challenge_file's ChallengeFiles with an executor.
@@ -642,6 +645,126 @@ func (o *Challenge) UserSolves(mods ...qm.QueryMod) userSolfQuery {
 	)
 
 	return UserSolves(queryMods...)
+}
+
+// LoadCategory allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for an N-1 relationship.
+func (challengeL) LoadCategory(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
+	var slice []*Challenge
+	var object *Challenge
+
+	if singular {
+		var ok bool
+		object, ok = maybeChallenge.(*Challenge)
+		if !ok {
+			object = new(Challenge)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeChallenge))
+			}
+		}
+	} else {
+		s, ok := maybeChallenge.(*[]*Challenge)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeChallenge))
+			}
+		}
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &challengeR{}
+		}
+		args = append(args, object.CategoryID)
+
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &challengeR{}
+			}
+
+			for _, a := range args {
+				if a == obj.CategoryID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.CategoryID)
+
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(
+		qm.From(`categories`),
+		qm.WhereIn(`categories.id in ?`, args...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load Category")
+	}
+
+	var resultSlice []*Category
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice Category")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for categories")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for categories")
+	}
+
+	if len(categoryAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.Category = foreign
+		if foreign.R == nil {
+			foreign.R = &categoryR{}
+		}
+		foreign.R.Challenges = append(foreign.R.Challenges, object)
+		return nil
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.CategoryID == foreign.ID {
+				local.R.Category = foreign
+				if foreign.R == nil {
+					foreign.R = &categoryR{}
+				}
+				foreign.R.Challenges = append(foreign.R.Challenges, local)
+				break
+			}
+		}
+	}
+
+	return nil
 }
 
 // LoadCTFEvent allows an eager lookup of values, cached into the
@@ -1006,137 +1129,6 @@ func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singula
 				local.R.Users = append(local.R.Users, foreign)
 				if foreign.R == nil {
 					foreign.R = &userR{}
-				}
-				foreign.R.Challenges = append(foreign.R.Challenges, local)
-				break
-			}
-		}
-	}
-
-	return nil
-}
-
-// LoadCategories allows an eager lookup of values, cached into the
-// loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (challengeL) LoadCategories(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
-	var slice []*Challenge
-	var object *Challenge
-
-	if singular {
-		var ok bool
-		object, ok = maybeChallenge.(*Challenge)
-		if !ok {
-			object = new(Challenge)
-			ok = queries.SetFromEmbeddedStruct(&object, &maybeChallenge)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeChallenge))
-			}
-		}
-	} else {
-		s, ok := maybeChallenge.(*[]*Challenge)
-		if ok {
-			slice = *s
-		} else {
-			ok = queries.SetFromEmbeddedStruct(&slice, maybeChallenge)
-			if !ok {
-				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeChallenge))
-			}
-		}
-	}
-
-	args := make([]interface{}, 0, 1)
-	if singular {
-		if object.R == nil {
-			object.R = &challengeR{}
-		}
-		args = append(args, object.ID)
-	} else {
-	Outer:
-		for _, obj := range slice {
-			if obj.R == nil {
-				obj.R = &challengeR{}
-			}
-
-			for _, a := range args {
-				if a == obj.ID {
-					continue Outer
-				}
-			}
-
-			args = append(args, obj.ID)
-		}
-	}
-
-	if len(args) == 0 {
-		return nil
-	}
-
-	query := NewQuery(
-		qm.Select("\"categories\".\"id\", \"categories\".\"name\", \"categories\".\"created_at\", \"categories\".\"updated_at\", \"a\".\"challenge_id\""),
-		qm.From("\"categories\""),
-		qm.InnerJoin("\"challenge_categories\" as \"a\" on \"categories\".\"id\" = \"a\".\"category_id\""),
-		qm.WhereIn("\"a\".\"challenge_id\" in ?", args...),
-	)
-	if mods != nil {
-		mods.Apply(query)
-	}
-
-	results, err := query.QueryContext(ctx, e)
-	if err != nil {
-		return errors.Wrap(err, "failed to eager load categories")
-	}
-
-	var resultSlice []*Category
-
-	var localJoinCols []string
-	for results.Next() {
-		one := new(Category)
-		var localJoinCol string
-
-		err = results.Scan(&one.ID, &one.Name, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
-		if err != nil {
-			return errors.Wrap(err, "failed to scan eager loaded results for categories")
-		}
-		if err = results.Err(); err != nil {
-			return errors.Wrap(err, "failed to plebian-bind eager loaded slice categories")
-		}
-
-		resultSlice = append(resultSlice, one)
-		localJoinCols = append(localJoinCols, localJoinCol)
-	}
-
-	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on categories")
-	}
-	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for categories")
-	}
-
-	if len(categoryAfterSelectHooks) != 0 {
-		for _, obj := range resultSlice {
-			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
-				return err
-			}
-		}
-	}
-	if singular {
-		object.R.Categories = resultSlice
-		for _, foreign := range resultSlice {
-			if foreign.R == nil {
-				foreign.R = &categoryR{}
-			}
-			foreign.R.Challenges = append(foreign.R.Challenges, object)
-		}
-		return nil
-	}
-
-	for i, foreign := range resultSlice {
-		localJoinCol := localJoinCols[i]
-		for _, local := range slice {
-			if local.ID == localJoinCol {
-				local.R.Categories = append(local.R.Categories, foreign)
-				if foreign.R == nil {
-					foreign.R = &categoryR{}
 				}
 				foreign.R.Challenges = append(foreign.R.Challenges, local)
 				break
@@ -1717,6 +1709,53 @@ func (challengeL) LoadUserSolves(ctx context.Context, e boil.ContextExecutor, si
 	return nil
 }
 
+// SetCategory of the challenge to the related item.
+// Sets o.R.Category to related.
+// Adds o to related.R.Challenges.
+func (o *Challenge) SetCategory(ctx context.Context, exec boil.ContextExecutor, insert bool, related *Category) error {
+	var err error
+	if insert {
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	}
+
+	updateQuery := fmt.Sprintf(
+		"UPDATE \"challenges\" SET %s WHERE %s",
+		strmangle.SetParamNames("\"", "\"", 1, []string{"category_id"}),
+		strmangle.WhereClause("\"", "\"", 2, challengePrimaryKeyColumns),
+	)
+	values := []interface{}{related.ID, o.ID}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, updateQuery)
+		fmt.Fprintln(writer, values)
+	}
+	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	o.CategoryID = related.ID
+	if o.R == nil {
+		o.R = &challengeR{
+			Category: related,
+		}
+	} else {
+		o.R.Category = related
+	}
+
+	if related.R == nil {
+		related.R = &categoryR{
+			Challenges: ChallengeSlice{o},
+		}
+	} else {
+		related.R.Challenges = append(related.R.Challenges, o)
+	}
+
+	return nil
+}
+
 // SetCTFEvent of the challenge to the related item.
 // Sets o.R.CTFEvent to related.
 // Adds o to related.R.Challenges.
@@ -1973,151 +2012,6 @@ func (o *Challenge) RemoveUsers(ctx context.Context, exec boil.ContextExecutor, 
 }
 
 func removeUsersFromChallengesSlice(o *Challenge, related []*User) {
-	for _, rel := range related {
-		if rel.R == nil {
-			continue
-		}
-		for i, ri := range rel.R.Challenges {
-			if o.ID != ri.ID {
-				continue
-			}
-
-			ln := len(rel.R.Challenges)
-			if ln > 1 && i < ln-1 {
-				rel.R.Challenges[i] = rel.R.Challenges[ln-1]
-			}
-			rel.R.Challenges = rel.R.Challenges[:ln-1]
-			break
-		}
-	}
-}
-
-// AddCategories adds the given related objects to the existing relationships
-// of the challenge, optionally inserting them as new records.
-// Appends related to o.R.Categories.
-// Sets related.R.Challenges appropriately.
-func (o *Challenge) AddCategories(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Category) error {
-	var err error
-	for _, rel := range related {
-		if insert {
-			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
-				return errors.Wrap(err, "failed to insert into foreign table")
-			}
-		}
-	}
-
-	for _, rel := range related {
-		query := "insert into \"challenge_categories\" (\"challenge_id\", \"category_id\") values ($1, $2)"
-		values := []interface{}{o.ID, rel.ID}
-
-		if boil.IsDebug(ctx) {
-			writer := boil.DebugWriterFrom(ctx)
-			fmt.Fprintln(writer, query)
-			fmt.Fprintln(writer, values)
-		}
-		_, err = exec.ExecContext(ctx, query, values...)
-		if err != nil {
-			return errors.Wrap(err, "failed to insert into join table")
-		}
-	}
-	if o.R == nil {
-		o.R = &challengeR{
-			Categories: related,
-		}
-	} else {
-		o.R.Categories = append(o.R.Categories, related...)
-	}
-
-	for _, rel := range related {
-		if rel.R == nil {
-			rel.R = &categoryR{
-				Challenges: ChallengeSlice{o},
-			}
-		} else {
-			rel.R.Challenges = append(rel.R.Challenges, o)
-		}
-	}
-	return nil
-}
-
-// SetCategories removes all previously related items of the
-// challenge replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.Challenges's Categories accordingly.
-// Replaces o.R.Categories with related.
-// Sets related.R.Challenges's Categories accordingly.
-func (o *Challenge) SetCategories(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Category) error {
-	query := "delete from \"challenge_categories\" where \"challenge_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	removeCategoriesFromChallengesSlice(o, related)
-	if o.R != nil {
-		o.R.Categories = nil
-	}
-
-	return o.AddCategories(ctx, exec, insert, related...)
-}
-
-// RemoveCategories relationships from objects passed in.
-// Removes related items from R.Categories (uses pointer comparison, removal does not keep order)
-// Sets related.R.Challenges.
-func (o *Challenge) RemoveCategories(ctx context.Context, exec boil.ContextExecutor, related ...*Category) error {
-	if len(related) == 0 {
-		return nil
-	}
-
-	var err error
-	query := fmt.Sprintf(
-		"delete from \"challenge_categories\" where \"challenge_id\" = $1 and \"category_id\" in (%s)",
-		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
-	)
-	values := []interface{}{o.ID}
-	for _, rel := range related {
-		values = append(values, rel.ID)
-	}
-
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err = exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-	removeCategoriesFromChallengesSlice(o, related)
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.Categories {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.Categories)
-			if ln > 1 && i < ln-1 {
-				o.R.Categories[i] = o.R.Categories[ln-1]
-			}
-			o.R.Categories = o.R.Categories[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
-func removeCategoriesFromChallengesSlice(o *Challenge, related []*Category) {
 	for _, rel := range related {
 		if rel.R == nil {
 			continue

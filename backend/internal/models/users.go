@@ -683,7 +683,7 @@ func (userL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, singula
 	}
 
 	query := NewQuery(
-		qm.Select("\"challenges\".\"id\", \"challenges\".\"slug\", \"challenges\".\"title\", \"challenges\".\"description\", \"challenges\".\"score\", \"challenges\".\"publish_at\", \"challenges\".\"ctf_event_id\", \"challenges\".\"created_at\", \"challenges\".\"updated_at\", \"a\".\"user_id\""),
+		qm.Select("\"challenges\".\"id\", \"challenges\".\"slug\", \"challenges\".\"title\", \"challenges\".\"description\", \"challenges\".\"score\", \"challenges\".\"publish_at\", \"challenges\".\"ctf_event_id\", \"challenges\".\"created_at\", \"challenges\".\"updated_at\", \"challenges\".\"category_id\", \"a\".\"user_id\""),
 		qm.From("\"challenges\""),
 		qm.InnerJoin("\"challenge_authors\" as \"a\" on \"challenges\".\"id\" = \"a\".\"challenge_id\""),
 		qm.WhereIn("\"a\".\"user_id\" in ?", args...),
@@ -704,7 +704,7 @@ func (userL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, singula
 		one := new(Challenge)
 		var localJoinCol string
 
-		err = results.Scan(&one.ID, &one.Slug, &one.Title, &one.Description, &one.Score, &one.PublishAt, &one.CTFEventID, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Slug, &one.Title, &one.Description, &one.Score, &one.PublishAt, &one.CTFEventID, &one.CreatedAt, &one.UpdatedAt, &one.CategoryID, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for challenges")
 		}

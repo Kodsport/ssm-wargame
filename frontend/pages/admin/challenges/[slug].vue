@@ -13,15 +13,21 @@
         </div>
         <div class="form-group">
           <label>Score</label>
-          <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.score" />
+          <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.score" step="50" min="0" />
         </div>
         <div class="form-group">
           <label>Description</label>
           <textarea class="form-control" placeholder="Enter description" v-model="form.description" />
         </div>
-        <div>
+        <div class="form-group">
           <label>Publish immediately</label>
           <input class="" type="checkbox" v-model="publishImm">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select class="form-control" name="" v-model="form.categoryId">
+            <option v-for="cat in challs.categories" :value="cat.id">{{ cat.name }}</option>
+          </select>
         </div>
         <div class="form-group" v-if="!publishImm">
           <label>Publish at</label>
@@ -130,6 +136,8 @@ var form = ref({
   description: "",
   score: "",
   slug: "",
+  categoryId: "",
+  publishAt: null
 })
 
 const fileInput = ref(null)
@@ -140,6 +148,7 @@ const publishImm = ref(false)
 
 onMounted(async () => {
 
+  challs.getCategories()
   if (!chall.value) {
     await challs.getChallenges()
   }
@@ -149,6 +158,7 @@ onMounted(async () => {
     description: chall.value.description,
     score: chall.value.score,
     slug: chall.value.slug,
+    categoryId: chall.value.category_id,
     publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16) // hacky af,pls fix
   };
   publishImm.value = chall.value.publish_at == null
@@ -194,6 +204,7 @@ async function updateChall() {
       description: form.value.description,
       score: form.value.score,
       slug: form.value.slug,
+      category_id: form.value.categoryId,
       publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000
     }
   });

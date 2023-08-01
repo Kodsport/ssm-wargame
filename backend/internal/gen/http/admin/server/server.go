@@ -30,6 +30,7 @@ type Server struct {
 	ListUsers              http.Handler
 	AddFlag                http.Handler
 	DeleteFlag             http.Handler
+	ListCategories         http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -76,6 +77,7 @@ func New(
 			{"ListUsers", "GET", "/admin/users"},
 			{"AddFlag", "POST", "/admin/challenges/{challengeID}/flags"},
 			{"DeleteFlag", "DELETE", "/admin/challenges/{challengeID}/flags/{flagID}"},
+			{"ListCategories", "GET", "/admin/categories"},
 		},
 		ListChallenges:         NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		CreateChallenge:        NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
@@ -88,6 +90,7 @@ func New(
 		ListUsers:              NewListUsersHandler(e.ListUsers, mux, decoder, encoder, errhandler, formatter),
 		AddFlag:                NewAddFlagHandler(e.AddFlag, mux, decoder, encoder, errhandler, formatter),
 		DeleteFlag:             NewDeleteFlagHandler(e.DeleteFlag, mux, decoder, encoder, errhandler, formatter),
+		ListCategories:         NewListCategoriesHandler(e.ListCategories, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -107,6 +110,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListUsers = m(s.ListUsers)
 	s.AddFlag = m(s.AddFlag)
 	s.DeleteFlag = m(s.DeleteFlag)
+	s.ListCategories = m(s.ListCategories)
 }
 
 // Mount configures the mux to serve the admin endpoints.
@@ -122,6 +126,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountListUsersHandler(mux, h.ListUsers)
 	MountAddFlagHandler(mux, h.AddFlag)
 	MountDeleteFlagHandler(mux, h.DeleteFlag)
+	MountListCategoriesHandler(mux, h.ListCategories)
 }
 
 // MountListChallengesHandler configures the mux to serve the "admin" service
@@ -664,6 +669,57 @@ func NewDeleteFlagHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteFlag")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListCategoriesHandler configures the mux to serve the "admin" service
+// "ListCategories" endpoint.
+func MountListCategoriesHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/categories", f)
+}
+
+// NewListCategoriesHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "ListCategories" endpoint.
+func NewListCategoriesHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListCategoriesRequest(mux, decoder)
+		encodeResponse = EncodeListCategoriesResponse(encoder)
+		encodeError    = EncodeListCategoriesError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListCategories")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

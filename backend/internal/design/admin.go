@@ -163,4 +163,14 @@ var _ = Service("admin", func() {
 			DELETE("/challenges/{challengeID}/flags/{flagID}")
 		})
 	})
+
+	Method("ListCategories", func() {
+		Result(ArrayOf(Category))
+		Payload(func() {
+			Extend(TokenPayload)
+		})
+		HTTP(func() {
+			GET("/categories")
+		})
+	})
 })

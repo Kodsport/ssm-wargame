@@ -117,7 +117,7 @@ func (i *Importer) Import() error {
 			ID:                   id,
 			Name:                 unit.SkolenhetInfo.Namn,
 			GeographicalAreaCode: unit.SkolenhetInfo.Besoksadress.Postnr,
-			MunicipalityName:     unit.SkolenhetInfo.Kommun.Name,
+			MunicipalityName:     unit.SkolenhetInfo.Kommun.Namn,
 			Status:               unit.SkolenhetInfo.Status,
 			IsHighSchool:         isHighSchool,
 			IsElementarySchool:   isElementarySchool,

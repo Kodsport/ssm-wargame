@@ -4,33 +4,31 @@
 package models
 
 var TableNames = struct {
-	Categories          string
-	ChallengeAuthors    string
-	ChallengeCategories string
-	ChallengeFiles      string
-	ChallengeServices   string
-	Challenges          string
-	CTFEvents           string
-	Flags               string
-	MonthlyChallenges   string
-	SchemaMigrations    string
-	Schools             string
-	Submissions         string
-	UserSolves          string
-	Users               string
+	Categories        string
+	ChallengeAuthors  string
+	ChallengeFiles    string
+	ChallengeServices string
+	Challenges        string
+	CTFEvents         string
+	Flags             string
+	MonthlyChallenges string
+	SchemaMigrations  string
+	Schools           string
+	Submissions       string
+	UserSolves        string
+	Users             string
 }{
-	Categories:          "categories",
-	ChallengeAuthors:    "challenge_authors",
-	ChallengeCategories: "challenge_categories",
-	ChallengeFiles:      "challenge_files",
-	ChallengeServices:   "challenge_services",
-	Challenges:          "challenges",
-	CTFEvents:           "ctf_events",
-	Flags:               "flags",
-	MonthlyChallenges:   "monthly_challenges",
-	SchemaMigrations:    "schema_migrations",
-	Schools:             "schools",
-	Submissions:         "submissions",
-	UserSolves:          "user_solves",
-	Users:               "users",
+	Categories:        "categories",
+	ChallengeAuthors:  "challenge_authors",
+	ChallengeFiles:    "challenge_files",
+	ChallengeServices: "challenge_services",
+	Challenges:        "challenges",
+	CTFEvents:         "ctf_events",
+	Flags:             "flags",
+	MonthlyChallenges: "monthly_challenges",
+	SchemaMigrations:  "schema_migrations",
+	Schools:           "schools",
+	Submissions:       "submissions",
+	UserSolves:        "user_solves",
+	Users:             "users",
 }

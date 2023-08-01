@@ -1103,6 +1103,96 @@ func EncodeDeleteFlagError(encoder func(context.Context, http.ResponseWriter) go
 	}
 }
 
+// EncodeListCategoriesResponse returns an encoder for responses returned by
+// the admin ListCategories endpoint.
+func EncodeListCategoriesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.([]*admin.Category)
+		enc := encoder(ctx, w)
+		body := NewListCategoriesResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListCategoriesRequest returns a decoder for requests sent to the admin
+// ListCategories endpoint.
+func DecodeListCategoriesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token string
+			err   error
+		)
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewListCategoriesPayload(token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeListCategoriesError returns an encoder for errors returned by the
+// ListCategories admin endpoint.
+func EncodeListCategoriesError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCategoriesUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCategoriesNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCategoriesBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse builds a
 // value of type *SsmAdminChallengeResponse from a value of type
 // *adminviews.SsmAdminChallengeView.
@@ -1115,6 +1205,7 @@ func marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(v *adminv
 		Score:       *v.Score,
 		PublishAt:   v.PublishAt,
 		Solves:      *v.Solves,
+		CategoryID:  *v.CategoryID,
 	}
 	if v.Services != nil {
 		res.Services = make([]*ChallengeServiceResponse, len(v.Services))
@@ -1208,6 +1299,17 @@ func marshalAdminSsmUserToSsmUserResponse(v *admin.SsmUser) *SsmUserResponse {
 		LastName:  v.LastName,
 		Role:      v.Role,
 		SchoolID:  v.SchoolID,
+	}
+
+	return res
+}
+
+// marshalAdminCategoryToCategoryResponse builds a value of type
+// *CategoryResponse from a value of type *admin.Category.
+func marshalAdminCategoryToCategoryResponse(v *admin.Category) *CategoryResponse {
+	res := &CategoryResponse{
+		ID:   v.ID,
+		Name: v.Name,
 	}
 
 	return res

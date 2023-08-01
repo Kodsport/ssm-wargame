@@ -65,3 +65,8 @@ func AddFlagAdminPath(challengeID string) string {
 func DeleteFlagAdminPath(challengeID string, flagID string) string {
 	return fmt.Sprintf("/admin/challenges/%v/flags/%v", challengeID, flagID)
 }
+
+// ListCategoriesAdminPath returns the URL path to the admin service ListCategories HTTP endpoint.
+func ListCategoriesAdminPath() string {
+	return "/admin/categories"
+}

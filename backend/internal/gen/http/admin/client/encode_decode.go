@@ -1372,6 +1372,134 @@ func DecodeDeleteFlagResponse(decoder func(*http.Response) goahttp.Decoder, rest
 	}
 }
 
+// BuildListCategoriesRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "ListCategories" endpoint
+func (c *Client) BuildListCategoriesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListCategoriesAdminPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "ListCategories", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListCategoriesRequest returns an encoder for requests sent to the
+// admin ListCategories server.
+func EncodeListCategoriesRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.ListCategoriesPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "ListCategories", "*admin.ListCategoriesPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListCategoriesResponse returns a decoder for responses returned by the
+// admin ListCategories endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeListCategoriesResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeListCategoriesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListCategoriesResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCategories", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateCategoryResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCategories", err)
+			}
+			res := NewListCategoriesCategoryOK(body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body ListCategoriesUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCategories", err)
+			}
+			err = ValidateListCategoriesUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCategories", err)
+			}
+			return nil, NewListCategoriesUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ListCategoriesNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCategories", err)
+			}
+			err = ValidateListCategoriesNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCategories", err)
+			}
+			return nil, NewListCategoriesNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ListCategoriesBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCategories", err)
+			}
+			err = ValidateListCategoriesBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCategories", err)
+			}
+			return nil, NewListCategoriesBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "ListCategories", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView builds a
 // value of type *adminviews.SsmAdminChallengeView from a value of type
 // *SsmAdminChallengeResponse.
@@ -1384,6 +1512,7 @@ func unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView(v *SsmA
 		Score:       v.Score,
 		PublishAt:   v.PublishAt,
 		Solves:      v.Solves,
+		CategoryID:  v.CategoryID,
 	}
 	if v.Services != nil {
 		res.Services = make([]*adminviews.ChallengeServiceView, len(v.Services))
@@ -1475,6 +1604,17 @@ func unmarshalSsmUserResponseToAdminSsmUser(v *SsmUserResponse) *admin.SsmUser {
 		LastName:  *v.LastName,
 		Role:      *v.Role,
 		SchoolID:  v.SchoolID,
+	}
+
+	return res
+}
+
+// unmarshalCategoryResponseToAdminCategory builds a value of type
+// *admin.Category from a value of type *CategoryResponse.
+func unmarshalCategoryResponseToAdminCategory(v *CategoryResponse) *admin.Category {
+	res := &admin.Category{
+		ID:   *v.ID,
+		Name: *v.Name,
 	}
 
 	return res

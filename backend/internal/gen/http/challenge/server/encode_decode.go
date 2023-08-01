@@ -199,6 +199,7 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengevie
 		Score:       *v.Score,
 		Solves:      *v.Solves,
 		Solved:      *v.Solved,
+		Category:    *v.Category,
 	}
 	if v.Services != nil {
 		res.Services = make([]*ChallengeServiceResponse, len(v.Services))

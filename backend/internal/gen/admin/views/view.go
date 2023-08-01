@@ -40,8 +40,9 @@ type SsmAdminChallengeView struct {
 	// unix timestamp
 	PublishAt *int64
 	// The numer of people who solved the challenge
-	Solves *int
-	Flags  []*AdminChallengeFlagView
+	Solves     *int
+	Flags      []*AdminChallengeFlagView
+	CategoryID *string
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -81,6 +82,7 @@ var (
 			"publish_at",
 			"solves",
 			"flags",
+			"category_id",
 		},
 	}
 	// SsmAdminChallengeMap is a map indexing the attribute names of
@@ -97,6 +99,7 @@ var (
 			"publish_at",
 			"solves",
 			"flags",
+			"category_id",
 		},
 	}
 )
@@ -129,6 +132,9 @@ func ValidateSsmAdminChallengeCollectionView(result SsmAdminChallengeCollectionV
 func ValidateSsmAdminChallengeView(result *SsmAdminChallengeView) (err error) {
 	if result.Files == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("files", "result"))
+	}
+	if result.CategoryID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("category_id", "result"))
 	}
 	if result.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
@@ -164,6 +170,9 @@ func ValidateSsmAdminChallengeView(result *SsmAdminChallengeView) (err error) {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
+	}
+	if result.CategoryID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.category_id", *result.CategoryID, goa.FormatUUID))
 	}
 	return
 }

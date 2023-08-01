@@ -61,12 +61,12 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
 
-	challs := make([]*custommodels.ChallWithSovles, 0)
+	challs := make([]*custommodels.UserChall, 0)
 	q := models.NewQuery(
-		qm.Select("c.*, COUNT(us.user_id) num_solves"),
+		qm.Select("c.*, categories.name as category"),
+		qm.Select("(SELECT COUNT(1) FROM user_solves WHERE challenge_id = c.id) num_solves"),
 		qm.From("challenges c"),
-		qm.LeftOuterJoin("user_solves us ON us.challenge_id = c.id"),
-		qm.GroupBy("c.id"),
+		qm.InnerJoin("categories ON categories.id = c.category_id"),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
 		qm.Where("publish_at IS NULL OR publish_at < NOW()"),
 	)
@@ -94,6 +94,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Score:       chall.Score,
 			Solves:      chall.NumSolves,
 			Solved:      chall.Solved,
+			Category:    chall.Category,
 		}
 
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))

@@ -300,6 +300,7 @@ func unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v *SsmChallen
 		Score:       v.Score,
 		Solves:      v.Solves,
 		Solved:      v.Solved,
+		Category:    v.Category,
 	}
 	if v.Services != nil {
 		res.Services = make([]*challengeviews.ChallengeServiceView, len(v.Services))

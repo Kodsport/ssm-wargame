@@ -3,8 +3,10 @@
         <div>
             <h1>challs</h1>
 
-            <Challenge v-for="chall in challs.challenges" v-bind:chall="chall"></Challenge>
-
+            <div v-for="cat in challs.challenges.map(c => c.category).filter((v ,i,a) => a.indexOf(v) == i)" :key="cat">
+                <h1>{{ cat }}</h1>
+                <Challenge v-for="chall in challs.challenges.filter(v => v.category === cat)" v-bind:chall="chall"></Challenge>
+            </div>
 
             <h1>User settings</h1>
             <div>

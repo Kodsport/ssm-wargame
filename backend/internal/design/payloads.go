@@ -13,6 +13,13 @@ var CreateChallengePayload = Type("CreateChallengePayload", func() {
 	Attribute("score")
 	Attribute("publish_at")
 	Attribute("ctf_event_id")
+
+	Attribute("category_id", String, func() {
+		Example("1b678292-6737-4cc7-8eae-aa821100293f")
+		Format(FormatUUID)
+	})
+
+	Required("category_id")
 })
 
 var TokenPayload = Type("TokenPayload", func() {

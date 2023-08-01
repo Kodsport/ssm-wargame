@@ -36,11 +36,13 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 	{
 		err = json.Unmarshal([]byte(adminCreateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
 		}
 		if body.CtfEventID != nil {
 			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
 		}
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.category_id", body.CategoryID, goa.FormatUUID))
+
 		if err != nil {
 			return nil, err
 		}
@@ -56,6 +58,7 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 		Score:       body.Score,
 		PublishAt:   body.PublishAt,
 		CtfEventID:  body.CtfEventID,
+		CategoryID:  body.CategoryID,
 	}
 	v.Token = token
 
@@ -70,11 +73,13 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 	{
 		err = json.Unmarshal([]byte(adminUpdateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
 		}
 		if body.CtfEventID != nil {
 			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
 		}
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.category_id", body.CategoryID, goa.FormatUUID))
+
 		if err != nil {
 			return nil, err
 		}
@@ -99,6 +104,7 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 		Score:       body.Score,
 		PublishAt:   body.PublishAt,
 		CtfEventID:  body.CtfEventID,
+		CategoryID:  body.CategoryID,
 	}
 	v.ChallengeID = challengeID
 	v.Token = token
@@ -311,6 +317,19 @@ func BuildDeleteFlagPayload(adminDeleteFlagChallengeID string, adminDeleteFlagFl
 	v := &admin.DeleteFlagPayload{}
 	v.ChallengeID = challengeID
 	v.FlagID = flagID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListCategoriesPayload builds the payload for the admin ListCategories
+// endpoint from CLI flags.
+func BuildListCategoriesPayload(adminListCategoriesToken string) (*admin.ListCategoriesPayload, error) {
+	var token string
+	{
+		token = adminListCategoriesToken
+	}
+	v := &admin.ListCategoriesPayload{}
 	v.Token = token
 
 	return v, nil

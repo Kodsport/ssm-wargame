@@ -460,8 +460,7 @@ func (o *Category) Challenges(mods ...qm.QueryMod) challengeQuery {
 	}
 
 	queryMods = append(queryMods,
-		qm.InnerJoin("\"challenge_categories\" on \"challenges\".\"id\" = \"challenge_categories\".\"challenge_id\""),
-		qm.Where("\"challenge_categories\".\"category_id\"=?", o.ID),
+		qm.Where("\"challenges\".\"category_id\"=?", o.ID),
 	)
 
 	return Challenges(queryMods...)
@@ -523,10 +522,8 @@ func (categoryL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, sin
 	}
 
 	query := NewQuery(
-		qm.Select("\"challenges\".\"id\", \"challenges\".\"slug\", \"challenges\".\"title\", \"challenges\".\"description\", \"challenges\".\"score\", \"challenges\".\"publish_at\", \"challenges\".\"ctf_event_id\", \"challenges\".\"created_at\", \"challenges\".\"updated_at\", \"a\".\"category_id\""),
-		qm.From("\"challenges\""),
-		qm.InnerJoin("\"challenge_categories\" as \"a\" on \"challenges\".\"id\" = \"a\".\"challenge_id\""),
-		qm.WhereIn("\"a\".\"category_id\" in ?", args...),
+		qm.From(`challenges`),
+		qm.WhereIn(`challenges.category_id in ?`, args...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -538,22 +535,8 @@ func (categoryL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, sin
 	}
 
 	var resultSlice []*Challenge
-
-	var localJoinCols []string
-	for results.Next() {
-		one := new(Challenge)
-		var localJoinCol string
-
-		err = results.Scan(&one.ID, &one.Slug, &one.Title, &one.Description, &one.Score, &one.PublishAt, &one.CTFEventID, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
-		if err != nil {
-			return errors.Wrap(err, "failed to scan eager loaded results for challenges")
-		}
-		if err = results.Err(); err != nil {
-			return errors.Wrap(err, "failed to plebian-bind eager loaded slice challenges")
-		}
-
-		resultSlice = append(resultSlice, one)
-		localJoinCols = append(localJoinCols, localJoinCol)
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice challenges")
 	}
 
 	if err = results.Close(); err != nil {
@@ -576,20 +559,19 @@ func (categoryL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, sin
 			if foreign.R == nil {
 				foreign.R = &challengeR{}
 			}
-			foreign.R.Categories = append(foreign.R.Categories, object)
+			foreign.R.Category = object
 		}
 		return nil
 	}
 
-	for i, foreign := range resultSlice {
-		localJoinCol := localJoinCols[i]
+	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ID == localJoinCol {
+			if local.ID == foreign.CategoryID {
 				local.R.Challenges = append(local.R.Challenges, foreign)
 				if foreign.R == nil {
 					foreign.R = &challengeR{}
 				}
-				foreign.R.Categories = append(foreign.R.Categories, local)
+				foreign.R.Category = local
 				break
 			}
 		}
@@ -601,31 +583,36 @@ func (categoryL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, sin
 // AddChallenges adds the given related objects to the existing relationships
 // of the category, optionally inserting them as new records.
 // Appends related to o.R.Challenges.
-// Sets related.R.Categories appropriately.
+// Sets related.R.Category appropriately.
 func (o *Category) AddChallenges(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Challenge) error {
 	var err error
 	for _, rel := range related {
 		if insert {
+			rel.CategoryID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"challenges\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"category_id"}),
+				strmangle.WhereClause("\"", "\"", 2, challengePrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.CategoryID = o.ID
 		}
 	}
 
-	for _, rel := range related {
-		query := "insert into \"challenge_categories\" (\"category_id\", \"challenge_id\") values ($1, $2)"
-		values := []interface{}{o.ID, rel.ID}
-
-		if boil.IsDebug(ctx) {
-			writer := boil.DebugWriterFrom(ctx)
-			fmt.Fprintln(writer, query)
-			fmt.Fprintln(writer, values)
-		}
-		_, err = exec.ExecContext(ctx, query, values...)
-		if err != nil {
-			return errors.Wrap(err, "failed to insert into join table")
-		}
-	}
 	if o.R == nil {
 		o.R = &categoryR{
 			Challenges: related,
@@ -637,110 +624,13 @@ func (o *Category) AddChallenges(ctx context.Context, exec boil.ContextExecutor,
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &challengeR{
-				Categories: CategorySlice{o},
+				Category: o,
 			}
 		} else {
-			rel.R.Categories = append(rel.R.Categories, o)
+			rel.R.Category = o
 		}
 	}
 	return nil
-}
-
-// SetChallenges removes all previously related items of the
-// category replacing them completely with the passed
-// in related items, optionally inserting them as new records.
-// Sets o.R.Categories's Challenges accordingly.
-// Replaces o.R.Challenges with related.
-// Sets related.R.Categories's Challenges accordingly.
-func (o *Category) SetChallenges(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Challenge) error {
-	query := "delete from \"challenge_categories\" where \"category_id\" = $1"
-	values := []interface{}{o.ID}
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err := exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-
-	removeChallengesFromCategoriesSlice(o, related)
-	if o.R != nil {
-		o.R.Challenges = nil
-	}
-
-	return o.AddChallenges(ctx, exec, insert, related...)
-}
-
-// RemoveChallenges relationships from objects passed in.
-// Removes related items from R.Challenges (uses pointer comparison, removal does not keep order)
-// Sets related.R.Categories.
-func (o *Category) RemoveChallenges(ctx context.Context, exec boil.ContextExecutor, related ...*Challenge) error {
-	if len(related) == 0 {
-		return nil
-	}
-
-	var err error
-	query := fmt.Sprintf(
-		"delete from \"challenge_categories\" where \"category_id\" = $1 and \"challenge_id\" in (%s)",
-		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
-	)
-	values := []interface{}{o.ID}
-	for _, rel := range related {
-		values = append(values, rel.ID)
-	}
-
-	if boil.IsDebug(ctx) {
-		writer := boil.DebugWriterFrom(ctx)
-		fmt.Fprintln(writer, query)
-		fmt.Fprintln(writer, values)
-	}
-	_, err = exec.ExecContext(ctx, query, values...)
-	if err != nil {
-		return errors.Wrap(err, "failed to remove relationships before set")
-	}
-	removeChallengesFromCategoriesSlice(o, related)
-	if o.R == nil {
-		return nil
-	}
-
-	for _, rel := range related {
-		for i, ri := range o.R.Challenges {
-			if rel != ri {
-				continue
-			}
-
-			ln := len(o.R.Challenges)
-			if ln > 1 && i < ln-1 {
-				o.R.Challenges[i] = o.R.Challenges[ln-1]
-			}
-			o.R.Challenges = o.R.Challenges[:ln-1]
-			break
-		}
-	}
-
-	return nil
-}
-
-func removeChallengesFromCategoriesSlice(o *Category, related []*Challenge) {
-	for _, rel := range related {
-		if rel.R == nil {
-			continue
-		}
-		for i, ri := range rel.R.Categories {
-			if o.ID != ri.ID {
-				continue
-			}
-
-			ln := len(rel.R.Categories)
-			if ln > 1 && i < ln-1 {
-				rel.R.Categories[i] = rel.R.Categories[ln-1]
-			}
-			rel.R.Categories = rel.R.Categories[:ln-1]
-			break
-		}
-	}
 }
 
 // Categories retrieves all the records using an executor.

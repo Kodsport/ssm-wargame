@@ -23,7 +23,7 @@ import (
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmAdminChallengeCollection, error) {
 
-	challs := make([]*custommodels.ChallWithSovles, 0)
+	challs := make([]*custommodels.UserChall, 0)
 	err := models.NewQuery(
 		qm.Select("c.*, COUNT(us.user_id) num_solves"),
 		qm.From("challenges c"),
@@ -48,6 +48,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Score:       chall.Score,
 			Solves:      chall.NumSolves,
 			PublishAt:   utils.NullTimeToUnix(chall.PublishAt),
+			CategoryID:  chall.CategoryID,
 		}
 
 		res[i].Flags = make([]*spec.AdminChallengeFlag, len(chall.R.Flags))
@@ -101,6 +102,7 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 		Score:       int(req.Score),
 		PublishAt:   pubAt,
 		CTFEventID:  null.StringFromPtr(req.CtfEventID),
+		CategoryID:  req.CategoryID,
 	}
 
 	err := chall.Insert(ctx, s.db, boil.Infer())
@@ -128,6 +130,7 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 		models.ChallengeColumns.Description: req.Description,
 		models.ChallengeColumns.PublishAt:   pubAt,
 		models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID),
+		models.ChallengeColumns.CategoryID:  req.CategoryID,
 	})
 	if err != nil {
 		s.log.Error("could not update chall", zap.Error(err))

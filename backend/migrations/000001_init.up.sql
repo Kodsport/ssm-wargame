@@ -33,7 +33,7 @@ CREATE INDEX users_school_id_indx ON users ( school_id );
 
 CREATE TABLE categories (
     id UUID PRIMARY KEY,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
@@ -55,11 +55,13 @@ CREATE TABLE challenges (
     score INT NOT NULL CHECK (score >= 0),
     publish_at TIMESTAMPTZ,
     ctf_event_id UUID REFERENCES ctf_events(id) ON DELETE SET NULL,
+    category_id UUID NOT NULL REFERENCES categories(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
 
 CREATE INDEX challenges_ctf_event_id_idx ON challenges ( ctf_event_id );
+CREATE INDEX challenges_category_id_idx ON challenges ( category_id );
 
 CREATE TABLE challenge_services (
     id UUID PRIMARY KEY,
@@ -132,13 +134,6 @@ CREATE TABLE challenge_authors (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
 
     PRIMARY KEY (challenge_id, user_id)
-);
-
-CREATE TABLE challenge_categories (
-    challenge_id UUID REFERENCES challenges(id) ON DELETE CASCADE,
-    category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
-
-    PRIMARY KEY (challenge_id, category_id)
 );
 
 CREATE TABLE user_solves (

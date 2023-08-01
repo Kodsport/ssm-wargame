@@ -44,7 +44,12 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("files", ArrayOf(AdminChallengeFile))
 	Attribute("flags", ArrayOf(AdminChallengeFlag))
 
-	Required("files")
+	Attribute("category_id", String, func() {
+		Example("12b8dc3a-10ae-49ed-9d69-5208ccd92ed1")
+		Format(FormatUUID)
+	})
+
+	Required("files", "category_id")
 })
 
 var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
@@ -65,5 +70,8 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 		Example(true)
 		Description("whether the user has solved the challenge or not")
 	})
-	Required("solved")
+	Attribute("category", String, func() {
+		Example("Misc")
+	})
+	Required("solved", "category")
 })

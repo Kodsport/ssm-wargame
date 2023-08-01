@@ -4,6 +4,18 @@ import (
 	. "goa.design/goa/v3/dsl"
 )
 
+var Category = Type("Category", func() {
+	Attribute("id", String, func() {
+		Example("e721a338-44de-4de8-a562-43d2db5f4115")
+		Format(FormatUUID)
+	})
+	Attribute("name", String, func() {
+		Example("Forensics")
+	})
+
+	Required("id", "name")
+})
+
 var Challenge = Type("Challenge", func() {
 	Attribute("id", String, func() {
 		Example("e721a338-44de-4de8-a562-43d2db5f4115")
@@ -34,10 +46,14 @@ var Challenge = Type("Challenge", func() {
 		Format(FormatUUID)
 	})
 
+	Attribute("category", String, func() {
+		Example("Forensics")
+	})
+
 	Attribute("services", ArrayOf(ChallengeService))
 	Attribute("files", ArrayOf(ChallengeFiles))
 
-	Required("id", "title", "description", "score", "slug", "solves")
+	Required("id", "title", "description", "score", "slug", "solves", "category")
 })
 
 var ChallengeService = Type("ChallengeService", func() {

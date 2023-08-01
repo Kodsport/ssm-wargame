@@ -39,6 +39,8 @@ type Service interface {
 	AddFlag(context.Context, *AddFlagPayload) (err error)
 	// DeleteFlag implements DeleteFlag.
 	DeleteFlag(context.Context, *DeleteFlagPayload) (err error)
+	// ListCategories implements ListCategories.
+	ListCategories(context.Context, *ListCategoriesPayload) (res []*Category, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -55,7 +57,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [11]string{"ListChallenges", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag"}
+var MethodNames = [12]string{"ListChallenges", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag", "ListCategories"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -82,6 +84,7 @@ type CreateChallengePayload struct {
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
+	CategoryID string
 	Token      string
 }
 
@@ -100,6 +103,7 @@ type UpdateChallengePayload struct {
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
+	CategoryID string
 	Token      string
 	// ID of a challenge
 	ChallengeID string
@@ -186,6 +190,12 @@ type DeleteFlagPayload struct {
 	ChallengeID string
 }
 
+// ListCategoriesPayload is the payload type of the admin service
+// ListCategories method.
+type ListCategoriesPayload struct {
+	Token string
+}
+
 // A Wargame challenge
 type SsmAdminChallenge struct {
 	ID string
@@ -202,8 +212,9 @@ type SsmAdminChallenge struct {
 	// unix timestamp
 	PublishAt *int64
 	// The numer of people who solved the challenge
-	Solves int
-	Flags  []*AdminChallengeFlag
+	Solves     int
+	Flags      []*AdminChallengeFlag
+	CategoryID string
 }
 
 type ChallengeService struct {
@@ -248,6 +259,11 @@ type SsmUser struct {
 	LastName  string
 	Role      string
 	SchoolID  *int
+}
+
+type Category struct {
+	ID   string
+	Name string
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.
@@ -337,6 +353,9 @@ func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChall
 	if vres.Solves != nil {
 		res.Solves = *vres.Solves
 	}
+	if vres.CategoryID != nil {
+		res.CategoryID = *vres.CategoryID
+	}
 	if vres.Services != nil {
 		res.Services = make([]*ChallengeService, len(vres.Services))
 		for i, val := range vres.Services {
@@ -369,6 +388,7 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 		Score:       &res.Score,
 		PublishAt:   res.PublishAt,
 		Solves:      &res.Solves,
+		CategoryID:  &res.CategoryID,
 	}
 	if res.Services != nil {
 		vres.Services = make([]*adminviews.ChallengeServiceView, len(res.Services))
