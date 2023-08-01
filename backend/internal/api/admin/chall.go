@@ -28,8 +28,8 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.Select("c.*"),
 		qm.Select("(SELECT COUNT(1) FROM user_solves WHERE challenge_id = c.id) num_solves"),
 		qm.From("challenges c"),
-		//qm.Load(models.ChallengeRels.Flags),
-		//qm.Load(models.ChallengeRels.ChallengeFiles),
+		qm.Load(models.ChallengeRels.Flags),
+		qm.Load(models.ChallengeRels.ChallengeFiles),
 	).Bind(ctx, s.db, &challs)
 	if err != nil {
 		s.log.Warn("could not list challs", zap.Error(err), utils.C(ctx))

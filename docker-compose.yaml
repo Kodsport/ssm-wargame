@@ -1,0 +1,42 @@
+version: '3.8'
+
+volumes:
+    db:
+    minio:
+    caddy_data:
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432" # assumes firewall
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio
+    command: server --console-address ":9001" /data/
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123hejhejxyz
+    volumes:
+      - minio:/data
+
+  frontend:
+    build: ./frontend
+    env_file: .env.frontend
+    volumes:
+      - caddy_data:/data
+    ports:
+      - "80:80"
+      - "443:443"
+
+  api:
+    build: ./backend
+    env_file: .env.backend

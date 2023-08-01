@@ -116,7 +116,7 @@ func realMain() error {
 	handler = cors.AllowAll().Handler(handler) // TODO
 
 	srv := &http.Server{
-		Addr:    "localhost:8000",
+		Addr:    "0.0.0.0:8000",
 		Handler: handler,
 	}
 

@@ -1,11 +1,14 @@
 import { FetchOptions, $fetch } from 'ofetch'
 import { useAuthStore } from '../store/auth'
+import { RuntimeConfig } from 'nuxt/schema'
 
 
 const opts: FetchOptions = {
     async onRequest({ request, options }) {
         const auth = useAuthStore()
-        options.baseURL = 'http://localhost:8000/'
+        const runtimeConfig = useRuntimeConfig()
+
+        options.baseURL = runtimeConfig.public.apiBase
 
         if (options.body instanceof Object) {
             options.body = JSON.stringify(options.body)
