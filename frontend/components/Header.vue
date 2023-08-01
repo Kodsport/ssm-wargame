@@ -21,9 +21,7 @@
             </nuxt-link>
           </li>
         </ul>
-        <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">
-          Login
-        </a>
+        <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">Login</a>
         <a v-else class="btn btn-primary" @click="logout">Logout</a>
       </div>
     </div>
@@ -41,7 +39,11 @@ var isAuthenticated = computed(() => auth.token != "");
 // temporary hacky solution...
 setInterval(() => {
 
-  const jwtData = JSON.parse(atob(auth.token.split('.')[1]))
+  const part = auth.token.split('.')[1]
+  if (!part) {
+    return
+  }
+  const jwtData = JSON.parse(atob(part))
   if (jwtData * 1000 < Date.now()) {
     auth.setToken('')
     localStorage.removeItem('ssm-token')

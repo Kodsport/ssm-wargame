@@ -60,16 +60,24 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 }
 
 func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
-	// todo(mosu) code duplication with admin
+
 	challs := make([]*custommodels.ChallWithSovles, 0)
-	err := models.NewQuery(
+	q := models.NewQuery(
 		qm.Select("c.*, COUNT(us.user_id) num_solves"),
 		qm.From("challenges c"),
 		qm.LeftOuterJoin("user_solves us ON us.challenge_id = c.id"),
 		qm.GroupBy("c.id"),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
 		qm.Where("publish_at IS NULL OR publish_at < NOW()"),
-	).Bind(ctx, s.db, &challs)
+	)
+
+	if auth.IsAuthed(ctx) {
+		qm.Select(
+			"EXISTS(SELECT 1 FROM user_solves us2 WHERE us2.challenge_id = c.id AND us2.user_id = '" + auth.GetUser(ctx).ID + "') AS solved",
+		).Apply(q)
+	}
+
+	err := q.Bind(ctx, s.db, &challs)
 
 	if err != nil {
 		s.log.Error("could not list challs", zap.Error(err), utils.C(ctx))
@@ -85,6 +93,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Description: chall.Description,
 			Score:       chall.Score,
 			Solves:      chall.NumSolves,
+			Solved:      chall.Solved,
 		}
 
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))

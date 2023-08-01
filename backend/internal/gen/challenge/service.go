@@ -81,6 +81,8 @@ type SsmChallenge struct {
 	Files    []*ChallengeFiles
 	// The numer of people who solved the challenge
 	Solves int
+	// whether the user has solved the challenge or not
+	Solved bool
 }
 
 type ChallengeService struct {
@@ -181,6 +183,9 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 	if vres.Solves != nil {
 		res.Solves = *vres.Solves
 	}
+	if vres.Solved != nil {
+		res.Solved = *vres.Solved
+	}
 	if vres.Services != nil {
 		res.Services = make([]*ChallengeService, len(vres.Services))
 		for i, val := range vres.Services {
@@ -206,6 +211,7 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 		Description: &res.Description,
 		Score:       &res.Score,
 		Solves:      &res.Solves,
+		Solved:      &res.Solved,
 	}
 	if res.Services != nil {
 		vres.Services = make([]*challengeviews.ChallengeServiceView, len(res.Services))

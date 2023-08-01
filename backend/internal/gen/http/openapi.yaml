@@ -2579,6 +2579,7 @@ definitions:
       - {}
       - {}
       slug: pwnme
+      solved: true
       solves: 3
       title: pwnme
     - description: A heap overflow challenge
@@ -2593,6 +2594,7 @@ definitions:
       - {}
       - {}
       slug: pwnme
+      solved: true
       solves: 3
       title: pwnme
   ChallengeSubmitFlagAlreadySolvedResponseBody:
@@ -2944,6 +2946,10 @@ definitions:
         type: string
         description: A unique string that can be used in URLs
         example: pwnme
+      solved:
+        type: boolean
+        description: whether the user has solved the challenge or not
+        example: true
       solves:
         type: integer
         description: The numer of people who solved the challenge
@@ -2969,9 +2975,11 @@ definitions:
       - {}
       - {}
       slug: pwnme
+      solved: true
       solves: 3
       title: pwnme
     required:
+    - solved
     - id
     - title
     - description

@@ -80,6 +80,8 @@ type SsmChallengeResponse struct {
 	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
 	Solves int `form:"solves" json:"solves" xml:"solves"`
+	// whether the user has solved the challenge or not
+	Solved bool `form:"solved" json:"solved" xml:"solved"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.

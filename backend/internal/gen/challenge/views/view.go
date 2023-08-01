@@ -39,6 +39,8 @@ type SsmChallengeView struct {
 	Files    []*ChallengeFilesView
 	// The numer of people who solved the challenge
 	Solves *int
+	// whether the user has solved the challenge or not
+	Solved *bool
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -64,6 +66,7 @@ var (
 			"services",
 			"files",
 			"solves",
+			"solved",
 		},
 	}
 	// SsmChallengeMap is a map indexing the attribute names of SsmChallenge by
@@ -78,6 +81,7 @@ var (
 			"services",
 			"files",
 			"solves",
+			"solved",
 		},
 	}
 )
@@ -108,6 +112,9 @@ func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err 
 // ValidateSsmChallengeView runs the validations defined on SsmChallengeView
 // using the "default" view.
 func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
+	if result.Solved == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved", "result"))
+	}
 	if result.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}

@@ -825,6 +825,7 @@ paths:
                 - {}
                 - {}
                 slug: pwnme
+                solved: true
                 solves: 3
                 title: pwnme
               - description: A heap overflow challenge
@@ -844,6 +845,7 @@ paths:
                 - {}
                 - {}
                 slug: pwnme
+                solved: true
                 solves: 3
                 title: pwnme
               - description: A heap overflow challenge
@@ -863,6 +865,7 @@ paths:
                 - {}
                 - {}
                 slug: pwnme
+                solved: true
                 solves: 3
                 title: pwnme
       security:
@@ -1757,6 +1760,10 @@ components:
           type: string
           description: A unique string that can be used in URLs
           example: pwnme
+        solved:
+          type: boolean
+          description: whether the user has solved the challenge or not
+          example: true
         solves:
           type: integer
           description: The numer of people who solved the challenge
@@ -1782,9 +1789,11 @@ components:
         - {}
         - {}
         slug: pwnme
+        solved: true
         solves: 3
         title: pwnme
       required:
+      - solved
       - id
       - title
       - description
@@ -1813,6 +1822,7 @@ components:
         - {}
         - {}
         slug: pwnme
+        solved: true
         solves: 3
         title: pwnme
       - description: A heap overflow challenge
@@ -1832,6 +1842,7 @@ components:
         - {}
         - {}
         slug: pwnme
+        solved: true
         solves: 3
         title: pwnme
     SsmUser:

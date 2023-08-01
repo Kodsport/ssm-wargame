@@ -184,6 +184,12 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Attribute("services")
 	Attribute("files")
 	Attribute("solves")
+
+	Attribute("solved", Boolean, func() {
+		Example(true)
+		Description("whether the user has solved the challenge or not")
+	})
+	Required("solved")
 })
 
 var CreateChallengePayload = Type("CreateChallengePayload", func() {

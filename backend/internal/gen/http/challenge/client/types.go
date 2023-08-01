@@ -78,6 +78,8 @@ type SsmChallengeResponse struct {
 	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
 	Solves *int `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+	// whether the user has solved the challenge or not
+	Solved *bool `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -219,6 +221,9 @@ func ValidateSubmitFlagIncorrectFlagResponseBody(body *SubmitFlagIncorrectFlagRe
 // ValidateSsmChallengeResponse runs the validations defined on
 // SsmChallengeResponse
 func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
+	if body.Solved == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved", "body"))
+	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
