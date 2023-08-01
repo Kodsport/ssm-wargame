@@ -34,8 +34,6 @@ paths:
                 name: Forensics
               - id: e721a338-44de-4de8-a562-43d2db5f4115
                 name: Forensics
-              - id: e721a338-44de-4de8-a562-43d2db5f4115
-                name: Forensics
         "400":
           description: Resource not found
           content:
@@ -113,45 +111,6 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                publish_at: 1638384718
-                score: 50
-                services:
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
-                description: A heap overflow challenge
-                files:
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
-                flags:
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -189,6 +148,51 @@ paths:
                   size: 87123
                   url: https://s3/bucket/key?signature
                 flags:
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                publish_at: 1638384718
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                title: pwnme
+              - category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+                description: A heap overflow challenge
+                files:
+                - bucket: ssm-prod-bucket
+                  filename: decryptor.exe
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  key: file.exe
+                  md5: cq02dBbcuugBHM1oKyvMlQ==
+                  size: 87123
+                  url: https://s3/bucket/key?signature
+                - bucket: ssm-prod-bucket
+                  filename: decryptor.exe
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  key: file.exe
+                  md5: cq02dBbcuugBHM1oKyvMlQ==
+                  size: 87123
+                  url: https://s3/bucket/key?signature
+                - bucket: ssm-prod-bucket
+                  filename: decryptor.exe
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  key: file.exe
+                  md5: cq02dBbcuugBHM1oKyvMlQ==
+                  size: 87123
+                  url: https://s3/bucket/key?signature
+                flags:
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
@@ -627,21 +631,7 @@ paths:
                   slug: pwnme
                   start_date: "2006-02-01"
                   title: pwnme
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: A heap overflow challenge
-                  display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  slug: pwnme
-                  start_date: "2006-02-01"
-                  title: pwnme
               example:
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: A heap overflow challenge
-                display_month: Januari/Februari
-                end_date: "2006-02-01"
-                slug: pwnme
-                start_date: "2006-02-01"
-                title: pwnme
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 description: A heap overflow challenge
                 display_month: Januari/Februari
@@ -822,13 +812,13 @@ paths:
                   last_name: Sunar
                   role: admin
                   school_id: 78433202
+                - email: movitz.sunar@ssm.example
+                  first_name: Movitz
+                  id: uuid todo
+                  last_name: Sunar
+                  role: admin
+                  school_id: 78433202
               example:
-              - email: movitz.sunar@ssm.example
-                first_name: Movitz
-                id: uuid todo
-                last_name: Sunar
-                role: admin
-                school_id: 78433202
               - email: movitz.sunar@ssm.example
                 first_name: Movitz
                 id: uuid todo
@@ -1044,13 +1034,6 @@ paths:
                   slug: pwnme
                   start_date: "2006-02-01"
                   title: pwnme
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: A heap overflow challenge
-                  display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  slug: pwnme
-                  start_date: "2006-02-01"
-                  title: pwnme
               example:
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 description: A heap overflow challenge
@@ -1066,13 +1049,27 @@ paths:
                 slug: pwnme
                 start_date: "2006-02-01"
                 title: pwnme
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: A heap overflow challenge
-                display_month: Januari/Februari
-                end_date: "2006-02-01"
-                slug: pwnme
-                start_date: "2006-02-01"
-                title: pwnme
+      security:
+      - jwt_header_Authorization: []
+  /scoreboard:
+    get:
+      tags:
+      - challenge
+      summary: SchoolScoreboard challenge
+      operationId: challenge#SchoolScoreboard
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsmShoolscoreboard'
+              example:
+                scores:
+                - school_name: Stockholm Science and Innovation School
+                  score: 1337
+                - school_name: Stockholm Science and Innovation School
+                  score: 1337
       security:
       - jwt_header_Authorization: []
   /user/join_school:
@@ -1136,7 +1133,16 @@ paths:
                 - id: 78433202
                   municipality_name: Örebro
                   name: Engelbrektsskolan
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
               example:
+              - id: 78433202
+                municipality_name: Örebro
+                name: Engelbrektsskolan
               - id: 78433202
                 municipality_name: Örebro
                 name: Engelbrektsskolan
@@ -1165,7 +1171,7 @@ paths:
                 last_name: Sunar
                 role: admin
                 school_id: 78433202
-                school_name: Laudantium error voluptates in veniam.
+                school_name: Veniam qui.
       security:
       - jwt_header_Authorization: []
 components:
@@ -1412,7 +1418,7 @@ components:
           format: int64
         school_name:
           type: string
-          example: Veritatis impedit animi.
+          example: Sit nisi numquam voluptatum praesentium.
       example:
         email: movitz.sunar@ssm.example
         first_name: Movitz
@@ -1420,7 +1426,7 @@ components:
         last_name: Sunar
         role: admin
         school_id: 78433202
-        school_name: Voluptas est error.
+        school_name: Eos sequi consequuntur rerum.
       required:
       - id
       - email
@@ -1533,6 +1539,22 @@ components:
       - id
       - name
       - municipality_name
+    SchoolScoreboardScore:
+      type: object
+      properties:
+        school_name:
+          type: string
+          example: Stockholm Science and Innovation School
+        score:
+          type: integer
+          example: 1337
+          format: int64
+      example:
+        school_name: Stockholm Science and Innovation School
+        score: 1337
+      required:
+      - school_name
+      - score
     SsmAdminChallenge:
       type: object
       properties:
@@ -1549,13 +1571,6 @@ components:
           items:
             $ref: '#/components/schemas/AdminChallengeFiles'
           example:
-          - bucket: ssm-prod-bucket
-            filename: decryptor.exe
-            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-            key: file.exe
-            md5: cq02dBbcuugBHM1oKyvMlQ==
-            size: 87123
-            url: https://s3/bucket/key?signature
           - bucket: ssm-prod-bucket
             filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -1598,8 +1613,6 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
-          - {}
           - {}
           - {}
         slug:
@@ -1655,10 +1668,13 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
         publish_at: 1638384718
         score: 50
         services:
+        - {}
         - {}
         - {}
         slug: pwnme
@@ -1710,6 +1726,8 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
         publish_at: 1638384718
         score: 50
@@ -1745,6 +1763,8 @@ components:
           size: 87123
           url: https://s3/bucket/key?signature
         flags:
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -1830,6 +1850,8 @@ components:
         services:
         - {}
         - {}
+        - {}
+        - {}
         slug: pwnme
         solved: true
         solves: 3
@@ -1884,6 +1906,28 @@ components:
         solved: true
         solves: 3
         title: pwnme
+    SsmShoolscoreboard:
+      type: object
+      properties:
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/SchoolScoreboardScore'
+          example:
+          - school_name: Stockholm Science and Innovation School
+            score: 1337
+          - school_name: Stockholm Science and Innovation School
+            score: 1337
+          - school_name: Stockholm Science and Innovation School
+            score: 1337
+      example:
+        scores:
+        - school_name: Stockholm Science and Innovation School
+          score: 1337
+        - school_name: Stockholm Science and Innovation School
+          score: 1337
+      required:
+      - scores
     SsmUser:
       type: object
       properties:

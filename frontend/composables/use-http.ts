@@ -7,7 +7,6 @@ const opts: FetchOptions = {
         const auth = useAuthStore()
         options.baseURL = 'http://localhost:8000/'
 
-        console.log('request', options.body)
         if (options.body instanceof Object) {
             options.body = JSON.stringify(options.body)
         }

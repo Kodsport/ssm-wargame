@@ -20,6 +20,15 @@ type SsmChallengeCollection struct {
 	View string
 }
 
+// SsmShoolscoreboard is the viewed result type that is projected based on a
+// view.
+type SsmShoolscoreboard struct {
+	// Type to project
+	Projected *SsmShoolscoreboardView
+	// View to render
+	View string
+}
+
 // SsmChallengeCollectionView is a type that runs validations on a projected
 // type.
 type SsmChallengeCollectionView []*SsmChallengeView
@@ -54,6 +63,18 @@ type ChallengeFilesView struct {
 	URL      *string
 }
 
+// SsmShoolscoreboardView is a type that runs validations on a projected type.
+type SsmShoolscoreboardView struct {
+	Scores []*SchoolScoreboardScoreView
+}
+
+// SchoolScoreboardScoreView is a type that runs validations on a projected
+// type.
+type SchoolScoreboardScoreView struct {
+	Score      *int
+	SchoolName *string
+}
+
 var (
 	// SsmChallengeCollectionMap is a map indexing the attribute names of
 	// SsmChallengeCollection by view name.
@@ -69,6 +90,13 @@ var (
 			"solves",
 			"solved",
 			"category",
+		},
+	}
+	// SsmShoolscoreboardMap is a map indexing the attribute names of
+	// SsmShoolscoreboard by view name.
+	SsmShoolscoreboardMap = map[string][]string{
+		"default": {
+			"scores",
 		},
 	}
 	// SsmChallengeMap is a map indexing the attribute names of SsmChallenge by
@@ -95,6 +123,18 @@ func ValidateSsmChallengeCollection(result SsmChallengeCollection) (err error) {
 	switch result.View {
 	case "default", "":
 		err = ValidateSsmChallengeCollectionView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
+// ValidateSsmShoolscoreboard runs the validations defined on the viewed result
+// type SsmShoolscoreboard.
+func ValidateSsmShoolscoreboard(result *SsmShoolscoreboard) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmShoolscoreboardView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
@@ -167,6 +207,34 @@ func ValidateChallengeFilesView(result *ChallengeFilesView) (err error) {
 	}
 	if result.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "result"))
+	}
+	return
+}
+
+// ValidateSsmShoolscoreboardView runs the validations defined on
+// SsmShoolscoreboardView using the "default" view.
+func ValidateSsmShoolscoreboardView(result *SsmShoolscoreboardView) (err error) {
+	if result.Scores == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("scores", "result"))
+	}
+	for _, e := range result.Scores {
+		if e != nil {
+			if err2 := ValidateSchoolScoreboardScoreView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// ValidateSchoolScoreboardScoreView runs the validations defined on
+// SchoolScoreboardScoreView.
+func ValidateSchoolScoreboardScoreView(result *SchoolScoreboardScoreView) (err error) {
+	if result.SchoolName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("school_name", "result"))
+	}
+	if result.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
 	}
 	return
 }

@@ -22,6 +22,7 @@ type Server struct {
 	ListChallenges        http.Handler
 	ListMonthlyChallenges http.Handler
 	SubmitFlag            http.Handler
+	SchoolScoreboard      http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -60,10 +61,12 @@ func New(
 			{"ListChallenges", "GET", "/challenges"},
 			{"ListMonthlyChallenges", "GET", "/monthly_challenges"},
 			{"SubmitFlag", "POST", "/challenges/{challengeID}/attempt"},
+			{"SchoolScoreboard", "GET", "/scoreboard"},
 		},
 		ListChallenges:        NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		ListMonthlyChallenges: NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
 		SubmitFlag:            NewSubmitFlagHandler(e.SubmitFlag, mux, decoder, encoder, errhandler, formatter),
+		SchoolScoreboard:      NewSchoolScoreboardHandler(e.SchoolScoreboard, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -75,6 +78,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListChallenges = m(s.ListChallenges)
 	s.ListMonthlyChallenges = m(s.ListMonthlyChallenges)
 	s.SubmitFlag = m(s.SubmitFlag)
+	s.SchoolScoreboard = m(s.SchoolScoreboard)
 }
 
 // Mount configures the mux to serve the challenge endpoints.
@@ -82,6 +86,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountListChallengesHandler(mux, h.ListChallenges)
 	MountListMonthlyChallengesHandler(mux, h.ListMonthlyChallenges)
 	MountSubmitFlagHandler(mux, h.SubmitFlag)
+	MountSchoolScoreboardHandler(mux, h.SchoolScoreboard)
 }
 
 // MountListChallengesHandler configures the mux to serve the "challenge"
@@ -216,6 +221,57 @@ func NewSubmitFlagHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "SubmitFlag")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountSchoolScoreboardHandler configures the mux to serve the "challenge"
+// service "SchoolScoreboard" endpoint.
+func MountSchoolScoreboardHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/scoreboard", f)
+}
+
+// NewSchoolScoreboardHandler creates a HTTP handler which loads the HTTP
+// request and calls the "challenge" service "SchoolScoreboard" endpoint.
+func NewSchoolScoreboardHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeSchoolScoreboardRequest(mux, decoder)
+		encodeResponse = EncodeSchoolScoreboardResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "SchoolScoreboard")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
 		payload, err := decodeRequest(r)
 		if err != nil {

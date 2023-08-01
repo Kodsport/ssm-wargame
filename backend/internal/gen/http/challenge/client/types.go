@@ -27,6 +27,12 @@ type ListChallengesResponseBody []*SsmChallengeResponse
 // "ListMonthlyChallenges" endpoint HTTP response body.
 type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
 
+// SchoolScoreboardResponseBody is the type of the "challenge" service
+// "SchoolScoreboard" endpoint HTTP response body.
+type SchoolScoreboardResponseBody struct {
+	Scores []*SchoolScoreboardScoreResponseBody `form:"scores,omitempty" json:"scores,omitempty" xml:"scores,omitempty"`
+}
+
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
 type SubmitFlagAlreadySolvedResponseBody struct {
@@ -110,6 +116,13 @@ type MonthlyChallengeResponse struct {
 	EndDate *string `form:"end_date,omitempty" json:"end_date,omitempty" xml:"end_date,omitempty"`
 }
 
+// SchoolScoreboardScoreResponseBody is used to define fields on response body
+// types.
+type SchoolScoreboardScoreResponseBody struct {
+	Score      *int    `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
+}
+
 // NewSubmitFlagRequestBody builds the HTTP request body from the payload of
 // the "SubmitFlag" endpoint of the "challenge" service.
 func NewSubmitFlagRequestBody(p *challenge.SubmitFlagPayload) *SubmitFlagRequestBody {
@@ -166,6 +179,18 @@ func NewSubmitFlagIncorrectFlag(body *SubmitFlagIncorrectFlagResponseBody) *goa.
 		Temporary: *body.Temporary,
 		Timeout:   *body.Timeout,
 		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewSchoolScoreboardSsmShoolscoreboardOK builds a "challenge" service
+// "SchoolScoreboard" endpoint result from a HTTP "OK" response.
+func NewSchoolScoreboardSsmShoolscoreboardOK(body *SchoolScoreboardResponseBody) *challengeviews.SsmShoolscoreboardView {
+	v := &challengeviews.SsmShoolscoreboardView{}
+	v.Scores = make([]*challengeviews.SchoolScoreboardScoreView, len(body.Scores))
+	for i, val := range body.Scores {
+		v.Scores[i] = unmarshalSchoolScoreboardScoreResponseBodyToChallengeviewsSchoolScoreboardScoreView(val)
 	}
 
 	return v
@@ -297,6 +322,18 @@ func ValidateMonthlyChallengeResponse(body *MonthlyChallengeResponse) (err error
 	}
 	if body.ChallengeID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateSchoolScoreboardScoreResponseBody runs the validations defined on
+// SchoolScoreboardScoreResponseBody
+func ValidateSchoolScoreboardScoreResponseBody(body *SchoolScoreboardScoreResponseBody) (err error) {
+	if body.SchoolName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("school_name", "body"))
+	}
+	if body.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
 	}
 	return
 }

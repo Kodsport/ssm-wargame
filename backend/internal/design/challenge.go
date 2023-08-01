@@ -49,4 +49,14 @@ var _ = Service("challenge", func() {
 			})
 		})
 	})
+	Method("SchoolScoreboard", func() {
+		Result(SchoolScoreboard)
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+		})
+		HTTP(func() {
+			GET("/scoreboard")
+			Response(StatusOK)
+		})
+	})
 })

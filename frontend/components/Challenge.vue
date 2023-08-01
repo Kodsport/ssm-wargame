@@ -1,19 +1,27 @@
 <template>
-    <div v-bind:class="{'alert': props.chall.solved, 'alert-success': props.chall.solved}">
+    <div v-bind:class="{ 'alert': props.chall.solved, 'alert-success': props.chall.solved }">
         <h5>{{ props.chall.title }}</h5>
         <p>{{ props.chall.description }}</p>
         <p>{{ props.chall.solves }} Solves</p>
 
-        <div v-if="!props.chall.solved" class="alert" v-bind:class="{ 'alert-danger': warn }">
-            <input class="form-control" type="text" placeholder="SSM{" v-model="flag" @keypress.enter="submitFlag">
+
+        <div v-if="props.chall.files">
+            Files:
+            <a class="px-2" v-for="file in props.chall.files" :href="file.url">{{ file.filename }}</a>
+        </div>
+        <div v-if="!props.chall.solved && !!auth.user.id" class="alert" v-bind:class="{ 'alert-danger': warn }">
+            <input class="form-control" type="text" placeholder="SSM{..." v-model="flag" @keypress.enter="submitFlag">
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges';
+import { useAuthStore } from '../store/auth';
+
 
 const challs = useChallengeStore()
+const auth = useAuthStore()
 const props = defineProps(['chall'])
 const http = useHttp()
 
@@ -22,7 +30,7 @@ const warn = ref(false)
 
 async function submitFlag() {
     try {
-        const resp = await http(`/challenges/${props.chall.id}/attempt`, {
+        await http(`/challenges/${props.chall.id}/attempt`, {
             method: 'POST',
             body: {
                 flag: flag.value

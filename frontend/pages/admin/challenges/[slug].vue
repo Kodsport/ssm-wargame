@@ -13,7 +13,8 @@
         </div>
         <div class="form-group">
           <label>Score</label>
-          <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.score" step="50" min="0" />
+          <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.score" step="50"
+            min="0" />
         </div>
         <div class="form-group">
           <label>Description</label>

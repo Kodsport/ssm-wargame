@@ -75,3 +75,19 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	})
 	Required("solved", "category")
 })
+
+var SchoolScoreboard = ResultType("application/vnd.ssm.shoolscoreboard", func() {
+	Description("A scoreboard of schools")
+	Attribute("scores", ArrayOf(SchoolScoreboardScore))
+	Required("scores")
+})
+
+var SchoolScoreboardScore = Type("SchoolScoreboardScore", func() {
+	Attribute("score", Int, func() {
+		Example(1337)
+	})
+	Attribute("school_name", String, func() {
+		Example("Stockholm Science and Innovation School")
+	})
+	Required("school_name", "score")
+})

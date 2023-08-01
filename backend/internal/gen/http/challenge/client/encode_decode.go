@@ -288,6 +288,83 @@ func DecodeSubmitFlagResponse(decoder func(*http.Response) goahttp.Decoder, rest
 	}
 }
 
+// BuildSchoolScoreboardRequest instantiates a HTTP request object with method
+// and path set to call the "challenge" service "SchoolScoreboard" endpoint
+func (c *Client) BuildSchoolScoreboardRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: SchoolScoreboardChallengePath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "SchoolScoreboard", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeSchoolScoreboardRequest returns an encoder for requests sent to the
+// challenge SchoolScoreboard server.
+func EncodeSchoolScoreboardRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.SchoolScoreboardPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "SchoolScoreboard", "*challenge.SchoolScoreboardPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeSchoolScoreboardResponse returns a decoder for responses returned by
+// the challenge SchoolScoreboard endpoint. restoreBody controls whether the
+// response body should be restored after having been read.
+func DecodeSchoolScoreboardResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body SchoolScoreboardResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "SchoolScoreboard", err)
+			}
+			p := NewSchoolScoreboardSsmShoolscoreboardOK(&body)
+			view := "default"
+			vres := &challengeviews.SsmShoolscoreboard{Projected: p, View: view}
+			if err = challengeviews.ValidateSsmShoolscoreboard(vres); err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "SchoolScoreboard", err)
+			}
+			res := challenge.NewSsmShoolscoreboard(vres)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "SchoolScoreboard", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView builds a value
 // of type *challengeviews.SsmChallengeView from a value of type
 // *SsmChallengeResponse.
@@ -357,6 +434,18 @@ func unmarshalMonthlyChallengeResponseToChallengeMonthlyChallenge(v *MonthlyChal
 		DisplayMonth: *v.DisplayMonth,
 		StartDate:    *v.StartDate,
 		EndDate:      *v.EndDate,
+	}
+
+	return res
+}
+
+// unmarshalSchoolScoreboardScoreResponseBodyToChallengeviewsSchoolScoreboardScoreView
+// builds a value of type *challengeviews.SchoolScoreboardScoreView from a
+// value of type *SchoolScoreboardScoreResponseBody.
+func unmarshalSchoolScoreboardScoreResponseBodyToChallengeviewsSchoolScoreboardScoreView(v *SchoolScoreboardScoreResponseBody) *challengeviews.SchoolScoreboardScoreView {
+	res := &challengeviews.SchoolScoreboardScoreView{
+		Score:      v.Score,
+		SchoolName: v.SchoolName,
 	}
 
 	return res

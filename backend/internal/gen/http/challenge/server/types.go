@@ -29,6 +29,12 @@ type SsmChallengeResponseCollection []*SsmChallengeResponse
 // "ListMonthlyChallenges" endpoint HTTP response body.
 type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
 
+// SchoolScoreboardResponseBody is the type of the "challenge" service
+// "SchoolScoreboard" endpoint HTTP response body.
+type SchoolScoreboardResponseBody struct {
+	Scores []*SchoolScoreboardScoreResponseBody `form:"scores" json:"scores" xml:"scores"`
+}
+
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
 type SubmitFlagAlreadySolvedResponseBody struct {
@@ -112,6 +118,13 @@ type MonthlyChallengeResponse struct {
 	EndDate string `form:"end_date" json:"end_date" xml:"end_date"`
 }
 
+// SchoolScoreboardScoreResponseBody is used to define fields on response body
+// types.
+type SchoolScoreboardScoreResponseBody struct {
+	Score      int    `form:"score" json:"score" xml:"score"`
+	SchoolName string `form:"school_name" json:"school_name" xml:"school_name"`
+}
+
 // NewSsmChallengeResponseCollection builds the HTTP response body from the
 // result of the "ListChallenges" endpoint of the "challenge" service.
 func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollectionView) SsmChallengeResponseCollection {
@@ -128,6 +141,19 @@ func NewListMonthlyChallengesResponseBody(res []*challenge.MonthlyChallenge) Lis
 	body := make([]*MonthlyChallengeResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalChallengeMonthlyChallengeToMonthlyChallengeResponse(val)
+	}
+	return body
+}
+
+// NewSchoolScoreboardResponseBody builds the HTTP response body from the
+// result of the "SchoolScoreboard" endpoint of the "challenge" service.
+func NewSchoolScoreboardResponseBody(res *challengeviews.SsmShoolscoreboardView) *SchoolScoreboardResponseBody {
+	body := &SchoolScoreboardResponseBody{}
+	if res.Scores != nil {
+		body.Scores = make([]*SchoolScoreboardScoreResponseBody, len(res.Scores))
+		for i, val := range res.Scores {
+			body.Scores[i] = marshalChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScoreResponseBody(val)
+		}
 	}
 	return body
 }
@@ -184,6 +210,15 @@ func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string, token
 		Flag: *body.Flag,
 	}
 	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v
+}
+
+// NewSchoolScoreboardPayload builds a challenge service SchoolScoreboard
+// endpoint payload.
+func NewSchoolScoreboardPayload(token *string) *challenge.SchoolScoreboardPayload {
+	v := &challenge.SchoolScoreboardPayload{}
 	v.Token = token
 
 	return v

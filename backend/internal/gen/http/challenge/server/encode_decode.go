@@ -187,6 +187,42 @@ func EncodeSubmitFlagError(encoder func(context.Context, http.ResponseWriter) go
 	}
 }
 
+// EncodeSchoolScoreboardResponse returns an encoder for responses returned by
+// the challenge SchoolScoreboard endpoint.
+func EncodeSchoolScoreboardResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*challengeviews.SsmShoolscoreboard)
+		enc := encoder(ctx, w)
+		body := NewSchoolScoreboardResponseBody(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeSchoolScoreboardRequest returns a decoder for requests sent to the
+// challenge SchoolScoreboard endpoint.
+func DecodeSchoolScoreboardRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewSchoolScoreboardPayload(token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
 // marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse builds a value
 // of type *SsmChallengeResponse from a value of type
 // *challengeviews.SsmChallengeView.
@@ -256,6 +292,18 @@ func marshalChallengeMonthlyChallengeToMonthlyChallengeResponse(v *challenge.Mon
 		DisplayMonth: v.DisplayMonth,
 		StartDate:    v.StartDate,
 		EndDate:      v.EndDate,
+	}
+
+	return res
+}
+
+// marshalChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScoreResponseBody
+// builds a value of type *SchoolScoreboardScoreResponseBody from a value of
+// type *challengeviews.SchoolScoreboardScoreView.
+func marshalChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScoreResponseBody(v *challengeviews.SchoolScoreboardScoreView) *SchoolScoreboardScoreResponseBody {
+	res := &SchoolScoreboardScoreResponseBody{
+		Score:      *v.Score,
+		SchoolName: *v.SchoolName,
 	}
 
 	return res

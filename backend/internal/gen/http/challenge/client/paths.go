@@ -25,3 +25,8 @@ func ListMonthlyChallengesChallengePath() string {
 func SubmitFlagChallengePath(challengeID string) string {
 	return fmt.Sprintf("/challenges/%v/attempt", challengeID)
 }
+
+// SchoolScoreboardChallengePath returns the URL path to the challenge service SchoolScoreboard HTTP endpoint.
+func SchoolScoreboardChallengePath() string {
+	return "/scoreboard"
+}

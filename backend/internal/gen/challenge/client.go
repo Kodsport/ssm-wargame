@@ -18,14 +18,16 @@ type Client struct {
 	ListChallengesEndpoint        goa.Endpoint
 	ListMonthlyChallengesEndpoint goa.Endpoint
 	SubmitFlagEndpoint            goa.Endpoint
+	SchoolScoreboardEndpoint      goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges, listMonthlyChallenges, submitFlag goa.Endpoint) *Client {
+func NewClient(listChallenges, listMonthlyChallenges, submitFlag, schoolScoreboard goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:        listChallenges,
 		ListMonthlyChallengesEndpoint: listMonthlyChallenges,
 		SubmitFlagEndpoint:            submitFlag,
+		SchoolScoreboardEndpoint:      schoolScoreboard,
 	}
 }
 
@@ -59,4 +61,15 @@ func (c *Client) ListMonthlyChallenges(ctx context.Context, p *ListMonthlyChalle
 func (c *Client) SubmitFlag(ctx context.Context, p *SubmitFlagPayload) (err error) {
 	_, err = c.SubmitFlagEndpoint(ctx, p)
 	return
+}
+
+// SchoolScoreboard calls the "SchoolScoreboard" endpoint of the "challenge"
+// service.
+func (c *Client) SchoolScoreboard(ctx context.Context, p *SchoolScoreboardPayload) (res *SsmShoolscoreboard, err error) {
+	var ires interface{}
+	ires, err = c.SchoolScoreboardEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*SsmShoolscoreboard), nil
 }

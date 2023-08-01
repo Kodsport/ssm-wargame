@@ -84,3 +84,18 @@ func BuildSubmitFlagPayload(challengeSubmitFlagBody string, challengeSubmitFlagC
 
 	return v, nil
 }
+
+// BuildSchoolScoreboardPayload builds the payload for the challenge
+// SchoolScoreboard endpoint from CLI flags.
+func BuildSchoolScoreboardPayload(challengeSchoolScoreboardToken string) (*challenge.SchoolScoreboardPayload, error) {
+	var token *string
+	{
+		if challengeSchoolScoreboardToken != "" {
+			token = &challengeSchoolScoreboardToken
+		}
+	}
+	v := &challenge.SchoolScoreboardPayload{}
+	v.Token = token
+
+	return v, nil
+}

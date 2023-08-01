@@ -18,7 +18,7 @@ export const useChallengeStore = defineStore('admin-challenges', {
         }
     },
     getters: {
-        getBySlug: (state)=> (slug: string) => state.challenges.find(c => c.slug == slug),
-        getCategory: (state) => (id: string) => {console.log(id);return state.categories.find(c => c.id == id)}
+        getBySlug: (state) => (slug: string) => state.challenges.find(c => c.slug == slug),
+        getCategory: (state) => (id: string) => state.categories.find(c => c.id == id)
     }
 })

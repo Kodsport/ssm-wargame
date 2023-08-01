@@ -23,6 +23,8 @@ type Service interface {
 	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallenge, err error)
 	// SubmitFlag implements SubmitFlag.
 	SubmitFlag(context.Context, *SubmitFlagPayload) (err error)
+	// SchoolScoreboard implements SchoolScoreboard.
+	SchoolScoreboard(context.Context, *SchoolScoreboardPayload) (res *SsmShoolscoreboard, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -39,7 +41,7 @@ const ServiceName = "challenge"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [3]string{"ListChallenges", "ListMonthlyChallenges", "SubmitFlag"}
+var MethodNames = [4]string{"ListChallenges", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard"}
 
 // ListChallengesPayload is the payload type of the challenge service
 // ListChallenges method.
@@ -64,6 +66,18 @@ type SubmitFlagPayload struct {
 	// ID of a challenge
 	ChallengeID string
 	Token       string
+}
+
+// SchoolScoreboardPayload is the payload type of the challenge service
+// SchoolScoreboard method.
+type SchoolScoreboardPayload struct {
+	Token *string
+}
+
+// SsmShoolscoreboard is the result type of the challenge service
+// SchoolScoreboard method.
+type SsmShoolscoreboard struct {
+	Scores []*SchoolScoreboardScore
 }
 
 // A Wargame challenge
@@ -110,6 +124,11 @@ type MonthlyChallenge struct {
 	EndDate string
 }
 
+type SchoolScoreboardScore struct {
+	Score      int
+	SchoolName string
+}
+
 // MakeAlreadySolved builds a goa.ServiceError from an error.
 func MakeAlreadySolved(err error) *goa.ServiceError {
 	return &goa.ServiceError{
@@ -140,6 +159,19 @@ func NewSsmChallengeCollection(vres challengeviews.SsmChallengeCollection) SsmCh
 func NewViewedSsmChallengeCollection(res SsmChallengeCollection, view string) challengeviews.SsmChallengeCollection {
 	p := newSsmChallengeCollectionView(res)
 	return challengeviews.SsmChallengeCollection{Projected: p, View: "default"}
+}
+
+// NewSsmShoolscoreboard initializes result type SsmShoolscoreboard from viewed
+// result type SsmShoolscoreboard.
+func NewSsmShoolscoreboard(vres *challengeviews.SsmShoolscoreboard) *SsmShoolscoreboard {
+	return newSsmShoolscoreboard(vres.Projected)
+}
+
+// NewViewedSsmShoolscoreboard initializes viewed result type
+// SsmShoolscoreboard from result type SsmShoolscoreboard using the given view.
+func NewViewedSsmShoolscoreboard(res *SsmShoolscoreboard, view string) *challengeviews.SsmShoolscoreboard {
+	p := newSsmShoolscoreboardView(res)
+	return &challengeviews.SsmShoolscoreboard{Projected: p, View: "default"}
 }
 
 // newSsmChallengeCollection converts projected type SsmChallengeCollection to
@@ -233,6 +265,32 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 	return vres
 }
 
+// newSsmShoolscoreboard converts projected type SsmShoolscoreboard to service
+// type SsmShoolscoreboard.
+func newSsmShoolscoreboard(vres *challengeviews.SsmShoolscoreboardView) *SsmShoolscoreboard {
+	res := &SsmShoolscoreboard{}
+	if vres.Scores != nil {
+		res.Scores = make([]*SchoolScoreboardScore, len(vres.Scores))
+		for i, val := range vres.Scores {
+			res.Scores[i] = transformChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScore(val)
+		}
+	}
+	return res
+}
+
+// newSsmShoolscoreboardView projects result type SsmShoolscoreboard to
+// projected type SsmShoolscoreboardView using the "default" view.
+func newSsmShoolscoreboardView(res *SsmShoolscoreboard) *challengeviews.SsmShoolscoreboardView {
+	vres := &challengeviews.SsmShoolscoreboardView{}
+	if res.Scores != nil {
+		vres.Scores = make([]*challengeviews.SchoolScoreboardScoreView, len(res.Scores))
+		for i, val := range res.Scores {
+			vres.Scores[i] = transformSchoolScoreboardScoreToChallengeviewsSchoolScoreboardScoreView(val)
+		}
+	}
+	return vres
+}
+
 // transformChallengeviewsChallengeServiceViewToChallengeService builds a value
 // of type *ChallengeService from a value of type
 // *challengeviews.ChallengeServiceView.
@@ -280,6 +338,33 @@ func transformChallengeFilesToChallengeviewsChallengeFilesView(v *ChallengeFiles
 	res := &challengeviews.ChallengeFilesView{
 		Filename: &v.Filename,
 		URL:      &v.URL,
+	}
+
+	return res
+}
+
+// transformChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScore
+// builds a value of type *SchoolScoreboardScore from a value of type
+// *challengeviews.SchoolScoreboardScoreView.
+func transformChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScore(v *challengeviews.SchoolScoreboardScoreView) *SchoolScoreboardScore {
+	if v == nil {
+		return nil
+	}
+	res := &SchoolScoreboardScore{
+		Score:      *v.Score,
+		SchoolName: *v.SchoolName,
+	}
+
+	return res
+}
+
+// transformSchoolScoreboardScoreToChallengeviewsSchoolScoreboardScoreView
+// builds a value of type *challengeviews.SchoolScoreboardScoreView from a
+// value of type *SchoolScoreboardScore.
+func transformSchoolScoreboardScoreToChallengeviewsSchoolScoreboardScoreView(v *SchoolScoreboardScore) *challengeviews.SchoolScoreboardScoreView {
+	res := &challengeviews.SchoolScoreboardScoreView{
+		Score:      &v.Score,
+		SchoolName: &v.SchoolName,
 	}
 
 	return res
