@@ -25,9 +25,9 @@ type SubmitFlagRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
 
-// ListMonthlyChallengesResponseBody is the type of the "challenge" service
-// "ListMonthlyChallenges" endpoint HTTP response body.
-type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
+// SsmUsermonthlychallengesResponseCollection is the type of the "challenge"
+// service "ListMonthlyChallenges" endpoint HTTP response body.
+type SsmUsermonthlychallengesResponseCollection []*SsmUsermonthlychallengesResponse
 
 // SchoolScoreboardResponseBody is the type of the "challenge" service
 // "SchoolScoreboard" endpoint HTTP response body.
@@ -101,21 +101,17 @@ type ChallengeFilesResponse struct {
 	URL      string `form:"url" json:"url" xml:"url"`
 }
 
-// MonthlyChallengeResponse is used to define fields on response body types.
-type MonthlyChallengeResponse struct {
-	// A unique string that can be used in URLs
-	Slug string `form:"slug" json:"slug" xml:"slug"`
-	// Title displayed to user
-	Title string `form:"title" json:"title" xml:"title"`
-	// A short text describing the challenge
-	Description string `form:"description" json:"description" xml:"description"`
+// SsmUsermonthlychallengesResponse is used to define fields on response body
+// types.
+type SsmUsermonthlychallengesResponse struct {
 	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string `form:"display_month" json:"display_month" xml:"display_month"`
 	// Starting date of the monthly challenge
-	StartDate string `form:"start_date" json:"start_date" xml:"start_date"`
+	StartDate int64 `form:"start_date" json:"start_date" xml:"start_date"`
 	// Ending date of the monthly challenge
-	EndDate string `form:"end_date" json:"end_date" xml:"end_date"`
+	EndDate   int64                 `form:"end_date" json:"end_date" xml:"end_date"`
+	Challenge *SsmChallengeResponse `form:"challenge" json:"challenge" xml:"challenge"`
 }
 
 // SchoolScoreboardScoreResponseBody is used to define fields on response body
@@ -135,12 +131,13 @@ func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollection
 	return body
 }
 
-// NewListMonthlyChallengesResponseBody builds the HTTP response body from the
-// result of the "ListMonthlyChallenges" endpoint of the "challenge" service.
-func NewListMonthlyChallengesResponseBody(res []*challenge.MonthlyChallenge) ListMonthlyChallengesResponseBody {
-	body := make([]*MonthlyChallengeResponse, len(res))
+// NewSsmUsermonthlychallengesResponseCollection builds the HTTP response body
+// from the result of the "ListMonthlyChallenges" endpoint of the "challenge"
+// service.
+func NewSsmUsermonthlychallengesResponseCollection(res challengeviews.SsmUsermonthlychallengesCollectionView) SsmUsermonthlychallengesResponseCollection {
+	body := make([]*SsmUsermonthlychallengesResponse, len(res))
 	for i, val := range res {
-		body[i] = marshalChallengeMonthlyChallengeToMonthlyChallengeResponse(val)
+		body[i] = marshalChallengeviewsSsmUsermonthlychallengesViewToSsmUsermonthlychallengesResponse(val)
 	}
 	return body
 }

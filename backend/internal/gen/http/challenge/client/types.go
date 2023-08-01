@@ -25,7 +25,7 @@ type ListChallengesResponseBody []*SsmChallengeResponse
 
 // ListMonthlyChallengesResponseBody is the type of the "challenge" service
 // "ListMonthlyChallenges" endpoint HTTP response body.
-type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
+type ListMonthlyChallengesResponseBody []*SsmUsermonthlychallengesResponse
 
 // SchoolScoreboardResponseBody is the type of the "challenge" service
 // "SchoolScoreboard" endpoint HTTP response body.
@@ -99,21 +99,17 @@ type ChallengeFilesResponse struct {
 	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
 }
 
-// MonthlyChallengeResponse is used to define fields on response body types.
-type MonthlyChallengeResponse struct {
-	// A unique string that can be used in URLs
-	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
-	// Title displayed to user
-	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
-	// A short text describing the challenge
-	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+// SsmUsermonthlychallengesResponse is used to define fields on response body
+// types.
+type SsmUsermonthlychallengesResponse struct {
 	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
 	// Starting date of the monthly challenge
-	StartDate *string `form:"start_date,omitempty" json:"start_date,omitempty" xml:"start_date,omitempty"`
+	StartDate *int64 `form:"start_date,omitempty" json:"start_date,omitempty" xml:"start_date,omitempty"`
 	// Ending date of the monthly challenge
-	EndDate *string `form:"end_date,omitempty" json:"end_date,omitempty" xml:"end_date,omitempty"`
+	EndDate   *int64                `form:"end_date,omitempty" json:"end_date,omitempty" xml:"end_date,omitempty"`
+	Challenge *SsmChallengeResponse `form:"challenge,omitempty" json:"challenge,omitempty" xml:"challenge,omitempty"`
 }
 
 // SchoolScoreboardScoreResponseBody is used to define fields on response body
@@ -143,12 +139,13 @@ func NewListChallengesSsmChallengeCollectionOK(body ListChallengesResponseBody) 
 	return v
 }
 
-// NewListMonthlyChallengesMonthlyChallengeOK builds a "challenge" service
-// "ListMonthlyChallenges" endpoint result from a HTTP "OK" response.
-func NewListMonthlyChallengesMonthlyChallengeOK(body []*MonthlyChallengeResponse) []*challenge.MonthlyChallenge {
-	v := make([]*challenge.MonthlyChallenge, len(body))
+// NewListMonthlyChallengesSsmUsermonthlychallengesCollectionOK builds a
+// "challenge" service "ListMonthlyChallenges" endpoint result from a HTTP "OK"
+// response.
+func NewListMonthlyChallengesSsmUsermonthlychallengesCollectionOK(body ListMonthlyChallengesResponseBody) challengeviews.SsmUsermonthlychallengesCollectionView {
+	v := make([]*challengeviews.SsmUsermonthlychallengesView, len(body))
 	for i, val := range body {
-		v[i] = unmarshalMonthlyChallengeResponseToChallengeMonthlyChallenge(val)
+		v[i] = unmarshalSsmUsermonthlychallengesResponseToChallengeviewsSsmUsermonthlychallengesView(val)
 	}
 
 	return v
@@ -296,9 +293,12 @@ func ValidateChallengeFilesResponse(body *ChallengeFilesResponse) (err error) {
 	return
 }
 
-// ValidateMonthlyChallengeResponse runs the validations defined on
-// MonthlyChallengeResponse
-func ValidateMonthlyChallengeResponse(body *MonthlyChallengeResponse) (err error) {
+// ValidateSsmUsermonthlychallengesResponse runs the validations defined on
+// SsmUsermonthlychallengesResponse
+func ValidateSsmUsermonthlychallengesResponse(body *SsmUsermonthlychallengesResponse) (err error) {
+	if body.Challenge == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge", "body"))
+	}
 	if body.StartDate == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("start_date", "body"))
 	}
@@ -311,17 +311,13 @@ func ValidateMonthlyChallengeResponse(body *MonthlyChallengeResponse) (err error
 	if body.ChallengeID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "body"))
 	}
-	if body.Title == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
-	}
-	if body.Description == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
-	}
-	if body.Slug == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
-	}
 	if body.ChallengeID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))
+	}
+	if body.Challenge != nil {
+		if err2 := ValidateSsmChallengeResponse(body.Challenge); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
 	}
 	return
 }

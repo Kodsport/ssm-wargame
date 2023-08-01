@@ -153,20 +153,14 @@ type DeleteFilePayload struct {
 // CreateMonthlyChallengePayload is the payload type of the admin service
 // CreateMonthlyChallenge method.
 type CreateMonthlyChallengePayload struct {
-	Token string
-	// A unique string that can be used in URLs
-	Slug string
-	// Title displayed to user
-	Title string
-	// A short text describing the challenge
-	Description string
+	Token       string
 	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string
 	// Starting date of the monthly challenge
-	StartDate string
+	StartDate int64
 	// Ending date of the monthly challenge
-	EndDate string
+	EndDate int64
 }
 
 // ListUsersPayload is the payload type of the admin service ListUsers method.
@@ -237,19 +231,13 @@ type AdminChallengeFlag struct {
 }
 
 type MonthlyChallenge struct {
-	// A unique string that can be used in URLs
-	Slug string
-	// Title displayed to user
-	Title string
-	// A short text describing the challenge
-	Description string
 	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string
 	// Starting date of the monthly challenge
-	StartDate string
+	StartDate int64
 	// Ending date of the monthly challenge
-	EndDate string
+	EndDate int64
 }
 
 type SsmUser struct {

@@ -9,29 +9,19 @@ import (
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
 	"github.com/volatiletech/sqlboiler/v4/boil"
-	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
 )
 
 func (s *service) CreateMonthlyChallenge(ctx context.Context, req *spec.CreateMonthlyChallengePayload) error {
-	// time format/resolution TBD
-	startDate, err := time.Parse("2006-01-02", req.StartDate)
-	if err != nil {
-		return err
-	}
-	endDate, err := time.Parse("2006-01-02", req.StartDate)
-	if err != nil {
-		return err
-	}
 
 	mc := models.MonthlyChallenge{
 		ChallengeID:  req.ChallengeID,
-		StartDate:    startDate,
-		EndDate:      endDate,
+		StartDate:    time.Unix(req.StartDate, 0),
+		EndDate:      time.Unix(req.EndDate, 0),
 		DisplayMonth: req.DisplayMonth,
 	}
-	err = mc.Insert(ctx, s.db, boil.Infer())
 
+	err := mc.Insert(ctx, s.db, boil.Infer())
 	if err != nil {
 		s.log.Warn("could not insert monthly challs", zap.Error(err), utils.C(ctx))
 		return err
@@ -41,9 +31,7 @@ func (s *service) CreateMonthlyChallenge(ctx context.Context, req *spec.CreateMo
 }
 
 func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonthlyChallengesPayload) ([]*spec.MonthlyChallenge, error) {
-	challs, err := models.MonthlyChallenges(
-		qm.Load(models.MonthlyChallengeRels.Challenge),
-	).All(ctx, s.db)
+	challs, err := models.MonthlyChallenges().All(ctx, s.db)
 	if err != nil {
 		s.log.Warn("could not list monthly challs", zap.Error(err), utils.C(ctx))
 		return nil, err
@@ -54,11 +42,8 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 	for i, chall := range challs {
 		res[i] = &spec.MonthlyChallenge{
 			DisplayMonth: chall.DisplayMonth,
-			StartDate:    chall.StartDate.Format("2006-01-02"),
-			EndDate:      chall.EndDate.Format("2006-01-02"),
-			Slug:         chall.R.Challenge.Slug,
-			Title:        chall.R.Challenge.Title,
-			Description:  chall.R.Challenge.Description,
+			StartDate:    chall.StartDate.Unix(),
+			EndDate:      chall.EndDate.Unix(),
 			ChallengeID:  chall.ChallengeID,
 		}
 	}

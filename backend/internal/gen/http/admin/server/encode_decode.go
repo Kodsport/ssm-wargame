@@ -1277,9 +1277,6 @@ func marshalAdminviewsAdminChallengeFlagViewToAdminChallengeFlagResponse(v *admi
 // type *MonthlyChallengeResponse from a value of type *admin.MonthlyChallenge.
 func marshalAdminMonthlyChallengeToMonthlyChallengeResponse(v *admin.MonthlyChallenge) *MonthlyChallengeResponse {
 	res := &MonthlyChallengeResponse{
-		Slug:         v.Slug,
-		Title:        v.Title,
-		Description:  v.Description,
 		ChallengeID:  v.ChallengeID,
 		DisplayMonth: v.DisplayMonth,
 		StartDate:    v.StartDate,

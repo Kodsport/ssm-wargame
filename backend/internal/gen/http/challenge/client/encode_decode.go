@@ -18,7 +18,6 @@ import (
 	challenge "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
 	goahttp "goa.design/goa/v3/http"
-	goa "goa.design/goa/v3/pkg"
 )
 
 // BuildListChallengesRequest instantiates a HTTP request object with method
@@ -161,17 +160,13 @@ func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.De
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("challenge", "ListMonthlyChallenges", err)
 			}
-			for _, e := range body {
-				if e != nil {
-					if err2 := ValidateMonthlyChallengeResponse(e); err2 != nil {
-						err = goa.MergeErrors(err, err2)
-					}
-				}
-			}
-			if err != nil {
+			p := NewListMonthlyChallengesSsmUsermonthlychallengesCollectionOK(body)
+			view := "default"
+			vres := challengeviews.SsmUsermonthlychallengesCollection{Projected: p, View: view}
+			if err = challengeviews.ValidateSsmUsermonthlychallengesCollection(vres); err != nil {
 				return nil, goahttp.ErrValidationError("challenge", "ListMonthlyChallenges", err)
 			}
-			res := NewListMonthlyChallengesMonthlyChallengeOK(body)
+			res := challenge.NewSsmUsermonthlychallengesCollection(vres)
 			return res, nil
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
@@ -422,19 +417,17 @@ func unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(v *Challe
 	return res
 }
 
-// unmarshalMonthlyChallengeResponseToChallengeMonthlyChallenge builds a value
-// of type *challenge.MonthlyChallenge from a value of type
-// *MonthlyChallengeResponse.
-func unmarshalMonthlyChallengeResponseToChallengeMonthlyChallenge(v *MonthlyChallengeResponse) *challenge.MonthlyChallenge {
-	res := &challenge.MonthlyChallenge{
-		Slug:         *v.Slug,
-		Title:        *v.Title,
-		Description:  *v.Description,
-		ChallengeID:  *v.ChallengeID,
-		DisplayMonth: *v.DisplayMonth,
-		StartDate:    *v.StartDate,
-		EndDate:      *v.EndDate,
+// unmarshalSsmUsermonthlychallengesResponseToChallengeviewsSsmUsermonthlychallengesView
+// builds a value of type *challengeviews.SsmUsermonthlychallengesView from a
+// value of type *SsmUsermonthlychallengesResponse.
+func unmarshalSsmUsermonthlychallengesResponseToChallengeviewsSsmUsermonthlychallengesView(v *SsmUsermonthlychallengesResponse) *challengeviews.SsmUsermonthlychallengesView {
+	res := &challengeviews.SsmUsermonthlychallengesView{
+		ChallengeID:  v.ChallengeID,
+		DisplayMonth: v.DisplayMonth,
+		StartDate:    v.StartDate,
+		EndDate:      v.EndDate,
 	}
+	res.Challenge = unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v.Challenge)
 
 	return res
 }

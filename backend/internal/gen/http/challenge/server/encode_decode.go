@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"strings"
 
-	challenge "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
@@ -59,9 +58,9 @@ func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 // returned by the challenge ListMonthlyChallenges endpoint.
 func EncodeListMonthlyChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res, _ := v.([]*challenge.MonthlyChallenge)
+		res := v.(challengeviews.SsmUsermonthlychallengesCollection)
 		enc := encoder(ctx, w)
-		body := NewListMonthlyChallengesResponseBody(res)
+		body := NewSsmUsermonthlychallengesResponseCollection(res.Projected)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
@@ -280,18 +279,18 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 	return res
 }
 
-// marshalChallengeMonthlyChallengeToMonthlyChallengeResponse builds a value of
-// type *MonthlyChallengeResponse from a value of type
-// *challenge.MonthlyChallenge.
-func marshalChallengeMonthlyChallengeToMonthlyChallengeResponse(v *challenge.MonthlyChallenge) *MonthlyChallengeResponse {
-	res := &MonthlyChallengeResponse{
-		Slug:         v.Slug,
-		Title:        v.Title,
-		Description:  v.Description,
-		ChallengeID:  v.ChallengeID,
-		DisplayMonth: v.DisplayMonth,
-		StartDate:    v.StartDate,
-		EndDate:      v.EndDate,
+// marshalChallengeviewsSsmUsermonthlychallengesViewToSsmUsermonthlychallengesResponse
+// builds a value of type *SsmUsermonthlychallengesResponse from a value of
+// type *challengeviews.SsmUsermonthlychallengesView.
+func marshalChallengeviewsSsmUsermonthlychallengesViewToSsmUsermonthlychallengesResponse(v *challengeviews.SsmUsermonthlychallengesView) *SsmUsermonthlychallengesResponse {
+	res := &SsmUsermonthlychallengesResponse{
+		ChallengeID:  *v.ChallengeID,
+		DisplayMonth: *v.DisplayMonth,
+		StartDate:    *v.StartDate,
+		EndDate:      *v.EndDate,
+	}
+	if v.Challenge != nil {
+		res.Challenge = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v.Challenge)
 	}
 
 	return res

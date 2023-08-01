@@ -89,7 +89,12 @@ func NewListMonthlyChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc)
 		if err != nil {
 			return nil, err
 		}
-		return s.ListMonthlyChallenges(ctx, p)
+		res, err := s.ListMonthlyChallenges(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedSsmUsermonthlychallengesCollection(res, "default")
+		return vres, nil
 	}
 }
 

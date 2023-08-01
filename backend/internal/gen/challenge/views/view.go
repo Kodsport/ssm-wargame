@@ -20,6 +20,15 @@ type SsmChallengeCollection struct {
 	View string
 }
 
+// SsmUsermonthlychallengesCollection is the viewed result type that is
+// projected based on a view.
+type SsmUsermonthlychallengesCollection struct {
+	// Type to project
+	Projected SsmUsermonthlychallengesCollectionView
+	// View to render
+	View string
+}
+
 // SsmShoolscoreboard is the viewed result type that is projected based on a
 // view.
 type SsmShoolscoreboard struct {
@@ -63,6 +72,23 @@ type ChallengeFilesView struct {
 	URL      *string
 }
 
+// SsmUsermonthlychallengesCollectionView is a type that runs validations on a
+// projected type.
+type SsmUsermonthlychallengesCollectionView []*SsmUsermonthlychallengesView
+
+// SsmUsermonthlychallengesView is a type that runs validations on a projected
+// type.
+type SsmUsermonthlychallengesView struct {
+	ChallengeID *string
+	// The month(s) that the challenge is assigned for
+	DisplayMonth *string
+	// Starting date of the monthly challenge
+	StartDate *int64
+	// Ending date of the monthly challenge
+	EndDate   *int64
+	Challenge *SsmChallengeView
+}
+
 // SsmShoolscoreboardView is a type that runs validations on a projected type.
 type SsmShoolscoreboardView struct {
 	Scores []*SchoolScoreboardScoreView
@@ -92,6 +118,17 @@ var (
 			"category",
 		},
 	}
+	// SsmUsermonthlychallengesCollectionMap is a map indexing the attribute names
+	// of SsmUsermonthlychallengesCollection by view name.
+	SsmUsermonthlychallengesCollectionMap = map[string][]string{
+		"default": {
+			"challenge_id",
+			"display_month",
+			"start_date",
+			"end_date",
+			"challenge",
+		},
+	}
 	// SsmShoolscoreboardMap is a map indexing the attribute names of
 	// SsmShoolscoreboard by view name.
 	SsmShoolscoreboardMap = map[string][]string{
@@ -115,6 +152,17 @@ var (
 			"category",
 		},
 	}
+	// SsmUsermonthlychallengesMap is a map indexing the attribute names of
+	// SsmUsermonthlychallenges by view name.
+	SsmUsermonthlychallengesMap = map[string][]string{
+		"default": {
+			"challenge_id",
+			"display_month",
+			"start_date",
+			"end_date",
+			"challenge",
+		},
+	}
 )
 
 // ValidateSsmChallengeCollection runs the validations defined on the viewed
@@ -123,6 +171,18 @@ func ValidateSsmChallengeCollection(result SsmChallengeCollection) (err error) {
 	switch result.View {
 	case "default", "":
 		err = ValidateSsmChallengeCollectionView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
+// ValidateSsmUsermonthlychallengesCollection runs the validations defined on
+// the viewed result type SsmUsermonthlychallengesCollection.
+func ValidateSsmUsermonthlychallengesCollection(result SsmUsermonthlychallengesCollection) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmUsermonthlychallengesCollectionView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
@@ -207,6 +267,43 @@ func ValidateChallengeFilesView(result *ChallengeFilesView) (err error) {
 	}
 	if result.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "result"))
+	}
+	return
+}
+
+// ValidateSsmUsermonthlychallengesCollectionView runs the validations defined
+// on SsmUsermonthlychallengesCollectionView using the "default" view.
+func ValidateSsmUsermonthlychallengesCollectionView(result SsmUsermonthlychallengesCollectionView) (err error) {
+	for _, item := range result {
+		if err2 := ValidateSsmUsermonthlychallengesView(item); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// ValidateSsmUsermonthlychallengesView runs the validations defined on
+// SsmUsermonthlychallengesView using the "default" view.
+func ValidateSsmUsermonthlychallengesView(result *SsmUsermonthlychallengesView) (err error) {
+	if result.StartDate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start_date", "result"))
+	}
+	if result.EndDate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end_date", "result"))
+	}
+	if result.DisplayMonth == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_month", "result"))
+	}
+	if result.ChallengeID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "result"))
+	}
+	if result.ChallengeID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.challenge_id", *result.ChallengeID, goa.FormatUUID))
+	}
+	if result.Challenge != nil {
+		if err2 := ValidateSsmChallengeView(result.Challenge); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
 	}
 	return
 }

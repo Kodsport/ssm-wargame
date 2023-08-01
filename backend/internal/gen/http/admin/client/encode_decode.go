@@ -1582,9 +1582,6 @@ func unmarshalAdminChallengeFlagResponseToAdminviewsAdminChallengeFlagView(v *Ad
 // type *admin.MonthlyChallenge from a value of type *MonthlyChallengeResponse.
 func unmarshalMonthlyChallengeResponseToAdminMonthlyChallenge(v *MonthlyChallengeResponse) *admin.MonthlyChallenge {
 	res := &admin.MonthlyChallenge{
-		Slug:         *v.Slug,
-		Title:        *v.Title,
-		Description:  *v.Description,
 		ChallengeID:  *v.ChallengeID,
 		DisplayMonth: *v.DisplayMonth,
 		StartDate:    *v.StartDate,

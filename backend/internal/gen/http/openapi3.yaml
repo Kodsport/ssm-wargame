@@ -32,8 +32,6 @@ paths:
                 name: Forensics
               - id: e721a338-44de-4de8-a562-43d2db5f4115
                 name: Forensics
-              - id: e721a338-44de-4de8-a562-43d2db5f4115
-                name: Forensics
         "400":
           description: Resource not found
           content:
@@ -618,34 +616,22 @@ paths:
                   $ref: '#/components/schemas/MonthlyChallenge'
                 example:
                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: A heap overflow challenge
                   display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  slug: pwnme
-                  start_date: "2006-02-01"
-                  title: pwnme
+                  end_date: 1690884841
+                  start_date: 1690874841
                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: A heap overflow challenge
                   display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  slug: pwnme
-                  start_date: "2006-02-01"
-                  title: pwnme
+                  end_date: 1690884841
+                  start_date: 1690874841
               example:
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: A heap overflow challenge
                 display_month: Januari/Februari
-                end_date: "2006-02-01"
-                slug: pwnme
-                start_date: "2006-02-01"
-                title: pwnme
+                end_date: 1690884841
+                start_date: 1690874841
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: A heap overflow challenge
                 display_month: Januari/Februari
-                end_date: "2006-02-01"
-                slug: pwnme
-                start_date: "2006-02-01"
-                title: pwnme
+                end_date: 1690884841
+                start_date: 1690874841
         "400":
           description: Resource not found
           content:
@@ -691,12 +677,9 @@ paths:
               $ref: '#/components/schemas/MonthlyChallenge'
             example:
               challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-              description: A heap overflow challenge
               display_month: Januari/Februari
-              end_date: "2006-02-01"
-              slug: pwnme
-              start_date: "2006-02-01"
-              title: pwnme
+              end_date: 1690884841
+              start_date: 1690874841
       responses:
         "204":
           description: No Content response.
@@ -1016,39 +999,54 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MonthlyChallenge'
-                example:
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: A heap overflow challenge
-                  display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  slug: pwnme
-                  start_date: "2006-02-01"
-                  title: pwnme
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: A heap overflow challenge
-                  display_month: Januari/Februari
-                  end_date: "2006-02-01"
-                  slug: pwnme
-                  start_date: "2006-02-01"
-                  title: pwnme
+                $ref: '#/components/schemas/SsmUsermonthlychallengesCollection'
               example:
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: A heap overflow challenge
+              - challenge:
+                  category: Misc
+                  description: A heap overflow challenge
+                  files:
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  id: e721a338-44de-4de8-a562-43d2db5f4115
+                  score: 50
+                  services:
+                  - {}
+                  - {}
+                  slug: pwnme
+                  solved: true
+                  solves: 3
+                  title: pwnme
+                challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 display_month: Januari/Februari
-                end_date: "2006-02-01"
-                slug: pwnme
-                start_date: "2006-02-01"
-                title: pwnme
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: A heap overflow challenge
+                end_date: 1690884841
+                start_date: 1690874841
+              - challenge:
+                  category: Misc
+                  description: A heap overflow challenge
+                  files:
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  id: e721a338-44de-4de8-a562-43d2db5f4115
+                  score: 50
+                  services:
+                  - {}
+                  - {}
+                  slug: pwnme
+                  solved: true
+                  solves: 3
+                  title: pwnme
+                challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 display_month: Januari/Februari
-                end_date: "2006-02-01"
-                slug: pwnme
-                start_date: "2006-02-01"
-                title: pwnme
+                end_date: 1690884841
+                start_date: 1690874841
       security:
       - jwt_header_Authorization: []
   /scoreboard:
@@ -1066,6 +1064,10 @@ paths:
                 $ref: '#/components/schemas/SsmShoolscoreboard'
               example:
                 scores:
+                - school_name: Stockholm Science and Innovation School
+                  score: 1337
+                - school_name: Stockholm Science and Innovation School
+                  score: 1337
                 - school_name: Stockholm Science and Innovation School
                   score: 1337
                 - school_name: Stockholm Science and Innovation School
@@ -1171,7 +1173,7 @@ paths:
                 last_name: Sunar
                 role: admin
                 school_id: 78433202
-                school_name: Veniam qui.
+                school_name: Voluptates in veniam qui.
       security:
       - jwt_header_Authorization: []
 components:
@@ -1451,50 +1453,30 @@ components:
           type: string
           example: 85163218-8735-42ed-a7a6-42a9de2294df
           format: uuid
-        description:
-          type: string
-          description: A short text describing the challenge
-          example: A heap overflow challenge
         display_month:
           type: string
           description: The month(s) that the challenge is assigned for
           example: Januari/Februari
         end_date:
-          type: string
+          type: integer
           description: Ending date of the monthly challenge
-          example: "2006-02-01"
-        slug:
-          type: string
-          description: A unique string that can be used in URLs
-          example: pwnme
+          example: 1690884841
+          format: int64
         start_date:
-          type: string
+          type: integer
           description: Starting date of the monthly challenge
-          example: "2006-02-01"
-        title:
-          type: string
-          description: Title displayed to user
-          example: pwnme
+          example: 1690874841
+          format: int64
       example:
         challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-        description: A heap overflow challenge
         display_month: Januari/Februari
-        end_date: "2006-02-01"
-        slug: pwnme
-        start_date: "2006-02-01"
-        title: pwnme
+        end_date: 1690884841
+        start_date: 1690874841
       required:
       - start_date
       - end_date
       - display_month
       - challenge_id
-      - id
-      - title
-      - description
-      - score
-      - slug
-      - solves
-      - category
     PresignChallFileUploadRequestBody:
       type: object
       properties:
@@ -1963,6 +1945,117 @@ components:
       - first_name
       - last_name
       - role
+    SsmUsermonthlychallenges:
+      type: object
+      properties:
+        challenge:
+          $ref: '#/components/schemas/SsmChallenge'
+        challenge_id:
+          type: string
+          example: 85163218-8735-42ed-a7a6-42a9de2294df
+          format: uuid
+        display_month:
+          type: string
+          description: The month(s) that the challenge is assigned for
+          example: Januari/Februari
+        end_date:
+          type: integer
+          description: Ending date of the monthly challenge
+          example: 1690884841
+          format: int64
+        start_date:
+          type: integer
+          description: Starting date of the monthly challenge
+          example: 1690874841
+          format: int64
+      example:
+        challenge:
+          category: Misc
+          description: A heap overflow challenge
+          files:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          id: e721a338-44de-4de8-a562-43d2db5f4115
+          score: 50
+          services:
+          - {}
+          - {}
+          slug: pwnme
+          solved: true
+          solves: 3
+          title: pwnme
+        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+        display_month: Januari/Februari
+        end_date: 1690884841
+        start_date: 1690874841
+      required:
+      - challenge
+      - id
+      - title
+      - description
+      - score
+      - slug
+      - solves
+      - category
+      - start_date
+      - end_date
+      - display_month
+      - challenge_id
+    SsmUsermonthlychallengesCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/SsmUsermonthlychallenges'
+      example:
+      - challenge:
+          category: Misc
+          description: A heap overflow challenge
+          files:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          id: e721a338-44de-4de8-a562-43d2db5f4115
+          score: 50
+          services:
+          - {}
+          - {}
+          slug: pwnme
+          solved: true
+          solves: 3
+          title: pwnme
+        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+        display_month: Januari/Februari
+        end_date: 1690884841
+        start_date: 1690874841
+      - challenge:
+          category: Misc
+          description: A heap overflow challenge
+          files:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          id: e721a338-44de-4de8-a562-43d2db5f4115
+          score: 50
+          services:
+          - {}
+          - {}
+          slug: pwnme
+          solved: true
+          solves: 3
+          title: pwnme
+        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+        display_month: Januari/Februari
+        end_date: 1690884841
+        start_date: 1690874841
     SubmitFlagRequestBody:
       type: object
       properties:

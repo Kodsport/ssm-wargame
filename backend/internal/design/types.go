@@ -84,11 +84,6 @@ var AdminChallengeFlag = Type("AdminChallengeFlag", func() {
 })
 
 var MonthlyChallenge = Type("MonthlyChallenge", func() {
-	Reference(Challenge)
-
-	Attribute("slug")
-	Attribute("title")
-	Attribute("description")
 
 	Attribute("challenge_id", String, func() {
 		Example("85163218-8735-42ed-a7a6-42a9de2294df")
@@ -98,13 +93,13 @@ var MonthlyChallenge = Type("MonthlyChallenge", func() {
 		Description("The month(s) that the challenge is assigned for")
 		Example("Januari/Februari")
 	})
-	Attribute("start_date", String, func() {
+	Attribute("start_date", Int64, func() {
 		Description("Starting date of the monthly challenge")
-		Example("2006-02-01")
+		Example(1690874841)
 	})
-	Attribute("end_date", String, func() {
+	Attribute("end_date", Int64, func() {
 		Description("Ending date of the monthly challenge")
-		Example("2006-02-01")
+		Example(1690884841)
 	})
 
 	Required("start_date", "end_date", "display_month", "challenge_id")

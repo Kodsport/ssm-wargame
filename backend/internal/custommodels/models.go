@@ -8,3 +8,10 @@ type UserChall struct {
 	Solved           bool   `boil:"solved"`
 	Category         string `boil:"category"`
 }
+
+type UserMonthlyChall struct {
+	models.MonthlyChallenge `boil:",bind"`
+	NumSolves               int    `boil:"num_solves"`
+	Solved                  bool   `boil:"solved"`
+	Category                string `boil:"category"`
+}

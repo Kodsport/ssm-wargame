@@ -1,44 +1,14 @@
 <template>
     <div>
         <div>
-            <h1>Challenges</h1>
-
-            <div v-for="cat in challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i)" :key="cat">
-                <h1>{{ cat }}</h1>
-                <Challenge class="border-top pt-3" v-for="chall in challs.challenges.filter(v => v.category === cat)"
-                    v-bind:chall="chall">
-                </Challenge>
-            </div>
-
-            <div v-if="auth.user.id">
-
-                <h1>User settings</h1>
+            <div v-if="montly">
+                <h1>Montly challenge - {{ montly.display_month }}</h1>
                 <div>
-                    <table>
-                        <tbody>
-                            <tr v-for="[k, v] in Object.entries(auth.user)" :key="k">
-                                <th>{{ k }}</th>
-                                <td>{{ v }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div>
-                    <div v-if="auth.user.school_id">
-                        in school {{ auth.user.school_id }}
-                        <button class="btn btn-danger" @click="leaveSchool">Leave</button>
-                    </div>
-                    <div v-else>
-                        <input class="form-control" type="text" v-model="schoolQuery" @input="searchSchools">
-                        <ul>
-                            <li v-for="school in schools" :key="school.id">{{ school.name }} ({{ school.municipality_name
-                            }})
-                                <button class="btn btn-primary btn-xs" @click="joinSchool(school.id)">Join</button>
-                            </li>
-                        </ul>
-                    </div>
+                    <challenge :chall="montly.challenge"></challenge>
                 </div>
             </div>
+
+
         </div>
 
     </div>
@@ -52,37 +22,12 @@ const http = useHttp()
 const challs = useChallengeStore()
 const auth = useAuthStore()
 
+const montly = computed(() => challs.getCurrentMontly)
+
 onMounted(() => {
     challs.getChallenges()
+    challs.getMonthlies()
 })
 
-var schoolQuery = ref("")
-var schools = ref([])
-
-async function leaveSchool() {
-    await http('/user/leave_school', {
-        method: 'POST'
-    })
-    auth.getUser()
-}
-
-async function joinSchool(id) {
-    await http('/user/join_school', {
-        method: 'POST',
-        body: {
-            school_id: id
-        }
-    })
-    auth.getUser()
-}
-
-async function searchSchools() {
-    if (schoolQuery.value == "") {
-        schools.value = []
-        return
-    }
-    const resp = await http('/user/schools?q=' + encodeURIComponent(schoolQuery.value))
-    schools.value = resp
-}
 
 </script>

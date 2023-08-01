@@ -25,12 +25,11 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 	challs := make([]*custommodels.UserChall, 0)
 	err := models.NewQuery(
-		qm.Select("c.*, COUNT(us.user_id) num_solves"),
+		qm.Select("c.*"),
+		qm.Select("(SELECT COUNT(1) FROM user_solves WHERE challenge_id = c.id) num_solves"),
 		qm.From("challenges c"),
-		qm.LeftOuterJoin("user_solves us ON us.challenge_id = c.id"),
-		qm.GroupBy("c.id"),
-		qm.Load(models.ChallengeRels.Flags),
-		qm.Load(models.ChallengeRels.ChallengeFiles),
+		//qm.Load(models.ChallengeRels.Flags),
+		//qm.Load(models.ChallengeRels.ChallengeFiles),
 	).Bind(ctx, s.db, &challs)
 	if err != nil {
 		s.log.Warn("could not list challs", zap.Error(err), utils.C(ctx))

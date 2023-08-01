@@ -5,8 +5,18 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
+            <nuxt-link active-class="active" class="nav-link" to="/challenges">
+              Challenges
+            </nuxt-link>
+          </li>
+          <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/scoreboard">
               Scoreboard
+            </nuxt-link>
+          </li>
+          <li class="nav-item">
+            <nuxt-link v-if="!!auth.user.id" active-class="active" class="nav-link" to="/user">
+              Settings
             </nuxt-link>
           </li>
         </ul>

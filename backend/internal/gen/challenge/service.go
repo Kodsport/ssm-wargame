@@ -20,7 +20,7 @@ type Service interface {
 	// ListChallenges implements ListChallenges.
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, err error)
 	// ListMonthlyChallenges implements ListMonthlyChallenges.
-	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res []*MonthlyChallenge, err error)
+	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res SsmUsermonthlychallengesCollection, err error)
 	// SubmitFlag implements SubmitFlag.
 	SubmitFlag(context.Context, *SubmitFlagPayload) (err error)
 	// SchoolScoreboard implements SchoolScoreboard.
@@ -58,6 +58,10 @@ type SsmChallengeCollection []*SsmChallenge
 type ListMonthlyChallengesPayload struct {
 	Token *string
 }
+
+// SsmUsermonthlychallengesCollection is the result type of the challenge
+// service ListMonthlyChallenges method.
+type SsmUsermonthlychallengesCollection []*SsmUsermonthlychallenges
 
 // SubmitFlagPayload is the payload type of the challenge service SubmitFlag
 // method.
@@ -108,20 +112,15 @@ type ChallengeFiles struct {
 	URL      string
 }
 
-type MonthlyChallenge struct {
-	// A unique string that can be used in URLs
-	Slug string
-	// Title displayed to user
-	Title string
-	// A short text describing the challenge
-	Description string
+type SsmUsermonthlychallenges struct {
 	ChallengeID string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth string
 	// Starting date of the monthly challenge
-	StartDate string
+	StartDate int64
 	// Ending date of the monthly challenge
-	EndDate string
+	EndDate   int64
+	Challenge *SsmChallenge
 }
 
 type SchoolScoreboardScore struct {
@@ -159,6 +158,21 @@ func NewSsmChallengeCollection(vres challengeviews.SsmChallengeCollection) SsmCh
 func NewViewedSsmChallengeCollection(res SsmChallengeCollection, view string) challengeviews.SsmChallengeCollection {
 	p := newSsmChallengeCollectionView(res)
 	return challengeviews.SsmChallengeCollection{Projected: p, View: "default"}
+}
+
+// NewSsmUsermonthlychallengesCollection initializes result type
+// SsmUsermonthlychallengesCollection from viewed result type
+// SsmUsermonthlychallengesCollection.
+func NewSsmUsermonthlychallengesCollection(vres challengeviews.SsmUsermonthlychallengesCollection) SsmUsermonthlychallengesCollection {
+	return newSsmUsermonthlychallengesCollection(vres.Projected)
+}
+
+// NewViewedSsmUsermonthlychallengesCollection initializes viewed result type
+// SsmUsermonthlychallengesCollection from result type
+// SsmUsermonthlychallengesCollection using the given view.
+func NewViewedSsmUsermonthlychallengesCollection(res SsmUsermonthlychallengesCollection, view string) challengeviews.SsmUsermonthlychallengesCollection {
+	p := newSsmUsermonthlychallengesCollectionView(res)
+	return challengeviews.SsmUsermonthlychallengesCollection{Projected: p, View: "default"}
 }
 
 // NewSsmShoolscoreboard initializes result type SsmShoolscoreboard from viewed
@@ -261,6 +275,66 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 		for i, val := range res.Files {
 			vres.Files[i] = transformChallengeFilesToChallengeviewsChallengeFilesView(val)
 		}
+	}
+	return vres
+}
+
+// newSsmUsermonthlychallengesCollection converts projected type
+// SsmUsermonthlychallengesCollection to service type
+// SsmUsermonthlychallengesCollection.
+func newSsmUsermonthlychallengesCollection(vres challengeviews.SsmUsermonthlychallengesCollectionView) SsmUsermonthlychallengesCollection {
+	res := make(SsmUsermonthlychallengesCollection, len(vres))
+	for i, n := range vres {
+		res[i] = newSsmUsermonthlychallenges(n)
+	}
+	return res
+}
+
+// newSsmUsermonthlychallengesCollectionView projects result type
+// SsmUsermonthlychallengesCollection to projected type
+// SsmUsermonthlychallengesCollectionView using the "default" view.
+func newSsmUsermonthlychallengesCollectionView(res SsmUsermonthlychallengesCollection) challengeviews.SsmUsermonthlychallengesCollectionView {
+	vres := make(challengeviews.SsmUsermonthlychallengesCollectionView, len(res))
+	for i, n := range res {
+		vres[i] = newSsmUsermonthlychallengesView(n)
+	}
+	return vres
+}
+
+// newSsmUsermonthlychallenges converts projected type SsmUsermonthlychallenges
+// to service type SsmUsermonthlychallenges.
+func newSsmUsermonthlychallenges(vres *challengeviews.SsmUsermonthlychallengesView) *SsmUsermonthlychallenges {
+	res := &SsmUsermonthlychallenges{}
+	if vres.ChallengeID != nil {
+		res.ChallengeID = *vres.ChallengeID
+	}
+	if vres.DisplayMonth != nil {
+		res.DisplayMonth = *vres.DisplayMonth
+	}
+	if vres.StartDate != nil {
+		res.StartDate = *vres.StartDate
+	}
+	if vres.EndDate != nil {
+		res.EndDate = *vres.EndDate
+	}
+	if vres.Challenge != nil {
+		res.Challenge = newSsmChallenge(vres.Challenge)
+	}
+	return res
+}
+
+// newSsmUsermonthlychallengesView projects result type
+// SsmUsermonthlychallenges to projected type SsmUsermonthlychallengesView
+// using the "default" view.
+func newSsmUsermonthlychallengesView(res *SsmUsermonthlychallenges) *challengeviews.SsmUsermonthlychallengesView {
+	vres := &challengeviews.SsmUsermonthlychallengesView{
+		ChallengeID:  &res.ChallengeID,
+		DisplayMonth: &res.DisplayMonth,
+		StartDate:    &res.StartDate,
+		EndDate:      &res.EndDate,
+	}
+	if res.Challenge != nil {
+		vres.Challenge = newSsmChallengeView(res.Challenge)
 	}
 	return vres
 }

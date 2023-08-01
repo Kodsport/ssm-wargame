@@ -17,7 +17,7 @@ var _ = Service("challenge", func() {
 		})
 	})
 	Method("ListMonthlyChallenges", func() {
-		Result(ArrayOf(MonthlyChallenge))
+		Result(CollectionOf(UserMonthlyChallenge))
 		Payload(func() {
 			Extend(OptionalTokenPayload)
 		})
