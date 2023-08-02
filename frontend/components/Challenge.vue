@@ -2,11 +2,11 @@
     <div v-bind:class="{ 'alert': props.chall.solved, 'alert-success': props.chall.solved }">
         <h5>{{ props.chall.title }}</h5>
         <p>{{ props.chall.description }}</p>
-        <p>{{ props.chall.solves }} Solves</p>
+        <p>{{ props.chall.solves }} lösare</p>
 
 
         <div v-if="props.chall.files">
-            Files:
+            Filer:
             <a class="px-2" v-for="file in props.chall.files" :href="file.url">{{ file.filename }}</a>
         </div>
         <div v-if="!props.chall.solved && !!auth.user.id" class="alert" v-bind:class="{ 'alert-danger': warn }">

@@ -1,11 +1,11 @@
 <template>
     <div>
-        <h1>Scoreboard</h1>
+        <h1>Poängtavla</h1>
         <table class="table">
             <thead>
-                <th>Rank</th>
-                <th>School</th>
-                <th>Score</th>
+                <th>Rang</th>
+                <th>Skola</th>
+                <th>Poäng</th>
             </thead>
             <tbody>
                 <tr v-for="score, i in scoreboard.sort((a, b) => a.score < b.score)" :key="score.school_name">

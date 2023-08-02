@@ -6,17 +6,17 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/challenges">
-              Challenges
+              Utmaningar
             </nuxt-link>
           </li>
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/scoreboard">
-              Scoreboard
+              Poängtavla
             </nuxt-link>
           </li>
           <li class="nav-item">
             <nuxt-link v-if="!!auth.user.id" active-class="active" class="nav-link" to="/user">
-              Settings
+              Inställningar
             </nuxt-link>
           </li>
         </ul>
@@ -40,8 +40,8 @@
             </nuxt-link>
           </li>
         </ul>
-        <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">Login</a>
-        <a v-else class="btn btn-primary" @click="logout">Logout</a>
+        <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">Logga in</a>
+        <a v-else class="btn btn-primary" @click="logout">Logga ut</a>
       </div>
     </div>
   </nav>
