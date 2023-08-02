@@ -38,6 +38,7 @@ async function submitFlag() {
         })
 
         challs.getChallenges()
+        challs.getMonthlies()
 
     } catch (error) {
         console.log(error)
