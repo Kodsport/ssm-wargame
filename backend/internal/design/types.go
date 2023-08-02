@@ -140,3 +140,13 @@ var AdminChallengeFile = Type("AdminChallengeFiles", func() {
 
 	Required("id", "filename", "url", "key", "bucket", "size", "md5")
 })
+
+var CTFEvent = Type("CTFEvent", func() {
+	Attribute("id", String, func() {
+		Example("71333e34-4c6b-483e-b3c7-c77d73008cca")
+	})
+	Attribute("name", String, func() {
+		Example("Säkerhet-SM 2023")
+	})
+	Required("id", "name")
+})

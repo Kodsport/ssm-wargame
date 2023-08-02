@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"strings"
 
+	challenge "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
 	challengeviews "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge/views"
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
@@ -42,6 +43,42 @@ func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 			token = &tokenRaw
 		}
 		payload := NewListChallengesPayload(token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeListEventsResponse returns an encoder for responses returned by the
+// challenge ListEvents endpoint.
+func EncodeListEventsResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.([]*challenge.CTFEvent)
+		enc := encoder(ctx, w)
+		body := NewListEventsResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListEventsRequest returns a decoder for requests sent to the challenge
+// ListEvents endpoint.
+func DecodeListEventsRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewListEventsPayload(token)
 		if payload.Token != nil {
 			if strings.Contains(*payload.Token, " ") {
 				// Remove authorization scheme prefix (e.g. "Bearer")
@@ -233,6 +270,7 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengevie
 		Description: *v.Description,
 		Score:       *v.Score,
 		Solves:      *v.Solves,
+		CtfEventID:  v.CtfEventID,
 		Solved:      *v.Solved,
 		Category:    *v.Category,
 	}
@@ -274,6 +312,17 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 	res := &ChallengeFilesResponse{
 		Filename: *v.Filename,
 		URL:      *v.URL,
+	}
+
+	return res
+}
+
+// marshalChallengeCTFEventToCTFEventResponse builds a value of type
+// *CTFEventResponse from a value of type *challenge.CTFEvent.
+func marshalChallengeCTFEventToCTFEventResponse(v *challenge.CTFEvent) *CTFEventResponse {
+	res := &CTFEventResponse{
+		ID:   v.ID,
+		Name: v.Name,
 	}
 
 	return res

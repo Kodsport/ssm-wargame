@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <h1>Poängtavla</h1>
         <table class="table">
             <thead>

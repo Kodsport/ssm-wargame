@@ -6,6 +6,7 @@ export const useChallengeStore = defineStore('challenges', {
     state: () => ({
         challenges: [],
         monthlies: [],
+        events: [],
     }),
     actions: {
         async getChallenges() {
@@ -15,6 +16,10 @@ export const useChallengeStore = defineStore('challenges', {
         async getMonthlies() {
             const challs = await http('/monthly_challenges')
             this.monthlies = challs
+        },
+        async getEvents() {
+            const cats = await http('/events')
+            this.events = cats
         }
     },
     getters: {

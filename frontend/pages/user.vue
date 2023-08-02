@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <div v-if="auth.user.id">
             <h1>User</h1>
 

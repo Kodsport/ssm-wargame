@@ -20,6 +20,7 @@ import (
 type Server struct {
 	Mounts                []*MountPoint
 	ListChallenges        http.Handler
+	ListEvents            http.Handler
 	ListMonthlyChallenges http.Handler
 	SubmitFlag            http.Handler
 	SchoolScoreboard      http.Handler
@@ -59,11 +60,13 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"ListChallenges", "GET", "/challenges"},
+			{"ListEvents", "GET", "/events"},
 			{"ListMonthlyChallenges", "GET", "/monthly_challenges"},
 			{"SubmitFlag", "POST", "/challenges/{challengeID}/attempt"},
 			{"SchoolScoreboard", "GET", "/scoreboard"},
 		},
 		ListChallenges:        NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
+		ListEvents:            NewListEventsHandler(e.ListEvents, mux, decoder, encoder, errhandler, formatter),
 		ListMonthlyChallenges: NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
 		SubmitFlag:            NewSubmitFlagHandler(e.SubmitFlag, mux, decoder, encoder, errhandler, formatter),
 		SchoolScoreboard:      NewSchoolScoreboardHandler(e.SchoolScoreboard, mux, decoder, encoder, errhandler, formatter),
@@ -76,6 +79,7 @@ func (s *Server) Service() string { return "challenge" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListChallenges = m(s.ListChallenges)
+	s.ListEvents = m(s.ListEvents)
 	s.ListMonthlyChallenges = m(s.ListMonthlyChallenges)
 	s.SubmitFlag = m(s.SubmitFlag)
 	s.SchoolScoreboard = m(s.SchoolScoreboard)
@@ -84,6 +88,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 // Mount configures the mux to serve the challenge endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountListChallengesHandler(mux, h.ListChallenges)
+	MountListEventsHandler(mux, h.ListEvents)
 	MountListMonthlyChallengesHandler(mux, h.ListMonthlyChallenges)
 	MountSubmitFlagHandler(mux, h.SubmitFlag)
 	MountSchoolScoreboardHandler(mux, h.SchoolScoreboard)
@@ -119,6 +124,57 @@ func NewListChallengesHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "ListChallenges")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListEventsHandler configures the mux to serve the "challenge" service
+// "ListEvents" endpoint.
+func MountListEventsHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/events", f)
+}
+
+// NewListEventsHandler creates a HTTP handler which loads the HTTP request and
+// calls the "challenge" service "ListEvents" endpoint.
+func NewListEventsHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListEventsRequest(mux, decoder)
+		encodeResponse = EncodeListEventsResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListEvents")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
 		payload, err := decodeRequest(r)
 		if err != nil {

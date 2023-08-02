@@ -25,6 +25,10 @@ type SubmitFlagRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
 
+// ListEventsResponseBody is the type of the "challenge" service "ListEvents"
+// endpoint HTTP response body.
+type ListEventsResponseBody []*CTFEventResponse
+
 // SsmUsermonthlychallengesResponseCollection is the type of the "challenge"
 // service "ListMonthlyChallenges" endpoint HTTP response body.
 type SsmUsermonthlychallengesResponseCollection []*SsmUsermonthlychallengesResponse
@@ -86,6 +90,8 @@ type SsmChallengeResponse struct {
 	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
 	Solves int `form:"solves" json:"solves" xml:"solves"`
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	// whether the user has solved the challenge or not
 	Solved   bool   `form:"solved" json:"solved" xml:"solved"`
 	Category string `form:"category" json:"category" xml:"category"`
@@ -99,6 +105,12 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 	Filename string `form:"filename" json:"filename" xml:"filename"`
 	URL      string `form:"url" json:"url" xml:"url"`
+}
+
+// CTFEventResponse is used to define fields on response body types.
+type CTFEventResponse struct {
+	ID   string `form:"id" json:"id" xml:"id"`
+	Name string `form:"name" json:"name" xml:"name"`
 }
 
 // SsmUsermonthlychallengesResponse is used to define fields on response body
@@ -127,6 +139,16 @@ func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollection
 	body := make([]*SsmChallengeResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(val)
+	}
+	return body
+}
+
+// NewListEventsResponseBody builds the HTTP response body from the result of
+// the "ListEvents" endpoint of the "challenge" service.
+func NewListEventsResponseBody(res []*challenge.CTFEvent) ListEventsResponseBody {
+	body := make([]*CTFEventResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalChallengeCTFEventToCTFEventResponse(val)
 	}
 	return body
 }
@@ -187,6 +209,14 @@ func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIn
 // payload.
 func NewListChallengesPayload(token *string) *challenge.ListChallengesPayload {
 	v := &challenge.ListChallengesPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewListEventsPayload builds a challenge service ListEvents endpoint payload.
+func NewListEventsPayload(token *string) *challenge.ListEventsPayload {
+	v := &challenge.ListEventsPayload{}
 	v.Token = token
 
 	return v

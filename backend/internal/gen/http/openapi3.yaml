@@ -27,6 +27,10 @@ paths:
                   name: Forensics
                 - id: e721a338-44de-4de8-a562-43d2db5f4115
                   name: Forensics
+                - id: e721a338-44de-4de8-a562-43d2db5f4115
+                  name: Forensics
+                - id: e721a338-44de-4de8-a562-43d2db5f4115
+                  name: Forensics
               example:
               - id: e721a338-44de-4de8-a562-43d2db5f4115
                 name: Forensics
@@ -107,15 +111,10 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 publish_at: 1638384718
                 score: 50
                 services:
-                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -150,58 +149,10 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 publish_at: 1638384718
                 score: 50
                 services:
-                - {}
-                - {}
-                - {}
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
-                description: A heap overflow challenge
-                files:
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
-                flags:
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                publish_at: 1638384718
-                score: 50
-                services:
-                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -449,7 +400,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubmitFlagRequestBody'
+              $ref: '#/components/schemas/AddFlagRequestBody'
             example:
               flag: SSM{...}
       responses:
@@ -624,6 +575,14 @@ paths:
                   end_date: 1690884841
                   start_date: 1690874841
               example:
+              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                display_month: Januari/Februari
+                end_date: 1690884841
+                start_date: 1690874841
+              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                display_month: Januari/Februari
+                end_date: 1690884841
+                start_date: 1690874841
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 display_month: Januari/Februari
                 end_date: 1690884841
@@ -900,8 +859,11 @@ paths:
                 $ref: '#/components/schemas/SsmChallengeCollection'
               example:
               - category: Misc
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
                 files:
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 - filename: decryptor.exe
@@ -911,6 +873,8 @@ paths:
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 score: 50
                 services:
+                - {}
+                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -918,8 +882,11 @@ paths:
                 solves: 3
                 title: pwnme
               - category: Misc
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
                 files:
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 - filename: decryptor.exe
@@ -929,6 +896,31 @@ paths:
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 score: 50
                 services:
+                - {}
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solved: true
+                solves: 3
+                title: pwnme
+              - category: Misc
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+                description: A heap overflow challenge
+                files:
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                score: 50
+                services:
+                - {}
+                - {}
                 - {}
                 - {}
                 slug: pwnme
@@ -959,7 +951,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubmitFlagRequestBody'
+              $ref: '#/components/schemas/AddFlagRequestBody'
             example:
               flag: SSM{flag}
       responses:
@@ -987,6 +979,37 @@ paths:
                 name: bad_request
       security:
       - jwt_header_Authorization: []
+  /events:
+    get:
+      tags:
+      - challenge
+      summary: ListEvents challenge
+      operationId: challenge#ListEvents
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+                example:
+                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  name: Säkerhet-SM 2023
+                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  name: Säkerhet-SM 2023
+                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  name: Säkerhet-SM 2023
+              example:
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
+      security:
+      - jwt_header_Authorization: []
   /monthly_challenges:
     get:
       tags:
@@ -1003,8 +1026,11 @@ paths:
               example:
               - challenge:
                   category: Misc
+                  ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
                   files:
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
                   - filename: decryptor.exe
                     url: https://s3/bucket/key?signature
                   - filename: decryptor.exe
@@ -1014,6 +1040,8 @@ paths:
                   id: e721a338-44de-4de8-a562-43d2db5f4115
                   score: 50
                   services:
+                  - {}
+                  - {}
                   - {}
                   - {}
                   slug: pwnme
@@ -1026,8 +1054,11 @@ paths:
                 start_date: 1690874841
               - challenge:
                   category: Misc
+                  ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
                   files:
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
                   - filename: decryptor.exe
                     url: https://s3/bucket/key?signature
                   - filename: decryptor.exe
@@ -1037,6 +1068,8 @@ paths:
                   id: e721a338-44de-4de8-a562-43d2db5f4115
                   score: 50
                   services:
+                  - {}
+                  - {}
                   - {}
                   - {}
                   slug: pwnme
@@ -1064,10 +1097,6 @@ paths:
                 $ref: '#/components/schemas/SsmShoolscoreboard'
               example:
                 scores:
-                - school_name: Stockholm Science and Innovation School
-                  score: 1337
-                - school_name: Stockholm Science and Innovation School
-                  score: 1337
                 - school_name: Stockholm Science and Innovation School
                   score: 1337
                 - school_name: Stockholm Science and Innovation School
@@ -1138,9 +1167,6 @@ paths:
                 - id: 78433202
                   municipality_name: Örebro
                   name: Engelbrektsskolan
-                - id: 78433202
-                  municipality_name: Örebro
-                  name: Engelbrektsskolan
               example:
               - id: 78433202
                 municipality_name: Örebro
@@ -1173,11 +1199,21 @@ paths:
                 last_name: Sunar
                 role: admin
                 school_id: 78433202
-                school_name: Voluptates in veniam qui.
+                school_name: Qui facilis ea.
       security:
       - jwt_header_Authorization: []
 components:
   schemas:
+    AddFlagRequestBody:
+      type: object
+      properties:
+        flag:
+          type: string
+          example: SSM{...}
+      example:
+        flag: SSM{...}
+      required:
+      - flag
     AdminChallengeFiles:
       type: object
       properties:
@@ -1348,7 +1384,7 @@ components:
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: true
+          example: false
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -1420,7 +1456,7 @@ components:
           format: int64
         school_name:
           type: string
-          example: Sit nisi numquam voluptatum praesentium.
+          example: Praesentium deleniti eos.
       example:
         email: movitz.sunar@ssm.example
         first_name: Movitz
@@ -1428,7 +1464,7 @@ components:
         last_name: Sunar
         role: admin
         school_id: 78433202
-        school_name: Eos sequi consequuntur rerum.
+        school_name: Consequuntur rerum fuga deserunt explicabo animi eveniet.
       required:
       - id
       - email
@@ -1597,6 +1633,7 @@ components:
           example:
           - {}
           - {}
+          - {}
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -1636,18 +1673,7 @@ components:
           md5: cq02dBbcuugBHM1oKyvMlQ==
           size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
         flags:
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -1656,6 +1682,7 @@ components:
         publish_at: 1638384718
         score: 50
         services:
+        - {}
         - {}
         - {}
         - {}
@@ -1706,15 +1733,10 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
         publish_at: 1638384718
         score: 50
         services:
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -1749,6 +1771,40 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        publish_at: 1638384718
+        score: 50
+        services:
+        - {}
+        - {}
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      - category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+        description: A heap overflow challenge
+        files:
+        - bucket: ssm-prod-bucket
+          filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          key: file.exe
+          md5: cq02dBbcuugBHM1oKyvMlQ==
+          size: 87123
+          url: https://s3/bucket/key?signature
+        - bucket: ssm-prod-bucket
+          filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          key: file.exe
+          md5: cq02dBbcuugBHM1oKyvMlQ==
+          size: 87123
+          url: https://s3/bucket/key?signature
+        - bucket: ssm-prod-bucket
+          filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          key: file.exe
+          md5: cq02dBbcuugBHM1oKyvMlQ==
+          size: 87123
+          url: https://s3/bucket/key?signature
+        flags:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -1757,7 +1813,6 @@ components:
         publish_at: 1638384718
         score: 50
         services:
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -1769,6 +1824,11 @@ components:
         category:
           type: string
           example: Misc
+        ctf_event_id:
+          type: string
+          description: The ID of the CTF the challenge was taken from
+          example: c397efb2-b171-4d77-9166-d105cf4f521a
+          format: uuid
         description:
           type: string
           description: A short text describing the challenge
@@ -1799,6 +1859,7 @@ components:
           - {}
           - {}
           - {}
+          - {}
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -1819,6 +1880,7 @@ components:
       description: A Wargame challenge
       example:
         category: Misc
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
         - filename: decryptor.exe
@@ -1830,8 +1892,6 @@ components:
         id: e721a338-44de-4de8-a562-43d2db5f4115
         score: 50
         services:
-        - {}
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -1853,8 +1913,11 @@ components:
         $ref: '#/components/schemas/SsmChallenge'
       example:
       - category: Misc
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
@@ -1864,6 +1927,8 @@ components:
         id: e721a338-44de-4de8-a562-43d2db5f4115
         score: 50
         services:
+        - {}
+        - {}
         - {}
         - {}
         slug: pwnme
@@ -1871,8 +1936,11 @@ components:
         solves: 3
         title: pwnme
       - category: Misc
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
@@ -1882,6 +1950,8 @@ components:
         id: e721a338-44de-4de8-a562-43d2db5f4115
         score: 50
         services:
+        - {}
+        - {}
         - {}
         - {}
         slug: pwnme
@@ -1904,6 +1974,10 @@ components:
             score: 1337
       example:
         scores:
+        - school_name: Stockholm Science and Innovation School
+          score: 1337
+        - school_name: Stockholm Science and Innovation School
+          score: 1337
         - school_name: Stockholm Science and Innovation School
           score: 1337
         - school_name: Stockholm Science and Innovation School
@@ -1971,8 +2045,11 @@ components:
       example:
         challenge:
           category: Misc
+          ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
           files:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
@@ -1982,6 +2059,8 @@ components:
           id: e721a338-44de-4de8-a562-43d2db5f4115
           score: 50
           services:
+          - {}
+          - {}
           - {}
           - {}
           slug: pwnme
@@ -2012,8 +2091,11 @@ components:
       example:
       - challenge:
           category: Misc
+          ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
           files:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
@@ -2023,6 +2105,8 @@ components:
           id: e721a338-44de-4de8-a562-43d2db5f4115
           score: 50
           services:
+          - {}
+          - {}
           - {}
           - {}
           slug: pwnme
@@ -2035,8 +2119,11 @@ components:
         start_date: 1690874841
       - challenge:
           category: Misc
+          ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
           files:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
@@ -2048,6 +2135,8 @@ components:
           services:
           - {}
           - {}
+          - {}
+          - {}
           slug: pwnme
           solved: true
           solves: 3
@@ -2056,23 +2145,40 @@ components:
         display_month: Januari/Februari
         end_date: 1690884841
         start_date: 1690874841
-    SubmitFlagRequestBody:
-      type: object
-      properties:
-        flag:
-          type: string
-          example: SSM{flag}
-          maxLength: 200
-      example:
-        flag: SSM{flag}
-      required:
-      - flag
+      - challenge:
+          category: Misc
+          ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+          description: A heap overflow challenge
+          files:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          id: e721a338-44de-4de8-a562-43d2db5f4115
+          score: 50
+          services:
+          - {}
+          - {}
+          - {}
+          - {}
+          slug: pwnme
+          solved: true
+          solves: 3
+          title: pwnme
+        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+        display_month: Januari/Februari
+        end_date: 1690884841
+        start_date: 1690874841
   securitySchemes:
     jwt_header_Authorization:
       type: http
       scheme: bearer
 tags:
 - name: auth
-- name: challenge
 - name: admin
+- name: challenge
 - name: user

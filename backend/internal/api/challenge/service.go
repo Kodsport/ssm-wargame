@@ -118,6 +118,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Solves:      chall.NumSolves,
 			Solved:      chall.Solved,
 			Category:    chall.Category,
+			CtfEventID:  chall.CTFEventID.Ptr(),
 		}
 
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))

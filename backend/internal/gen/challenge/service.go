@@ -19,6 +19,8 @@ import (
 type Service interface {
 	// ListChallenges implements ListChallenges.
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, err error)
+	// ListEvents implements ListEvents.
+	ListEvents(context.Context, *ListEventsPayload) (res []*CTFEvent, err error)
 	// ListMonthlyChallenges implements ListMonthlyChallenges.
 	ListMonthlyChallenges(context.Context, *ListMonthlyChallengesPayload) (res SsmUsermonthlychallengesCollection, err error)
 	// SubmitFlag implements SubmitFlag.
@@ -41,7 +43,7 @@ const ServiceName = "challenge"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [4]string{"ListChallenges", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard"}
+var MethodNames = [5]string{"ListChallenges", "ListEvents", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard"}
 
 // ListChallengesPayload is the payload type of the challenge service
 // ListChallenges method.
@@ -52,6 +54,12 @@ type ListChallengesPayload struct {
 // SsmChallengeCollection is the result type of the challenge service
 // ListChallenges method.
 type SsmChallengeCollection []*SsmChallenge
+
+// ListEventsPayload is the payload type of the challenge service ListEvents
+// method.
+type ListEventsPayload struct {
+	Token *string
+}
 
 // ListMonthlyChallengesPayload is the payload type of the challenge service
 // ListMonthlyChallenges method.
@@ -99,6 +107,8 @@ type SsmChallenge struct {
 	Files    []*ChallengeFiles
 	// The numer of people who solved the challenge
 	Solves int
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string
 	// whether the user has solved the challenge or not
 	Solved   bool
 	Category string
@@ -110,6 +120,11 @@ type ChallengeService struct {
 type ChallengeFiles struct {
 	Filename string
 	URL      string
+}
+
+type CTFEvent struct {
+	ID   string
+	Name string
 }
 
 type SsmUsermonthlychallenges struct {
@@ -211,7 +226,9 @@ func newSsmChallengeCollectionView(res SsmChallengeCollection) challengeviews.Ss
 // newSsmChallenge converts projected type SsmChallenge to service type
 // SsmChallenge.
 func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
-	res := &SsmChallenge{}
+	res := &SsmChallenge{
+		CtfEventID: vres.CtfEventID,
+	}
 	if vres.ID != nil {
 		res.ID = *vres.ID
 	}
@@ -261,6 +278,7 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 		Description: &res.Description,
 		Score:       &res.Score,
 		Solves:      &res.Solves,
+		CtfEventID:  res.CtfEventID,
 		Solved:      &res.Solved,
 		Category:    &res.Category,
 	}

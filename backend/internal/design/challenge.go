@@ -16,6 +16,16 @@ var _ = Service("challenge", func() {
 			Response(StatusOK)
 		})
 	})
+	Method("ListEvents", func() {
+		Result(ArrayOf(CTFEvent))
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+		})
+		HTTP(func() {
+			GET("/events")
+			Response(StatusOK)
+		})
+	})
 	Method("ListMonthlyChallenges", func() {
 		Result(CollectionOf(UserMonthlyChallenge))
 		Payload(func() {

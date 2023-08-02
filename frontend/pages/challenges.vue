@@ -1,19 +1,62 @@
 <template>
-    <div>
-        <h1>Utmaningar</h1>
+    <div class="container-fluid">
+        <h1 class="text-primary">Utmaningar</h1>
         <p>
             Här kan du öva på utmaningar från tidigare års upplagor av Säkerhets-SM.
         </p>
 
-        <div class="py-3" v-for="cat in challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i)"
-            :key="cat">
-            <h3>{{ cat }}</h3>
-            <Challenge class="border-top pt-3" v-for="chall in challs.challenges.filter(v => v.category === cat)"
-                v-bind:chall="chall">
-            </Challenge>
+
+        <div class="row pt-4">
+
+            <div class="col-3">
+                <h3>Filtrera</h3>
+                <div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select class="form-control" v-model="categoryFilter">
+                            <option value="">Alla</option>
+                            <option v-for="cat in categories" :value="cat">{{ cat }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group pt-3">
+                        <label>Tävling</label>
+
+                        <div class="form-check" v-for="event in challs.events">
+                            <input type="checkbox" class="form-check-input" v-model="eventFilter[event.id]">
+                            <label class="form-check-label">{{ event.name }}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col pt-5">
+                <div v-if="challenges.length != 0" class="row row-cols-5 g-4">
+                    <div class="col" v-for="chall in challenges">
+                        <Challenge3 :chall="chall" />
+                    </div>
+                </div>
+                <p v-else>
+                    Inga utmaningar matchade filtreringen
+                </p>
+            </div>
         </div>
+
+        <!--
+        <div v-for="cat in categories" class="pt-3">
+            <h5>{{ cat }}</h5>
+
+            <div class="challenge-container">
+                <Challenge2 v-for="chall in challs.challenges.filter(v => v.category === cat)" :key="chall.id"
+                    :chall="chall" />
+            </div>
+        </div>
+
+        -->
+
     </div>
 </template>
+
+
 
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges'
@@ -23,8 +66,46 @@ const http = useHttp()
 const challs = useChallengeStore()
 const auth = useAuthStore()
 
-onMounted(() => {
-    challs.getChallenges()
+
+const eventFilter = ref({})
+const categoryFilter = ref("")
+
+
+const categories = computed(() => challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i))
+
+const challenges = computed(() => {
+    const allowedEvents: string[] = [];
+    for (const [key, value] of Object.entries(eventFilter.value)) {
+        if (!value) continue
+        allowedEvents.push(key)
+    }
+    var res = challs.challenges
+    if (allowedEvents.length != 0) {
+        res = res.filter(v => allowedEvents.includes(v.ctf_event_id))
+    }
+    if (categoryFilter.value != "") {
+        res = res.filter(v => v.category == categoryFilter.value)
+    }
+
+    return res
 })
 
+onMounted(() => {
+    challs.getChallenges()
+    challs.getEvents()
+})
+
+
 </script>
+
+
+<style scoped>
+.challenge-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+h5 {
+    margin-bottom: 0;
+}
+</style>

@@ -9,8 +9,14 @@
             Filer:
             <a class="px-2" v-for="file in props.chall.files" :href="file.url">{{ file.filename }}</a>
         </div>
-        <div v-if="!props.chall.solved && !!auth.user.id" class="alert" v-bind:class="{ 'alert-danger': warn }">
-            <input class="form-control" type="text" placeholder="SSM{..." v-model="flag" @keypress.enter="submitFlag">
+
+        <div v-if="!!auth.user.id">
+            <div v-if="!props.chall.solved" class="alert" v-bind:class="{ 'alert-danger': warn }">
+                <input class="form-control" type="text" placeholder="SSM{..." v-model="flag" @keypress.enter="submitFlag">
+            </div>
+        </div>
+        <div v-else>
+            <input class="form-control" type="text" placeholder="Logga in för att lösa skicka in flaggor">
         </div>
     </div>
 </template>

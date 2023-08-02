@@ -17,6 +17,7 @@ import (
 // Endpoints wraps the "challenge" service endpoints.
 type Endpoints struct {
 	ListChallenges        goa.Endpoint
+	ListEvents            goa.Endpoint
 	ListMonthlyChallenges goa.Endpoint
 	SubmitFlag            goa.Endpoint
 	SchoolScoreboard      goa.Endpoint
@@ -28,6 +29,7 @@ func NewEndpoints(s Service) *Endpoints {
 	a := s.(Auther)
 	return &Endpoints{
 		ListChallenges:        NewListChallengesEndpoint(s, a.JWTAuth),
+		ListEvents:            NewListEventsEndpoint(s, a.JWTAuth),
 		ListMonthlyChallenges: NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
 		SubmitFlag:            NewSubmitFlagEndpoint(s, a.JWTAuth),
 		SchoolScoreboard:      NewSchoolScoreboardEndpoint(s, a.JWTAuth),
@@ -37,6 +39,7 @@ func NewEndpoints(s Service) *Endpoints {
 // Use applies the given middleware to all the "challenge" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListChallenges = m(e.ListChallenges)
+	e.ListEvents = m(e.ListEvents)
 	e.ListMonthlyChallenges = m(e.ListMonthlyChallenges)
 	e.SubmitFlag = m(e.SubmitFlag)
 	e.SchoolScoreboard = m(e.SchoolScoreboard)
@@ -67,6 +70,29 @@ func NewListChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 		}
 		vres := NewViewedSsmChallengeCollection(res, "default")
 		return vres, nil
+	}
+}
+
+// NewListEventsEndpoint returns an endpoint function that calls the method
+// "ListEvents" of service "challenge".
+func NewListEventsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListEventsPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.ListEvents(ctx, p)
 	}
 }
 

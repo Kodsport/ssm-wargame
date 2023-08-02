@@ -16,6 +16,11 @@ func ListChallengesChallengePath() string {
 	return "/challenges"
 }
 
+// ListEventsChallengePath returns the URL path to the challenge service ListEvents HTTP endpoint.
+func ListEventsChallengePath() string {
+	return "/events"
+}
+
 // ListMonthlyChallengesChallengePath returns the URL path to the challenge service ListMonthlyChallenges HTTP endpoint.
 func ListMonthlyChallengesChallengePath() string {
 	return "/monthly_challenges"

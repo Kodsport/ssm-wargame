@@ -16,15 +16,17 @@ import (
 // Client is the "challenge" service client.
 type Client struct {
 	ListChallengesEndpoint        goa.Endpoint
+	ListEventsEndpoint            goa.Endpoint
 	ListMonthlyChallengesEndpoint goa.Endpoint
 	SubmitFlagEndpoint            goa.Endpoint
 	SchoolScoreboardEndpoint      goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges, listMonthlyChallenges, submitFlag, schoolScoreboard goa.Endpoint) *Client {
+func NewClient(listChallenges, listEvents, listMonthlyChallenges, submitFlag, schoolScoreboard goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:        listChallenges,
+		ListEventsEndpoint:            listEvents,
 		ListMonthlyChallengesEndpoint: listMonthlyChallenges,
 		SubmitFlagEndpoint:            submitFlag,
 		SchoolScoreboardEndpoint:      schoolScoreboard,
@@ -40,6 +42,16 @@ func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (
 		return
 	}
 	return ires.(SsmChallengeCollection), nil
+}
+
+// ListEvents calls the "ListEvents" endpoint of the "challenge" service.
+func (c *Client) ListEvents(ctx context.Context, p *ListEventsPayload) (res []*CTFEvent, err error) {
+	var ires interface{}
+	ires, err = c.ListEventsEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*CTFEvent), nil
 }
 
 // ListMonthlyChallenges calls the "ListMonthlyChallenges" endpoint of the

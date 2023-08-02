@@ -26,8 +26,8 @@ import (
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
-challenge (list-challenges|list-monthly-challenges|submit-flag|school-scoreboard)
 admin (list-challenges|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag|list-categories)
+challenge (list-challenges|list-events|list-monthly-challenges|submit-flag|school-scoreboard)
 user (get-self|join-school|leave-school|search-schools)
 `
 }
@@ -35,8 +35,8 @@ user (get-self|join-school|leave-school|search-schools)
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
+		os.Args[0] + ` challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		""
 }
@@ -57,22 +57,6 @@ func ParseEndpoint(
 
 		authExchangeDiscordFlags    = flag.NewFlagSet("exchange-discord", flag.ExitOnError)
 		authExchangeDiscordBodyFlag = authExchangeDiscordFlags.String("body", "REQUIRED", "")
-
-		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
-
-		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
-		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
-
-		challengeListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
-		challengeListMonthlyChallengesTokenFlag = challengeListMonthlyChallengesFlags.String("token", "", "")
-
-		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
-		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
-		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
-		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "REQUIRED", "")
-
-		challengeSchoolScoreboardFlags     = flag.NewFlagSet("school-scoreboard", flag.ExitOnError)
-		challengeSchoolScoreboardTokenFlag = challengeSchoolScoreboardFlags.String("token", "", "")
 
 		adminFlags = flag.NewFlagSet("admin", flag.ContinueOnError)
 
@@ -124,6 +108,25 @@ func ParseEndpoint(
 		adminListCategoriesFlags     = flag.NewFlagSet("list-categories", flag.ExitOnError)
 		adminListCategoriesTokenFlag = adminListCategoriesFlags.String("token", "REQUIRED", "")
 
+		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
+
+		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
+
+		challengeListEventsFlags     = flag.NewFlagSet("list-events", flag.ExitOnError)
+		challengeListEventsTokenFlag = challengeListEventsFlags.String("token", "", "")
+
+		challengeListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
+		challengeListMonthlyChallengesTokenFlag = challengeListMonthlyChallengesFlags.String("token", "", "")
+
+		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
+		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
+		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
+		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "REQUIRED", "")
+
+		challengeSchoolScoreboardFlags     = flag.NewFlagSet("school-scoreboard", flag.ExitOnError)
+		challengeSchoolScoreboardTokenFlag = challengeSchoolScoreboardFlags.String("token", "", "")
+
 		userFlags = flag.NewFlagSet("user", flag.ContinueOnError)
 
 		userGetSelfFlags     = flag.NewFlagSet("get-self", flag.ExitOnError)
@@ -144,12 +147,6 @@ func ParseEndpoint(
 	authGenerateDiscordAuthURLFlags.Usage = authGenerateDiscordAuthURLUsage
 	authExchangeDiscordFlags.Usage = authExchangeDiscordUsage
 
-	challengeFlags.Usage = challengeUsage
-	challengeListChallengesFlags.Usage = challengeListChallengesUsage
-	challengeListMonthlyChallengesFlags.Usage = challengeListMonthlyChallengesUsage
-	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
-	challengeSchoolScoreboardFlags.Usage = challengeSchoolScoreboardUsage
-
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
 	adminCreateChallengeFlags.Usage = adminCreateChallengeUsage
@@ -163,6 +160,13 @@ func ParseEndpoint(
 	adminAddFlagFlags.Usage = adminAddFlagUsage
 	adminDeleteFlagFlags.Usage = adminDeleteFlagUsage
 	adminListCategoriesFlags.Usage = adminListCategoriesUsage
+
+	challengeFlags.Usage = challengeUsage
+	challengeListChallengesFlags.Usage = challengeListChallengesUsage
+	challengeListEventsFlags.Usage = challengeListEventsUsage
+	challengeListMonthlyChallengesFlags.Usage = challengeListMonthlyChallengesUsage
+	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
+	challengeSchoolScoreboardFlags.Usage = challengeSchoolScoreboardUsage
 
 	userFlags.Usage = userUsage
 	userGetSelfFlags.Usage = userGetSelfUsage
@@ -187,10 +191,10 @@ func ParseEndpoint(
 		switch svcn {
 		case "auth":
 			svcf = authFlags
-		case "challenge":
-			svcf = challengeFlags
 		case "admin":
 			svcf = adminFlags
+		case "challenge":
+			svcf = challengeFlags
 		case "user":
 			svcf = userFlags
 		default:
@@ -215,22 +219,6 @@ func ParseEndpoint(
 
 			case "exchange-discord":
 				epf = authExchangeDiscordFlags
-
-			}
-
-		case "challenge":
-			switch epn {
-			case "list-challenges":
-				epf = challengeListChallengesFlags
-
-			case "list-monthly-challenges":
-				epf = challengeListMonthlyChallengesFlags
-
-			case "submit-flag":
-				epf = challengeSubmitFlagFlags
-
-			case "school-scoreboard":
-				epf = challengeSchoolScoreboardFlags
 
 			}
 
@@ -271,6 +259,25 @@ func ParseEndpoint(
 
 			case "list-categories":
 				epf = adminListCategoriesFlags
+
+			}
+
+		case "challenge":
+			switch epn {
+			case "list-challenges":
+				epf = challengeListChallengesFlags
+
+			case "list-events":
+				epf = challengeListEventsFlags
+
+			case "list-monthly-challenges":
+				epf = challengeListMonthlyChallengesFlags
+
+			case "submit-flag":
+				epf = challengeSubmitFlagFlags
+
+			case "school-scoreboard":
+				epf = challengeSchoolScoreboardFlags
 
 			}
 
@@ -320,22 +327,6 @@ func ParseEndpoint(
 				endpoint = c.ExchangeDiscord()
 				data, err = authc.BuildExchangeDiscordPayload(*authExchangeDiscordBodyFlag)
 			}
-		case "challenge":
-			c := challengec.NewClient(scheme, host, doer, enc, dec, restore)
-			switch epn {
-			case "list-challenges":
-				endpoint = c.ListChallenges()
-				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesTokenFlag)
-			case "list-monthly-challenges":
-				endpoint = c.ListMonthlyChallenges()
-				data, err = challengec.BuildListMonthlyChallengesPayload(*challengeListMonthlyChallengesTokenFlag)
-			case "submit-flag":
-				endpoint = c.SubmitFlag()
-				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag, *challengeSubmitFlagTokenFlag)
-			case "school-scoreboard":
-				endpoint = c.SchoolScoreboard()
-				data, err = challengec.BuildSchoolScoreboardPayload(*challengeSchoolScoreboardTokenFlag)
-			}
 		case "admin":
 			c := adminc.NewClient(scheme, host, doer, enc, dec, restore)
 			switch epn {
@@ -375,6 +366,25 @@ func ParseEndpoint(
 			case "list-categories":
 				endpoint = c.ListCategories()
 				data, err = adminc.BuildListCategoriesPayload(*adminListCategoriesTokenFlag)
+			}
+		case "challenge":
+			c := challengec.NewClient(scheme, host, doer, enc, dec, restore)
+			switch epn {
+			case "list-challenges":
+				endpoint = c.ListChallenges()
+				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesTokenFlag)
+			case "list-events":
+				endpoint = c.ListEvents()
+				data, err = challengec.BuildListEventsPayload(*challengeListEventsTokenFlag)
+			case "list-monthly-challenges":
+				endpoint = c.ListMonthlyChallenges()
+				data, err = challengec.BuildListMonthlyChallengesPayload(*challengeListMonthlyChallengesTokenFlag)
+			case "submit-flag":
+				endpoint = c.SubmitFlag()
+				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag, *challengeSubmitFlagTokenFlag)
+			case "school-scoreboard":
+				endpoint = c.SchoolScoreboard()
+				data, err = challengec.BuildSchoolScoreboardPayload(*challengeSchoolScoreboardTokenFlag)
 			}
 		case "user":
 			c := userc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -436,71 +446,6 @@ Example:
       "code": "123abc",
       "state": "15773059ghq9183habn"
    }'
-`, os.Args[0])
-}
-
-// challengeUsage displays the usage of the challenge command and its
-// subcommands.
-func challengeUsage() {
-	fmt.Fprintf(os.Stderr, `Service is the challenge service interface.
-Usage:
-    %[1]s [globalflags] challenge COMMAND [flags]
-
-COMMAND:
-    list-challenges: ListChallenges implements ListChallenges.
-    list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
-    submit-flag: SubmitFlag implements SubmitFlag.
-    school-scoreboard: SchoolScoreboard implements SchoolScoreboard.
-
-Additional help:
-    %[1]s challenge COMMAND --help
-`, os.Args[0])
-}
-func challengeListChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -token STRING
-
-ListChallenges implements ListChallenges.
-    -token STRING: 
-
-Example:
-    %[1]s challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func challengeListMonthlyChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-monthly-challenges -token STRING
-
-ListMonthlyChallenges implements ListMonthlyChallenges.
-    -token STRING: 
-
-Example:
-    %[1]s challenge list-monthly-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func challengeSubmitFlagUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge submit-flag -body JSON -challenge-id STRING -token STRING
-
-SubmitFlag implements SubmitFlag.
-    -body JSON: 
-    -challenge-id STRING: ID of a challenge
-    -token STRING: 
-
-Example:
-    %[1]s challenge submit-flag --body '{
-      "flag": "SSM{flag}"
-   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func challengeSchoolScoreboardUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge school-scoreboard -token STRING
-
-SchoolScoreboard implements SchoolScoreboard.
-    -token STRING: 
-
-Example:
-    %[1]s challenge school-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -696,6 +641,83 @@ ListCategories implements ListCategories.
 
 Example:
     %[1]s admin list-categories --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+// challengeUsage displays the usage of the challenge command and its
+// subcommands.
+func challengeUsage() {
+	fmt.Fprintf(os.Stderr, `Service is the challenge service interface.
+Usage:
+    %[1]s [globalflags] challenge COMMAND [flags]
+
+COMMAND:
+    list-challenges: ListChallenges implements ListChallenges.
+    list-events: ListEvents implements ListEvents.
+    list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
+    submit-flag: SubmitFlag implements SubmitFlag.
+    school-scoreboard: SchoolScoreboard implements SchoolScoreboard.
+
+Additional help:
+    %[1]s challenge COMMAND --help
+`, os.Args[0])
+}
+func challengeListChallengesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -token STRING
+
+ListChallenges implements ListChallenges.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeListEventsUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-events -token STRING
+
+ListEvents implements ListEvents.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-events --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeListMonthlyChallengesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-monthly-challenges -token STRING
+
+ListMonthlyChallenges implements ListMonthlyChallenges.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-monthly-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeSubmitFlagUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge submit-flag -body JSON -challenge-id STRING -token STRING
+
+SubmitFlag implements SubmitFlag.
+    -body JSON: 
+    -challenge-id STRING: ID of a challenge
+    -token STRING: 
+
+Example:
+    %[1]s challenge submit-flag --body '{
+      "flag": "SSM{flag}"
+   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeSchoolScoreboardUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge school-scoreboard -token STRING
+
+SchoolScoreboard implements SchoolScoreboard.
+    -token STRING: 
+
+Example:
+    %[1]s challenge school-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

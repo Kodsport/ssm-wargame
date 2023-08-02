@@ -23,6 +23,10 @@ type SubmitFlagRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmChallengeResponse
 
+// ListEventsResponseBody is the type of the "challenge" service "ListEvents"
+// endpoint HTTP response body.
+type ListEventsResponseBody []*CTFEventResponse
+
 // ListMonthlyChallengesResponseBody is the type of the "challenge" service
 // "ListMonthlyChallenges" endpoint HTTP response body.
 type ListMonthlyChallengesResponseBody []*SsmUsermonthlychallengesResponse
@@ -84,6 +88,8 @@ type SsmChallengeResponse struct {
 	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
 	Solves *int `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	// whether the user has solved the challenge or not
 	Solved   *bool   `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
 	Category *string `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
@@ -97,6 +103,12 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 	Filename *string `form:"filename,omitempty" json:"filename,omitempty" xml:"filename,omitempty"`
 	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
+}
+
+// CTFEventResponse is used to define fields on response body types.
+type CTFEventResponse struct {
+	ID   *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 }
 
 // SsmUsermonthlychallengesResponse is used to define fields on response body
@@ -134,6 +146,17 @@ func NewListChallengesSsmChallengeCollectionOK(body ListChallengesResponseBody) 
 	v := make([]*challengeviews.SsmChallengeView, len(body))
 	for i, val := range body {
 		v[i] = unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(val)
+	}
+
+	return v
+}
+
+// NewListEventsCTFEventOK builds a "challenge" service "ListEvents" endpoint
+// result from a HTTP "OK" response.
+func NewListEventsCTFEventOK(body []*CTFEventResponse) []*challenge.CTFEvent {
+	v := make([]*challenge.CTFEvent, len(body))
+	for i, val := range body {
+		v[i] = unmarshalCTFEventResponseToChallengeCTFEvent(val)
 	}
 
 	return v
@@ -278,6 +301,9 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 			}
 		}
 	}
+	if body.CtfEventID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
+	}
 	return
 }
 
@@ -289,6 +315,17 @@ func ValidateChallengeFilesResponse(body *ChallengeFilesResponse) (err error) {
 	}
 	if body.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
+	}
+	return
+}
+
+// ValidateCTFEventResponse runs the validations defined on CTFEventResponse
+func ValidateCTFEventResponse(body *CTFEventResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
 	return
 }

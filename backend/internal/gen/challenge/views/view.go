@@ -57,6 +57,8 @@ type SsmChallengeView struct {
 	Files    []*ChallengeFilesView
 	// The numer of people who solved the challenge
 	Solves *int
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string
 	// whether the user has solved the challenge or not
 	Solved   *bool
 	Category *string
@@ -114,6 +116,7 @@ var (
 			"services",
 			"files",
 			"solves",
+			"ctf_event_id",
 			"solved",
 			"category",
 		},
@@ -148,6 +151,7 @@ var (
 			"services",
 			"files",
 			"solves",
+			"ctf_event_id",
 			"solved",
 			"category",
 		},
@@ -248,6 +252,9 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
+	}
+	if result.CtfEventID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.ctf_event_id", *result.CtfEventID, goa.FormatUUID))
 	}
 	return
 }
