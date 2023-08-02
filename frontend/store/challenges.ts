@@ -21,7 +21,7 @@ export const useChallengeStore = defineStore('challenges', {
         getBySlug(state) {
             return (slug: string) => state.challenges.find(c => c.slug == slug)
         },
-        getCurrentMontly: (state) => {
+        getCurrentMonthly: (state) => {
             const now = new Date().valueOf() / 1000;
             return state.monthlies.find(m => m.start_date < now && m.end_date > now)
         }

@@ -1,10 +1,10 @@
 <template>
     <div>
         <div>
-            <div v-if="montly">
-                <h1 class="text-primary">Montly challenge - {{ montly.display_month }}</h1>
+            <div v-if="monthly">
+                <h1 class="text-primary">Monthly challenge - {{ monthly.display_month }}</h1>
                 <div>
-                    <challenge :chall="montly.challenge"></challenge>
+                    <challenge :chall="monthly.challenge"></challenge>
                 </div>
             </div>
 
@@ -22,7 +22,7 @@ const http = useHttp()
 const challs = useChallengeStore()
 const auth = useAuthStore()
 
-const montly = computed(() => challs.getCurrentMontly)
+const monthly = computed(() => challs.getCurrentMonthly)
 
 onMounted(() => {
     challs.getChallenges()
