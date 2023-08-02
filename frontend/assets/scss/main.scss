@@ -1,1 +1,21 @@
+$body-bg: #004454;
+$body-color: #ffffff;
+
+$green: #8fe754;
+$red: #fc6500;
+$yellow: #ffab1c;
+$primary: $yellow;
+
+$navbar-light-color: $yellow;
+$navbar-light-hover-color: #ffffff;
+$navbar-light-active-color: #ffffff;
+
+$link-color: #ffd07e;
+$link-color-dark: #c4a166;
+
+
+* {
+    font-family: "Consolas", Monospace;
+}
+
 @import "bootstrap/scss/bootstrap";

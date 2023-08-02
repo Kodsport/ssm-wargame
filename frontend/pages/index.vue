@@ -2,7 +2,7 @@
     <div>
         <div>
             <div v-if="montly">
-                <h1>Montly challenge - {{ montly.display_month }}</h1>
+                <h1 class="text-primary">Montly challenge - {{ montly.display_month }}</h1>
                 <div>
                     <challenge :chall="montly.challenge"></challenge>
                 </div>

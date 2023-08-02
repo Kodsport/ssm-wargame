@@ -1,7 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-nav bg-dark">
     <div class="container-fluid">
-      <nuxt-link class="navbar-brand" to="/">SSM</nuxt-link>
+      <nuxt-link class="navbar-brand nav-link" to="/">SSM</nuxt-link>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
