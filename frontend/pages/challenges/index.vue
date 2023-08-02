@@ -5,7 +5,6 @@
             Här kan du öva på utmaningar från tidigare års upplagor av Säkerhets-SM.
         </p>
 
-
         <div class="row pt-4">
 
             <div class="col-3">
@@ -18,7 +17,7 @@
                             <option v-for="cat in categories" :value="cat">{{ cat }}</option>
                         </select>
                     </div>
-                    <div class="form-group pt-3">
+                    <div v-if="challs.events.length" class="form-group pt-3">
                         <label>Tävling</label>
 
                         <div class="form-check" v-for="event in challs.events">
@@ -40,27 +39,14 @@
                 </p>
             </div>
         </div>
-
-        <!--
-        <div v-for="cat in categories" class="pt-3">
-            <h5>{{ cat }}</h5>
-
-            <div class="challenge-container">
-                <Challenge2 v-for="chall in challs.challenges.filter(v => v.category === cat)" :key="chall.id"
-                    :chall="chall" />
-            </div>
-        </div>
-
-        -->
-
     </div>
 </template>
 
 
 
 <script setup lang="ts">
-import { useChallengeStore } from '../store/challenges'
-import { useAuthStore } from '../store/auth'
+import { useChallengeStore } from '../../store/challenges'
+import { useAuthStore } from '../../store/auth'
 
 const http = useHttp()
 const challs = useChallengeStore()
