@@ -5,6 +5,7 @@
             Här kan du öva på utmaningar från tidigare års upplagor av Säkerhets-SM.
         </p>
 
+        <ChallengeModal v-if="modalChall" :chall="modalChall" />
         <div class="row pt-4">
 
             <div class="col-3">
@@ -31,7 +32,7 @@
             <div class="col pt-5">
                 <div v-if="challenges.length != 0" class="row row-cols-5 g-4">
                     <div class="col" v-for="chall in challenges">
-                        <Challenge3 :chall="chall" />
+                        <Challenge3 @click="nav(chall.slug)" :chall="chall" />
                     </div>
                 </div>
                 <p v-else>
@@ -51,11 +52,20 @@ import { useAuthStore } from '../../store/auth'
 const http = useHttp()
 const challs = useChallengeStore()
 const auth = useAuthStore()
-
+const route = useRoute()
+const router = useRouter()
 
 const eventFilter = ref({})
 const categoryFilter = ref("")
 
+
+const modalChall = computed(() => challs.getBySlug(route.params.slug[0]))
+
+onMounted(() => {
+    challs.getChallenges()
+    challs.getEvents()
+
+})
 
 const categories = computed(() => challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i))
 
@@ -76,11 +86,15 @@ const challenges = computed(() => {
     return res
 })
 
-onMounted(() => {
-    challs.getChallenges()
-    challs.getEvents()
-})
 
+function showModal(name: string) {
+    console.log(name)
+
+}
+
+function nav(slug: string) {
+    router.push(`/challenges/${slug}`)
+}
 
 </script>
 
