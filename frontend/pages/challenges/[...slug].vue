@@ -30,7 +30,7 @@
             </div>
 
             <div class="col pt-5">
-                <div v-if="challenges.length != 0" class="row row-cols-5 g-4">
+                <div v-if="challenges.length != 0" class="row row-cols-5 row-cols-md-5 row-cols-sm-3 g-4">
                     <div class="col" v-for="chall in challenges">
                         <Challenge3 @click="nav(chall.slug)" :chall="chall" />
                     </div>

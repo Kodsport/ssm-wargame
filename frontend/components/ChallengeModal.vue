@@ -1,6 +1,6 @@
 <template>
     <div class="modal-backdrop fade show"></div>
-    <div class="modal modal-xl d-block" tabindex="-1" @keydown.escape="goBack">
+    <div class="modal modal-xl d-block" tabindex="-1" @click="goBack" ref="modal">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -55,6 +55,21 @@
                             </div>
                         </div>
                     </div>
+                    <form @submit.prevent>
+
+                        <div class="row mt-3">
+                            <div v-if="!props.chall.solved" class="form-group alert"
+                                v-bind:class="{ 'alert-danger': warn }">
+                                <input v-if="!!auth.user.id" type="text" class="form-control" placeholder="SSM{..."
+                                    @keypress.enter="submitFlag" v-model="flag">
+                                <p class="alert alert-secondary" v-else>Logga in för att skicka in flaggor</p>
+                            </div>
+                            <div v-else>
+                                Solved!
+
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -62,13 +77,48 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '../store/auth';
+import { useChallengeStore } from '../store/challenges';
 
 const props = defineProps(['chall'])
 
 const router = useRouter();
+const auth = useAuthStore()
+const http = useHttp()
+const store = useChallengeStore()
 
-function goBack() {
-    router.replace('/challenges')
+const modal = ref(null)
+
+
+const flag = ref("")
+const warn = ref(false)
+
+async function submitFlag() {
+    try {
+        await http(`/challenges/${props.chall.id}/attempt`, {
+            method: 'POST',
+            body: {
+                flag: flag.value
+            }
+        })
+
+        store.getChallenges()
+        store.getMonthlies()
+
+    } catch (error) {
+        console.log(error)
+        warn.value = true
+        setTimeout(() => {
+            warn.value = false
+        }, 1000)
+    }
+
+}
+
+function goBack(event) {
+    if (event.target == modal.value) {
+        router.replace('/challenges')
+    }
 }
 
 
