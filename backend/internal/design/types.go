@@ -150,3 +150,41 @@ var CTFEvent = Type("CTFEvent", func() {
 	})
 	Required("id", "name")
 })
+
+var ChallengeMeta = Type("ChallengeMeta", func() {
+	Attribute("solvers", ArrayOf(ChallengeSolver))
+	Attribute("submissions", ArrayOf(ChallengeSubmission))
+
+	Required("solvers", "submissions")
+})
+
+var ChallengeSolver = Type("ChallengeSolver", func() {
+	Attribute("user_id", String, func() {
+		Example("8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a")
+		Format(FormatUUID)
+	})
+	Attribute("solved_at", Int64)
+
+	Required("user_id", "solved_at")
+})
+
+var ChallengeSubmission = Type("ChallengeSubmission", func() {
+	Attribute("id", String, func() {
+		Example("34062de2-6687-4acb-ab4b-608cc246b133")
+		Format(FormatUUID)
+	})
+	Attribute("input", String, func() {
+		Example("SSM{wrong_flag}")
+	})
+	Attribute("successful", Boolean, func() {
+		Example(false)
+	})
+	Attribute("user_id", String, func() {
+		Example("a78c6915-87f4-49e1-8ec9-0bb5c261b56d")
+		Format(FormatUUID)
+	})
+
+	Attribute("submitted_at", Int64)
+
+	Required("id", "user_id", "input", "successful", "submitted_at")
+})

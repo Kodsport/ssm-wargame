@@ -20,6 +20,7 @@ import (
 type Server struct {
 	Mounts                 []*MountPoint
 	ListChallenges         http.Handler
+	GetChallengeMeta       http.Handler
 	CreateChallenge        http.Handler
 	UpdateChallenge        http.Handler
 	PresignChallFileUpload http.Handler
@@ -67,6 +68,7 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"ListChallenges", "GET", "/admin/challenges"},
+			{"GetChallengeMeta", "GET", "/admin/challenges/{challengeID}"},
 			{"CreateChallenge", "POST", "/admin/challenges"},
 			{"UpdateChallenge", "PUT", "/admin/challenges/{challengeID}"},
 			{"PresignChallFileUpload", "POST", "/admin/challenges/{challengeID}/file_url"},
@@ -80,6 +82,7 @@ func New(
 			{"ListCategories", "GET", "/admin/categories"},
 		},
 		ListChallenges:         NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
+		GetChallengeMeta:       NewGetChallengeMetaHandler(e.GetChallengeMeta, mux, decoder, encoder, errhandler, formatter),
 		CreateChallenge:        NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
 		UpdateChallenge:        NewUpdateChallengeHandler(e.UpdateChallenge, mux, decoder, encoder, errhandler, formatter),
 		PresignChallFileUpload: NewPresignChallFileUploadHandler(e.PresignChallFileUpload, mux, decoder, encoder, errhandler, formatter),
@@ -100,6 +103,7 @@ func (s *Server) Service() string { return "admin" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListChallenges = m(s.ListChallenges)
+	s.GetChallengeMeta = m(s.GetChallengeMeta)
 	s.CreateChallenge = m(s.CreateChallenge)
 	s.UpdateChallenge = m(s.UpdateChallenge)
 	s.PresignChallFileUpload = m(s.PresignChallFileUpload)
@@ -116,6 +120,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 // Mount configures the mux to serve the admin endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountListChallengesHandler(mux, h.ListChallenges)
+	MountGetChallengeMetaHandler(mux, h.GetChallengeMeta)
 	MountCreateChallengeHandler(mux, h.CreateChallenge)
 	MountUpdateChallengeHandler(mux, h.UpdateChallenge)
 	MountPresignChallFileUploadHandler(mux, h.PresignChallFileUpload)
@@ -159,6 +164,57 @@ func NewListChallengesHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "ListChallenges")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountGetChallengeMetaHandler configures the mux to serve the "admin" service
+// "GetChallengeMeta" endpoint.
+func MountGetChallengeMetaHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/challenges/{challengeID}", f)
+}
+
+// NewGetChallengeMetaHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "GetChallengeMeta" endpoint.
+func NewGetChallengeMetaHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeGetChallengeMetaRequest(mux, decoder)
+		encodeResponse = EncodeGetChallengeMetaResponse(encoder)
+		encodeError    = EncodeGetChallengeMetaError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "GetChallengeMeta")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

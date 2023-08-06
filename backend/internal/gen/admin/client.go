@@ -16,6 +16,7 @@ import (
 // Client is the "admin" service client.
 type Client struct {
 	ListChallengesEndpoint         goa.Endpoint
+	GetChallengeMetaEndpoint       goa.Endpoint
 	CreateChallengeEndpoint        goa.Endpoint
 	UpdateChallengeEndpoint        goa.Endpoint
 	PresignChallFileUploadEndpoint goa.Endpoint
@@ -30,9 +31,10 @@ type Client struct {
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag, listCategories goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag, listCategories goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:         listChallenges,
+		GetChallengeMetaEndpoint:       getChallengeMeta,
 		CreateChallengeEndpoint:        createChallenge,
 		UpdateChallengeEndpoint:        updateChallenge,
 		PresignChallFileUploadEndpoint: presignChallFileUpload,
@@ -55,6 +57,17 @@ func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (
 		return
 	}
 	return ires.(SsmAdminChallengeCollection), nil
+}
+
+// GetChallengeMeta calls the "GetChallengeMeta" endpoint of the "admin"
+// service.
+func (c *Client) GetChallengeMeta(ctx context.Context, p *GetChallengeMetaPayload) (res *ChallengeMeta, err error) {
+	var ires interface{}
+	ires, err = c.GetChallengeMetaEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*ChallengeMeta), nil
 }
 
 // CreateChallenge calls the "CreateChallenge" endpoint of the "admin" service.

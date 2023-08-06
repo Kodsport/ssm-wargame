@@ -287,3 +287,41 @@ func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) e
 
 	return nil
 }
+
+func (s *service) GetChallengeMeta(ctx context.Context, req *spec.GetChallengeMetaPayload) (*spec.ChallengeMeta, error) {
+
+	subs, err := models.Submissions(
+		models.SubmissionWhere.ChallengeID.EQ(req.ChallengeID),
+	).All(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+
+	solves, err := models.UserSolves(
+		models.UserSolfWhere.ChallengeID.EQ(req.ChallengeID),
+	).All(ctx, s.db)
+
+	res := &spec.ChallengeMeta{
+		Solvers:     make([]*spec.ChallengeSolver, len(solves)),
+		Submissions: make([]*spec.ChallengeSubmission, len(subs)),
+	}
+
+	for i, v := range subs {
+		res.Submissions[i] = &spec.ChallengeSubmission{
+			ID:          v.ID,
+			UserID:      v.UserID,
+			Input:       v.Input,
+			Successful:  v.Successful,
+			SubmittedAt: v.CreatedAt.Unix(),
+		}
+	}
+
+	for i, v := range solves {
+		res.Solvers[i] = &spec.ChallengeSolver{
+			UserID:   v.UserID,
+			SolvedAt: v.CreatedAt.Unix(),
+		}
+	}
+
+	return res, nil
+}

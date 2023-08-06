@@ -28,6 +28,30 @@ func BuildListChallengesPayload(adminListChallengesToken string) (*admin.ListCha
 	return v, nil
 }
 
+// BuildGetChallengeMetaPayload builds the payload for the admin
+// GetChallengeMeta endpoint from CLI flags.
+func BuildGetChallengeMetaPayload(adminGetChallengeMetaChallengeID string, adminGetChallengeMetaToken string) (*admin.GetChallengeMetaPayload, error) {
+	var err error
+	var challengeID string
+	{
+		challengeID = adminGetChallengeMetaChallengeID
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminGetChallengeMetaToken
+	}
+	v := &admin.GetChallengeMetaPayload{}
+	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildCreateChallengePayload builds the payload for the admin CreateChallenge
 // endpoint from CLI flags.
 func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateChallengeToken string) (*admin.CreateChallengePayload, error) {

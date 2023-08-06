@@ -16,6 +16,11 @@ func ListChallengesAdminPath() string {
 	return "/admin/challenges"
 }
 
+// GetChallengeMetaAdminPath returns the URL path to the admin service GetChallengeMeta HTTP endpoint.
+func GetChallengeMetaAdminPath(challengeID string) string {
+	return fmt.Sprintf("/admin/challenges/%v", challengeID)
+}
+
 // CreateChallengeAdminPath returns the URL path to the admin service CreateChallenge HTTP endpoint.
 func CreateChallengeAdminPath() string {
 	return "/admin/challenges"

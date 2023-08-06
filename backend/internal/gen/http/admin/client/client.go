@@ -21,6 +21,10 @@ type Client struct {
 	// ListChallenges endpoint.
 	ListChallengesDoer goahttp.Doer
 
+	// GetChallengeMeta Doer is the HTTP client used to make requests to the
+	// GetChallengeMeta endpoint.
+	GetChallengeMetaDoer goahttp.Doer
+
 	// CreateChallenge Doer is the HTTP client used to make requests to the
 	// CreateChallenge endpoint.
 	CreateChallengeDoer goahttp.Doer
@@ -86,6 +90,7 @@ func NewClient(
 ) *Client {
 	return &Client{
 		ListChallengesDoer:         doer,
+		GetChallengeMetaDoer:       doer,
 		CreateChallengeDoer:        doer,
 		UpdateChallengeDoer:        doer,
 		PresignChallFileUploadDoer: doer,
@@ -124,6 +129,30 @@ func (c *Client) ListChallenges() goa.Endpoint {
 		resp, err := c.ListChallengesDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "ListChallenges", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// GetChallengeMeta returns an endpoint that makes HTTP requests to the admin
+// service GetChallengeMeta server.
+func (c *Client) GetChallengeMeta() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeGetChallengeMetaRequest(c.encoder)
+		decodeResponse = DecodeGetChallengeMetaResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildGetChallengeMetaRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.GetChallengeMetaDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "GetChallengeMeta", err)
 		}
 		return decodeResponse(resp)
 	}

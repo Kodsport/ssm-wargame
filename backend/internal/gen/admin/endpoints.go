@@ -17,6 +17,7 @@ import (
 // Endpoints wraps the "admin" service endpoints.
 type Endpoints struct {
 	ListChallenges         goa.Endpoint
+	GetChallengeMeta       goa.Endpoint
 	CreateChallenge        goa.Endpoint
 	UpdateChallenge        goa.Endpoint
 	PresignChallFileUpload goa.Endpoint
@@ -36,6 +37,7 @@ func NewEndpoints(s Service) *Endpoints {
 	a := s.(Auther)
 	return &Endpoints{
 		ListChallenges:         NewListChallengesEndpoint(s, a.JWTAuth),
+		GetChallengeMeta:       NewGetChallengeMetaEndpoint(s, a.JWTAuth),
 		CreateChallenge:        NewCreateChallengeEndpoint(s, a.JWTAuth),
 		UpdateChallenge:        NewUpdateChallengeEndpoint(s, a.JWTAuth),
 		PresignChallFileUpload: NewPresignChallFileUploadEndpoint(s, a.JWTAuth),
@@ -53,6 +55,7 @@ func NewEndpoints(s Service) *Endpoints {
 // Use applies the given middleware to all the "admin" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListChallenges = m(e.ListChallenges)
+	e.GetChallengeMeta = m(e.GetChallengeMeta)
 	e.CreateChallenge = m(e.CreateChallenge)
 	e.UpdateChallenge = m(e.UpdateChallenge)
 	e.PresignChallFileUpload = m(e.PresignChallFileUpload)
@@ -87,6 +90,25 @@ func NewListChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 		}
 		vres := NewViewedSsmAdminChallengeCollection(res, "default")
 		return vres, nil
+	}
+}
+
+// NewGetChallengeMetaEndpoint returns an endpoint function that calls the
+// method "GetChallengeMeta" of service "admin".
+func NewGetChallengeMetaEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*GetChallengeMetaPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.GetChallengeMeta(ctx, p)
 	}
 }
 

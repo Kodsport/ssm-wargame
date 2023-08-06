@@ -81,6 +81,13 @@ type AddFlagRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type SsmAdminChallengeResponseCollection []*SsmAdminChallengeResponse
 
+// GetChallengeMetaResponseBody is the type of the "admin" service
+// "GetChallengeMeta" endpoint HTTP response body.
+type GetChallengeMetaResponseBody struct {
+	Solvers     []*ChallengeSolverResponseBody     `form:"solvers" json:"solvers" xml:"solvers"`
+	Submissions []*ChallengeSubmissionResponseBody `form:"submissions" json:"submissions" xml:"submissions"`
+}
+
 // PresignChallFileUploadResponseBody is the type of the "admin" service
 // "PresignChallFileUpload" endpoint HTTP response body.
 type PresignChallFileUploadResponseBody struct {
@@ -139,6 +146,60 @@ type ListChallengesNotFoundResponseBody struct {
 // ListChallengesBadRequestResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "bad_request" error.
 type ListChallengesBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetChallengeMetaUnauthorizedResponseBody is the type of the "admin" service
+// "GetChallengeMeta" endpoint HTTP response body for the "unauthorized" error.
+type GetChallengeMetaUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetChallengeMetaNotFoundResponseBody is the type of the "admin" service
+// "GetChallengeMeta" endpoint HTTP response body for the "not_found" error.
+type GetChallengeMetaNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetChallengeMetaBadRequestResponseBody is the type of the "admin" service
+// "GetChallengeMeta" endpoint HTTP response body for the "bad_request" error.
+type GetChallengeMetaBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -803,6 +864,22 @@ type AdminChallengeFlagResponse struct {
 	Flag string `form:"flag" json:"flag" xml:"flag"`
 }
 
+// ChallengeSolverResponseBody is used to define fields on response body types.
+type ChallengeSolverResponseBody struct {
+	UserID   string `form:"user_id" json:"user_id" xml:"user_id"`
+	SolvedAt int64  `form:"solved_at" json:"solved_at" xml:"solved_at"`
+}
+
+// ChallengeSubmissionResponseBody is used to define fields on response body
+// types.
+type ChallengeSubmissionResponseBody struct {
+	ID          string `form:"id" json:"id" xml:"id"`
+	Input       string `form:"input" json:"input" xml:"input"`
+	Successful  bool   `form:"successful" json:"successful" xml:"successful"`
+	UserID      string `form:"user_id" json:"user_id" xml:"user_id"`
+	SubmittedAt int64  `form:"submitted_at" json:"submitted_at" xml:"submitted_at"`
+}
+
 // MonthlyChallengeResponse is used to define fields on response body types.
 type MonthlyChallengeResponse struct {
 	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
@@ -836,6 +913,25 @@ func NewSsmAdminChallengeResponseCollection(res adminviews.SsmAdminChallengeColl
 	body := make([]*SsmAdminChallengeResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(val)
+	}
+	return body
+}
+
+// NewGetChallengeMetaResponseBody builds the HTTP response body from the
+// result of the "GetChallengeMeta" endpoint of the "admin" service.
+func NewGetChallengeMetaResponseBody(res *admin.ChallengeMeta) *GetChallengeMetaResponseBody {
+	body := &GetChallengeMetaResponseBody{}
+	if res.Solvers != nil {
+		body.Solvers = make([]*ChallengeSolverResponseBody, len(res.Solvers))
+		for i, val := range res.Solvers {
+			body.Solvers[i] = marshalAdminChallengeSolverToChallengeSolverResponseBody(val)
+		}
+	}
+	if res.Submissions != nil {
+		body.Submissions = make([]*ChallengeSubmissionResponseBody, len(res.Submissions))
+		for i, val := range res.Submissions {
+			body.Submissions[i] = marshalAdminChallengeSubmissionToChallengeSubmissionResponseBody(val)
+		}
 	}
 	return body
 }
@@ -911,6 +1007,48 @@ func NewListChallengesNotFoundResponseBody(res *goa.ServiceError) *ListChallenge
 // the result of the "ListChallenges" endpoint of the "admin" service.
 func NewListChallengesBadRequestResponseBody(res *goa.ServiceError) *ListChallengesBadRequestResponseBody {
 	body := &ListChallengesBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetChallengeMetaUnauthorizedResponseBody builds the HTTP response body
+// from the result of the "GetChallengeMeta" endpoint of the "admin" service.
+func NewGetChallengeMetaUnauthorizedResponseBody(res *goa.ServiceError) *GetChallengeMetaUnauthorizedResponseBody {
+	body := &GetChallengeMetaUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetChallengeMetaNotFoundResponseBody builds the HTTP response body from
+// the result of the "GetChallengeMeta" endpoint of the "admin" service.
+func NewGetChallengeMetaNotFoundResponseBody(res *goa.ServiceError) *GetChallengeMetaNotFoundResponseBody {
+	body := &GetChallengeMetaNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetChallengeMetaBadRequestResponseBody builds the HTTP response body from
+// the result of the "GetChallengeMeta" endpoint of the "admin" service.
+func NewGetChallengeMetaBadRequestResponseBody(res *goa.ServiceError) *GetChallengeMetaBadRequestResponseBody {
+	body := &GetChallengeMetaBadRequestResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -1399,6 +1537,16 @@ func NewListCategoriesBadRequestResponseBody(res *goa.ServiceError) *ListCategor
 // payload.
 func NewListChallengesPayload(token string) *admin.ListChallengesPayload {
 	v := &admin.ListChallengesPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewGetChallengeMetaPayload builds a admin service GetChallengeMeta endpoint
+// payload.
+func NewGetChallengeMetaPayload(challengeID string, token string) *admin.GetChallengeMetaPayload {
+	v := &admin.GetChallengeMetaPayload{}
+	v.ChallengeID = challengeID
 	v.Token = token
 
 	return v

@@ -11,5 +11,8 @@ export const useUserStore = defineStore('users', {
             const challs = await http('/admin/users')
             this.users = challs
         }
+    },
+    getters: {
+        byId: (state) => (id: string) => state.users.find(u => u.id === id)
     }
 })

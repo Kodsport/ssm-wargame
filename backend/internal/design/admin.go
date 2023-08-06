@@ -32,6 +32,18 @@ var _ = Service("admin", func() {
 		})
 	})
 
+	Method("GetChallengeMeta", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(ChallengeIDArtifact)
+		})
+		Result(ChallengeMeta)
+		HTTP(func() {
+			GET("/challenges/{challengeID}")
+			Response(StatusOK)
+		})
+	})
+
 	Method("CreateChallenge", func() {
 		Payload(func() {
 			Extend(CreateChallengePayload)

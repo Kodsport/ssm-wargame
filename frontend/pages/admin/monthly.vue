@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <h1>Monthly challenge</h1>
 
         <div>

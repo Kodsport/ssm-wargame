@@ -19,6 +19,8 @@ import (
 type Service interface {
 	// ListChallenges implements ListChallenges.
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmAdminChallengeCollection, err error)
+	// GetChallengeMeta implements GetChallengeMeta.
+	GetChallengeMeta(context.Context, *GetChallengeMetaPayload) (res *ChallengeMeta, err error)
 	// CreateChallenge implements CreateChallenge.
 	CreateChallenge(context.Context, *CreateChallengePayload) (err error)
 	// UpdateChallenge implements UpdateChallenge.
@@ -57,7 +59,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [12]string{"ListChallenges", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag", "ListCategories"}
+var MethodNames = [13]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag", "ListCategories"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -68,6 +70,21 @@ type ListChallengesPayload struct {
 // SsmAdminChallengeCollection is the result type of the admin service
 // ListChallenges method.
 type SsmAdminChallengeCollection []*SsmAdminChallenge
+
+// GetChallengeMetaPayload is the payload type of the admin service
+// GetChallengeMeta method.
+type GetChallengeMetaPayload struct {
+	Token string
+	// ID of a challenge
+	ChallengeID string
+}
+
+// ChallengeMeta is the result type of the admin service GetChallengeMeta
+// method.
+type ChallengeMeta struct {
+	Solvers     []*ChallengeSolver
+	Submissions []*ChallengeSubmission
+}
 
 // CreateChallengePayload is the payload type of the admin service
 // CreateChallenge method.
@@ -228,6 +245,19 @@ type AdminChallengeFiles struct {
 type AdminChallengeFlag struct {
 	ID   string
 	Flag string
+}
+
+type ChallengeSolver struct {
+	UserID   string
+	SolvedAt int64
+}
+
+type ChallengeSubmission struct {
+	ID          string
+	Input       string
+	Successful  bool
+	UserID      string
+	SubmittedAt int64
 }
 
 type MonthlyChallenge struct {

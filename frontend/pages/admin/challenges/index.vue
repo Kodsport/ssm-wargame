@@ -54,13 +54,15 @@
                 <tbody>
                     <tr v-for="chall in challenges" :key="chall.id">
                         <td>
-                            {{ chall.title }}
-                            <span v-if="!chall.flags" title="No flags">⚠️⚠️⚠️</span>
+                            <NuxtLink :to="`/admin/challenges/${chall.slug}`">
+                                {{ chall.title }}
+                                <span v-if="!chall.flags" title="No flags">⚠️⚠️⚠️</span>
+                            </NuxtLink>
                         </td>
                         <td>{{ chall.solves }}</td>
                         <td>{{ store.getCategory(chall.category_id).name }}</td>
                         <td class="text-right">
-                            <NuxtLink class="btn btn-primary" :to="`/admin/challenges/${chall.slug}`">
+                            <NuxtLink class="btn btn-primary" :to="`/admin/challenges/${chall.slug}/edit`">
                                 Edit
                             </NuxtLink>
                         </td>

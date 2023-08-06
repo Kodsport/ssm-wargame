@@ -81,6 +81,13 @@ type AddFlagRequestBody struct {
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmAdminChallengeResponse
 
+// GetChallengeMetaResponseBody is the type of the "admin" service
+// "GetChallengeMeta" endpoint HTTP response body.
+type GetChallengeMetaResponseBody struct {
+	Solvers     []*ChallengeSolverResponseBody     `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+	Submissions []*ChallengeSubmissionResponseBody `form:"submissions,omitempty" json:"submissions,omitempty" xml:"submissions,omitempty"`
+}
+
 // PresignChallFileUploadResponseBody is the type of the "admin" service
 // "PresignChallFileUpload" endpoint HTTP response body.
 type PresignChallFileUploadResponseBody struct {
@@ -139,6 +146,60 @@ type ListChallengesNotFoundResponseBody struct {
 // ListChallengesBadRequestResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "bad_request" error.
 type ListChallengesBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetChallengeMetaUnauthorizedResponseBody is the type of the "admin" service
+// "GetChallengeMeta" endpoint HTTP response body for the "unauthorized" error.
+type GetChallengeMetaUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetChallengeMetaNotFoundResponseBody is the type of the "admin" service
+// "GetChallengeMeta" endpoint HTTP response body for the "not_found" error.
+type GetChallengeMetaNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetChallengeMetaBadRequestResponseBody is the type of the "admin" service
+// "GetChallengeMeta" endpoint HTTP response body for the "bad_request" error.
+type GetChallengeMetaBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -803,6 +864,22 @@ type AdminChallengeFlagResponse struct {
 	Flag *string `form:"flag,omitempty" json:"flag,omitempty" xml:"flag,omitempty"`
 }
 
+// ChallengeSolverResponseBody is used to define fields on response body types.
+type ChallengeSolverResponseBody struct {
+	UserID   *string `form:"user_id,omitempty" json:"user_id,omitempty" xml:"user_id,omitempty"`
+	SolvedAt *int64  `form:"solved_at,omitempty" json:"solved_at,omitempty" xml:"solved_at,omitempty"`
+}
+
+// ChallengeSubmissionResponseBody is used to define fields on response body
+// types.
+type ChallengeSubmissionResponseBody struct {
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Input       *string `form:"input,omitempty" json:"input,omitempty" xml:"input,omitempty"`
+	Successful  *bool   `form:"successful,omitempty" json:"successful,omitempty" xml:"successful,omitempty"`
+	UserID      *string `form:"user_id,omitempty" json:"user_id,omitempty" xml:"user_id,omitempty"`
+	SubmittedAt *int64  `form:"submitted_at,omitempty" json:"submitted_at,omitempty" xml:"submitted_at,omitempty"`
+}
+
 // MonthlyChallengeResponse is used to define fields on response body types.
 type MonthlyChallengeResponse struct {
 	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
@@ -936,6 +1013,67 @@ func NewListChallengesNotFound(body *ListChallengesNotFoundResponseBody) *goa.Se
 // NewListChallengesBadRequest builds a admin service ListChallenges endpoint
 // bad_request error.
 func NewListChallengesBadRequest(body *ListChallengesBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetChallengeMetaChallengeMetaOK builds a "admin" service
+// "GetChallengeMeta" endpoint result from a HTTP "OK" response.
+func NewGetChallengeMetaChallengeMetaOK(body *GetChallengeMetaResponseBody) *admin.ChallengeMeta {
+	v := &admin.ChallengeMeta{}
+	v.Solvers = make([]*admin.ChallengeSolver, len(body.Solvers))
+	for i, val := range body.Solvers {
+		v.Solvers[i] = unmarshalChallengeSolverResponseBodyToAdminChallengeSolver(val)
+	}
+	v.Submissions = make([]*admin.ChallengeSubmission, len(body.Submissions))
+	for i, val := range body.Submissions {
+		v.Submissions[i] = unmarshalChallengeSubmissionResponseBodyToAdminChallengeSubmission(val)
+	}
+
+	return v
+}
+
+// NewGetChallengeMetaUnauthorized builds a admin service GetChallengeMeta
+// endpoint unauthorized error.
+func NewGetChallengeMetaUnauthorized(body *GetChallengeMetaUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetChallengeMetaNotFound builds a admin service GetChallengeMeta endpoint
+// not_found error.
+func NewGetChallengeMetaNotFound(body *GetChallengeMetaNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetChallengeMetaBadRequest builds a admin service GetChallengeMeta
+// endpoint bad_request error.
+func NewGetChallengeMetaBadRequest(body *GetChallengeMetaBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -1485,6 +1623,32 @@ func NewListCategoriesBadRequest(body *ListCategoriesBadRequestResponseBody) *go
 	return v
 }
 
+// ValidateGetChallengeMetaResponseBody runs the validations defined on
+// GetChallengeMetaResponseBody
+func ValidateGetChallengeMetaResponseBody(body *GetChallengeMetaResponseBody) (err error) {
+	if body.Solvers == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solvers", "body"))
+	}
+	if body.Submissions == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("submissions", "body"))
+	}
+	for _, e := range body.Solvers {
+		if e != nil {
+			if err2 := ValidateChallengeSolverResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range body.Submissions {
+		if e != nil {
+			if err2 := ValidateChallengeSubmissionResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
 // ValidatePresignChallFileUploadResponseBody runs the validations defined on
 // PresignChallFileUploadResponseBody
 func ValidatePresignChallFileUploadResponseBody(body *PresignChallFileUploadResponseBody) (err error) {
@@ -1545,6 +1709,78 @@ func ValidateListChallengesNotFoundResponseBody(body *ListChallengesNotFoundResp
 // ValidateListChallengesBadRequestResponseBody runs the validations defined on
 // ListChallenges_bad_request_Response_Body
 func ValidateListChallengesBadRequestResponseBody(body *ListChallengesBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetChallengeMetaUnauthorizedResponseBody runs the validations
+// defined on GetChallengeMeta_unauthorized_Response_Body
+func ValidateGetChallengeMetaUnauthorizedResponseBody(body *GetChallengeMetaUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetChallengeMetaNotFoundResponseBody runs the validations defined on
+// GetChallengeMeta_not_found_Response_Body
+func ValidateGetChallengeMetaNotFoundResponseBody(body *GetChallengeMetaNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetChallengeMetaBadRequestResponseBody runs the validations defined
+// on GetChallengeMeta_bad_request_Response_Body
+func ValidateGetChallengeMetaBadRequestResponseBody(body *GetChallengeMetaBadRequestResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
@@ -2443,6 +2679,48 @@ func ValidateAdminChallengeFlagResponse(body *AdminChallengeFlagResponse) (err e
 	}
 	if body.Flag == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "body"))
+	}
+	return
+}
+
+// ValidateChallengeSolverResponseBody runs the validations defined on
+// ChallengeSolverResponseBody
+func ValidateChallengeSolverResponseBody(body *ChallengeSolverResponseBody) (err error) {
+	if body.UserID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_id", "body"))
+	}
+	if body.SolvedAt == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved_at", "body"))
+	}
+	if body.UserID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.user_id", *body.UserID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateChallengeSubmissionResponseBody runs the validations defined on
+// ChallengeSubmissionResponseBody
+func ValidateChallengeSubmissionResponseBody(body *ChallengeSubmissionResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.UserID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_id", "body"))
+	}
+	if body.Input == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("input", "body"))
+	}
+	if body.Successful == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("successful", "body"))
+	}
+	if body.SubmittedAt == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("submitted_at", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	}
+	if body.UserID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.user_id", *body.UserID, goa.FormatUUID))
 	}
 	return
 }

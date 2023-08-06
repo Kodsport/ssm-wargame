@@ -109,6 +109,102 @@ func EncodeListChallengesError(encoder func(context.Context, http.ResponseWriter
 	}
 }
 
+// EncodeGetChallengeMetaResponse returns an encoder for responses returned by
+// the admin GetChallengeMeta endpoint.
+func EncodeGetChallengeMetaResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.(*admin.ChallengeMeta)
+		enc := encoder(ctx, w)
+		body := NewGetChallengeMetaResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeGetChallengeMetaRequest returns a decoder for requests sent to the
+// admin GetChallengeMeta endpoint.
+func DecodeGetChallengeMetaRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			challengeID string
+			token       string
+			err         error
+
+			params = mux.Vars(r)
+		)
+		challengeID = params["challengeID"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewGetChallengeMetaPayload(challengeID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeGetChallengeMetaError returns an encoder for errors returned by the
+// GetChallengeMeta admin endpoint.
+func EncodeGetChallengeMetaError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetChallengeMetaUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetChallengeMetaNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetChallengeMetaBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeCreateChallengeResponse returns an encoder for responses returned by
 // the admin CreateChallenge endpoint.
 func EncodeCreateChallengeResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -1268,6 +1364,33 @@ func marshalAdminviewsAdminChallengeFlagViewToAdminChallengeFlagResponse(v *admi
 	res := &AdminChallengeFlagResponse{
 		ID:   *v.ID,
 		Flag: *v.Flag,
+	}
+
+	return res
+}
+
+// marshalAdminChallengeSolverToChallengeSolverResponseBody builds a value of
+// type *ChallengeSolverResponseBody from a value of type
+// *admin.ChallengeSolver.
+func marshalAdminChallengeSolverToChallengeSolverResponseBody(v *admin.ChallengeSolver) *ChallengeSolverResponseBody {
+	res := &ChallengeSolverResponseBody{
+		UserID:   v.UserID,
+		SolvedAt: v.SolvedAt,
+	}
+
+	return res
+}
+
+// marshalAdminChallengeSubmissionToChallengeSubmissionResponseBody builds a
+// value of type *ChallengeSubmissionResponseBody from a value of type
+// *admin.ChallengeSubmission.
+func marshalAdminChallengeSubmissionToChallengeSubmissionResponseBody(v *admin.ChallengeSubmission) *ChallengeSubmissionResponseBody {
+	res := &ChallengeSubmissionResponseBody{
+		ID:          v.ID,
+		Input:       v.Input,
+		Successful:  v.Successful,
+		UserID:      v.UserID,
+		SubmittedAt: v.SubmittedAt,
 	}
 
 	return res

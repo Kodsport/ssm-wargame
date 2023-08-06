@@ -145,6 +145,138 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 	}
 }
 
+// BuildGetChallengeMetaRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "GetChallengeMeta" endpoint
+func (c *Client) BuildGetChallengeMetaRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		challengeID string
+	)
+	{
+		p, ok := v.(*admin.GetChallengeMetaPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "GetChallengeMeta", "*admin.GetChallengeMetaPayload", v)
+		}
+		challengeID = p.ChallengeID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetChallengeMetaAdminPath(challengeID)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "GetChallengeMeta", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeGetChallengeMetaRequest returns an encoder for requests sent to the
+// admin GetChallengeMeta server.
+func EncodeGetChallengeMetaRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.GetChallengeMetaPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "GetChallengeMeta", "*admin.GetChallengeMetaPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeGetChallengeMetaResponse returns a decoder for responses returned by
+// the admin GetChallengeMeta endpoint. restoreBody controls whether the
+// response body should be restored after having been read.
+// DecodeGetChallengeMetaResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeGetChallengeMetaResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body GetChallengeMetaResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetChallengeMeta", err)
+			}
+			err = ValidateGetChallengeMetaResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetChallengeMeta", err)
+			}
+			res := NewGetChallengeMetaChallengeMetaOK(&body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body GetChallengeMetaUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetChallengeMeta", err)
+			}
+			err = ValidateGetChallengeMetaUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetChallengeMeta", err)
+			}
+			return nil, NewGetChallengeMetaUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body GetChallengeMetaNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetChallengeMeta", err)
+			}
+			err = ValidateGetChallengeMetaNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetChallengeMeta", err)
+			}
+			return nil, NewGetChallengeMetaNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body GetChallengeMetaBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetChallengeMeta", err)
+			}
+			err = ValidateGetChallengeMetaBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetChallengeMeta", err)
+			}
+			return nil, NewGetChallengeMetaBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "GetChallengeMeta", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildCreateChallengeRequest instantiates a HTTP request object with method
 // and path set to call the "admin" service "CreateChallenge" endpoint
 func (c *Client) BuildCreateChallengeRequest(ctx context.Context, v interface{}) (*http.Request, error) {
@@ -1573,6 +1705,33 @@ func unmarshalAdminChallengeFlagResponseToAdminviewsAdminChallengeFlagView(v *Ad
 	res := &adminviews.AdminChallengeFlagView{
 		ID:   v.ID,
 		Flag: v.Flag,
+	}
+
+	return res
+}
+
+// unmarshalChallengeSolverResponseBodyToAdminChallengeSolver builds a value of
+// type *admin.ChallengeSolver from a value of type
+// *ChallengeSolverResponseBody.
+func unmarshalChallengeSolverResponseBodyToAdminChallengeSolver(v *ChallengeSolverResponseBody) *admin.ChallengeSolver {
+	res := &admin.ChallengeSolver{
+		UserID:   *v.UserID,
+		SolvedAt: *v.SolvedAt,
+	}
+
+	return res
+}
+
+// unmarshalChallengeSubmissionResponseBodyToAdminChallengeSubmission builds a
+// value of type *admin.ChallengeSubmission from a value of type
+// *ChallengeSubmissionResponseBody.
+func unmarshalChallengeSubmissionResponseBodyToAdminChallengeSubmission(v *ChallengeSubmissionResponseBody) *admin.ChallengeSubmission {
+	res := &admin.ChallengeSubmission{
+		ID:          *v.ID,
+		Input:       *v.Input,
+		Successful:  *v.Successful,
+		UserID:      *v.UserID,
+		SubmittedAt: *v.SubmittedAt,
 	}
 
 	return res
