@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="row">
-            <div class="col">
+            <div class="col-12 col-md-6">
                 <h1 class="text-primary">Vad är Säkerhets-SM?</h1>
                 <p>
                     Har du ett intresse för datorrelaterad problemlösning, eller vill du lära dig vad det egentligen innebär
@@ -21,13 +21,17 @@
                     Joina gärna
                     <a href="https://discord.gg/edKFKKU">Kodsports Discordserver</a>
                     där du kan nå oss organisatörer, prata med andra deltagare, visa dina egna projekt eller ställa allmänna
-                    datorrelaterade frågor.
+                    datorrelaterade frågor. Vi har också en <a
+                        href="https://mail.sakerhetssm.se/subscription/form">mailinglista</a> där vi skickar ut
+                    uppdateringar om tävlingen.
                 </p>
-                <a class="btn" style="background-color: #5865f2;" href="https://discord.gg/edKFKKU">Joina Discord!</a>
-
+                <a class="btn me-2 mb-1" style="background-color: #5865f2;" href="https://discord.gg/edKFKKU">Joina
+                    Discord!</a>
+                <a class="btn btn-secondary" href="https://mail.sakerhetssm.se/subscription/form">Gå med i
+                    mailinglistan!</a>
             </div>
 
-            <div v-if="monthly" class="col d-none d-lg-inline">
+            <div v-if="monthly" class="col pt-3 pt-md-0">
                 <h1 class="text-primary">Månadens utmaning - {{ monthly.display_month }}</h1>
                 <MontlyChallenge :chall="monthly.challenge"></MontlyChallenge>
             </div>
@@ -37,11 +41,8 @@
 
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges'
-import { useAuthStore } from '../store/auth'
 
-const http = useHttp()
 const challs = useChallengeStore()
-const auth = useAuthStore()
 
 const monthly = computed(() => challs.getCurrentMonthly)
 

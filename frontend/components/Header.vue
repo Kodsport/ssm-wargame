@@ -1,4 +1,9 @@
 <template>
+  <header class="d-flex d-lg-none p-5 justify-content-center">
+    <h1>
+      <nuxt-link class="text-light text-decoration-none" to="/">Säkerhets-SM</nuxt-link>
+    </h1>
+  </header>
   <nav class="navbar navbar-expand-lg navbar-nav bg-dark">
     <div class="container-fluid">
       <nuxt-link class="navbar-brand nav-link" to="/">SSM</nuxt-link>
@@ -127,3 +132,13 @@ async function login() {
   }, 30);
 }
 </script>
+
+<style scoped>
+header {
+  background-image: url('~/assets/logo.svg');
+  flex: 0 0 185px;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: cover;
+}
+</style>

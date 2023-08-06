@@ -16,6 +16,17 @@ $link-color: #ffd07e;
 $link-color-dark: #c4a166;
 
 
+::-moz-selection {
+    /* Code for Firefox */
+    color: $dark;
+    background: $link-color;
+}
+
+::selection {
+    color: $dark;
+    background: $link-color;
+}
+
 * {
     font-family: "Consolas", Monospace;
 }
