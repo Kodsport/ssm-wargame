@@ -35,11 +35,15 @@ const flag = ref("")
 const warn = ref(false)
 
 async function submitFlag() {
+    let f = flag.value.trim()
+    if (f == "") {
+        return;
+    }
     try {
         await http(`/challenges/${props.chall.id}/attempt`, {
             method: 'POST',
             body: {
-                flag: flag.value
+                flag: f
             }
         })
 

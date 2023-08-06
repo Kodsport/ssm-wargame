@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   pages: true,
   modules: [
     '@pinia/nuxt',
-    'nuxt-security'
+    // 'nuxt-security' // TODO fix later
   ],
   css: [
     '~/assets/scss/main.scss'
