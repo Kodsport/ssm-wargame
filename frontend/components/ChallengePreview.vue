@@ -3,7 +3,7 @@
         <div class="card-body border-dark">
             <h4 class="card-title">{{ props.chall.title }}</h4>
             <h5>
-                <span class="badge bg-primary">{{ props.chall.category }}</span>
+                <span class="badge bg-primary me-1">{{ props.chall.category }}</span>
                 <span v-if="event" class="badge bg-primary">{{ event.name }}</span>
             </h5>
             <!-- hack -->
