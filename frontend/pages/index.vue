@@ -22,11 +22,9 @@
                     <a href="https://discord.gg/edKFKKU">Kodsports Discordserver</a>
                     där du kan nå oss organisatörer, prata med andra deltagare, visa dina egna projekt eller ställa allmänna
                     datorrelaterade frågor.
-                    Vi har också en
-                    <a href="https://mail.sakerhetssm.se/subscription/form">mailinglista</a>
-
-                    där vi skickar ut uppdateringar om tävlingen.
                 </p>
+                <a class="btn" style="background-color: #5865f2;" href="https://discord.gg/edKFKKU">Joina Discord!</a>
+
             </div>
 
             <div class="col">

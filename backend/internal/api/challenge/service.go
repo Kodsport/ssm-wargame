@@ -39,6 +39,7 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 		qm.From("monthly_challenges"),
 		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.ChallengeFiles)),
 		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.Category)),
+		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.Users)),
 		models.MonthlyChallengeWhere.StartDate.LT(time.Now()),
 	)
 
@@ -76,6 +77,14 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 		res[i].Challenge.Files = make([]*spec.ChallengeFiles, len(chall.R.Challenge.R.ChallengeFiles))
 		for i2, file := range chall.R.Challenge.R.ChallengeFiles {
 			res[i].Challenge.Files[i2] = s.signFile(ctx, file)
+		}
+
+		res[i].Challenge.Authors = make([]*spec.SsmUser, len(chall.R.Challenge.R.Users))
+		for i2, v := range chall.R.Challenge.R.Users {
+			res[i].Challenge.Authors[i2] = &spec.SsmUser{
+				ID:       v.ID,
+				FullName: v.FullName,
+			}
 		}
 	}
 
