@@ -15,23 +15,25 @@
 
         <p v-html="renderMarkdown(props.chall.description)"></p>
 
-        <div class="pt-4 pb-3 d-none d-md-inline">
-            <div v-if="!!auth.user.id">
-                <div v-if="!props.chall.solved" class="alert" v-bind:class="{ 'alert-danger': warn }">
-                    <input class="form-control" type="text" placeholder="SSM{..." v-model="flag"
-                        @keypress.enter="submitFlag">
-                </div>
-                <InputReplacer v-else text="Löst!" />
+        <div class="py-3">
+            <div class="d-none d-md-inline">
+                <div v-if="!!auth.user.id">
+                    <div v-if="!props.chall.solved" class="alert" v-bind:class="{ 'alert-danger': warn }">
+                        <input class="form-control" type="text" placeholder="SSM{..." v-model="flag"
+                            @keypress.enter="submitFlag">
+                    </div>
+                    <InputReplacer v-else text="Löst!" />
 
+                </div>
+                <div v-else>
+                    <InputReplacer text="Logga in för att lösa skicka in flaggor" />
+                </div>
             </div>
-            <div v-else>
-                <InputReplacer text="Logga in för att lösa skicka in flaggor" />
+            <div class="d-inline d-md-none">
+                <p class="alert alert-warning">
+                    Gå in på sidan med en dator för att lösa utmaningen!
+                </p>
             </div>
-        </div>
-        <div class="pt-4 pb-3 d-inline d-md-none">
-            <p class="alert alert-warning">
-                Gå in på sidan med en dator för att lösa utmaningen!
-            </p>
         </div>
         <p>{{ props.chall.solves }} lösare</p>
     </div>
