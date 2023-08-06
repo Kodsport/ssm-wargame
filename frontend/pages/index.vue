@@ -27,11 +27,9 @@
 
             </div>
 
-            <div class="col">
-                <div v-if="monthly">
-                    <h1 class="text-primary">Månadens utmaning - {{ monthly.display_month }}</h1>
-                    <challenge :chall="monthly.challenge"></challenge>
-                </div>
+            <div v-if="monthly" class="col d-none d-lg-inline">
+                <h1 class="text-primary">Månadens utmaning - {{ monthly.display_month }}</h1>
+                <MontlyChallenge :chall="monthly.challenge"></MontlyChallenge>
             </div>
         </div>
     </div>
