@@ -35,10 +35,10 @@
                             {{ props.chall.description }}
                         </div>
                         <div class="col">
-                            <div class="d-flex">
+                            <div class="d-flex" v-if="props.chall?.author_names?.length">
                                 <span class="material-icons text-primary pe-1">group</span>
                                 <span class="material-icons text-primary pe-1">edit</span>
-                                <span>Movitz Sunar</span>
+                                <span>{{ props.chall.author_names.join(', ') }}</span>
                             </div>
                             <div v-for="file in props.chall.files">
 
