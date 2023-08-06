@@ -65,11 +65,8 @@ CREATE INDEX challenges_category_id_idx ON challenges ( category_id );
 CREATE TABLE challenge_services (
     id UUID PRIMARY KEY,
     challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
-    type TEXT NOT NULL,
-    url TEXT,
-    host TEXT,
-    port INT,
-    name TEXT,
+    user_display TEXT NOT NULL,
+    hyperlink TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );

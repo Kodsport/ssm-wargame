@@ -24,15 +24,12 @@ import (
 
 // ChallengeService is an object representing the database table.
 type ChallengeService struct {
-	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	ChallengeID string      `boil:"challenge_id" json:"challenge_id" toml:"challenge_id" yaml:"challenge_id"`
-	Type        string      `boil:"type" json:"type" toml:"type" yaml:"type"`
-	URL         null.String `boil:"url" json:"url,omitempty" toml:"url" yaml:"url,omitempty"`
-	Host        null.String `boil:"host" json:"host,omitempty" toml:"host" yaml:"host,omitempty"`
-	Port        null.Int    `boil:"port" json:"port,omitempty" toml:"port" yaml:"port,omitempty"`
-	Name        null.String `boil:"name" json:"name,omitempty" toml:"name" yaml:"name,omitempty"`
-	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
+	ChallengeID string    `boil:"challenge_id" json:"challenge_id" toml:"challenge_id" yaml:"challenge_id"`
+	UserDisplay string    `boil:"user_display" json:"user_display" toml:"user_display" yaml:"user_display"`
+	Hyperlink   string    `boil:"hyperlink" json:"hyperlink" toml:"hyperlink" yaml:"hyperlink"`
+	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt   null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
 	R *challengeServiceR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L challengeServiceL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -41,21 +38,15 @@ type ChallengeService struct {
 var ChallengeServiceColumns = struct {
 	ID          string
 	ChallengeID string
-	Type        string
-	URL         string
-	Host        string
-	Port        string
-	Name        string
+	UserDisplay string
+	Hyperlink   string
 	CreatedAt   string
 	UpdatedAt   string
 }{
 	ID:          "id",
 	ChallengeID: "challenge_id",
-	Type:        "type",
-	URL:         "url",
-	Host:        "host",
-	Port:        "port",
-	Name:        "name",
+	UserDisplay: "user_display",
+	Hyperlink:   "hyperlink",
 	CreatedAt:   "created_at",
 	UpdatedAt:   "updated_at",
 }
@@ -63,83 +54,33 @@ var ChallengeServiceColumns = struct {
 var ChallengeServiceTableColumns = struct {
 	ID          string
 	ChallengeID string
-	Type        string
-	URL         string
-	Host        string
-	Port        string
-	Name        string
+	UserDisplay string
+	Hyperlink   string
 	CreatedAt   string
 	UpdatedAt   string
 }{
 	ID:          "challenge_services.id",
 	ChallengeID: "challenge_services.challenge_id",
-	Type:        "challenge_services.type",
-	URL:         "challenge_services.url",
-	Host:        "challenge_services.host",
-	Port:        "challenge_services.port",
-	Name:        "challenge_services.name",
+	UserDisplay: "challenge_services.user_display",
+	Hyperlink:   "challenge_services.hyperlink",
 	CreatedAt:   "challenge_services.created_at",
 	UpdatedAt:   "challenge_services.updated_at",
 }
 
 // Generated where
 
-type whereHelpernull_Int struct{ field string }
-
-func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, false, x)
-}
-func (w whereHelpernull_Int) NEQ(x null.Int) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, true, x)
-}
-func (w whereHelpernull_Int) LT(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpernull_Int) LTE(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpernull_Int) GT(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
-func (w whereHelpernull_Int) IN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelpernull_Int) NIN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
-func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
-func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
-
 var ChallengeServiceWhere = struct {
 	ID          whereHelperstring
 	ChallengeID whereHelperstring
-	Type        whereHelperstring
-	URL         whereHelpernull_String
-	Host        whereHelpernull_String
-	Port        whereHelpernull_Int
-	Name        whereHelpernull_String
+	UserDisplay whereHelperstring
+	Hyperlink   whereHelperstring
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpernull_Time
 }{
 	ID:          whereHelperstring{field: "\"challenge_services\".\"id\""},
 	ChallengeID: whereHelperstring{field: "\"challenge_services\".\"challenge_id\""},
-	Type:        whereHelperstring{field: "\"challenge_services\".\"type\""},
-	URL:         whereHelpernull_String{field: "\"challenge_services\".\"url\""},
-	Host:        whereHelpernull_String{field: "\"challenge_services\".\"host\""},
-	Port:        whereHelpernull_Int{field: "\"challenge_services\".\"port\""},
-	Name:        whereHelpernull_String{field: "\"challenge_services\".\"name\""},
+	UserDisplay: whereHelperstring{field: "\"challenge_services\".\"user_display\""},
+	Hyperlink:   whereHelperstring{field: "\"challenge_services\".\"hyperlink\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"challenge_services\".\"created_at\""},
 	UpdatedAt:   whereHelpernull_Time{field: "\"challenge_services\".\"updated_at\""},
 }
@@ -172,9 +113,9 @@ func (r *challengeServiceR) GetChallenge() *Challenge {
 type challengeServiceL struct{}
 
 var (
-	challengeServiceAllColumns            = []string{"id", "challenge_id", "type", "url", "host", "port", "name", "created_at", "updated_at"}
-	challengeServiceColumnsWithoutDefault = []string{"id", "challenge_id", "type"}
-	challengeServiceColumnsWithDefault    = []string{"url", "host", "port", "name", "created_at", "updated_at"}
+	challengeServiceAllColumns            = []string{"id", "challenge_id", "user_display", "hyperlink", "created_at", "updated_at"}
+	challengeServiceColumnsWithoutDefault = []string{"id", "challenge_id", "user_display", "hyperlink"}
+	challengeServiceColumnsWithDefault    = []string{"created_at", "updated_at"}
 	challengeServicePrimaryKeyColumns     = []string{"id"}
 	challengeServiceGeneratedColumns      = []string{}
 )
