@@ -1,5 +1,5 @@
 <template>
-    <div class="card bg-info h-100">
+    <div class="card h-100" :class="{ 'bg-info': !props.chall.solved, 'bg-success': props.chall.solved }">
         <div class="card-body">
             <h4>{{ props.chall.title }}</h4>
             <h5>
