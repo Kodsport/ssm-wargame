@@ -1,20 +1,18 @@
 <template>
-    <div class="card bg-info ">
-        <div class="card-body border-dark">
-            <h4 class="card-title">{{ props.chall.title }}</h4>
+    <div class="card bg-info h-100">
+        <div class="card-body">
+            <h4>{{ props.chall.title }}</h4>
             <h5>
                 <span class="badge bg-primary me-1">{{ props.chall.category }}</span>
                 <span v-if="event" class="badge bg-primary">{{ event.name }}</span>
             </h5>
-            <!-- hack -->
-            <br v-if="!event">
-            <div class="d-flex justify-content-between">
-                <div class="align-items-end d-flex">
-                    <span v-if="props.chall.solves != 0">{{ props.chall.solves }} lösare</span>
-                    <span v-else>Olöst</span>
-                </div>
-                <h3 class="align-items-end d-flex mb-0">{{ props.chall.score }}</h3>
+        </div>
+        <div class="card-body d-flex justify-content-between">
+            <div class="align-items-end d-flex">
+                <span v-if="props.chall.solves != 0">{{ props.chall.solves }} lösare</span>
+                <span v-else>Olöst</span>
             </div>
+            <h3 class="align-items-end d-flex mb-0">{{ props.chall.score }}</h3>
         </div>
     </div>
 </template>

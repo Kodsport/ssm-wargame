@@ -40,8 +40,7 @@
                                 <span class="material-icons text-primary pe-1">edit</span>
                                 <span>{{ props.chall.authors.map(a => a.full_name).join(', ') }}</span>
                             </div>
-                            <div v-for="file in props.chall.files">
-
+                            <div class="d-flex" v-for="file in props.chall.files">
                                 <span class="material-icons text-primary">description</span>
                                 <a :href="file.url">{{ file.filename }}</a>
                             </div>
