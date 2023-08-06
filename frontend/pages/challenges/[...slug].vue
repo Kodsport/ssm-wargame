@@ -13,7 +13,7 @@
                 <div>
                     <div class="form-group">
                         <label>Kategori</label>
-                        <select class="form-control" v-model="categoryFilter">
+                        <select class="form-control" v-model="challFilter.categoryFilter">
                             <option value="">Alla</option>
                             <option v-for="cat in categories" :value="cat">{{ cat }}</option>
                         </select>
@@ -22,7 +22,7 @@
                         <label>Tävling</label>
 
                         <div class="form-check" v-for="event in challs.events">
-                            <input type="checkbox" class="form-check-input" v-model="eventFilter[event.id]">
+                            <input type="checkbox" class="form-check-input" v-model="challFilter.eventFilter[event.id]">
                             <label class="form-check-label">{{ event.name }}</label>
                         </div>
                     </div>
@@ -47,31 +47,26 @@
 
 <script setup lang="ts">
 import { useChallengeStore } from '../../store/challenges'
-import { useAuthStore } from '../../store/auth'
+import { storeToRefs } from "pinia";
 
-const http = useHttp()
 const challs = useChallengeStore()
-const auth = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 
-const eventFilter = ref({})
-const categoryFilter = ref("")
-
+const { challFilter } = storeToRefs(useChallengeStore())
 
 const modalChall = computed(() => challs.getBySlug(route.params.slug[0]))
 
 onMounted(() => {
     challs.getChallenges()
     challs.getEvents()
-
 })
 
 const categories = computed(() => challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i))
 
 const challenges = computed(() => {
     const allowedEvents: string[] = [];
-    for (const [key, value] of Object.entries(eventFilter.value)) {
+    for (const [key, value] of Object.entries(challFilter.value.eventFilter)) {
         if (!value) continue
         allowedEvents.push(key)
     }
@@ -79,18 +74,12 @@ const challenges = computed(() => {
     if (allowedEvents.length != 0) {
         res = res.filter(v => allowedEvents.includes(v.ctf_event_id))
     }
-    if (categoryFilter.value != "") {
-        res = res.filter(v => v.category == categoryFilter.value)
+    if (challFilter.value.categoryFilter != "") {
+        res = res.filter(v => v.category == challFilter.value.categoryFilter)
     }
 
     return res
 })
-
-
-function showModal(name: string) {
-    console.log(name)
-
-}
 
 function nav(slug: string) {
     router.push(`/challenges/${slug}`)

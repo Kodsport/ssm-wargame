@@ -16,7 +16,7 @@
             </div>
         </div>
         <div v-else>
-            <input class="form-control" type="text" placeholder="Logga in för att lösa skicka in flaggor">
+            <InputReplacer text="Logga in för att lösa skicka in flaggor" />
         </div>
     </div>
 </template>

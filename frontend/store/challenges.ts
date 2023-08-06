@@ -7,6 +7,10 @@ export const useChallengeStore = defineStore('challenges', {
         challenges: [],
         monthlies: [],
         events: [],
+        challFilter: {
+            eventFilter: {},
+            categoryFilter: ''
+        }
     }),
     actions: {
         async getChallenges() {
