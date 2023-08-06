@@ -92,6 +92,7 @@ func (s *service) ExchangeDiscord(ctx context.Context, req *spec.ExchangeDiscord
 			DiscordID: null.StringFrom(dcUser.ID),
 			Email:     dcUser.Email,
 			Role:      "solver",
+			FullName:  dcUser.Username,
 		}
 		err = user.Insert(ctx, s.db, boil.Infer())
 
