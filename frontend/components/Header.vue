@@ -23,13 +23,13 @@
             </nuxt-link>
           </li>
           <li class="nav-item">
-            <nuxt-link active-class="active" class="nav-link" to="/about">
-              Om oss
+            <nuxt-link active-class="active" class="nav-link" to="/learn">
+              Läroresurser
             </nuxt-link>
           </li>
           <li class="nav-item">
-            <nuxt-link active-class="active" class="nav-link" to="/learn">
-              Läroresurser
+            <nuxt-link active-class="active" class="nav-link" to="/about">
+              Om oss
             </nuxt-link>
           </li>
         </ul>

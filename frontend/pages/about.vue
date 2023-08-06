@@ -12,6 +12,14 @@
                         <h5 class="pt-3">Terry Davis</h5>
                         <i>Eventkoordinator</i>
                         <nuxt-link to="/challenges/terry">Se Terry's utmaningar</nuxt-link>
+
+
+                        <span class="d-flex text-primary pt-2">
+                            <span class="material-icons text-decoration-none pe-1">email</span>
+                            <a href="mailto:terry@kodsport.se">
+                                terry@kodsport.se
+                            </a>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -26,8 +34,8 @@
                 <p>
                     <a href="https://www.kodsport.se/">Kodsport</a> är en ideell förening som arbetar för att lyfta Sverige
                     som
-                    IT-nation. Föreningen arrangerar tävlingar och träningsläger i datorrelaterade sporter, så som
-                    tävlingsprogrammering och Capture The Flag (datorsäkerhet).
+                    IT-nation. Föreningen arrangerar tävlingar och träningsläger i tävlingsprogrammering och Capture The
+                    Flag (datorsäkerhet).
                 </p>
             </div>
         </div>
