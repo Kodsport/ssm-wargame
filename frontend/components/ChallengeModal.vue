@@ -31,8 +31,8 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col">
-                            {{ props.chall.description }}
+                        <div class="col" v-html="renderDesc(props.chall.description)">
+
                         </div>
                         <div class="col">
                             <div class="d-flex" v-if="props.chall?.author_names?.length">
@@ -79,6 +79,9 @@
 <script setup lang="ts">
 import { useAuthStore } from '../store/auth';
 import { useChallengeStore } from '../store/challenges';
+import * as DOMPurify from 'dompurify';
+import * as marked from 'marked'
+
 
 const props = defineProps(['chall'])
 
@@ -121,5 +124,8 @@ function goBack(event) {
     }
 }
 
+function renderDesc(text: string) {
+    return DOMPurify.default.sanitize(marked.parse(text))
+}
 
 </script>

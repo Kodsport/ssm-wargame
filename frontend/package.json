@@ -11,15 +11,19 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/bootstrap": "^5.2.6",
+    "@types/dompurify": "^3.0.2",
     "@types/node": "^18.17.0",
     "nuxt": "^3.6.5",
+    "nuxt-security": "^0.14.4",
     "sass": "^1.64.1",
     "sass-loader": "^13.3.2"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
     "bootstrap": "^5.3.1",
+    "dompurify": "^3.0.5",
     "js-md5": "^0.7.3",
+    "marked": "^6.0.0",
     "pinia": "^2.1.6"
   }
 }

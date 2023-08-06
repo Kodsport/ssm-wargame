@@ -1,8 +1,13 @@
+import { dev } from "process";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
   pages: true,
-  modules: ['@pinia/nuxt'],
+  modules: [
+    '@pinia/nuxt',
+    'nuxt-security'
+  ],
   css: [
     '~/assets/scss/main.scss'
   ],
