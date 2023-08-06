@@ -33,9 +33,7 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col" v-html="renderDesc(props.chall.description)">
-
-                        </div>
+                        <div class="col" v-html="renderMarkdown(props.chall.description)"></div>
                         <div class="col">
                             <div class="d-flex" v-if="props.chall?.author_names?.length">
                                 <span class="material-icons text-primary pe-1">group</span>
@@ -81,10 +79,9 @@
 </template>
 
 <script setup lang="ts">
+import renderMarkdown from 'utils/markdown';
 import { useAuthStore } from '../store/auth';
 import { useChallengeStore } from '../store/challenges';
-import * as DOMPurify from 'dompurify';
-import * as marked from 'marked'
 import * as moment from 'moment'
 
 const props = defineProps(['chall'])
@@ -127,10 +124,6 @@ function goBack(event) {
     if (event.target == modal.value) {
         router.replace('/challenges')
     }
-}
-
-function renderDesc(text: string) {
-    return DOMPurify.default.sanitize(marked.parse(text))
 }
 
 function timeAgo(unixTime) {

@@ -1,7 +1,7 @@
 <template>
     <div v-bind:class="{ 'alert': props.chall.solved, 'alert-success': props.chall.solved }">
         <h5>{{ props.chall.title }}</h5>
-        <p>{{ props.chall.description }}</p>
+        <p v-html="renderMarkdown(props.chall.description)"></p>
         <p>{{ props.chall.solves }} lösare</p>
 
 
@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges';
 import { useAuthStore } from '../store/auth';
+import renderMarkdown from 'utils/markdown';
 
 
 const challs = useChallengeStore()

@@ -1,6 +1,5 @@
 import { FetchOptions, $fetch } from 'ofetch'
 import { useAuthStore } from '../store/auth'
-import { RuntimeConfig } from 'nuxt/schema'
 
 
 const opts: FetchOptions = {
