@@ -35,10 +35,10 @@
                     <div class="row">
                         <div class="col" v-html="renderMarkdown(props.chall.description)"></div>
                         <div class="col">
-                            <div class="d-flex" v-if="props.chall?.author_names?.length">
+                            <div class="d-flex" v-if="props.chall?.authors?.length">
                                 <span class="material-icons text-primary pe-1">group</span>
                                 <span class="material-icons text-primary pe-1">edit</span>
-                                <span>{{ props.chall.author_names.join(', ') }}</span>
+                                <span>{{ props.chall.authors.map(a => a.full_name).join(', ') }}</span>
                             </div>
                             <div v-for="file in props.chall.files">
 
