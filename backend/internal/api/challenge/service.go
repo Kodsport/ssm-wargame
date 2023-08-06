@@ -93,6 +93,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.Where("publish_at IS NULL OR publish_at < NOW()"),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
 		qm.Load(models.ChallengeRels.Users),
+		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User), qm.Limit(3), qm.OrderBy(models.UserSolfColumns.CreatedAt)),
 	)
 
 	if auth.IsAuthed(ctx) {
@@ -127,9 +128,21 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			res[i].Files[i2] = s.signFile(ctx, file)
 		}
 
-		res[i].AuthorNames = make([]string, len(chall.R.Users))
+		res[i].Authors = make([]*spec.SsmUser, len(chall.R.Users))
 		for i2, v := range chall.R.Users {
-			res[i].AuthorNames[i2] = v.FullName
+			res[i].Authors[i2] = &spec.SsmUser{
+				ID:       v.ID,
+				FullName: v.FullName,
+			}
+		}
+
+		res[i].Solvers = make([]*spec.SsmSolver, len(chall.R.UserSolves))
+		for i2, v := range chall.R.UserSolves {
+			res[i].Solvers[i2] = &spec.SsmSolver{
+				ID:       v.UserID,
+				FullName: v.R.User.FullName,
+				SolvedAt: v.CreatedAt.Unix(),
+			}
 		}
 	}
 

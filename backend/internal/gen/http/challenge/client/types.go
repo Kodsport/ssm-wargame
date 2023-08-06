@@ -91,9 +91,10 @@ type SsmChallengeResponse struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	// whether the user has solved the challenge or not
-	Solved      *bool    `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
-	Category    *string  `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
-	AuthorNames []string `form:"author_names,omitempty" json:"author_names,omitempty" xml:"author_names,omitempty"`
+	Solved   *bool                `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
+	Category *string              `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	Authors  []*SsmUserResponse   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Solvers  []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -104,6 +105,22 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 	Filename *string `form:"filename,omitempty" json:"filename,omitempty" xml:"filename,omitempty"`
 	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
+}
+
+// SsmUserResponse is used to define fields on response body types.
+type SsmUserResponse struct {
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Email    *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	FullName *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	Role     *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
+	SchoolID *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+}
+
+// SsmSolverResponse is used to define fields on response body types.
+type SsmSolverResponse struct {
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	FullName *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	SolvedAt *int64  `form:"solved_at,omitempty" json:"solved_at,omitempty" xml:"solved_at,omitempty"`
 }
 
 // CTFEventResponse is used to define fields on response body types.
@@ -305,6 +322,20 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	if body.CtfEventID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
 	}
+	for _, e := range body.Authors {
+		if e != nil {
+			if err2 := ValidateSsmUserResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range body.Solvers {
+		if e != nil {
+			if err2 := ValidateSsmSolverResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
 	return
 }
 
@@ -316,6 +347,37 @@ func ValidateChallengeFilesResponse(body *ChallengeFilesResponse) (err error) {
 	}
 	if body.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
+	}
+	return
+}
+
+// ValidateSsmUserResponse runs the validations defined on SsmUserResponse
+func ValidateSsmUserResponse(body *SsmUserResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	if body.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "body"))
+	}
+	if body.Role == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("role", "body"))
+	}
+	return
+}
+
+// ValidateSsmSolverResponse runs the validations defined on SsmSolverResponse
+func ValidateSsmSolverResponse(body *SsmSolverResponse) (err error) {
+	if body.SolvedAt == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved_at", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "body"))
 	}
 	return
 }

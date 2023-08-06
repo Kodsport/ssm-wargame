@@ -786,7 +786,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -804,7 +804,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -815,8 +815,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -856,12 +856,12 @@ definitions:
         example: true
     description: AddFlag_not_found_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -887,7 +887,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -909,7 +909,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: AddFlag_unauthorized_Response_Body result type (default view)
     example:
       fault: false
@@ -917,7 +917,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -1013,7 +1013,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateChallenge_bad_request_Response_Body result type (default view)
     example:
       fault: true
@@ -1054,7 +1054,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -1066,7 +1066,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -1082,7 +1082,7 @@ definitions:
         type: array
         items:
           type: string
-          example: Ducimus accusamus nostrum sed sint tenetur.
+          example: Explicabo quos maxime atque porro beatae.
         example:
         - 1b678293-6737-4cc7-8eae-aa821100293f
       category_id:
@@ -1142,7 +1142,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1160,18 +1160,18 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateChallenge_unauthorized_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: false
     required:
     - name
@@ -1218,7 +1218,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -1233,7 +1233,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1251,11 +1251,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: CreateMonthlyChallenge_not_found_Response_Body result type (default
       view)
     example:
@@ -1263,7 +1263,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: false
     required:
     - name
@@ -1311,7 +1311,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1329,20 +1329,20 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateMonthlyChallenge_unauthorized_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -1379,10 +1379,10 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: DeleteFile_bad_request_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -1420,7 +1420,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -1431,8 +1431,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -1447,7 +1447,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1469,15 +1469,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: DeleteFile_unauthorized_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -1510,7 +1510,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -1521,7 +1521,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: false
     required:
     - name
@@ -1537,7 +1537,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1555,7 +1555,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -1566,7 +1566,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: false
     required:
     - name
@@ -1582,7 +1582,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1604,15 +1604,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: DeleteFlag_unauthorized_Response_Body result type (default view)
     example:
       fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -1627,7 +1627,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1649,7 +1649,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: DeleteMonthlyChallenge_bad_request_Response_Body result type (default
       view)
     example:
@@ -1691,11 +1691,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: DeleteMonthlyChallenge_not_found_Response_Body result type (default
       view)
     example:
@@ -1704,7 +1704,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -1737,11 +1737,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: DeleteMonthlyChallenge_unauthorized_Response_Body result type (default
       view)
     example:
@@ -1749,8 +1749,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -1783,19 +1783,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: false
     description: GetChallengeMeta_bad_request_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -1828,19 +1828,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: GetChallengeMeta_not_found_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -1857,9 +1857,11 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeSolverResponseBody'
         example:
-        - solved_at: 3679012966644930531
+        - solved_at: 4714708773155809193
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 3679012966644930531
+        - solved_at: 4714708773155809193
+          user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+        - solved_at: 4714708773155809193
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       submissions:
         type: array
@@ -1868,46 +1870,41 @@ definitions:
         example:
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 6091764805399231433
+          submitted_at: 8708930750696886987
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 6091764805399231433
+          submitted_at: 8708930750696886987
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 6091764805399231433
-          successful: false
-          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
-        - id: 34062de2-6687-4acb-ab4b-608cc246b133
-          input: SSM{wrong_flag}
-          submitted_at: 6091764805399231433
+          submitted_at: 8708930750696886987
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
     example:
       solvers:
-      - solved_at: 3679012966644930531
+      - solved_at: 4714708773155809193
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-      - solved_at: 3679012966644930531
+      - solved_at: 4714708773155809193
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-      - solved_at: 3679012966644930531
+      - solved_at: 4714708773155809193
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       submissions:
       - id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 6091764805399231433
+        submitted_at: 8708930750696886987
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       - id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 6091764805399231433
+        submitted_at: 8708930750696886987
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       - id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 6091764805399231433
+        submitted_at: 8708930750696886987
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
     required:
@@ -1938,7 +1935,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -1946,11 +1943,11 @@ definitions:
     description: GetChallengeMeta_unauthorized_Response_Body result type (default
       view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: false
     required:
     - name
@@ -1991,7 +1988,7 @@ definitions:
         example: true
     description: ListCategories_bad_request_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -2029,7 +2026,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2081,12 +2078,12 @@ definitions:
         example: false
     description: ListCategories_unauthorized_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -2119,19 +2116,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: ListChallenges_bad_request_Response_Body result type (default view)
     example:
       fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -2146,7 +2143,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2164,18 +2161,18 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: ListChallenges_not_found_Response_Body result type (default view)
     example:
       fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: true
     required:
     - name
@@ -2191,7 +2188,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2213,7 +2210,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: ListChallenges_unauthorized_Response_Body result type (default view)
     example:
       fault: false
@@ -2221,7 +2218,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -2254,7 +2251,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2266,8 +2263,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -2282,7 +2279,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2300,15 +2297,15 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: ListMonthlyChallenges_not_found_Response_Body result type (default
       view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -2328,7 +2325,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2346,20 +2343,20 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: ListMonthlyChallenges_unauthorized_Response_Body result type (default
       view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -2392,11 +2389,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: ListUsers_bad_request_Response_Body result type (default view)
     example:
       fault: false
@@ -2437,11 +2434,11 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: ListUsers_not_found_Response_Body result type (default view)
     example:
       fault: true
@@ -2449,7 +2446,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -2482,19 +2479,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: false
     description: ListUsers_unauthorized_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -2531,7 +2528,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: PresignChallFileUpload_bad_request_Response_Body result type (default
       view)
     example:
@@ -2540,7 +2537,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -2637,7 +2634,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2655,7 +2652,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2667,8 +2664,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -2704,11 +2701,21 @@ definitions:
         md5: cq02dBbcuugBHM1oKyvMlQ==
         size: 87123
         url: https://s3/bucket/key?signature
+      - bucket: ssm-prod-bucket
+        filename: decryptor.exe
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        key: file.exe
+        md5: cq02dBbcuugBHM1oKyvMlQ==
+        size: 87123
+        url: https://s3/bucket/key?signature
+      - bucket: ssm-prod-bucket
+        filename: decryptor.exe
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        key: file.exe
+        md5: cq02dBbcuugBHM1oKyvMlQ==
+        size: 87123
+        url: https://s3/bucket/key?signature
       flags:
-      - flag: SSM{yo}
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-      - flag: SSM{yo}
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
@@ -2742,11 +2749,21 @@ definitions:
         md5: cq02dBbcuugBHM1oKyvMlQ==
         size: 87123
         url: https://s3/bucket/key?signature
+      - bucket: ssm-prod-bucket
+        filename: decryptor.exe
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        key: file.exe
+        md5: cq02dBbcuugBHM1oKyvMlQ==
+        size: 87123
+        url: https://s3/bucket/key?signature
+      - bucket: ssm-prod-bucket
+        filename: decryptor.exe
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        key: file.exe
+        md5: cq02dBbcuugBHM1oKyvMlQ==
+        size: 87123
+        url: https://s3/bucket/key?signature
       flags:
-      - flag: SSM{yo}
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-      - flag: SSM{yo}
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
@@ -2780,11 +2797,21 @@ definitions:
         md5: cq02dBbcuugBHM1oKyvMlQ==
         size: 87123
         url: https://s3/bucket/key?signature
+      - bucket: ssm-prod-bucket
+        filename: decryptor.exe
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        key: file.exe
+        md5: cq02dBbcuugBHM1oKyvMlQ==
+        size: 87123
+        url: https://s3/bucket/key?signature
+      - bucket: ssm-prod-bucket
+        filename: decryptor.exe
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        key: file.exe
+        md5: cq02dBbcuugBHM1oKyvMlQ==
+        size: 87123
+        url: https://s3/bucket/key?signature
       flags:
-      - flag: SSM{yo}
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-      - flag: SSM{yo}
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
@@ -2824,14 +2851,14 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: UpdateChallenge_bad_request_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -2869,7 +2896,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2880,8 +2907,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -2897,7 +2924,7 @@ definitions:
         type: array
         items:
           type: string
-          example: Ut dolor.
+          example: Corrupti et minima.
         example:
         - 1b678293-6737-4cc7-8eae-aa821100293f
       category_id:
@@ -2975,19 +3002,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: false
     description: UpdateChallenge_unauthorized_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: false
+      temporary: true
+      timeout: true
     required:
     - name
     - id
@@ -3119,14 +3146,14 @@ definitions:
     properties:
       solved_at:
         type: integer
-        example: 3700920392545211114
+        example: 7500052955664229868
         format: int64
       user_id:
         type: string
         example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         format: uuid
     example:
-      solved_at: 2051898484785358353
+      solved_at: 2593641880872045073
       user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
     required:
     - user_id
@@ -3140,9 +3167,17 @@ definitions:
     description: ListChallengesResponseBody is the result type for an array of SsmChallengeResponse
       (default view)
     example:
-    - author_names:
-      - Movitz Sunar
-      - Martin Wennberg
+    - authors:
+      - email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        id: uuid todo
+        role: admin
+        school_id: 78433202
+      - email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        id: uuid todo
+        role: admin
+        school_id: 78433202
       category: Misc
       ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
       description: A heap overflow challenge
@@ -3156,13 +3191,30 @@ definitions:
       services:
       - {}
       - {}
+      - {}
+      - {}
       slug: pwnme
       solved: true
+      solvers:
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
       solves: 3
       title: pwnme
-    - author_names:
-      - Movitz Sunar
-      - Martin Wennberg
+    - authors:
+      - email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        id: uuid todo
+        role: admin
+        school_id: 78433202
+      - email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        id: uuid todo
+        role: admin
+        school_id: 78433202
       category: Misc
       ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
       description: A heap overflow challenge
@@ -3176,13 +3228,30 @@ definitions:
       services:
       - {}
       - {}
+      - {}
+      - {}
       slug: pwnme
       solved: true
+      solvers:
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
       solves: 3
       title: pwnme
-    - author_names:
-      - Movitz Sunar
-      - Martin Wennberg
+    - authors:
+      - email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        id: uuid todo
+        role: admin
+        school_id: 78433202
+      - email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        id: uuid todo
+        role: admin
+        school_id: 78433202
       category: Misc
       ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
       description: A heap overflow challenge
@@ -3196,28 +3265,17 @@ definitions:
       services:
       - {}
       - {}
-      slug: pwnme
-      solved: true
-      solves: 3
-      title: pwnme
-    - author_names:
-      - Movitz Sunar
-      - Martin Wennberg
-      category: Misc
-      ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-      description: A heap overflow challenge
-      files:
-      - filename: decryptor.exe
-        url: https://s3/bucket/key?signature
-      - filename: decryptor.exe
-        url: https://s3/bucket/key?signature
-      id: e721a338-44de-4de8-a562-43d2db5f4115
-      score: 50
-      services:
       - {}
       - {}
       slug: pwnme
       solved: true
+      solvers:
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
       solves: 3
       title: pwnme
   ChallengeSsmUsermonthlychallengesResponseCollection:
@@ -3230,9 +3288,17 @@ definitions:
       of SsmUsermonthlychallengesResponse (default view)
     example:
     - challenge:
-        author_names:
-        - Movitz Sunar
-        - Martin Wennberg
+        authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -3246,8 +3312,17 @@ definitions:
         services:
         - {}
         - {}
+        - {}
+        - {}
         slug: pwnme
         solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
         solves: 3
         title: pwnme
       challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -3255,9 +3330,17 @@ definitions:
       end_date: 1690884841
       start_date: 1690874841
     - challenge:
-        author_names:
-        - Movitz Sunar
-        - Martin Wennberg
+        authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -3271,8 +3354,17 @@ definitions:
         services:
         - {}
         - {}
+        - {}
+        - {}
         slug: pwnme
         solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
         solves: 3
         title: pwnme
       challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -3280,9 +3372,17 @@ definitions:
       end_date: 1690884841
       start_date: 1690874841
     - challenge:
-        author_names:
-        - Movitz Sunar
-        - Martin Wennberg
+        authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -3296,8 +3396,59 @@ definitions:
         services:
         - {}
         - {}
+        - {}
+        - {}
         slug: pwnme
         solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        solves: 3
+        title: pwnme
+      challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+      display_month: Januari/Februari
+      end_date: 1690884841
+      start_date: 1690874841
+    - challenge:
+        authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        category: Misc
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        score: 50
+        services:
+        - {}
+        - {}
+        - {}
+        - {}
+        slug: pwnme
+        solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
         solves: 3
         title: pwnme
       challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -3317,7 +3468,7 @@ definitions:
         example: SSM{wrong_flag}
       submitted_at:
         type: integer
-        example: 5403161762008990538
+        example: 6151744464975825703
         format: int64
       successful:
         type: boolean
@@ -3329,7 +3480,7 @@ definitions:
     example:
       id: 34062de2-6687-4acb-ab4b-608cc246b133
       input: SSM{wrong_flag}
-      submitted_at: 5287473855034615097
+      submitted_at: 2260546793675584665
       successful: false
       user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
     required:
@@ -3345,7 +3496,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3363,19 +3514,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: SubmitFlag_already_solved_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: false
-      timeout: true
+      timeout: false
     required:
     - name
     - id
@@ -3390,7 +3541,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3420,7 +3571,7 @@ definitions:
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -3519,7 +3670,7 @@ definitions:
         type: array
         items:
           type: string
-          example: Alias sequi repellat alias voluptas eum sit.
+          example: Ipsa architecto a est est labore.
         example:
         - dfaa1a6a-9051-4c52-9441-5d664536cf24
       category_id:
@@ -3556,20 +3707,11 @@ definitions:
           md5: cq02dBbcuugBHM1oKyvMlQ==
           size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
       flags:
         type: array
         items:
           $ref: '#/definitions/AdminChallengeFlagResponse'
         example:
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -3630,21 +3772,9 @@ definitions:
         md5: cq02dBbcuugBHM1oKyvMlQ==
         size: 87123
         url: https://s3/bucket/key?signature
-      - bucket: ssm-prod-bucket
-        filename: decryptor.exe
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        key: file.exe
-        md5: cq02dBbcuugBHM1oKyvMlQ==
-        size: 87123
-        url: https://s3/bucket/key?signature
-      - bucket: ssm-prod-bucket
-        filename: decryptor.exe
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        key: file.exe
-        md5: cq02dBbcuugBHM1oKyvMlQ==
-        size: 87123
-        url: https://s3/bucket/key?signature
       flags:
+      - flag: SSM{yo}
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
@@ -3653,6 +3783,8 @@ definitions:
       publish_at: 1638384718
       score: 50
       services:
+      - {}
+      - {}
       - {}
       - {}
       slug: pwnme
@@ -3671,14 +3803,26 @@ definitions:
     title: 'Mediatype identifier: application/vnd.ssm.challenge; view=default'
     type: object
     properties:
-      author_names:
+      authors:
         type: array
         items:
-          type: string
-          example: Voluptate neque.
+          $ref: '#/definitions/SsmUserResponse'
         example:
-        - Movitz Sunar
-        - Martin Wennberg
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
       category:
         type: string
         example: Misc
@@ -3727,6 +3871,23 @@ definitions:
         type: boolean
         description: whether the user has solved the challenge or not
         example: true
+      solvers:
+        type: array
+        items:
+          $ref: '#/definitions/SsmSolverResponse'
+        example:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
       solves:
         type: integer
         description: The numer of people who solved the challenge
@@ -3738,9 +3899,17 @@ definitions:
         example: pwnme
     description: A Wargame challenge (default view)
     example:
-      author_names:
-      - Movitz Sunar
-      - Martin Wennberg
+      authors:
+      - email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        id: uuid todo
+        role: admin
+        school_id: 78433202
+      - email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        id: uuid todo
+        role: admin
+        school_id: 78433202
       category: Misc
       ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
       description: A heap overflow challenge
@@ -3756,10 +3925,18 @@ definitions:
       services:
       - {}
       - {}
-      - {}
-      - {}
       slug: pwnme
       solved: true
+      solvers:
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
+      - full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
       solves: 3
       title: pwnme
     required:
@@ -3771,6 +3948,30 @@ definitions:
     - score
     - slug
     - solves
+  SsmSolverResponse:
+    title: 'Mediatype identifier: application/vnd.ssm.solver; view=default'
+    type: object
+    properties:
+      full_name:
+        type: string
+        example: Movitz Sunar
+      id:
+        type: string
+        example: uuid todo
+      solved_at:
+        type: integer
+        example: 16123128
+        format: int64
+    example:
+      full_name: Movitz Sunar
+      id: uuid todo
+      solved_at: 16123128
+    required:
+    - solved_at
+    - id
+    - email
+    - full_name
+    - role
   SsmUserResponse:
     title: 'Mediatype identifier: application/vnd.ssm.user; view=default'
     type: object
@@ -3791,7 +3992,6 @@ definitions:
         type: integer
         example: 78433202
         format: int64
-    description: SsmUserResponse result type (default view)
     example:
       email: movitz.sunar@ssm.example
       full_name: Movitz Sunar
@@ -3830,9 +4030,17 @@ definitions:
     description: SsmUsermonthlychallengesResponse result type (default view)
     example:
       challenge:
-        author_names:
-        - Movitz Sunar
-        - Martin Wennberg
+        authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -3846,8 +4054,17 @@ definitions:
         services:
         - {}
         - {}
+        - {}
+        - {}
         slug: pwnme
         solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
         solves: 3
         title: pwnme
       challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -3882,14 +4099,14 @@ definitions:
         format: int64
       school_name:
         type: string
-        example: Omnis ullam.
+        example: Quo reprehenderit consequatur.
     example:
       email: movitz.sunar@ssm.example
       full_name: Movitz Sunar
       id: uuid todo
       role: admin
       school_id: 78433202
-      school_name: Inventore aut sunt sit velit enim.
+      school_name: Repellat amet reprehenderit doloribus voluptate sapiente.
     required:
     - id
     - email

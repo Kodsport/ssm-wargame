@@ -9,7 +9,9 @@
                     <h2 class="modal-title text-primary fw-bold">{{ props.chall.title }}</h2>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <div class="badge bg-secondary">{{ props.chall.category }}</div>
+                    <div class="badge bg-primary">{{ props.chall.category }}</div>
+                    <span v-if="event" class="badge bg-primary">{{ event.name }}</span>
+
                 </div>
 
                 <h5>
@@ -45,12 +47,14 @@
                                 <span class="material-icons text-primary">description</span>
                                 <a :href="file.url">{{ file.filename }}</a>
                             </div>
-                            <div class="pt-3">
+                            <div class="pt-3" v-if="props.chall.solvers">
                                 <b>Första lösarna</b>
                                 <ol>
-                                    <li>Bumbodosan</li>
-                                    <li>SNHT</li>
-                                    <li>Royalroppers</li>
+                                    <li v-for="solver in props.chall.solvers">
+                                        {{ solver.full_name }} <span class="badge bg-info">{{
+                                            timeAgo(solver.solved_at)
+                                        }}</span>
+                                    </li>
                                 </ol>
                             </div>
                         </div>
@@ -81,7 +85,7 @@ import { useAuthStore } from '../store/auth';
 import { useChallengeStore } from '../store/challenges';
 import * as DOMPurify from 'dompurify';
 import * as marked from 'marked'
-
+import * as moment from 'moment'
 
 const props = defineProps(['chall'])
 
@@ -91,6 +95,7 @@ const http = useHttp()
 const store = useChallengeStore()
 
 const modal = ref(null)
+const event = computed(() => store.events.find(e => e.id == props.chall.ctf_event_id))
 
 
 const flag = ref("")
@@ -128,4 +133,7 @@ function renderDesc(text: string) {
     return DOMPurify.default.sanitize(marked.parse(text))
 }
 
+function timeAgo(unixTime) {
+    return moment.default(new Date(unixTime * 1000)).fromNow()
+}
 </script>

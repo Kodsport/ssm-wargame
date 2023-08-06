@@ -60,9 +60,10 @@ type SsmChallengeView struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
 	// whether the user has solved the challenge or not
-	Solved      *bool
-	Category    *string
-	AuthorNames []string
+	Solved   *bool
+	Category *string
+	Authors  []*SsmUserView
+	Solvers  []*SsmSolverView
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -73,6 +74,22 @@ type ChallengeServiceView struct {
 type ChallengeFilesView struct {
 	Filename *string
 	URL      *string
+}
+
+// SsmUserView is a type that runs validations on a projected type.
+type SsmUserView struct {
+	ID       *string
+	Email    *string
+	FullName *string
+	Role     *string
+	SchoolID *int
+}
+
+// SsmSolverView is a type that runs validations on a projected type.
+type SsmSolverView struct {
+	ID       *string
+	FullName *string
+	SolvedAt *int64
 }
 
 // SsmUsermonthlychallengesCollectionView is a type that runs validations on a
@@ -120,7 +137,8 @@ var (
 			"ctf_event_id",
 			"solved",
 			"category",
-			"author_names",
+			"authors",
+			"solvers",
 		},
 	}
 	// SsmUsermonthlychallengesCollectionMap is a map indexing the attribute names
@@ -156,7 +174,26 @@ var (
 			"ctf_event_id",
 			"solved",
 			"category",
-			"author_names",
+			"authors",
+			"solvers",
+		},
+	}
+	// SsmUserMap is a map indexing the attribute names of SsmUser by view name.
+	SsmUserMap = map[string][]string{
+		"default": {
+			"id",
+			"email",
+			"full_name",
+			"role",
+			"school_id",
+		},
+	}
+	// SsmSolverMap is a map indexing the attribute names of SsmSolver by view name.
+	SsmSolverMap = map[string][]string{
+		"default": {
+			"id",
+			"full_name",
+			"solved_at",
 		},
 	}
 	// SsmUsermonthlychallengesMap is a map indexing the attribute names of
@@ -259,6 +296,20 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	if result.CtfEventID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("result.ctf_event_id", *result.CtfEventID, goa.FormatUUID))
 	}
+	for _, e := range result.Authors {
+		if e != nil {
+			if err2 := ValidateSsmUserView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range result.Solvers {
+		if e != nil {
+			if err2 := ValidateSsmSolverView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
 	return
 }
 
@@ -277,6 +328,39 @@ func ValidateChallengeFilesView(result *ChallengeFilesView) (err error) {
 	}
 	if result.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "result"))
+	}
+	return
+}
+
+// ValidateSsmUserView runs the validations defined on SsmUserView using the
+// "default" view.
+func ValidateSsmUserView(result *SsmUserView) (err error) {
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "result"))
+	}
+	if result.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "result"))
+	}
+	if result.Role == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("role", "result"))
+	}
+	return
+}
+
+// ValidateSsmSolverView runs the validations defined on SsmSolverView using
+// the "default" view.
+func ValidateSsmSolverView(result *SsmSolverView) (err error) {
+	if result.SolvedAt == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved_at", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "result"))
 	}
 	return
 }

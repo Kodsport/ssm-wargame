@@ -93,9 +93,10 @@ type SsmChallengeResponse struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	// whether the user has solved the challenge or not
-	Solved      bool     `form:"solved" json:"solved" xml:"solved"`
-	Category    string   `form:"category" json:"category" xml:"category"`
-	AuthorNames []string `form:"author_names,omitempty" json:"author_names,omitempty" xml:"author_names,omitempty"`
+	Solved   bool                 `form:"solved" json:"solved" xml:"solved"`
+	Category string               `form:"category" json:"category" xml:"category"`
+	Authors  []*SsmUserResponse   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Solvers  []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -106,6 +107,22 @@ type ChallengeServiceResponse struct {
 type ChallengeFilesResponse struct {
 	Filename string `form:"filename" json:"filename" xml:"filename"`
 	URL      string `form:"url" json:"url" xml:"url"`
+}
+
+// SsmUserResponse is used to define fields on response body types.
+type SsmUserResponse struct {
+	ID       string `form:"id" json:"id" xml:"id"`
+	Email    string `form:"email" json:"email" xml:"email"`
+	FullName string `form:"full_name" json:"full_name" xml:"full_name"`
+	Role     string `form:"role" json:"role" xml:"role"`
+	SchoolID *int   `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+}
+
+// SsmSolverResponse is used to define fields on response body types.
+type SsmSolverResponse struct {
+	ID       string `form:"id" json:"id" xml:"id"`
+	FullName string `form:"full_name" json:"full_name" xml:"full_name"`
+	SolvedAt int64  `form:"solved_at" json:"solved_at" xml:"solved_at"`
 }
 
 // CTFEventResponse is used to define fields on response body types.

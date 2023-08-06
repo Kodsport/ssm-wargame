@@ -23,6 +23,18 @@ var User = ResultType("application/vnd.ssm.user", func() {
 	Required("id", "email", "full_name", "role")
 })
 
+var Solver = ResultType("application/vnd.ssm.solver", func() {
+	Reference(User)
+
+	Attribute("id")
+	Attribute("full_name")
+	Attribute("solved_at", Int64, func() {
+		Example(16123128)
+	})
+
+	Required("solved_at")
+})
+
 var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", func() {
 	Description("A Wargame challenge")
 	Reference(Challenge)
@@ -76,9 +88,8 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 		Example("Misc")
 	})
 
-	Attribute("author_names", ArrayOf(String), func() {
-		Example([]string{"Movitz Sunar", "Martin Wennberg"})
-	})
+	Attribute("authors", ArrayOf(User))
+	Attribute("solvers", ArrayOf(Solver))
 
 	Required("solved", "category")
 })

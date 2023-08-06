@@ -29,8 +29,6 @@ paths:
                   name: Forensics
                 - id: e721a338-44de-4de8-a562-43d2db5f4115
                   name: Forensics
-                - id: e721a338-44de-4de8-a562-43d2db5f4115
-                  name: Forensics
               example:
               - id: e721a338-44de-4de8-a562-43d2db5f4115
                 name: Forensics
@@ -103,25 +101,7 @@ paths:
                   md5: cq02dBbcuugBHM1oKyvMlQ==
                   size: 87123
                   url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
                 flags:
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
@@ -130,6 +110,7 @@ paths:
                 publish_at: 1638384718
                 score: 50
                 services:
+                - {}
                 - {}
                 - {}
                 - {}
@@ -155,25 +136,7 @@ paths:
                   md5: cq02dBbcuugBHM1oKyvMlQ==
                   size: 87123
                   url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
-                  url: https://s3/bucket/key?signature
                 flags:
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
@@ -182,6 +145,7 @@ paths:
                 publish_at: 1638384718
                 score: 50
                 services:
+                - {}
                 - {}
                 - {}
                 - {}
@@ -207,6 +171,27 @@ paths:
                   md5: cq02dBbcuugBHM1oKyvMlQ==
                   size: 87123
                   url: https://s3/bucket/key?signature
+                flags:
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                id: e721a338-44de-4de8-a562-43d2db5f4115
+                publish_at: 1638384718
+                score: 50
+                services:
+                - {}
+                - {}
+                - {}
+                - {}
+                slug: pwnme
+                solves: 3
+                title: pwnme
+              - authors:
+                - dfaa1a6a-9051-4c52-9441-5d664536cf24
+                category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+                description: A heap overflow challenge
+                files:
                 - bucket: ssm-prod-bucket
                   filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -226,14 +211,11 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 publish_at: 1638384718
                 score: 50
                 services:
+                - {}
                 - {}
                 - {}
                 - {}
@@ -354,24 +336,33 @@ paths:
                 $ref: '#/components/schemas/ChallengeMeta'
               example:
                 solvers:
-                - solved_at: 3679012966644930531
+                - solved_at: 4714708773155809193
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 3679012966644930531
+                - solved_at: 4714708773155809193
+                  user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+                - solved_at: 4714708773155809193
+                  user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+                - solved_at: 4714708773155809193
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
                 submissions:
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 6091764805399231433
+                  submitted_at: 8708930750696886987
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 6091764805399231433
+                  submitted_at: 8708930750696886987
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 6091764805399231433
+                  submitted_at: 8708930750696886987
+                  successful: false
+                  user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                - id: 34062de2-6687-4acb-ab4b-608cc246b133
+                  input: SSM{wrong_flag}
+                  submitted_at: 8708930750696886987
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         "400":
@@ -737,6 +728,14 @@ paths:
                   display_month: Januari/Februari
                   end_date: 1690884841
                   start_date: 1690874841
+                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  display_month: Januari/Februari
+                  end_date: 1690884841
+                  start_date: 1690874841
+                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  display_month: Januari/Februari
+                  end_date: 1690884841
+                  start_date: 1690874841
               example:
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 display_month: Januari/Februari
@@ -920,12 +919,12 @@ paths:
                   id: uuid todo
                   role: admin
                   school_id: 78433202
-                - email: movitz.sunar@ssm.example
-                  full_name: Movitz Sunar
-                  id: uuid todo
-                  role: admin
-                  school_id: 78433202
               example:
+              - email: movitz.sunar@ssm.example
+                full_name: Movitz Sunar
+                id: uuid todo
+                role: admin
+                school_id: 78433202
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: uuid todo
@@ -1026,9 +1025,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/SsmChallengeCollection'
               example:
-              - author_names:
-                - Movitz Sunar
-                - Martin Wennberg
+              - authors:
+                - email: movitz.sunar@ssm.example
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  role: admin
+                  school_id: 78433202
+                - email: movitz.sunar@ssm.example
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  role: admin
+                  school_id: 78433202
                 category: Misc
                 ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
@@ -1046,11 +1053,29 @@ paths:
                 - {}
                 slug: pwnme
                 solved: true
+                solvers:
+                - full_name: Movitz Sunar
+                  id: uuid todo
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: uuid todo
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: uuid todo
+                  solved_at: 16123128
                 solves: 3
                 title: pwnme
-              - author_names:
-                - Movitz Sunar
-                - Martin Wennberg
+              - authors:
+                - email: movitz.sunar@ssm.example
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  role: admin
+                  school_id: 78433202
+                - email: movitz.sunar@ssm.example
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  role: admin
+                  school_id: 78433202
                 category: Misc
                 ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
@@ -1068,6 +1093,16 @@ paths:
                 - {}
                 slug: pwnme
                 solved: true
+                solvers:
+                - full_name: Movitz Sunar
+                  id: uuid todo
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: uuid todo
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: uuid todo
+                  solved_at: 16123128
                 solves: 3
                 title: pwnme
       security:
@@ -1170,9 +1205,17 @@ paths:
                 $ref: '#/components/schemas/SsmUsermonthlychallengesCollection'
               example:
               - challenge:
-                  author_names:
-                  - Movitz Sunar
-                  - Martin Wennberg
+                  authors:
+                  - email: movitz.sunar@ssm.example
+                    full_name: Movitz Sunar
+                    id: uuid todo
+                    role: admin
+                    school_id: 78433202
+                  - email: movitz.sunar@ssm.example
+                    full_name: Movitz Sunar
+                    id: uuid todo
+                    role: admin
+                    school_id: 78433202
                   category: Misc
                   ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
@@ -1190,6 +1233,16 @@ paths:
                   - {}
                   slug: pwnme
                   solved: true
+                  solvers:
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
                   solves: 3
                   title: pwnme
                 challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -1197,9 +1250,17 @@ paths:
                 end_date: 1690884841
                 start_date: 1690874841
               - challenge:
-                  author_names:
-                  - Movitz Sunar
-                  - Martin Wennberg
+                  authors:
+                  - email: movitz.sunar@ssm.example
+                    full_name: Movitz Sunar
+                    id: uuid todo
+                    role: admin
+                    school_id: 78433202
+                  - email: movitz.sunar@ssm.example
+                    full_name: Movitz Sunar
+                    id: uuid todo
+                    role: admin
+                    school_id: 78433202
                   category: Misc
                   ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
@@ -1217,6 +1278,16 @@ paths:
                   - {}
                   slug: pwnme
                   solved: true
+                  solvers:
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
                   solves: 3
                   title: pwnme
                 challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -1224,9 +1295,17 @@ paths:
                 end_date: 1690884841
                 start_date: 1690874841
               - challenge:
-                  author_names:
-                  - Movitz Sunar
-                  - Martin Wennberg
+                  authors:
+                  - email: movitz.sunar@ssm.example
+                    full_name: Movitz Sunar
+                    id: uuid todo
+                    role: admin
+                    school_id: 78433202
+                  - email: movitz.sunar@ssm.example
+                    full_name: Movitz Sunar
+                    id: uuid todo
+                    role: admin
+                    school_id: 78433202
                   category: Misc
                   ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
@@ -1244,6 +1323,16 @@ paths:
                   - {}
                   slug: pwnme
                   solved: true
+                  solvers:
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
+                  - full_name: Movitz Sunar
+                    id: uuid todo
+                    solved_at: 16123128
                   solves: 3
                   title: pwnme
                 challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -1347,9 +1436,6 @@ paths:
               - id: 78433202
                 municipality_name: Örebro
                 name: Engelbrektsskolan
-              - id: 78433202
-                municipality_name: Örebro
-                name: Engelbrektsskolan
       security:
       - jwt_header_Authorization: []
   /user/self:
@@ -1371,7 +1457,7 @@ paths:
                 id: uuid todo
                 role: admin
                 school_id: 78433202
-                school_name: Doloremque nostrum.
+                school_name: Repellendus voluptate neque.
       security:
       - jwt_header_Authorization: []
 components:
@@ -1471,9 +1557,11 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeSolver'
           example:
-          - solved_at: 3679012966644930531
+          - solved_at: 4714708773155809193
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 3679012966644930531
+          - solved_at: 4714708773155809193
+            user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+          - solved_at: 4714708773155809193
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
           type: array
@@ -1482,39 +1570,48 @@ components:
           example:
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 6091764805399231433
+            submitted_at: 8708930750696886987
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 6091764805399231433
+            submitted_at: 8708930750696886987
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 34062de2-6687-4acb-ab4b-608cc246b133
+            input: SSM{wrong_flag}
+            submitted_at: 8708930750696886987
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 34062de2-6687-4acb-ab4b-608cc246b133
+            input: SSM{wrong_flag}
+            submitted_at: 8708930750696886987
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       example:
         solvers:
-        - solved_at: 3679012966644930531
+        - solved_at: 4714708773155809193
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 3679012966644930531
+        - solved_at: 4714708773155809193
+          user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+        - solved_at: 4714708773155809193
+          user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+        - solved_at: 4714708773155809193
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 6091764805399231433
+          submitted_at: 8708930750696886987
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 6091764805399231433
+          submitted_at: 8708930750696886987
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 6091764805399231433
-          successful: false
-          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
-        - id: 34062de2-6687-4acb-ab4b-608cc246b133
-          input: SSM{wrong_flag}
-          submitted_at: 6091764805399231433
+          submitted_at: 8708930750696886987
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -1528,14 +1625,14 @@ components:
       properties:
         solved_at:
           type: integer
-          example: 6677026675392314241
+          example: 7201220784682664470
           format: int64
         user_id:
           type: string
           example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
           format: uuid
       example:
-        solved_at: 5404540547641879492
+        solved_at: 3506429953110989656
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       required:
       - user_id
@@ -1552,7 +1649,7 @@ components:
           example: SSM{wrong_flag}
         submitted_at:
           type: integer
-          example: 521355133158478653
+          example: 9067529026891340993
           format: int64
         successful:
           type: boolean
@@ -1564,7 +1661,7 @@ components:
       example:
         id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 8106987091035706392
+        submitted_at: 5679091553098635537
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -1580,7 +1677,7 @@ components:
           type: array
           items:
             type: string
-            example: Magnam vero ullam excepturi ipsam.
+            example: Ea pariatur nulla illum quasi qui rerum.
           example:
           - 1b678293-6737-4cc7-8eae-aa821100293f
         category_id:
@@ -1639,7 +1736,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: false
+          example: true
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -1657,7 +1754,7 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-          example: true
+          example: false
         timeout:
           type: boolean
           description: Is the error a timeout?
@@ -1730,14 +1827,14 @@ components:
           format: int64
         school_name:
           type: string
-          example: Quisquam ea.
+          example: Non totam dolorum omnis.
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: uuid todo
         role: admin
         school_id: 78433202
-        school_name: Nulla illum quasi.
+        school_name: Accusamus voluptatem magni alias inventore accusantium.
       required:
       - id
       - email
@@ -1852,7 +1949,7 @@ components:
           type: array
           items:
             type: string
-            example: Fuga blanditiis rerum optio.
+            example: Alias et a est aut quaerat et.
           example:
           - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id:
@@ -1900,8 +1997,6 @@ components:
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           - flag: SSM{yo}
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          - flag: SSM{yo}
-            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -1921,7 +2016,6 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
           - {}
           - {}
           - {}
@@ -1966,9 +2060,14 @@ components:
           md5: cq02dBbcuugBHM1oKyvMlQ==
           size: 87123
           url: https://s3/bucket/key?signature
-        flags:
-        - flag: SSM{yo}
+        - bucket: ssm-prod-bucket
+          filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          key: file.exe
+          md5: cq02dBbcuugBHM1oKyvMlQ==
+          size: 87123
+          url: https://s3/bucket/key?signature
+        flags:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -1977,7 +2076,6 @@ components:
         publish_at: 1638384718
         score: 50
         services:
-        - {}
         - {}
         - {}
         slug: pwnme
@@ -2017,25 +2115,7 @@ components:
           md5: cq02dBbcuugBHM1oKyvMlQ==
           size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
         flags:
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -2044,6 +2124,7 @@ components:
         publish_at: 1638384718
         score: 50
         services:
+        - {}
         - {}
         - {}
         - {}
@@ -2069,25 +2150,7 @@ components:
           md5: cq02dBbcuugBHM1oKyvMlQ==
           size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
         flags:
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -2097,57 +2160,6 @@ components:
         score: 50
         services:
         - {}
-        - {}
-        - {}
-        slug: pwnme
-        solves: 3
-        title: pwnme
-      - authors:
-        - dfaa1a6a-9051-4c52-9441-5d664536cf24
-        category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
-        description: A heap overflow challenge
-        files:
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
-          url: https://s3/bucket/key?signature
-        flags:
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        publish_at: 1638384718
-        score: 50
-        services:
         - {}
         - {}
         - {}
@@ -2157,14 +2169,31 @@ components:
     SsmChallenge:
       type: object
       properties:
-        author_names:
+        authors:
           type: array
           items:
-            type: string
-            example: Natus repellat amet reprehenderit doloribus voluptate.
+            $ref: '#/components/schemas/SsmUser'
           example:
-          - Movitz Sunar
-          - Martin Wennberg
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
         category:
           type: string
           example: Misc
@@ -2186,10 +2215,6 @@ components:
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -2206,6 +2231,8 @@ components:
           example:
           - {}
           - {}
+          - {}
+          - {}
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -2214,6 +2241,17 @@ components:
           type: boolean
           description: whether the user has solved the challenge or not
           example: true
+        solvers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SsmSolver'
+          example:
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
         solves:
           type: integer
           description: The numer of people who solved the challenge
@@ -2225,17 +2263,21 @@ components:
           example: pwnme
       description: A Wargame challenge
       example:
-        author_names:
-        - Movitz Sunar
-        - Martin Wennberg
+        authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
@@ -2245,10 +2287,18 @@ components:
         services:
         - {}
         - {}
-        - {}
-        - {}
         slug: pwnme
         solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
         solves: 3
         title: pwnme
       required:
@@ -2265,9 +2315,17 @@ components:
       items:
         $ref: '#/components/schemas/SsmChallenge'
       example:
-      - author_names:
-        - Movitz Sunar
-        - Martin Wennberg
+      - authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -2285,11 +2343,29 @@ components:
         - {}
         slug: pwnme
         solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
         solves: 3
         title: pwnme
-      - author_names:
-        - Movitz Sunar
-        - Martin Wennberg
+      - authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -2307,6 +2383,96 @@ components:
         - {}
         slug: pwnme
         solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        solves: 3
+        title: pwnme
+      - authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        category: Misc
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        score: 50
+        services:
+        - {}
+        - {}
+        slug: pwnme
+        solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        solves: 3
+        title: pwnme
+      - authors:
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        category: Misc
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        score: 50
+        services:
+        - {}
+        - {}
+        slug: pwnme
+        solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: uuid todo
+          solved_at: 16123128
         solves: 3
         title: pwnme
     SsmShoolscoreboard:
@@ -2335,6 +2501,29 @@ components:
           score: 1337
       required:
       - scores
+    SsmSolver:
+      type: object
+      properties:
+        full_name:
+          type: string
+          example: Movitz Sunar
+        id:
+          type: string
+          example: uuid todo
+        solved_at:
+          type: integer
+          example: 16123128
+          format: int64
+      example:
+        full_name: Movitz Sunar
+        id: uuid todo
+        solved_at: 16123128
+      required:
+      - solved_at
+      - id
+      - email
+      - full_name
+      - role
     SsmUser:
       type: object
       properties:
@@ -2390,9 +2579,17 @@ components:
           format: int64
       example:
         challenge:
-          author_names:
-          - Movitz Sunar
-          - Martin Wennberg
+          authors:
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
           category: Misc
           ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
@@ -2410,6 +2607,16 @@ components:
           - {}
           slug: pwnme
           solved: true
+          solvers:
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
           solves: 3
           title: pwnme
         challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -2435,9 +2642,17 @@ components:
         $ref: '#/components/schemas/SsmUsermonthlychallenges'
       example:
       - challenge:
-          author_names:
-          - Movitz Sunar
-          - Martin Wennberg
+          authors:
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
           category: Misc
           ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
@@ -2455,6 +2670,16 @@ components:
           - {}
           slug: pwnme
           solved: true
+          solvers:
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
           solves: 3
           title: pwnme
         challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -2462,9 +2687,17 @@ components:
         end_date: 1690884841
         start_date: 1690874841
       - challenge:
-          author_names:
-          - Movitz Sunar
-          - Martin Wennberg
+          authors:
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
           category: Misc
           ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
@@ -2482,6 +2715,61 @@ components:
           - {}
           slug: pwnme
           solved: true
+          solvers:
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          solves: 3
+          title: pwnme
+        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+        display_month: Januari/Februari
+        end_date: 1690884841
+        start_date: 1690874841
+      - challenge:
+          authors:
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
+          - email: movitz.sunar@ssm.example
+            full_name: Movitz Sunar
+            id: uuid todo
+            role: admin
+            school_id: 78433202
+          category: Misc
+          ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+          description: A heap overflow challenge
+          files:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          id: e721a338-44de-4de8-a562-43d2db5f4115
+          score: 50
+          services:
+          - {}
+          - {}
+          slug: pwnme
+          solved: true
+          solvers:
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
           solves: 3
           title: pwnme
         challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df

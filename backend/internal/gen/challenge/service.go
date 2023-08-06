@@ -110,9 +110,10 @@ type SsmChallenge struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
 	// whether the user has solved the challenge or not
-	Solved      bool
-	Category    string
-	AuthorNames []string
+	Solved   bool
+	Category string
+	Authors  []*SsmUser
+	Solvers  []*SsmSolver
 }
 
 type ChallengeService struct {
@@ -121,6 +122,20 @@ type ChallengeService struct {
 type ChallengeFiles struct {
 	Filename string
 	URL      string
+}
+
+type SsmUser struct {
+	ID       string
+	Email    string
+	FullName string
+	Role     string
+	SchoolID *int
+}
+
+type SsmSolver struct {
+	ID       string
+	FullName string
+	SolvedAt int64
 }
 
 type CTFEvent struct {
@@ -266,10 +281,16 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 			res.Files[i] = transformChallengeviewsChallengeFilesViewToChallengeFiles(val)
 		}
 	}
-	if vres.AuthorNames != nil {
-		res.AuthorNames = make([]string, len(vres.AuthorNames))
-		for i, val := range vres.AuthorNames {
-			res.AuthorNames[i] = val
+	if vres.Authors != nil {
+		res.Authors = make([]*SsmUser, len(vres.Authors))
+		for i, val := range vres.Authors {
+			res.Authors[i] = transformChallengeviewsSsmUserViewToSsmUser(val)
+		}
+	}
+	if vres.Solvers != nil {
+		res.Solvers = make([]*SsmSolver, len(vres.Solvers))
+		for i, val := range vres.Solvers {
+			res.Solvers[i] = transformChallengeviewsSsmSolverViewToSsmSolver(val)
 		}
 	}
 	return res
@@ -301,11 +322,76 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 			vres.Files[i] = transformChallengeFilesToChallengeviewsChallengeFilesView(val)
 		}
 	}
-	if res.AuthorNames != nil {
-		vres.AuthorNames = make([]string, len(res.AuthorNames))
-		for i, val := range res.AuthorNames {
-			vres.AuthorNames[i] = val
+	if res.Authors != nil {
+		vres.Authors = make([]*challengeviews.SsmUserView, len(res.Authors))
+		for i, val := range res.Authors {
+			vres.Authors[i] = transformSsmUserToChallengeviewsSsmUserView(val)
 		}
+	}
+	if res.Solvers != nil {
+		vres.Solvers = make([]*challengeviews.SsmSolverView, len(res.Solvers))
+		for i, val := range res.Solvers {
+			vres.Solvers[i] = transformSsmSolverToChallengeviewsSsmSolverView(val)
+		}
+	}
+	return vres
+}
+
+// newSsmUser converts projected type SsmUser to service type SsmUser.
+func newSsmUser(vres *challengeviews.SsmUserView) *SsmUser {
+	res := &SsmUser{
+		SchoolID: vres.SchoolID,
+	}
+	if vres.ID != nil {
+		res.ID = *vres.ID
+	}
+	if vres.Email != nil {
+		res.Email = *vres.Email
+	}
+	if vres.FullName != nil {
+		res.FullName = *vres.FullName
+	}
+	if vres.Role != nil {
+		res.Role = *vres.Role
+	}
+	return res
+}
+
+// newSsmUserView projects result type SsmUser to projected type SsmUserView
+// using the "default" view.
+func newSsmUserView(res *SsmUser) *challengeviews.SsmUserView {
+	vres := &challengeviews.SsmUserView{
+		ID:       &res.ID,
+		Email:    &res.Email,
+		FullName: &res.FullName,
+		Role:     &res.Role,
+		SchoolID: res.SchoolID,
+	}
+	return vres
+}
+
+// newSsmSolver converts projected type SsmSolver to service type SsmSolver.
+func newSsmSolver(vres *challengeviews.SsmSolverView) *SsmSolver {
+	res := &SsmSolver{}
+	if vres.ID != nil {
+		res.ID = *vres.ID
+	}
+	if vres.FullName != nil {
+		res.FullName = *vres.FullName
+	}
+	if vres.SolvedAt != nil {
+		res.SolvedAt = *vres.SolvedAt
+	}
+	return res
+}
+
+// newSsmSolverView projects result type SsmSolver to projected type
+// SsmSolverView using the "default" view.
+func newSsmSolverView(res *SsmSolver) *challengeviews.SsmSolverView {
+	vres := &challengeviews.SsmSolverView{
+		ID:       &res.ID,
+		FullName: &res.FullName,
+		SolvedAt: &res.SolvedAt,
 	}
 	return vres
 }
@@ -422,6 +508,38 @@ func transformChallengeviewsChallengeFilesViewToChallengeFiles(v *challengeviews
 	return res
 }
 
+// transformChallengeviewsSsmUserViewToSsmUser builds a value of type *SsmUser
+// from a value of type *challengeviews.SsmUserView.
+func transformChallengeviewsSsmUserViewToSsmUser(v *challengeviews.SsmUserView) *SsmUser {
+	if v == nil {
+		return nil
+	}
+	res := &SsmUser{
+		ID:       *v.ID,
+		Email:    *v.Email,
+		FullName: *v.FullName,
+		Role:     *v.Role,
+		SchoolID: v.SchoolID,
+	}
+
+	return res
+}
+
+// transformChallengeviewsSsmSolverViewToSsmSolver builds a value of type
+// *SsmSolver from a value of type *challengeviews.SsmSolverView.
+func transformChallengeviewsSsmSolverViewToSsmSolver(v *challengeviews.SsmSolverView) *SsmSolver {
+	if v == nil {
+		return nil
+	}
+	res := &SsmSolver{
+		ID:       *v.ID,
+		FullName: *v.FullName,
+		SolvedAt: *v.SolvedAt,
+	}
+
+	return res
+}
+
 // transformChallengeServiceToChallengeviewsChallengeServiceView builds a value
 // of type *challengeviews.ChallengeServiceView from a value of type
 // *ChallengeService.
@@ -443,6 +561,38 @@ func transformChallengeFilesToChallengeviewsChallengeFilesView(v *ChallengeFiles
 	res := &challengeviews.ChallengeFilesView{
 		Filename: &v.Filename,
 		URL:      &v.URL,
+	}
+
+	return res
+}
+
+// transformSsmUserToChallengeviewsSsmUserView builds a value of type
+// *challengeviews.SsmUserView from a value of type *SsmUser.
+func transformSsmUserToChallengeviewsSsmUserView(v *SsmUser) *challengeviews.SsmUserView {
+	if v == nil {
+		return nil
+	}
+	res := &challengeviews.SsmUserView{
+		ID:       &v.ID,
+		Email:    &v.Email,
+		FullName: &v.FullName,
+		Role:     &v.Role,
+		SchoolID: v.SchoolID,
+	}
+
+	return res
+}
+
+// transformSsmSolverToChallengeviewsSsmSolverView builds a value of type
+// *challengeviews.SsmSolverView from a value of type *SsmSolver.
+func transformSsmSolverToChallengeviewsSsmSolverView(v *SsmSolver) *challengeviews.SsmSolverView {
+	if v == nil {
+		return nil
+	}
+	res := &challengeviews.SsmSolverView{
+		ID:       &v.ID,
+		FullName: &v.FullName,
+		SolvedAt: &v.SolvedAt,
 	}
 
 	return res

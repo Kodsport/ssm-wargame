@@ -469,10 +469,16 @@ func unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v *SsmChallen
 			res.Files[i] = unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(val)
 		}
 	}
-	if v.AuthorNames != nil {
-		res.AuthorNames = make([]string, len(v.AuthorNames))
-		for i, val := range v.AuthorNames {
-			res.AuthorNames[i] = val
+	if v.Authors != nil {
+		res.Authors = make([]*challengeviews.SsmUserView, len(v.Authors))
+		for i, val := range v.Authors {
+			res.Authors[i] = unmarshalSsmUserResponseToChallengeviewsSsmUserView(val)
+		}
+	}
+	if v.Solvers != nil {
+		res.Solvers = make([]*challengeviews.SsmSolverView, len(v.Solvers))
+		for i, val := range v.Solvers {
+			res.Solvers[i] = unmarshalSsmSolverResponseToChallengeviewsSsmSolverView(val)
 		}
 	}
 
@@ -501,6 +507,38 @@ func unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(v *Challe
 	res := &challengeviews.ChallengeFilesView{
 		Filename: v.Filename,
 		URL:      v.URL,
+	}
+
+	return res
+}
+
+// unmarshalSsmUserResponseToChallengeviewsSsmUserView builds a value of type
+// *challengeviews.SsmUserView from a value of type *SsmUserResponse.
+func unmarshalSsmUserResponseToChallengeviewsSsmUserView(v *SsmUserResponse) *challengeviews.SsmUserView {
+	if v == nil {
+		return nil
+	}
+	res := &challengeviews.SsmUserView{
+		ID:       v.ID,
+		Email:    v.Email,
+		FullName: v.FullName,
+		Role:     v.Role,
+		SchoolID: v.SchoolID,
+	}
+
+	return res
+}
+
+// unmarshalSsmSolverResponseToChallengeviewsSsmSolverView builds a value of
+// type *challengeviews.SsmSolverView from a value of type *SsmSolverResponse.
+func unmarshalSsmSolverResponseToChallengeviewsSsmSolverView(v *SsmSolverResponse) *challengeviews.SsmSolverView {
+	if v == nil {
+		return nil
+	}
+	res := &challengeviews.SsmSolverView{
+		ID:       v.ID,
+		FullName: v.FullName,
+		SolvedAt: v.SolvedAt,
 	}
 
 	return res
