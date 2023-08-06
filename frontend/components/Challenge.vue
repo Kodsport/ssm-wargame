@@ -24,7 +24,7 @@
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges';
 import { useAuthStore } from '../store/auth';
-import renderMarkdown from 'utils/markdown';
+import renderMarkdown from '../utils/markdown';
 
 
 const challs = useChallengeStore()
