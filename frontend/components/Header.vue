@@ -14,31 +14,37 @@
               Poängtavla
             </nuxt-link>
           </li>
-          <li class="nav-item">
-            <nuxt-link v-if="!!auth.user.id" active-class="active" class="nav-link" to="/user">
-              Inställningar
-            </nuxt-link>
-          </li>
         </ul>
-        <ul v-if="auth.user.role == 'admin'" class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item nav-link">
-            |
-          </li>
-          <li class="nav-item">
-            <nuxt-link active-class="active" class="nav-link" to="/admin/users">
-              Users
-            </nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link active-class="active" class="nav-link" to="/admin/challenges">
-              Challenges
-            </nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link active-class="active" class="nav-link" to="/admin/monthly">
-              Monthly
-            </nuxt-link>
-          </li>
+        <ul class="navbar-nav pe-3 mb-2 mb-lg-0">
+
+          <template v-if="auth.user.role == 'admin'">
+
+            <li class="nav-item">
+              <nuxt-link active-class="active" class="nav-link" to="/admin/users">
+                Users
+              </nuxt-link>
+            </li>
+            <li class="nav-item">
+              <nuxt-link active-class="active" class="nav-link" to="/admin/challenges">
+                Challenges
+              </nuxt-link>
+            </li>
+            <li class="nav-item">
+              <nuxt-link active-class="active" class="nav-link" to="/admin/monthly">
+                Monthly
+              </nuxt-link>
+            </li>
+            <li class="nav-item">
+              <nuxt-link v-if="!!auth.user.id" active-class="active" class="nav-link btn border border-primary"
+                to="/user">
+                <span class="d-flex">
+                  {{ auth.user.full_name }}
+                  <span class="material-icons text-primary">person</span>
+                </span>
+
+              </nuxt-link>
+            </li>
+          </template>
         </ul>
         <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">Logga in</a>
         <a v-else class="btn btn-primary" @click="logout">Logga ut</a>
