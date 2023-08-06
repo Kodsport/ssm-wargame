@@ -63,11 +63,10 @@
                                 v-bind:class="{ 'alert-danger': warn }">
                                 <input v-if="!!auth.user.id" type="text" class="form-control" placeholder="SSM{..."
                                     @keypress.enter="submitFlag" v-model="flag">
-                                <p class="alert alert-secondary" v-else>Logga in för att skicka in flaggor</p>
+                                <InputReplacer v-else text="Logga in för att skicka in flaggor!" />
                             </div>
                             <div v-else>
-                                Solved!
-
+                                <InputReplacer text="Löst!" />
                             </div>
                         </div>
                     </form>
