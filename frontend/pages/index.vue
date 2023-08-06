@@ -25,7 +25,7 @@
                         href="https://mail.sakerhetssm.se/subscription/form">mailinglista</a> där vi skickar ut
                     uppdateringar om tävlingen.
                 </p>
-                <a class="btn me-2 mb-1" style="background-color: #5865f2;" href="https://discord.gg/edKFKKU">Joina
+                <a class="btn me-md-2 mb-1" style="background-color: #5865f2;" href="https://discord.gg/edKFKKU">Joina
                     Discord!</a>
                 <a class="btn btn-secondary" href="https://mail.sakerhetssm.se/subscription/form">Gå med i
                     mailinglistan!</a>

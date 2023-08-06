@@ -1,15 +1,18 @@
 <template>
-  <header class="d-flex d-lg-none p-5 justify-content-center">
+  <header class="d-flex d-md-none p-5 justify-content-center">
     <h1>
       <nuxt-link class="text-light text-decoration-none" to="/">Säkerhets-SM</nuxt-link>
     </h1>
   </header>
-  <nav class="navbar navbar-expand-lg navbar-nav bg-dark">
+  <nav class="navbar navbar-expand-md bg-dark">
     <div class="container-fluid">
-      <nuxt-link class="navbar-brand nav-link" to="/">SSM</nuxt-link>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
+      <button class="navbar-toggler color-primary" type="button" @click="toggleCollapse = !toggleCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" :class="{ 'show': toggleCollapse }" id="navbarSupportedContent">
+        <nuxt-link class="navbar-brand nav-link d-none d-md-inline" to="/">SSM</nuxt-link>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item d-none d-md-inline">
             <nuxt-link active-class="active" class="nav-link" to="/challenges">
               Utmaningar
             </nuxt-link>
@@ -19,8 +22,18 @@
               Poängtavla
             </nuxt-link>
           </li>
+          <li class="nav-item">
+            <nuxt-link active-class="active" class="nav-link" to="/about">
+              Om oss
+            </nuxt-link>
+          </li>
+          <li class="nav-item">
+            <nuxt-link active-class="active" class="nav-link" to="/learn">
+              Läroresurser
+            </nuxt-link>
+          </li>
         </ul>
-        <ul class="navbar-nav pe-3 mb-2 mb-lg-0">
+        <ul class="navbar-nav pe-3">
 
           <template v-if="auth.user.role == 'admin'">
 
@@ -51,8 +64,10 @@
             </li>
           </template>
         </ul>
-        <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">Logga in</a>
-        <a v-else class="btn btn-primary" @click="logout">Logga ut</a>
+        <template class="d-none d-md-inline">
+          <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">Logga in</a>
+          <a v-else class="btn btn-primary" @click="logout">Logga ut</a>
+        </template>
       </div>
     </div>
   </nav>
@@ -65,6 +80,8 @@ const auth = useAuthStore()
 const router = useRouter()
 
 var isAuthenticated = computed(() => auth.token != "");
+
+var toggleCollapse = ref(false)
 
 // temporary hacky solution...
 setInterval(() => {
