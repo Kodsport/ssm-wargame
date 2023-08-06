@@ -51,8 +51,7 @@ type GetSelfResult struct {
 	SchoolName *string
 	ID         string
 	Email      string
-	FirstName  string
-	LastName   string
+	FullName   string
 	Role       string
 	SchoolID   *int
 }

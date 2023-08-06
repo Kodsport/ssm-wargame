@@ -286,6 +286,12 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengevie
 			res.Files[i] = marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(val)
 		}
 	}
+	if v.AuthorNames != nil {
+		res.AuthorNames = make([]string, len(v.AuthorNames))
+		for i, val := range v.AuthorNames {
+			res.AuthorNames[i] = val
+		}
+	}
 
 	return res
 }

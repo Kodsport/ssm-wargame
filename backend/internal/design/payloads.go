@@ -19,6 +19,10 @@ var CreateChallengePayload = Type("CreateChallengePayload", func() {
 		Format(FormatUUID)
 	})
 
+	Attribute("authors", ArrayOf(String), func() {
+		Example([]string{"1b678293-6737-4cc7-8eae-aa821100293f"})
+	})
+
 	Required("category_id")
 })
 

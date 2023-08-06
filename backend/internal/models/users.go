@@ -26,13 +26,12 @@ import (
 type User struct {
 	ID        string      `boil:"id" json:"id" toml:"id" yaml:"id"`
 	DiscordID null.String `boil:"discord_id" json:"discord_id,omitempty" toml:"discord_id" yaml:"discord_id,omitempty"`
-	FirstName null.String `boil:"first_name" json:"first_name,omitempty" toml:"first_name" yaml:"first_name,omitempty"`
-	LastName  null.String `boil:"last_name" json:"last_name,omitempty" toml:"last_name" yaml:"last_name,omitempty"`
 	Email     string      `boil:"email" json:"email" toml:"email" yaml:"email"`
 	Role      string      `boil:"role" json:"role" toml:"role" yaml:"role"`
 	SchoolID  null.Int    `boil:"school_id" json:"school_id,omitempty" toml:"school_id" yaml:"school_id,omitempty"`
 	CreatedAt time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	FullName  string      `boil:"full_name" json:"full_name" toml:"full_name" yaml:"full_name"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -41,45 +40,41 @@ type User struct {
 var UserColumns = struct {
 	ID        string
 	DiscordID string
-	FirstName string
-	LastName  string
 	Email     string
 	Role      string
 	SchoolID  string
 	CreatedAt string
 	UpdatedAt string
+	FullName  string
 }{
 	ID:        "id",
 	DiscordID: "discord_id",
-	FirstName: "first_name",
-	LastName:  "last_name",
 	Email:     "email",
 	Role:      "role",
 	SchoolID:  "school_id",
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
+	FullName:  "full_name",
 }
 
 var UserTableColumns = struct {
 	ID        string
 	DiscordID string
-	FirstName string
-	LastName  string
 	Email     string
 	Role      string
 	SchoolID  string
 	CreatedAt string
 	UpdatedAt string
+	FullName  string
 }{
 	ID:        "users.id",
 	DiscordID: "users.discord_id",
-	FirstName: "users.first_name",
-	LastName:  "users.last_name",
 	Email:     "users.email",
 	Role:      "users.role",
 	SchoolID:  "users.school_id",
 	CreatedAt: "users.created_at",
 	UpdatedAt: "users.updated_at",
+	FullName:  "users.full_name",
 }
 
 // Generated where
@@ -87,23 +82,21 @@ var UserTableColumns = struct {
 var UserWhere = struct {
 	ID        whereHelperstring
 	DiscordID whereHelpernull_String
-	FirstName whereHelpernull_String
-	LastName  whereHelpernull_String
 	Email     whereHelperstring
 	Role      whereHelperstring
 	SchoolID  whereHelpernull_Int
 	CreatedAt whereHelpertime_Time
 	UpdatedAt whereHelpernull_Time
+	FullName  whereHelperstring
 }{
 	ID:        whereHelperstring{field: "\"users\".\"id\""},
 	DiscordID: whereHelpernull_String{field: "\"users\".\"discord_id\""},
-	FirstName: whereHelpernull_String{field: "\"users\".\"first_name\""},
-	LastName:  whereHelpernull_String{field: "\"users\".\"last_name\""},
 	Email:     whereHelperstring{field: "\"users\".\"email\""},
 	Role:      whereHelperstring{field: "\"users\".\"role\""},
 	SchoolID:  whereHelpernull_Int{field: "\"users\".\"school_id\""},
 	CreatedAt: whereHelpertime_Time{field: "\"users\".\"created_at\""},
 	UpdatedAt: whereHelpernull_Time{field: "\"users\".\"updated_at\""},
+	FullName:  whereHelperstring{field: "\"users\".\"full_name\""},
 }
 
 // UserRels is where relationship names are stored.
@@ -164,9 +157,9 @@ func (r *userR) GetUserSolves() UserSolfSlice {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "discord_id", "first_name", "last_name", "email", "role", "school_id", "created_at", "updated_at"}
+	userAllColumns            = []string{"id", "discord_id", "email", "role", "school_id", "created_at", "updated_at", "full_name"}
 	userColumnsWithoutDefault = []string{"id", "email", "role"}
-	userColumnsWithDefault    = []string{"discord_id", "first_name", "last_name", "school_id", "created_at", "updated_at"}
+	userColumnsWithDefault    = []string{"discord_id", "school_id", "created_at", "updated_at", "full_name"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )

@@ -20,8 +20,7 @@ CREATE INDEX schools_name_idx ON schools ( name );
 CREATE TABLE users (
     id UUID PRIMARY KEY,
     discord_id TEXT UNIQUE,
-    first_name TEXT,
-    last_name TEXT,
+    full_name TEXT NOT NULL,
     email TEXT NOT NULL,
     role TEXT NOT NULL,
     school_id INT REFERENCES schools(id) ON DELETE SET NULL,

@@ -91,8 +91,9 @@ type SsmChallengeResponse struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	// whether the user has solved the challenge or not
-	Solved   *bool   `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
-	Category *string `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	Solved      *bool    `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
+	Category    *string  `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	AuthorNames []string `form:"author_names,omitempty" json:"author_names,omitempty" xml:"author_names,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.

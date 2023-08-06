@@ -28,6 +28,19 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label>Authors</label>
+                    <ul>
+                        <li v-for="(author, i) in form.authors">{{ users.byId(author).full_name }} ({{
+                            users.byId(author).email }}) <span @click="form.authors = form.authors.splice(i, i)">[x]</span>
+                        </li>
+                    </ul>
+                    <select ref="authSelect" class="form-control" @change="pushAuthor">
+                        <option value="" disabled selected>Choose Authors</option>
+                        <option v-for="user in users.users.filter(u => form.authors.indexOf(u.id) == -1)" :value="user.id">
+                            {{ user.email }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Publish immediately</label>
                     <input class="" type="checkbox" v-model="publishImm">
                 </div>
@@ -76,14 +89,17 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useChallengeStore } from '../../../store/admin/challenges'
+import { useUserStore } from '../../../store/admin/users';
 
 const http = useHttp()
 
 const store = useChallengeStore()
+const users = useUserStore()
 
 onMounted(() => {
     store.getChallenges()
     store.getCategories()
+    users.getUsers()
 })
 
 const challenges = computed(() => store.challenges)
@@ -96,6 +112,7 @@ const form = ref({
     description: "",
     publishAt: "",
     category_id: "",
+    authors: []
 })
 
 async function createChall() {
@@ -107,13 +124,16 @@ async function createChall() {
             score: form.value.score,
             description: form.value.description,
             category_id: form.value.category_id,
-            publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000
+            publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,
+            authors: form.value.authors
         }
     });
 
     store.getChallenges()
 }
 
-
-
+function pushAuthor(event) {
+    form.value.authors.push(event.target.value)
+    authSelect.value.value = ''
+}
 </script>

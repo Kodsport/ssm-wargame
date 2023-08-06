@@ -27,8 +27,9 @@ type CreateChallengeRequestBody struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	CategoryID string  `form:"category_id" json:"category_id" xml:"category_id"`
+	CtfEventID *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CategoryID string   `form:"category_id" json:"category_id" xml:"category_id"`
+	Authors    []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -45,8 +46,9 @@ type UpdateChallengeRequestBody struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	CategoryID string  `form:"category_id" json:"category_id" xml:"category_id"`
+	CtfEventID *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CategoryID string   `form:"category_id" json:"category_id" xml:"category_id"`
+	Authors    []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -840,6 +842,7 @@ type SsmAdminChallengeResponse struct {
 	Solves     *int                          `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
 	Flags      []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
 	CategoryID *string                       `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
+	Authors    []string                      `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -893,12 +896,11 @@ type MonthlyChallengeResponse struct {
 
 // SsmUserResponse is used to define fields on response body types.
 type SsmUserResponse struct {
-	ID        *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Email     *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-	FirstName *string `form:"first_name,omitempty" json:"first_name,omitempty" xml:"first_name,omitempty"`
-	LastName  *string `form:"last_name,omitempty" json:"last_name,omitempty" xml:"last_name,omitempty"`
-	Role      *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
-	SchoolID  *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Email    *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	FullName *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	Role     *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
+	SchoolID *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
 // CategoryResponse is used to define fields on response body types.
@@ -919,6 +921,12 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 		CtfEventID:  p.CtfEventID,
 		CategoryID:  p.CategoryID,
 	}
+	if p.Authors != nil {
+		body.Authors = make([]string, len(p.Authors))
+		for i, val := range p.Authors {
+			body.Authors[i] = val
+		}
+	}
 	return body
 }
 
@@ -933,6 +941,12 @@ func NewUpdateChallengeRequestBody(p *admin.UpdateChallengePayload) *UpdateChall
 		PublishAt:   p.PublishAt,
 		CtfEventID:  p.CtfEventID,
 		CategoryID:  p.CategoryID,
+	}
+	if p.Authors != nil {
+		body.Authors = make([]string, len(p.Authors))
+		for i, val := range p.Authors {
+			body.Authors[i] = val
+		}
 	}
 	return body
 }
@@ -2754,11 +2768,8 @@ func ValidateSsmUserResponse(body *SsmUserResponse) (err error) {
 	if body.Email == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
 	}
-	if body.FirstName == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("first_name", "body"))
-	}
-	if body.LastName == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("last_name", "body"))
+	if body.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "body"))
 	}
 	if body.Role == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("role", "body"))

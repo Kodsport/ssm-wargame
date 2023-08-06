@@ -24,8 +24,7 @@ type GetSelfResponseBody struct {
 	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
 	ID         *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Email      *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-	FirstName  *string `form:"first_name,omitempty" json:"first_name,omitempty" xml:"first_name,omitempty"`
-	LastName   *string `form:"last_name,omitempty" json:"last_name,omitempty" xml:"last_name,omitempty"`
+	FullName   *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
 	Role       *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
 	SchoolID   *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
@@ -57,8 +56,7 @@ func NewGetSelfResultOK(body *GetSelfResponseBody) *user.GetSelfResult {
 		SchoolName: body.SchoolName,
 		ID:         *body.ID,
 		Email:      *body.Email,
-		FirstName:  *body.FirstName,
-		LastName:   *body.LastName,
+		FullName:   *body.FullName,
 		Role:       *body.Role,
 		SchoolID:   body.SchoolID,
 	}
@@ -86,11 +84,8 @@ func ValidateGetSelfResponseBody(body *GetSelfResponseBody) (err error) {
 	if body.Email == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
 	}
-	if body.FirstName == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("first_name", "body"))
-	}
-	if body.LastName == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("last_name", "body"))
+	if body.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "body"))
 	}
 	if body.Role == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("role", "body"))

@@ -110,8 +110,9 @@ type SsmChallenge struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
 	// whether the user has solved the challenge or not
-	Solved   bool
-	Category string
+	Solved      bool
+	Category    string
+	AuthorNames []string
 }
 
 type ChallengeService struct {
@@ -265,6 +266,12 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 			res.Files[i] = transformChallengeviewsChallengeFilesViewToChallengeFiles(val)
 		}
 	}
+	if vres.AuthorNames != nil {
+		res.AuthorNames = make([]string, len(vres.AuthorNames))
+		for i, val := range vres.AuthorNames {
+			res.AuthorNames[i] = val
+		}
+	}
 	return res
 }
 
@@ -292,6 +299,12 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 		vres.Files = make([]*challengeviews.ChallengeFilesView, len(res.Files))
 		for i, val := range res.Files {
 			vres.Files[i] = transformChallengeFilesToChallengeviewsChallengeFilesView(val)
+		}
+	}
+	if res.AuthorNames != nil {
+		vres.AuthorNames = make([]string, len(res.AuthorNames))
+		for i, val := range res.AuthorNames {
+			vres.AuthorNames[i] = val
 		}
 	}
 	return vres

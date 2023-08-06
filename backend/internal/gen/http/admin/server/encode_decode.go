@@ -1321,6 +1321,12 @@ func marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(v *adminv
 			res.Flags[i] = marshalAdminviewsAdminChallengeFlagViewToAdminChallengeFlagResponse(val)
 		}
 	}
+	if v.Authors != nil {
+		res.Authors = make([]string, len(v.Authors))
+		for i, val := range v.Authors {
+			res.Authors[i] = val
+		}
+	}
 
 	return res
 }
@@ -1413,12 +1419,11 @@ func marshalAdminMonthlyChallengeToMonthlyChallengeResponse(v *admin.MonthlyChal
 // from a value of type *admin.SsmUser.
 func marshalAdminSsmUserToSsmUserResponse(v *admin.SsmUser) *SsmUserResponse {
 	res := &SsmUserResponse{
-		ID:        v.ID,
-		Email:     v.Email,
-		FirstName: v.FirstName,
-		LastName:  v.LastName,
-		Role:      v.Role,
-		SchoolID:  v.SchoolID,
+		ID:       v.ID,
+		Email:    v.Email,
+		FullName: v.FullName,
+		Role:     v.Role,
+		SchoolID: v.SchoolID,
 	}
 
 	return res

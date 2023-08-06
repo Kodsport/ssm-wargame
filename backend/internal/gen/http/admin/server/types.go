@@ -27,8 +27,9 @@ type CreateChallengeRequestBody struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	CategoryID *string `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
+	CtfEventID *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CategoryID *string  `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
+	Authors    []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -45,8 +46,9 @@ type UpdateChallengeRequestBody struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	CategoryID *string `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
+	CtfEventID *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CategoryID *string  `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
+	Authors    []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -840,6 +842,7 @@ type SsmAdminChallengeResponse struct {
 	Solves     int                           `form:"solves" json:"solves" xml:"solves"`
 	Flags      []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
 	CategoryID string                        `form:"category_id" json:"category_id" xml:"category_id"`
+	Authors    []string                      `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -893,12 +896,11 @@ type MonthlyChallengeResponse struct {
 
 // SsmUserResponse is used to define fields on response body types.
 type SsmUserResponse struct {
-	ID        string `form:"id" json:"id" xml:"id"`
-	Email     string `form:"email" json:"email" xml:"email"`
-	FirstName string `form:"first_name" json:"first_name" xml:"first_name"`
-	LastName  string `form:"last_name" json:"last_name" xml:"last_name"`
-	Role      string `form:"role" json:"role" xml:"role"`
-	SchoolID  *int   `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	ID       string `form:"id" json:"id" xml:"id"`
+	Email    string `form:"email" json:"email" xml:"email"`
+	FullName string `form:"full_name" json:"full_name" xml:"full_name"`
+	Role     string `form:"role" json:"role" xml:"role"`
+	SchoolID *int   `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
 // CategoryResponse is used to define fields on response body types.
@@ -1564,6 +1566,12 @@ func NewCreateChallengePayload(body *CreateChallengeRequestBody, token string) *
 		CtfEventID:  body.CtfEventID,
 		CategoryID:  *body.CategoryID,
 	}
+	if body.Authors != nil {
+		v.Authors = make([]string, len(body.Authors))
+		for i, val := range body.Authors {
+			v.Authors[i] = val
+		}
+	}
 	v.Token = token
 
 	return v
@@ -1580,6 +1588,12 @@ func NewUpdateChallengePayload(body *UpdateChallengeRequestBody, challengeID str
 		PublishAt:   body.PublishAt,
 		CtfEventID:  body.CtfEventID,
 		CategoryID:  *body.CategoryID,
+	}
+	if body.Authors != nil {
+		v.Authors = make([]string, len(body.Authors))
+		for i, val := range body.Authors {
+			v.Authors[i] = val
+		}
 	}
 	v.ChallengeID = challengeID
 	v.Token = token

@@ -90,8 +90,9 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.Select("(SELECT COUNT(1) FROM user_solves WHERE challenge_id = c.id) num_solves"),
 		qm.From("challenges c"),
 		qm.InnerJoin("categories ON categories.id = c.category_id"),
-		qm.Load(models.ChallengeRels.ChallengeFiles),
 		qm.Where("publish_at IS NULL OR publish_at < NOW()"),
+		qm.Load(models.ChallengeRels.ChallengeFiles),
+		qm.Load(models.ChallengeRels.Users),
 	)
 
 	if auth.IsAuthed(ctx) {
@@ -124,6 +125,11 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))
 		for i2, file := range chall.R.ChallengeFiles {
 			res[i].Files[i2] = s.signFile(ctx, file)
+		}
+
+		res[i].AuthorNames = make([]string, len(chall.R.Users))
+		for i2, v := range chall.R.Users {
+			res[i].AuthorNames[i2] = v.FullName
 		}
 	}
 

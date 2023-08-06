@@ -11,11 +11,8 @@ var User = ResultType("application/vnd.ssm.user", func() {
 	Attribute("email", String, func() {
 		Example("movitz.sunar@ssm.example")
 	})
-	Attribute("first_name", String, func() {
-		Example("Movitz")
-	})
-	Attribute("last_name", String, func() {
-		Example("Sunar")
+	Attribute("full_name", String, func() {
+		Example("Movitz Sunar")
 	})
 	Attribute("role", String, func() {
 		Example("admin")
@@ -23,7 +20,7 @@ var User = ResultType("application/vnd.ssm.user", func() {
 	Attribute("school_id", Int, func() {
 		Example(78433202)
 	})
-	Required("id", "email", "first_name", "last_name", "role")
+	Required("id", "email", "full_name", "role")
 })
 
 var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", func() {
@@ -47,6 +44,10 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("category_id", String, func() {
 		Example("12b8dc3a-10ae-49ed-9d69-5208ccd92ed1")
 		Format(FormatUUID)
+	})
+
+	Attribute("authors", ArrayOf(String), func() {
+		Example([]string{"dfaa1a6a-9051-4c52-9441-5d664536cf24"})
 	})
 
 	Required("files", "category_id")
@@ -74,6 +75,11 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Attribute("category", String, func() {
 		Example("Misc")
 	})
+
+	Attribute("author_names", ArrayOf(String), func() {
+		Example([]string{"Movitz Sunar", "Martin Wennberg"})
+	})
+
 	Required("solved", "category")
 })
 

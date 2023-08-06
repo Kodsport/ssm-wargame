@@ -102,6 +102,7 @@ type CreateChallengePayload struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
 	CategoryID string
+	Authors    []string
 	Token      string
 }
 
@@ -121,6 +122,7 @@ type UpdateChallengePayload struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
 	CategoryID string
+	Authors    []string
 	Token      string
 	// ID of a challenge
 	ChallengeID string
@@ -226,6 +228,7 @@ type SsmAdminChallenge struct {
 	Solves     int
 	Flags      []*AdminChallengeFlag
 	CategoryID string
+	Authors    []string
 }
 
 type ChallengeService struct {
@@ -271,12 +274,11 @@ type MonthlyChallenge struct {
 }
 
 type SsmUser struct {
-	ID        string
-	Email     string
-	FirstName string
-	LastName  string
-	Role      string
-	SchoolID  *int
+	ID       string
+	Email    string
+	FullName string
+	Role     string
+	SchoolID *int
 }
 
 type Category struct {
@@ -392,6 +394,12 @@ func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChall
 			res.Flags[i] = transformAdminviewsAdminChallengeFlagViewToAdminChallengeFlag(val)
 		}
 	}
+	if vres.Authors != nil {
+		res.Authors = make([]string, len(vres.Authors))
+		for i, val := range vres.Authors {
+			res.Authors[i] = val
+		}
+	}
 	return res
 }
 
@@ -424,6 +432,12 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 		vres.Flags = make([]*adminviews.AdminChallengeFlagView, len(res.Flags))
 		for i, val := range res.Flags {
 			vres.Flags[i] = transformAdminChallengeFlagToAdminviewsAdminChallengeFlagView(val)
+		}
+	}
+	if res.Authors != nil {
+		vres.Authors = make([]string, len(res.Authors))
+		for i, val := range res.Authors {
+			vres.Authors[i] = val
 		}
 	}
 	return vres

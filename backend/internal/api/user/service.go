@@ -29,12 +29,11 @@ func (s *service) GetSelf(ctx context.Context, req *spec.GetSelfPayload) (*spec.
 	user := auth.GetUser(ctx)
 
 	res := &spec.GetSelfResult{
-		ID:        user.ID,
-		Email:     user.Email,
-		FirstName: user.FirstName.String,
-		LastName:  user.LastName.String,
-		Role:      user.Role,
-		SchoolID:  user.SchoolID.Ptr(),
+		ID:       user.ID,
+		Email:    user.Email,
+		FullName: user.FullName,
+		Role:     user.Role,
+		SchoolID: user.SchoolID.Ptr(),
 	}
 
 	if user.SchoolID.Valid {

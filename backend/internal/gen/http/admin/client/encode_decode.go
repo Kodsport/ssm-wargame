@@ -1662,6 +1662,12 @@ func unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView(v *SsmA
 			res.Flags[i] = unmarshalAdminChallengeFlagResponseToAdminviewsAdminChallengeFlagView(val)
 		}
 	}
+	if v.Authors != nil {
+		res.Authors = make([]string, len(v.Authors))
+		for i, val := range v.Authors {
+			res.Authors[i] = val
+		}
+	}
 
 	return res
 }
@@ -1754,12 +1760,11 @@ func unmarshalMonthlyChallengeResponseToAdminMonthlyChallenge(v *MonthlyChalleng
 // from a value of type *SsmUserResponse.
 func unmarshalSsmUserResponseToAdminSsmUser(v *SsmUserResponse) *admin.SsmUser {
 	res := &admin.SsmUser{
-		ID:        *v.ID,
-		Email:     *v.Email,
-		FirstName: *v.FirstName,
-		LastName:  *v.LastName,
-		Role:      *v.Role,
-		SchoolID:  v.SchoolID,
+		ID:       *v.ID,
+		Email:    *v.Email,
+		FullName: *v.FullName,
+		Role:     *v.Role,
+		SchoolID: v.SchoolID,
 	}
 
 	return res

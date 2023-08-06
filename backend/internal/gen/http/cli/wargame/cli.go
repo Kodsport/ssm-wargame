@@ -594,6 +594,9 @@ CreateChallenge implements CreateChallenge.
 
 Example:
     %[1]s admin create-challenge --body '{
+      "authors": [
+         "1b678293-6737-4cc7-8eae-aa821100293f"
+      ],
       "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
@@ -615,6 +618,9 @@ UpdateChallenge implements UpdateChallenge.
 
 Example:
     %[1]s admin update-challenge --body '{
+      "authors": [
+         "1b678293-6737-4cc7-8eae-aa821100293f"
+      ],
       "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",

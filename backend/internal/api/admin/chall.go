@@ -30,6 +30,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.From("challenges c"),
 		qm.Load(models.ChallengeRels.Flags),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
+		qm.Load(models.ChallengeRels.Users),
 	).Bind(ctx, s.db, &challs)
 	if err != nil {
 		s.log.Warn("could not list challs", zap.Error(err), utils.C(ctx))
@@ -81,6 +82,11 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				Md5:      file.MD5,
 			}
 		}
+
+		res[i].Authors = make([]string, len(chall.R.Users))
+		for i2, v := range chall.R.Users {
+			res[i].Authors[i2] = v.ID
+		}
 	}
 
 	return res, nil
@@ -110,10 +116,23 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 		return err
 	}
 
+	for _, v := range req.Authors {
+		_, err = s.db.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, user_id) VALUES ($1,$2)", chall.ID, v)
+		if err != nil {
+			s.log.Error("could not insert author", zap.Error(err))
+		}
+	}
+
 	return nil
 }
 
 func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallengePayload) error {
+
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
 
 	var pubAt null.Time
 	if req.PublishAt != nil {
@@ -122,7 +141,7 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 
 	n, err := models.Challenges(
 		models.ChallengeWhere.ID.EQ(req.ChallengeID),
-	).UpdateAll(ctx, s.db, models.M{
+	).UpdateAll(ctx, tx, models.M{
 		models.ChallengeColumns.Title:       req.Title,
 		models.ChallengeColumns.Score:       req.Score,
 		models.ChallengeColumns.Slug:        req.Slug,
@@ -138,6 +157,27 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 	if n == 0 {
 		return spec.MakeNotFound(errors.New("chall not found"))
 	}
+
+	// hacky
+	_, err = tx.ExecContext(ctx, "DELETE FROM challenge_authors WHERE challenge_id = $1", req.ChallengeID)
+	if err != nil {
+		s.log.Error("could not delete old authors", zap.Error(err))
+		return err
+	}
+	for _, v := range req.Authors {
+		_, err = tx.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, user_id) VALUES ($1,$2)", req.ChallengeID, v)
+		if err != nil {
+			s.log.Error("could not insert new author", zap.Error(err))
+			return err
+		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		s.log.Error("could not commit", zap.Error(err))
+		return err
+	}
+
 	return nil
 }
 

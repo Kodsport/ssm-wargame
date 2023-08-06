@@ -43,6 +43,7 @@ type SsmAdminChallengeView struct {
 	Solves     *int
 	Flags      []*AdminChallengeFlagView
 	CategoryID *string
+	Authors    []string
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -83,6 +84,7 @@ var (
 			"solves",
 			"flags",
 			"category_id",
+			"authors",
 		},
 	}
 	// SsmAdminChallengeMap is a map indexing the attribute names of
@@ -100,6 +102,7 @@ var (
 			"solves",
 			"flags",
 			"category_id",
+			"authors",
 		},
 	}
 )

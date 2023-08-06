@@ -1,9 +1,9 @@
 <template>
-    <div v-if="chall" class="container">
+    <div v-if="chall && meta.solvers" class="container">
         <h1>{{ chall.title }}</h1>
         <div>
             <h1>Solves</h1>
-            <table v-if="meta.solvers" class="table">
+            <table v-if="meta.solvers.length" class="table">
                 <thead>
                     <th>User</th>
                     <th>Time</th>
@@ -16,8 +16,11 @@
                     </tr>
                 </tbody>
             </table>
+            <p v-else>No solves yet</p>
+
+
             <h1>Attempts</h1>
-            <table v-if="meta.submissions" class="table">
+            <table v-if="meta.submissions.length" class="table">
                 <thead>
                     <th>User</th>
                     <th>Input</th>
@@ -27,12 +30,14 @@
                     <tr v-for="solve in meta.submissions">
                         <td v-if="users.users.length">{{ users.byId(solve.user_id).email }}</td>
                         <td v-else>{{ users.id }}</td>
-                        <td :class="{ 'bg-success': solve.successful, 'bg-danger': !solve.successful }">{{ solve.input }}
+                        <td :class="{ 'bg-success': solve.successful, 'bg-danger': !solve.successful }">{{ solve.input
+                        }}
                         </td>
                         <td>{{ new Date(solve.submitted_at * 1000) }}</td>
                     </tr>
                 </tbody>
             </table>
+            <p v-else>No submissions yet</p>
         </div>
     </div>
 </template>

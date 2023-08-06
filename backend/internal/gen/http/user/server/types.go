@@ -24,8 +24,7 @@ type GetSelfResponseBody struct {
 	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
 	ID         string  `form:"id" json:"id" xml:"id"`
 	Email      string  `form:"email" json:"email" xml:"email"`
-	FirstName  string  `form:"first_name" json:"first_name" xml:"first_name"`
-	LastName   string  `form:"last_name" json:"last_name" xml:"last_name"`
+	FullName   string  `form:"full_name" json:"full_name" xml:"full_name"`
 	Role       string  `form:"role" json:"role" xml:"role"`
 	SchoolID   *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
@@ -48,8 +47,7 @@ func NewGetSelfResponseBody(res *user.GetSelfResult) *GetSelfResponseBody {
 		SchoolName: res.SchoolName,
 		ID:         res.ID,
 		Email:      res.Email,
-		FirstName:  res.FirstName,
-		LastName:   res.LastName,
+		FullName:   res.FullName,
 		Role:       res.Role,
 		SchoolID:   res.SchoolID,
 	}

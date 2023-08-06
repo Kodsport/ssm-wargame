@@ -21,19 +21,32 @@
                     <textarea class="form-control" placeholder="Enter description" v-model="form.description" />
                 </div>
                 <div class="form-group">
-                    <label>Publish immediately</label>
-                    <input class="" type="checkbox" v-model="publishImm">
-                </div>
-                <div class="form-group">
                     <label>Category</label>
                     <select class="form-control" name="" v-model="form.categoryId">
                         <option v-for="cat in challs.categories" :value="cat.id">{{ cat.name }}</option>
                     </select>
                 </div>
+                <div class="form-group pt-2">
+                    <label>Publish immediately</label>
+                    <input class="" type="checkbox" v-model="publishImm">
+                </div>
                 <div class="form-group" v-if="!publishImm">
                     <label>Publish at</label>
                     <input class="form-control" type="datetime-local" placeholder="Enter publish date"
                         v-model="form.publishAt" />
+                </div>
+                <div class="form-group pt-2">
+                    <label>Authors</label>
+                    <ul>
+                        <li v-for="(author, i) in form.authors">{{ users.byId(author).full_name }} ({{
+                            users.byId(author).email }}) <span @click="form.authors = form.authors.splice(i, i)">[x]</span>
+                        </li>
+                    </ul>
+                    <select ref="authSelect" class="form-control" @change="pushAuthor">
+                        <option value="" disabled selected>Choose Authors</option>
+                        <option v-for="user in users.users.filter(u => form.authors.indexOf(u.id) == -1)" :value="user.id">
+                            {{ user.email }}</option>
+                    </select>
                 </div>
                 <div class="form-group pt-2">
                     <button class="btn btn-primary" @click="updateChall">Update</button>
@@ -126,11 +139,15 @@
 <script setup lang="ts">
 import md5 from "js-md5";
 import { useChallengeStore } from "../../../../store/admin/challenges";
+import { useUserStore } from "../../../../store/admin/users";
 
 const http = useHttp()
 const route = useRoute()
 const router = useRouter()
 const challs = useChallengeStore()
+const users = useUserStore()
+
+const authSelect = ref(null)
 
 var hasFile = ref(false);
 var form = ref({
@@ -139,7 +156,8 @@ var form = ref({
     score: "",
     slug: "",
     categoryId: "",
-    publishAt: null
+    publishAt: null,
+    authors: []
 })
 
 const fileInput = ref(null)
@@ -154,11 +172,10 @@ const meta = ref(null)
 onMounted(async () => {
 
     challs.getCategories()
+    users.getUsers()
     if (!chall.value) {
         await challs.getChallenges()
     }
-
-
 
     form.value = {
         title: chall.value.title,
@@ -166,11 +183,11 @@ onMounted(async () => {
         score: chall.value.score,
         slug: chall.value.slug,
         categoryId: chall.value.category_id,
-        publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16) // hacky af,pls fix
+        publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16), // hacky af,pls fix
+        authors: chall.value.authors || []
+
     };
     publishImm.value = chall.value.publish_at == null
-
-
 
     meta.value = await http(`/admin/challenges/${chall.value.id}`)
 
@@ -217,12 +234,13 @@ async function updateChall() {
             score: form.value.score,
             slug: form.value.slug,
             category_id: form.value.categoryId,
-            publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000
+            publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,
+            authors: form.value.authors
         }
     });
 
     challs.getChallenges()
-    router.replace(`/admin/challenges/${form.value.slug}`)
+    router.replace(`/admin/challenges/${form.value.slug}/edit`)
 }
 
 function fileSize(size: number): String {
@@ -266,5 +284,10 @@ async function deleteFlag(flagId: string) {
     }
 }
 
+
+function pushAuthor(event) {
+    form.value.authors.push(event.target.value)
+    authSelect.value.value = ''
+}
 </script>
   

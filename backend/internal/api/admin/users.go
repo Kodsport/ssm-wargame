@@ -19,11 +19,10 @@ func (s *service) ListUsers(ctx context.Context, req *spec.ListUsersPayload) ([]
 	res := make([]*spec.SsmUser, len(users))
 	for i, u := range users {
 		res[i] = &spec.SsmUser{
-			ID:        u.ID,
-			Email:     u.Email,
-			FirstName: u.FirstName.String,
-			LastName:  u.LastName.String,
-			Role:      u.Role,
+			ID:       u.ID,
+			Email:    u.Email,
+			FullName: u.FullName,
+			Role:     u.Role,
 		}
 	}
 
