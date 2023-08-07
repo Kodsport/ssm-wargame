@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
@@ -31,12 +32,15 @@ func (s *service) authImport(ctx context.Context, token string) (*models.Challto
 	if err != nil {
 		return nil, err
 	}
-	t, err := models.FindChalltoolsImportToken(ctx, s.db, uuidID.String())
+	t, err := models.ChalltoolsImportTokens(
+		models.ChalltoolsImportTokenWhere.ID.EQ(uuidID.String()),
+		models.ChalltoolsImportTokenWhere.ExpiresAt.GT(time.Now()),
+	).One(ctx, s.db)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = bcrypt.CompareHashAndPassword([]byte(token), []byte(t.Token)); err != nil {
+	if err = bcrypt.CompareHashAndPassword([]byte(t.Token), []byte(token)); err != nil {
 		return nil, err
 	}
 	return t, nil
