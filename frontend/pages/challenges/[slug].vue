@@ -11,7 +11,6 @@
                 <div class="d-flex justify-content-center">
                     <div class="badge bg-primary me-1">{{ chall.category }}</div>
                     <span v-if="event" class="badge bg-primary">{{ event.name }}</span>
-
                 </div>
 
                 <h5>
