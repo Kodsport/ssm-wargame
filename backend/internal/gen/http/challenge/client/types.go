@@ -27,9 +27,22 @@ type ListChallengesResponseBody []*SsmChallengeResponse
 // endpoint HTTP response body.
 type ListEventsResponseBody []*CTFEventResponse
 
+// GetCurrentMonthlyChallengeResponseBody is the type of the "challenge"
+// service "GetCurrentMonthlyChallenge" endpoint HTTP response body.
+type GetCurrentMonthlyChallengeResponseBody struct {
+	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
+	// The month(s) that the challenge is assigned for
+	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
+	// Starting date of the monthly challenge
+	StartDate *int64 `form:"start_date,omitempty" json:"start_date,omitempty" xml:"start_date,omitempty"`
+	// Ending date of the monthly challenge
+	EndDate   *int64                    `form:"end_date,omitempty" json:"end_date,omitempty" xml:"end_date,omitempty"`
+	Challenge *SsmChallengeResponseBody `form:"challenge,omitempty" json:"challenge,omitempty" xml:"challenge,omitempty"`
+}
+
 // ListMonthlyChallengesResponseBody is the type of the "challenge" service
 // "ListMonthlyChallenges" endpoint HTTP response body.
-type ListMonthlyChallengesResponseBody []*SsmUsermonthlychallengesResponse
+type ListMonthlyChallengesResponseBody []*SsmUserMonthlyChallengeResponse
 
 // SchoolScoreboardResponseBody is the type of the "challenge" service
 // "SchoolScoreboard" endpoint HTTP response body.
@@ -132,9 +145,62 @@ type CTFEventResponse struct {
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 }
 
-// SsmUsermonthlychallengesResponse is used to define fields on response body
+// SsmChallengeResponseBody is used to define fields on response body types.
+type SsmChallengeResponseBody struct {
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// A unique string that can be used in URLs
+	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Title displayed to user
+	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	// A short text describing the challenge
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	// The number of points given to the solver
+	Score    *int                            `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	Services []*ChallengeServiceResponseBody `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files    []*ChallengeFilesResponseBody   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	// The numer of people who solved the challenge
+	Solves *int `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	// whether the user has solved the challenge or not
+	Solved       *bool                    `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
+	Category     *string                  `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	Authors      []*SsmUserResponseBody   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	OtherAuthors []string                 `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
+	Solvers      []*SsmSolverResponseBody `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+}
+
+// ChallengeServiceResponseBody is used to define fields on response body types.
+type ChallengeServiceResponseBody struct {
+	UserDisplay *string `form:"user_display,omitempty" json:"user_display,omitempty" xml:"user_display,omitempty"`
+	Hyperlink   *bool   `form:"hyperlink,omitempty" json:"hyperlink,omitempty" xml:"hyperlink,omitempty"`
+}
+
+// ChallengeFilesResponseBody is used to define fields on response body types.
+type ChallengeFilesResponseBody struct {
+	Filename *string `form:"filename,omitempty" json:"filename,omitempty" xml:"filename,omitempty"`
+	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
+}
+
+// SsmUserResponseBody is used to define fields on response body types.
+type SsmUserResponseBody struct {
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Email    *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	FullName *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	Role     *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
+	SchoolID *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+}
+
+// SsmSolverResponseBody is used to define fields on response body types.
+type SsmSolverResponseBody struct {
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	FullName *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	SolvedAt *int64  `form:"solved_at,omitempty" json:"solved_at,omitempty" xml:"solved_at,omitempty"`
+}
+
+// SsmUserMonthlyChallengeResponse is used to define fields on response body
 // types.
-type SsmUsermonthlychallengesResponse struct {
+type SsmUserMonthlyChallengeResponse struct {
 	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
 	// The month(s) that the challenge is assigned for
 	DisplayMonth *string `form:"display_month,omitempty" json:"display_month,omitempty" xml:"display_month,omitempty"`
@@ -183,13 +249,28 @@ func NewListEventsCTFEventOK(body []*CTFEventResponse) []*challenge.CTFEvent {
 	return v
 }
 
-// NewListMonthlyChallengesSsmUsermonthlychallengesCollectionOK builds a
+// NewGetCurrentMonthlyChallengeSsmUserMonthlyChallengeOK builds a "challenge"
+// service "GetCurrentMonthlyChallenge" endpoint result from a HTTP "OK"
+// response.
+func NewGetCurrentMonthlyChallengeSsmUserMonthlyChallengeOK(body *GetCurrentMonthlyChallengeResponseBody) *challengeviews.SsmUserMonthlyChallengeView {
+	v := &challengeviews.SsmUserMonthlyChallengeView{
+		ChallengeID:  body.ChallengeID,
+		DisplayMonth: body.DisplayMonth,
+		StartDate:    body.StartDate,
+		EndDate:      body.EndDate,
+	}
+	v.Challenge = unmarshalSsmChallengeResponseBodyToChallengeviewsSsmChallengeView(body.Challenge)
+
+	return v
+}
+
+// NewListMonthlyChallengesSsmUserMonthlyChallengeCollectionOK builds a
 // "challenge" service "ListMonthlyChallenges" endpoint result from a HTTP "OK"
 // response.
-func NewListMonthlyChallengesSsmUsermonthlychallengesCollectionOK(body ListMonthlyChallengesResponseBody) challengeviews.SsmUsermonthlychallengesCollectionView {
-	v := make([]*challengeviews.SsmUsermonthlychallengesView, len(body))
+func NewListMonthlyChallengesSsmUserMonthlyChallengeCollectionOK(body ListMonthlyChallengesResponseBody) challengeviews.SsmUserMonthlyChallengeCollectionView {
+	v := make([]*challengeviews.SsmUserMonthlyChallengeView, len(body))
 	for i, val := range body {
-		v[i] = unmarshalSsmUsermonthlychallengesResponseToChallengeviewsSsmUsermonthlychallengesView(val)
+		v[i] = unmarshalSsmUserMonthlyChallengeResponseToChallengeviewsSsmUserMonthlyChallengeView(val)
 	}
 
 	return v
@@ -415,9 +496,130 @@ func ValidateCTFEventResponse(body *CTFEventResponse) (err error) {
 	return
 }
 
-// ValidateSsmUsermonthlychallengesResponse runs the validations defined on
-// SsmUsermonthlychallengesResponse
-func ValidateSsmUsermonthlychallengesResponse(body *SsmUsermonthlychallengesResponse) (err error) {
+// ValidateSsmChallengeResponseBody runs the validations defined on
+// SsmChallengeResponseBody
+func ValidateSsmChallengeResponseBody(body *SsmChallengeResponseBody) (err error) {
+	if body.Solved == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved", "body"))
+	}
+	if body.Category == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("category", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	}
+	for _, e := range body.Services {
+		if e != nil {
+			if err2 := ValidateChallengeServiceResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range body.Files {
+		if e != nil {
+			if err2 := ValidateChallengeFilesResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	if body.CtfEventID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
+	}
+	for _, e := range body.Authors {
+		if e != nil {
+			if err2 := ValidateSsmUserResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range body.Solvers {
+		if e != nil {
+			if err2 := ValidateSsmSolverResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// ValidateChallengeServiceResponseBody runs the validations defined on
+// ChallengeServiceResponseBody
+func ValidateChallengeServiceResponseBody(body *ChallengeServiceResponseBody) (err error) {
+	if body.UserDisplay == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_display", "body"))
+	}
+	if body.Hyperlink == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("hyperlink", "body"))
+	}
+	return
+}
+
+// ValidateChallengeFilesResponseBody runs the validations defined on
+// ChallengeFilesResponseBody
+func ValidateChallengeFilesResponseBody(body *ChallengeFilesResponseBody) (err error) {
+	if body.Filename == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("filename", "body"))
+	}
+	if body.URL == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
+	}
+	return
+}
+
+// ValidateSsmUserResponseBody runs the validations defined on
+// SsmUserResponseBody
+func ValidateSsmUserResponseBody(body *SsmUserResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Email == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("email", "body"))
+	}
+	if body.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "body"))
+	}
+	if body.Role == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("role", "body"))
+	}
+	return
+}
+
+// ValidateSsmSolverResponseBody runs the validations defined on
+// SsmSolverResponseBody
+func ValidateSsmSolverResponseBody(body *SsmSolverResponseBody) (err error) {
+	if body.SolvedAt == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved_at", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "body"))
+	}
+	return
+}
+
+// ValidateSsmUserMonthlyChallengeResponse runs the validations defined on
+// SsmUserMonthlyChallengeResponse
+func ValidateSsmUserMonthlyChallengeResponse(body *SsmUserMonthlyChallengeResponse) (err error) {
 	if body.Challenge == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("challenge", "body"))
 	}

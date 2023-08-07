@@ -179,6 +179,84 @@ func DecodeListEventsResponse(decoder func(*http.Response) goahttp.Decoder, rest
 	}
 }
 
+// BuildGetCurrentMonthlyChallengeRequest instantiates a HTTP request object
+// with method and path set to call the "challenge" service
+// "GetCurrentMonthlyChallenge" endpoint
+func (c *Client) BuildGetCurrentMonthlyChallengeRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetCurrentMonthlyChallengeChallengePath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "GetCurrentMonthlyChallenge", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeGetCurrentMonthlyChallengeRequest returns an encoder for requests sent
+// to the challenge GetCurrentMonthlyChallenge server.
+func EncodeGetCurrentMonthlyChallengeRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.GetCurrentMonthlyChallengePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "GetCurrentMonthlyChallenge", "*challenge.GetCurrentMonthlyChallengePayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeGetCurrentMonthlyChallengeResponse returns a decoder for responses
+// returned by the challenge GetCurrentMonthlyChallenge endpoint. restoreBody
+// controls whether the response body should be restored after having been read.
+func DecodeGetCurrentMonthlyChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body GetCurrentMonthlyChallengeResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "GetCurrentMonthlyChallenge", err)
+			}
+			p := NewGetCurrentMonthlyChallengeSsmUserMonthlyChallengeOK(&body)
+			view := "default"
+			vres := &challengeviews.SsmUserMonthlyChallenge{Projected: p, View: view}
+			if err = challengeviews.ValidateSsmUserMonthlyChallenge(vres); err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "GetCurrentMonthlyChallenge", err)
+			}
+			res := challenge.NewSsmUserMonthlyChallenge(vres)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "GetCurrentMonthlyChallenge", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildListMonthlyChallengesRequest instantiates a HTTP request object with
 // method and path set to call the "challenge" service "ListMonthlyChallenges"
 // endpoint
@@ -242,13 +320,13 @@ func DecodeListMonthlyChallengesResponse(decoder func(*http.Response) goahttp.De
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("challenge", "ListMonthlyChallenges", err)
 			}
-			p := NewListMonthlyChallengesSsmUsermonthlychallengesCollectionOK(body)
+			p := NewListMonthlyChallengesSsmUserMonthlyChallengeCollectionOK(body)
 			view := "default"
-			vres := challengeviews.SsmUsermonthlychallengesCollection{Projected: p, View: view}
-			if err = challengeviews.ValidateSsmUsermonthlychallengesCollection(vres); err != nil {
+			vres := challengeviews.SsmUserMonthlyChallengeCollection{Projected: p, View: view}
+			if err = challengeviews.ValidateSsmUserMonthlyChallengeCollection(vres); err != nil {
 				return nil, goahttp.ErrValidationError("challenge", "ListMonthlyChallenges", err)
 			}
-			res := challenge.NewSsmUsermonthlychallengesCollection(vres)
+			res := challenge.NewSsmUserMonthlyChallengeCollection(vres)
 			return res, nil
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
@@ -564,11 +642,123 @@ func unmarshalCTFEventResponseToChallengeCTFEvent(v *CTFEventResponse) *challeng
 	return res
 }
 
-// unmarshalSsmUsermonthlychallengesResponseToChallengeviewsSsmUsermonthlychallengesView
-// builds a value of type *challengeviews.SsmUsermonthlychallengesView from a
-// value of type *SsmUsermonthlychallengesResponse.
-func unmarshalSsmUsermonthlychallengesResponseToChallengeviewsSsmUsermonthlychallengesView(v *SsmUsermonthlychallengesResponse) *challengeviews.SsmUsermonthlychallengesView {
-	res := &challengeviews.SsmUsermonthlychallengesView{
+// unmarshalSsmChallengeResponseBodyToChallengeviewsSsmChallengeView builds a
+// value of type *challengeviews.SsmChallengeView from a value of type
+// *SsmChallengeResponseBody.
+func unmarshalSsmChallengeResponseBodyToChallengeviewsSsmChallengeView(v *SsmChallengeResponseBody) *challengeviews.SsmChallengeView {
+	res := &challengeviews.SsmChallengeView{
+		ID:          v.ID,
+		Slug:        v.Slug,
+		Title:       v.Title,
+		Description: v.Description,
+		Score:       v.Score,
+		Solves:      v.Solves,
+		CtfEventID:  v.CtfEventID,
+		Solved:      v.Solved,
+		Category:    v.Category,
+	}
+	if v.Services != nil {
+		res.Services = make([]*challengeviews.ChallengeServiceView, len(v.Services))
+		for i, val := range v.Services {
+			res.Services[i] = unmarshalChallengeServiceResponseBodyToChallengeviewsChallengeServiceView(val)
+		}
+	}
+	if v.Files != nil {
+		res.Files = make([]*challengeviews.ChallengeFilesView, len(v.Files))
+		for i, val := range v.Files {
+			res.Files[i] = unmarshalChallengeFilesResponseBodyToChallengeviewsChallengeFilesView(val)
+		}
+	}
+	if v.Authors != nil {
+		res.Authors = make([]*challengeviews.SsmUserView, len(v.Authors))
+		for i, val := range v.Authors {
+			res.Authors[i] = unmarshalSsmUserResponseBodyToChallengeviewsSsmUserView(val)
+		}
+	}
+	if v.OtherAuthors != nil {
+		res.OtherAuthors = make([]string, len(v.OtherAuthors))
+		for i, val := range v.OtherAuthors {
+			res.OtherAuthors[i] = val
+		}
+	}
+	if v.Solvers != nil {
+		res.Solvers = make([]*challengeviews.SsmSolverView, len(v.Solvers))
+		for i, val := range v.Solvers {
+			res.Solvers[i] = unmarshalSsmSolverResponseBodyToChallengeviewsSsmSolverView(val)
+		}
+	}
+
+	return res
+}
+
+// unmarshalChallengeServiceResponseBodyToChallengeviewsChallengeServiceView
+// builds a value of type *challengeviews.ChallengeServiceView from a value of
+// type *ChallengeServiceResponseBody.
+func unmarshalChallengeServiceResponseBodyToChallengeviewsChallengeServiceView(v *ChallengeServiceResponseBody) *challengeviews.ChallengeServiceView {
+	if v == nil {
+		return nil
+	}
+	res := &challengeviews.ChallengeServiceView{
+		UserDisplay: v.UserDisplay,
+		Hyperlink:   v.Hyperlink,
+	}
+
+	return res
+}
+
+// unmarshalChallengeFilesResponseBodyToChallengeviewsChallengeFilesView builds
+// a value of type *challengeviews.ChallengeFilesView from a value of type
+// *ChallengeFilesResponseBody.
+func unmarshalChallengeFilesResponseBodyToChallengeviewsChallengeFilesView(v *ChallengeFilesResponseBody) *challengeviews.ChallengeFilesView {
+	if v == nil {
+		return nil
+	}
+	res := &challengeviews.ChallengeFilesView{
+		Filename: v.Filename,
+		URL:      v.URL,
+	}
+
+	return res
+}
+
+// unmarshalSsmUserResponseBodyToChallengeviewsSsmUserView builds a value of
+// type *challengeviews.SsmUserView from a value of type *SsmUserResponseBody.
+func unmarshalSsmUserResponseBodyToChallengeviewsSsmUserView(v *SsmUserResponseBody) *challengeviews.SsmUserView {
+	if v == nil {
+		return nil
+	}
+	res := &challengeviews.SsmUserView{
+		ID:       v.ID,
+		Email:    v.Email,
+		FullName: v.FullName,
+		Role:     v.Role,
+		SchoolID: v.SchoolID,
+	}
+
+	return res
+}
+
+// unmarshalSsmSolverResponseBodyToChallengeviewsSsmSolverView builds a value
+// of type *challengeviews.SsmSolverView from a value of type
+// *SsmSolverResponseBody.
+func unmarshalSsmSolverResponseBodyToChallengeviewsSsmSolverView(v *SsmSolverResponseBody) *challengeviews.SsmSolverView {
+	if v == nil {
+		return nil
+	}
+	res := &challengeviews.SsmSolverView{
+		ID:       v.ID,
+		FullName: v.FullName,
+		SolvedAt: v.SolvedAt,
+	}
+
+	return res
+}
+
+// unmarshalSsmUserMonthlyChallengeResponseToChallengeviewsSsmUserMonthlyChallengeView
+// builds a value of type *challengeviews.SsmUserMonthlyChallengeView from a
+// value of type *SsmUserMonthlyChallengeResponse.
+func unmarshalSsmUserMonthlyChallengeResponseToChallengeviewsSsmUserMonthlyChallengeView(v *SsmUserMonthlyChallengeResponse) *challengeviews.SsmUserMonthlyChallengeView {
+	res := &challengeviews.SsmUserMonthlyChallengeView{
 		ChallengeID:  v.ChallengeID,
 		DisplayMonth: v.DisplayMonth,
 		StartDate:    v.StartDate,

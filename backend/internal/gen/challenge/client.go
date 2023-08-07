@@ -15,21 +15,23 @@ import (
 
 // Client is the "challenge" service client.
 type Client struct {
-	ListChallengesEndpoint        goa.Endpoint
-	ListEventsEndpoint            goa.Endpoint
-	ListMonthlyChallengesEndpoint goa.Endpoint
-	SubmitFlagEndpoint            goa.Endpoint
-	SchoolScoreboardEndpoint      goa.Endpoint
+	ListChallengesEndpoint             goa.Endpoint
+	ListEventsEndpoint                 goa.Endpoint
+	GetCurrentMonthlyChallengeEndpoint goa.Endpoint
+	ListMonthlyChallengesEndpoint      goa.Endpoint
+	SubmitFlagEndpoint                 goa.Endpoint
+	SchoolScoreboardEndpoint           goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges, listEvents, listMonthlyChallenges, submitFlag, schoolScoreboard goa.Endpoint) *Client {
+func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard goa.Endpoint) *Client {
 	return &Client{
-		ListChallengesEndpoint:        listChallenges,
-		ListEventsEndpoint:            listEvents,
-		ListMonthlyChallengesEndpoint: listMonthlyChallenges,
-		SubmitFlagEndpoint:            submitFlag,
-		SchoolScoreboardEndpoint:      schoolScoreboard,
+		ListChallengesEndpoint:             listChallenges,
+		ListEventsEndpoint:                 listEvents,
+		GetCurrentMonthlyChallengeEndpoint: getCurrentMonthlyChallenge,
+		ListMonthlyChallengesEndpoint:      listMonthlyChallenges,
+		SubmitFlagEndpoint:                 submitFlag,
+		SchoolScoreboardEndpoint:           schoolScoreboard,
 	}
 }
 
@@ -54,15 +56,26 @@ func (c *Client) ListEvents(ctx context.Context, p *ListEventsPayload) (res []*C
 	return ires.([]*CTFEvent), nil
 }
 
+// GetCurrentMonthlyChallenge calls the "GetCurrentMonthlyChallenge" endpoint
+// of the "challenge" service.
+func (c *Client) GetCurrentMonthlyChallenge(ctx context.Context, p *GetCurrentMonthlyChallengePayload) (res *SsmUserMonthlyChallenge, err error) {
+	var ires interface{}
+	ires, err = c.GetCurrentMonthlyChallengeEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*SsmUserMonthlyChallenge), nil
+}
+
 // ListMonthlyChallenges calls the "ListMonthlyChallenges" endpoint of the
 // "challenge" service.
-func (c *Client) ListMonthlyChallenges(ctx context.Context, p *ListMonthlyChallengesPayload) (res SsmUsermonthlychallengesCollection, err error) {
+func (c *Client) ListMonthlyChallenges(ctx context.Context, p *ListMonthlyChallengesPayload) (res SsmUserMonthlyChallengeCollection, err error) {
 	var ires interface{}
 	ires, err = c.ListMonthlyChallengesEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(SsmUsermonthlychallengesCollection), nil
+	return ires.(SsmUserMonthlyChallengeCollection), nil
 }
 
 // SubmitFlag calls the "SubmitFlag" endpoint of the "challenge" service.

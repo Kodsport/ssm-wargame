@@ -46,6 +46,21 @@ func BuildListEventsPayload(challengeListEventsToken string) (*challenge.ListEve
 	return v, nil
 }
 
+// BuildGetCurrentMonthlyChallengePayload builds the payload for the challenge
+// GetCurrentMonthlyChallenge endpoint from CLI flags.
+func BuildGetCurrentMonthlyChallengePayload(challengeGetCurrentMonthlyChallengeToken string) (*challenge.GetCurrentMonthlyChallengePayload, error) {
+	var token *string
+	{
+		if challengeGetCurrentMonthlyChallengeToken != "" {
+			token = &challengeGetCurrentMonthlyChallengeToken
+		}
+	}
+	v := &challenge.GetCurrentMonthlyChallengePayload{}
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildListMonthlyChallengesPayload builds the payload for the challenge
 // ListMonthlyChallenges endpoint from CLI flags.
 func BuildListMonthlyChallengesPayload(challengeListMonthlyChallengesToken string) (*challenge.ListMonthlyChallengesPayload, error) {

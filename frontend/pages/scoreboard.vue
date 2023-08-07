@@ -24,6 +24,10 @@ const http = useHttp()
 
 var scoreboard = ref([])
 
+useHead({
+    title: 'SSM - Poängtavla'
+})
+
 onMounted(async () => {
     const resp = await http('/scoreboard')
     scoreboard.value = resp.scores

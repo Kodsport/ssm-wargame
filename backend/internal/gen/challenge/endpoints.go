@@ -16,11 +16,12 @@ import (
 
 // Endpoints wraps the "challenge" service endpoints.
 type Endpoints struct {
-	ListChallenges        goa.Endpoint
-	ListEvents            goa.Endpoint
-	ListMonthlyChallenges goa.Endpoint
-	SubmitFlag            goa.Endpoint
-	SchoolScoreboard      goa.Endpoint
+	ListChallenges             goa.Endpoint
+	ListEvents                 goa.Endpoint
+	GetCurrentMonthlyChallenge goa.Endpoint
+	ListMonthlyChallenges      goa.Endpoint
+	SubmitFlag                 goa.Endpoint
+	SchoolScoreboard           goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "challenge" service with endpoints.
@@ -28,11 +29,12 @@ func NewEndpoints(s Service) *Endpoints {
 	// Casting service to Auther interface
 	a := s.(Auther)
 	return &Endpoints{
-		ListChallenges:        NewListChallengesEndpoint(s, a.JWTAuth),
-		ListEvents:            NewListEventsEndpoint(s, a.JWTAuth),
-		ListMonthlyChallenges: NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
-		SubmitFlag:            NewSubmitFlagEndpoint(s, a.JWTAuth),
-		SchoolScoreboard:      NewSchoolScoreboardEndpoint(s, a.JWTAuth),
+		ListChallenges:             NewListChallengesEndpoint(s, a.JWTAuth),
+		ListEvents:                 NewListEventsEndpoint(s, a.JWTAuth),
+		GetCurrentMonthlyChallenge: NewGetCurrentMonthlyChallengeEndpoint(s, a.JWTAuth),
+		ListMonthlyChallenges:      NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
+		SubmitFlag:                 NewSubmitFlagEndpoint(s, a.JWTAuth),
+		SchoolScoreboard:           NewSchoolScoreboardEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -40,6 +42,7 @@ func NewEndpoints(s Service) *Endpoints {
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListChallenges = m(e.ListChallenges)
 	e.ListEvents = m(e.ListEvents)
+	e.GetCurrentMonthlyChallenge = m(e.GetCurrentMonthlyChallenge)
 	e.ListMonthlyChallenges = m(e.ListMonthlyChallenges)
 	e.SubmitFlag = m(e.SubmitFlag)
 	e.SchoolScoreboard = m(e.SchoolScoreboard)
@@ -96,6 +99,34 @@ func NewListEventsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoi
 	}
 }
 
+// NewGetCurrentMonthlyChallengeEndpoint returns an endpoint function that
+// calls the method "GetCurrentMonthlyChallenge" of service "challenge".
+func NewGetCurrentMonthlyChallengeEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*GetCurrentMonthlyChallengePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		res, err := s.GetCurrentMonthlyChallenge(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedSsmUserMonthlyChallenge(res, "default")
+		return vres, nil
+	}
+}
+
 // NewListMonthlyChallengesEndpoint returns an endpoint function that calls the
 // method "ListMonthlyChallenges" of service "challenge".
 func NewListMonthlyChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
@@ -119,7 +150,7 @@ func NewListMonthlyChallengesEndpoint(s Service, authJWTFn security.AuthJWTFunc)
 		if err != nil {
 			return nil, err
 		}
-		vres := NewViewedSsmUsermonthlychallengesCollection(res, "default")
+		vres := NewViewedSsmUserMonthlyChallengeCollection(res, "default")
 		return vres, nil
 	}
 }

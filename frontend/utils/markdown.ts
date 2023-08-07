@@ -1,5 +1,5 @@
-import * as DOMPurify from 'dompurify';
-import * as marked from 'marked'
+import { sanitize, isSupported } from "isomorphic-dompurify";
+import * as marked from 'marked';
 
 marked.use({
     mangle: false,
@@ -7,5 +7,6 @@ marked.use({
 });
 
 export default function renderMarkdown(text: string) {
-    return DOMPurify.default.sanitize(marked.parse(text))
+    const md = marked.parse(text)
+    return isSupported ? sanitize(md) : md;
 }

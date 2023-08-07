@@ -17,6 +17,7 @@ require (
 	github.com/volatiletech/strmangle v0.0.5
 	go.uber.org/zap v1.17.0
 	goa.design/goa/v3 v3.5.2
+	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
 )
 
@@ -39,7 +40,6 @@ require (
 	github.com/zach-klippenstein/goregen v0.0.0-20160303162051-795b5e3961ea // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/net v0.0.0-20220722155237-a158d28d115b // indirect
 	golang.org/x/sys v0.5.0 // indirect

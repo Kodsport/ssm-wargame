@@ -57,6 +57,10 @@
 import { useChallengeStore } from '../../store/challenges'
 import { storeToRefs } from "pinia";
 
+useHead({
+    title: 'SSM - Utmaningar'
+})
+
 const challs = useChallengeStore()
 const route = useRoute()
 const router = useRouter()

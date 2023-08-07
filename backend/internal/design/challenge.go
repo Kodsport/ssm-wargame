@@ -26,6 +26,16 @@ var _ = Service("challenge", func() {
 			Response(StatusOK)
 		})
 	})
+	Method("GetCurrentMonthlyChallenge", func() {
+		Result(UserMonthlyChallenge)
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+		})
+		HTTP(func() {
+			GET("/current_monthly_challenge")
+			Response(StatusOK)
+		})
+	})
 	Method("ListMonthlyChallenges", func() {
 		Result(CollectionOf(UserMonthlyChallenge))
 		Payload(func() {

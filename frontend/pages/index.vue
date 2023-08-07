@@ -31,9 +31,9 @@
                     mailinglistan!</a>
             </div>
 
-            <div v-if="monthly" class="col pt-3 pt-md-0">
-                <h1 class="text-primary">Månadens utmaning - {{ monthly.display_month }}</h1>
-                <MontlyChallenge :chall="monthly.challenge"></MontlyChallenge>
+            <div v-if="monthly.status.value == 'success'" class="col pt-3 pt-md-0">
+                <h1 class="text-primary">Månadens utmaning - {{ monthly.data.value.display_month }}</h1>
+                <MontlyChallenge :chall="monthly.data.value.challenge" />
             </div>
         </div>
     </div>
@@ -42,13 +42,19 @@
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges'
 
+const http = useHttp()
+
+useHead({
+    title: 'Säkerhets-SM'
+})
+
 const challs = useChallengeStore()
 
-const monthly = computed(() => challs.getCurrentMonthly)
+const monthly = await useAsyncData('monthly', () => http('/current_monthly_challenge'))
 
 onMounted(() => {
     challs.getChallenges()
-    challs.getMonthlies()
+    monthly.refresh()
 })
 
 

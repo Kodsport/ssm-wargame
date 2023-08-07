@@ -20,11 +20,20 @@ type SsmChallengeCollection struct {
 	View string
 }
 
-// SsmUsermonthlychallengesCollection is the viewed result type that is
-// projected based on a view.
-type SsmUsermonthlychallengesCollection struct {
+// SsmUserMonthlyChallenge is the viewed result type that is projected based on
+// a view.
+type SsmUserMonthlyChallenge struct {
 	// Type to project
-	Projected SsmUsermonthlychallengesCollectionView
+	Projected *SsmUserMonthlyChallengeView
+	// View to render
+	View string
+}
+
+// SsmUserMonthlyChallengeCollection is the viewed result type that is
+// projected based on a view.
+type SsmUserMonthlyChallengeCollection struct {
+	// Type to project
+	Projected SsmUserMonthlyChallengeCollectionView
 	// View to render
 	View string
 }
@@ -95,13 +104,9 @@ type SsmSolverView struct {
 	SolvedAt *int64
 }
 
-// SsmUsermonthlychallengesCollectionView is a type that runs validations on a
-// projected type.
-type SsmUsermonthlychallengesCollectionView []*SsmUsermonthlychallengesView
-
-// SsmUsermonthlychallengesView is a type that runs validations on a projected
+// SsmUserMonthlyChallengeView is a type that runs validations on a projected
 // type.
-type SsmUsermonthlychallengesView struct {
+type SsmUserMonthlyChallengeView struct {
 	ChallengeID *string
 	// The month(s) that the challenge is assigned for
 	DisplayMonth *string
@@ -111,6 +116,10 @@ type SsmUsermonthlychallengesView struct {
 	EndDate   *int64
 	Challenge *SsmChallengeView
 }
+
+// SsmUserMonthlyChallengeCollectionView is a type that runs validations on a
+// projected type.
+type SsmUserMonthlyChallengeCollectionView []*SsmUserMonthlyChallengeView
 
 // SsmShoolscoreboardView is a type that runs validations on a projected type.
 type SsmShoolscoreboardView struct {
@@ -145,9 +154,20 @@ var (
 			"solvers",
 		},
 	}
-	// SsmUsermonthlychallengesCollectionMap is a map indexing the attribute names
-	// of SsmUsermonthlychallengesCollection by view name.
-	SsmUsermonthlychallengesCollectionMap = map[string][]string{
+	// SsmUserMonthlyChallengeMap is a map indexing the attribute names of
+	// SsmUserMonthlyChallenge by view name.
+	SsmUserMonthlyChallengeMap = map[string][]string{
+		"default": {
+			"challenge_id",
+			"display_month",
+			"start_date",
+			"end_date",
+			"challenge",
+		},
+	}
+	// SsmUserMonthlyChallengeCollectionMap is a map indexing the attribute names
+	// of SsmUserMonthlyChallengeCollection by view name.
+	SsmUserMonthlyChallengeCollectionMap = map[string][]string{
 		"default": {
 			"challenge_id",
 			"display_month",
@@ -201,17 +221,6 @@ var (
 			"solved_at",
 		},
 	}
-	// SsmUsermonthlychallengesMap is a map indexing the attribute names of
-	// SsmUsermonthlychallenges by view name.
-	SsmUsermonthlychallengesMap = map[string][]string{
-		"default": {
-			"challenge_id",
-			"display_month",
-			"start_date",
-			"end_date",
-			"challenge",
-		},
-	}
 )
 
 // ValidateSsmChallengeCollection runs the validations defined on the viewed
@@ -226,12 +235,24 @@ func ValidateSsmChallengeCollection(result SsmChallengeCollection) (err error) {
 	return
 }
 
-// ValidateSsmUsermonthlychallengesCollection runs the validations defined on
-// the viewed result type SsmUsermonthlychallengesCollection.
-func ValidateSsmUsermonthlychallengesCollection(result SsmUsermonthlychallengesCollection) (err error) {
+// ValidateSsmUserMonthlyChallenge runs the validations defined on the viewed
+// result type SsmUserMonthlyChallenge.
+func ValidateSsmUserMonthlyChallenge(result *SsmUserMonthlyChallenge) (err error) {
 	switch result.View {
 	case "default", "":
-		err = ValidateSsmUsermonthlychallengesCollectionView(result.Projected)
+		err = ValidateSsmUserMonthlyChallengeView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
+// ValidateSsmUserMonthlyChallengeCollection runs the validations defined on
+// the viewed result type SsmUserMonthlyChallengeCollection.
+func ValidateSsmUserMonthlyChallengeCollection(result SsmUserMonthlyChallengeCollection) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmUserMonthlyChallengeCollectionView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
@@ -382,20 +403,9 @@ func ValidateSsmSolverView(result *SsmSolverView) (err error) {
 	return
 }
 
-// ValidateSsmUsermonthlychallengesCollectionView runs the validations defined
-// on SsmUsermonthlychallengesCollectionView using the "default" view.
-func ValidateSsmUsermonthlychallengesCollectionView(result SsmUsermonthlychallengesCollectionView) (err error) {
-	for _, item := range result {
-		if err2 := ValidateSsmUsermonthlychallengesView(item); err2 != nil {
-			err = goa.MergeErrors(err, err2)
-		}
-	}
-	return
-}
-
-// ValidateSsmUsermonthlychallengesView runs the validations defined on
-// SsmUsermonthlychallengesView using the "default" view.
-func ValidateSsmUsermonthlychallengesView(result *SsmUsermonthlychallengesView) (err error) {
+// ValidateSsmUserMonthlyChallengeView runs the validations defined on
+// SsmUserMonthlyChallengeView using the "default" view.
+func ValidateSsmUserMonthlyChallengeView(result *SsmUserMonthlyChallengeView) (err error) {
 	if result.StartDate == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("start_date", "result"))
 	}
@@ -413,6 +423,17 @@ func ValidateSsmUsermonthlychallengesView(result *SsmUsermonthlychallengesView) 
 	}
 	if result.Challenge != nil {
 		if err2 := ValidateSsmChallengeView(result.Challenge); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// ValidateSsmUserMonthlyChallengeCollectionView runs the validations defined
+// on SsmUserMonthlyChallengeCollectionView using the "default" view.
+func ValidateSsmUserMonthlyChallengeCollectionView(result SsmUserMonthlyChallengeCollectionView) (err error) {
+	for _, item := range result {
+		if err2 := ValidateSsmUserMonthlyChallengeView(item); err2 != nil {
 			err = goa.MergeErrors(err, err2)
 		}
 	}

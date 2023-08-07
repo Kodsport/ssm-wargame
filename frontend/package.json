@@ -21,7 +21,7 @@
   "dependencies": {
     "@pinia/nuxt": "^0.4.11",
     "bootstrap": "^5.3.1",
-    "dompurify": "^3.0.5",
+    "isomorphic-dompurify": "^1.8.0",
     "js-md5": "^0.7.3",
     "marked": "^6.0.0",
     "moment": "^2.29.4",

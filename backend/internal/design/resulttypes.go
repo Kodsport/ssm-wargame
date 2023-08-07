@@ -115,7 +115,7 @@ var SchoolScoreboardScore = Type("SchoolScoreboardScore", func() {
 	Required("school_name", "score")
 })
 
-var UserMonthlyChallenge = ResultType("application/vnd.ssm.usermonthlychallenges", func() {
+var UserMonthlyChallenge = ResultType("application/vnd.ssm.user.monthly.challenge", func() {
 	Extend(MonthlyChallenge)
 	Attribute("challenge_id")
 	Attribute("display_month")

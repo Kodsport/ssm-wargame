@@ -25,6 +25,10 @@ type Client struct {
 	// endpoint.
 	ListEventsDoer goahttp.Doer
 
+	// GetCurrentMonthlyChallenge Doer is the HTTP client used to make requests to
+	// the GetCurrentMonthlyChallenge endpoint.
+	GetCurrentMonthlyChallengeDoer goahttp.Doer
+
 	// ListMonthlyChallenges Doer is the HTTP client used to make requests to the
 	// ListMonthlyChallenges endpoint.
 	ListMonthlyChallengesDoer goahttp.Doer
@@ -57,16 +61,17 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		ListChallengesDoer:        doer,
-		ListEventsDoer:            doer,
-		ListMonthlyChallengesDoer: doer,
-		SubmitFlagDoer:            doer,
-		SchoolScoreboardDoer:      doer,
-		RestoreResponseBody:       restoreBody,
-		scheme:                    scheme,
-		host:                      host,
-		decoder:                   dec,
-		encoder:                   enc,
+		ListChallengesDoer:             doer,
+		ListEventsDoer:                 doer,
+		GetCurrentMonthlyChallengeDoer: doer,
+		ListMonthlyChallengesDoer:      doer,
+		SubmitFlagDoer:                 doer,
+		SchoolScoreboardDoer:           doer,
+		RestoreResponseBody:            restoreBody,
+		scheme:                         scheme,
+		host:                           host,
+		decoder:                        dec,
+		encoder:                        enc,
 	}
 }
 
@@ -113,6 +118,30 @@ func (c *Client) ListEvents() goa.Endpoint {
 		resp, err := c.ListEventsDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("challenge", "ListEvents", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// GetCurrentMonthlyChallenge returns an endpoint that makes HTTP requests to
+// the challenge service GetCurrentMonthlyChallenge server.
+func (c *Client) GetCurrentMonthlyChallenge() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeGetCurrentMonthlyChallengeRequest(c.encoder)
+		decodeResponse = DecodeGetCurrentMonthlyChallengeResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildGetCurrentMonthlyChallengeRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.GetCurrentMonthlyChallengeDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "GetCurrentMonthlyChallenge", err)
 		}
 		return decodeResponse(resp)
 	}

@@ -17,6 +17,12 @@ export default defineNuxtConfig({
         {
           rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons'
         }
+      ],
+      title: 'Säkerhets-SM',
+      meta: [
+        {
+          name: 'description', content: 'Säkerhets-SM är en tävling inom cybersäkerhet för grundskolan och gymnasiet'
+        }
       ]
     }
   },
@@ -24,5 +30,8 @@ export default defineNuxtConfig({
     public: {
       apiBase: 'http://localhost:8000/'
     }
+  },
+  routeRules: {
+    '/admin/**': { ssr: false },
   }
 })

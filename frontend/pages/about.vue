@@ -47,3 +47,9 @@ img {
     height: 10vw;
 }
 </style>
+
+<script setup lang="ts">
+useHead({
+    title: 'SSM - Om oss'
+})
+</script>

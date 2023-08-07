@@ -26,7 +26,7 @@ import (
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
-challenge (list-challenges|list-events|list-monthly-challenges|submit-flag|school-scoreboard)
+challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard)
 admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token)
 user (get-self|join-school|leave-school|search-schools)
 `
@@ -65,6 +65,9 @@ func ParseEndpoint(
 
 		challengeListEventsFlags     = flag.NewFlagSet("list-events", flag.ExitOnError)
 		challengeListEventsTokenFlag = challengeListEventsFlags.String("token", "", "")
+
+		challengeGetCurrentMonthlyChallengeFlags     = flag.NewFlagSet("get-current-monthly-challenge", flag.ExitOnError)
+		challengeGetCurrentMonthlyChallengeTokenFlag = challengeGetCurrentMonthlyChallengeFlags.String("token", "", "")
 
 		challengeListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
 		challengeListMonthlyChallengesTokenFlag = challengeListMonthlyChallengesFlags.String("token", "", "")
@@ -173,6 +176,7 @@ func ParseEndpoint(
 	challengeFlags.Usage = challengeUsage
 	challengeListChallengesFlags.Usage = challengeListChallengesUsage
 	challengeListEventsFlags.Usage = challengeListEventsUsage
+	challengeGetCurrentMonthlyChallengeFlags.Usage = challengeGetCurrentMonthlyChallengeUsage
 	challengeListMonthlyChallengesFlags.Usage = challengeListMonthlyChallengesUsage
 	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
 	challengeSchoolScoreboardFlags.Usage = challengeSchoolScoreboardUsage
@@ -258,6 +262,9 @@ func ParseEndpoint(
 
 			case "list-events":
 				epf = challengeListEventsFlags
+
+			case "get-current-monthly-challenge":
+				epf = challengeGetCurrentMonthlyChallengeFlags
 
 			case "list-monthly-challenges":
 				epf = challengeListMonthlyChallengesFlags
@@ -383,6 +390,9 @@ func ParseEndpoint(
 			case "list-events":
 				endpoint = c.ListEvents()
 				data, err = challengec.BuildListEventsPayload(*challengeListEventsTokenFlag)
+			case "get-current-monthly-challenge":
+				endpoint = c.GetCurrentMonthlyChallenge()
+				data, err = challengec.BuildGetCurrentMonthlyChallengePayload(*challengeGetCurrentMonthlyChallengeTokenFlag)
 			case "list-monthly-challenges":
 				endpoint = c.ListMonthlyChallenges()
 				data, err = challengec.BuildListMonthlyChallengesPayload(*challengeListMonthlyChallengesTokenFlag)
@@ -524,6 +534,7 @@ Usage:
 COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
     list-events: ListEvents implements ListEvents.
+    get-current-monthly-challenge: GetCurrentMonthlyChallenge implements GetCurrentMonthlyChallenge.
     list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
     submit-flag: SubmitFlag implements SubmitFlag.
     school-scoreboard: SchoolScoreboard implements SchoolScoreboard.
@@ -551,6 +562,17 @@ ListEvents implements ListEvents.
 
 Example:
     %[1]s challenge list-events --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeGetCurrentMonthlyChallengeUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge get-current-monthly-challenge -token STRING
+
+GetCurrentMonthlyChallenge implements GetCurrentMonthlyChallenge.
+    -token STRING: 
+
+Example:
+    %[1]s challenge get-current-monthly-challenge --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

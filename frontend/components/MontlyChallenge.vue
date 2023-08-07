@@ -2,31 +2,35 @@
     <div class="border border-dark bg-dark rounded p-4">
         <h4>{{ props.chall.title }}</h4>
 
-        <div class="d-flex pb-2" v-if="props.chall?.authors?.length">
+        <div class="d-flex pb-2" v-if="props.chall.authors?.length">
             <span class="material-icons text-primary pe-1">group</span>
             <span class="material-icons text-primary pe-1">edit</span>
             <span>{{ props.chall.authors.map(a => a.full_name).join(', ') }}</span>
         </div>
 
-        <div class="pb-2 d-none d-md-flex" v-for="file in props.chall.files">
+        <div v-if="props.chall.files?.length" class="pb-2 d-none d-md-flex" v-for="file in props.chall.files">
             <FileDownload :file="file" />
         </div>
 
-        <p v-html="renderMarkdown(props.chall.description)"></p>
+        <div v-html="renderedDescription"></div>
 
         <div class="py-3">
             <div class="d-none d-md-inline">
-                <div v-if="!!auth.user.id">
-                    <div v-if="!props.chall.solved" class="alert" v-bind:class="{ 'alert-danger': warn }">
-                        <input class="form-control" type="text" placeholder="SSM{..." v-model="flag"
-                            @keypress.enter="submitFlag">
+                <client-only>
+                    <div v-if="!!auth.user.id">
+                        <div v-if="!props.chall.solved" v-bind:class="{ 'alert': warn, 'alert-danger': warn }">
+                            <input class="form-control" type="text" placeholder="SSM{..." v-model="flag"
+                                @keypress.enter="submitFlag">
+                        </div>
+                        <InputReplacer v-else text="Löst!" />
                     </div>
-                    <InputReplacer v-else text="Löst!" />
-
-                </div>
-                <div v-else>
-                    <InputReplacer text="Logga in för att lösa skicka in flaggor" />
-                </div>
+                    <div v-else>
+                        <InputReplacer text="Logga in för att lösa skicka in flaggor" />
+                    </div>
+                    <template #fallback>
+                        <InputReplacer text="Logga in för att lösa skicka in flaggor" />
+                    </template>
+                </client-only>
             </div>
             <div class="d-inline d-md-none">
                 <p class="alert alert-warning">
@@ -34,6 +38,7 @@
                 </p>
             </div>
         </div>
+
         <p>{{ props.chall.solves }} lösare</p>
     </div>
 </template>
@@ -51,6 +56,8 @@ const http = useHttp()
 
 const flag = ref("")
 const warn = ref(false)
+
+const renderedDescription = computed(() => renderMarkdown(props.chall.description))
 
 async function submitFlag() {
     let f = flag.value.trim()
