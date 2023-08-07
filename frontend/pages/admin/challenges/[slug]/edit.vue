@@ -18,7 +18,7 @@
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea class="form-control" placeholder="Enter description" v-model="form.description" />
+                    <textarea class="form-control" rows="7" placeholder="Enter description" v-model="form.description" />
                 </div>
                 <div class="form-group">
                     <label>Category</label>

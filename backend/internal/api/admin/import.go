@@ -94,11 +94,11 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		score = *req.Score
 	}
 
-	slug := strings.ReplaceAll(req.Title, " ", "_")
+	slug := strings.NewReplacer(" ", "_", "ö", "o", "å", "a", "ä", "a").Replace(req.Title)
 	slug = slugRegex.ReplaceAllString(slug, "")
 	chall := models.Challenge{
 		ID:          req.ChallengeID,
-		Slug:        slug,
+		Slug:        strings.ToLower(slug),
 		Title:       req.Title,
 		Description: req.Description,
 		Score:       score,

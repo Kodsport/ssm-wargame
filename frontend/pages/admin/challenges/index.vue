@@ -73,7 +73,7 @@
                             </NuxtLink>
                         </td>
                         <td>{{ chall.solves }}</td>
-                        <td>{{ store.getCategory(chall.category_id).name }}</td>
+                        <td v-if="store.getCategory">{{ store.getCategory(chall.category_id).name }}</td>
                         <td class="text-right">
                             <NuxtLink class="btn btn-primary" :to="`/admin/challenges/${chall.slug}/edit`">
                                 Edit
