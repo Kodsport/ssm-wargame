@@ -14,7 +14,7 @@
                         <label>Kategori</label>
                         <select class="form-control" v-model="challFilter.categoryFilter">
                             <option value="">alla</option>
-                            <option class="text-lowercase" v-for="cat in categories" :value="cat">{{ cat.toLowerCase() }}
+                            <option class="text-lowercase" v-for="catx in categories" :value="catx">{{ catx }}
                             </option>
                         </select>
                     </div>
@@ -72,6 +72,7 @@ onMounted(() => {
     challs.getChallenges()
     challs.getEvents()
 })
+
 
 const categories = computed(() => challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i))
 

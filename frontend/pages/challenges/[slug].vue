@@ -3,8 +3,6 @@
     <div class="modal modal-xl d-block" tabindex="-1" @click="goBack" ref="modal" v-if="chall">
         <div class="modal-dialog">
             <div class="modal-content">
-
-
                 <div class="pt-3 d-flex justify-content-center">
                     <h2 class="modal-title text-primary fw-bold">{{ chall.title }}</h2>
                 </div>
