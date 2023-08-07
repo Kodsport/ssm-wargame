@@ -53,8 +53,7 @@
                                 <span v-else>{{ service.user_display }}</span>
                             </div>
                             <div class="d-flex" v-for="file in props.chall.files">
-                                <span class="material-icons text-primary">description</span>
-                                <a :href="file.url">{{ decodeURIComponent(file.filename) }}</a>
+                                <FileDownload :file="file" />
                             </div>
                             <div class="pt-3" v-if="props.chall.solvers">
                                 <b>Första lösarna</b>

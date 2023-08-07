@@ -9,8 +9,7 @@
         </div>
 
         <div class="pb-2 d-none d-md-flex" v-for="file in props.chall.files">
-            <span class="material-icons text-primary">description</span>
-            <a :href="file.url">{{ file.filename }}</a>
+            <FileDownload :file="file" />
         </div>
 
         <p v-html="renderMarkdown(props.chall.description)"></p>
