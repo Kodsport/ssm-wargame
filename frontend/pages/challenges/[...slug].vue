@@ -14,8 +14,9 @@
                     <div class="form-group">
                         <label>Kategori</label>
                         <select class="form-control" v-model="challFilter.categoryFilter">
-                            <option value="">Alla</option>
-                            <option v-for="cat in categories" :value="cat">{{ cat }}</option>
+                            <option value="">alla</option>
+                            <option class="text-lowercase" v-for="cat in categories" :value="cat">{{ cat.toLowerCase() }}
+                            </option>
                         </select>
                     </div>
                     <div v-if="challs.events.length" class="form-group pt-3">
@@ -29,15 +30,21 @@
                 </div>
             </div>
 
-            <div class="col pt-5">
-                <div v-if="challenges.length != 0" class="row row-cols-5 row-cols-md-5 row-cols-sm-3 g-4">
-                    <div class="col" v-for="chall in challenges">
-                        <ChallengePreview @click="nav(chall.slug)" :chall="chall" />
+            <div class="col ">
+                <div class="row" v-for="category in categories">
+                    <div v-if="challFilter.categoryFilter == '' || category == challFilter.categoryFilter">
+
+                        <div class="text-primary border-primary border-bottom border-3 pb-2 me-3">
+                            <h4 class="text-lowercase">{{ category }}</h4>
+                        </div>
+
+                        <div class="row row-cols-5 row-cols-md-5 row-cols-sm-3 g-4 mt-0 mb-2">
+                            <div class="col" v-for="chall in challenges.filter(c => c.category == category)">
+                                <ChallengePreview @click="nav(chall.slug)" :chall="chall" />
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <p v-else>
-                    Inga utmaningar matchade filtreringen
-                </p>
             </div>
         </div>
     </div>
