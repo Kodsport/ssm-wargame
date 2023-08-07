@@ -1,4 +1,4 @@
-import { sanitize } from "isomorphic-dompurify";
+import DOMPurify from 'isomorphic-dompurify';
 import * as marked from 'marked';
 
 marked.use({
@@ -8,5 +8,5 @@ marked.use({
 
 export default function renderMarkdown(text: string) {
     const md = marked.parse(text)
-    return sanitize(md);
+    return DOMPurify.isSupported ? DOMPurify.sanitize(md) : md;
 }
