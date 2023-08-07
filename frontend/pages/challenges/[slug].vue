@@ -38,11 +38,11 @@
                                 <span class="material-icons text-primary pe-1">group</span>
                                 <span class="material-icons text-primary pe-1">edit</span>
                                 <span>
-                                    <nuxt-link v-for="a in chall.authors" :to="`/author/${a.id}`">
+                                    <nuxt-link class="author" v-for="a in chall.authors" :to="`/author/${a.id}`">
                                         {{ a.full_name }}
                                     </nuxt-link>
-                                    <span v-if="chall.other_authors">
-                                        {{ chall.other_authors.join(' ') }}
+                                    <span class="author" v-for="a in chall.other_authors">
+                                        {{ a }}
                                     </span>
                                 </span>
                             </div>
@@ -139,3 +139,16 @@ function timeAgo(unixTime) {
     return moment.default(new Date(unixTime * 1000)).fromNow()
 }
 </script>
+
+<style scoped>
+.author:after {
+    content: ",";
+    padding-right: 0.5em;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.author:last-child:after {
+    content: none;
+}
+</style>
