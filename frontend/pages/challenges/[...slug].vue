@@ -32,7 +32,8 @@
 
             <div class="col">
                 <div class="row" v-for="category in categories">
-                    <div v-if="challFilter.categoryFilter == '' || category == challFilter.categoryFilter">
+                    <div
+                        v-if="(challFilter.categoryFilter == '' || category == challFilter.categoryFilter) && challenges.filter(c => c.category == category).length">
 
                         <div class="text-primary border-primary border-bottom border-3 pb-2 me-3">
                             <h4 class="text-lowercase">{{ category }}</h4>
