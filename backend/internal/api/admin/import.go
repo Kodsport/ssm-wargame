@@ -3,6 +3,7 @@ package admin
 import (
 	"context"
 	"database/sql"
+	"encoding/hex"
 	"regexp"
 	"strings"
 
@@ -14,11 +15,39 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 )
 
 var slugRegex = regexp.MustCompile(`[^a-zA-Z\-0-9]`)
 
+func (s *service) authImport(ctx context.Context, token string) (*models.ChalltoolsImportToken, error) {
+
+	id := strings.Split(token, "_")[1]
+	idBytes, err := hex.DecodeString(id)
+	if err != nil {
+		return nil, err
+	}
+	uuidID, err := uuid.FromBytes(idBytes)
+	if err != nil {
+		return nil, err
+	}
+	t, err := models.FindChalltoolsImportToken(ctx, s.db, uuidID.String())
+	if err != nil {
+		return nil, err
+	}
+
+	if err = bcrypt.CompareHashAndPassword([]byte(token), []byte(t.Token)); err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
 func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImportPayload) error {
+
+	token, err := s.authImport(ctx, req.ImportToken)
+	if err != nil {
+		return err
+	}
 
 	s.log.Info("beginning import", zap.String("id", req.ChallengeID))
 	tx, err := s.db.Begin()
@@ -70,6 +99,7 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		Description: req.Description,
 		Score:       score,
 		CategoryID:  categoryID,
+		CTFEventID:  token.CTFEventID,
 	}
 
 	err = chall.Upsert(ctx, tx, true, []string{}, boil.Infer(), boil.Infer())

@@ -27,11 +27,7 @@ paths:
                   name: Forensics
                 - id: e721a338-44de-4de8-a562-43d2db5f4115
                   name: Forensics
-                - id: e721a338-44de-4de8-a562-43d2db5f4115
-                  name: Forensics
               example:
-              - id: e721a338-44de-4de8-a562-43d2db5f4115
-                name: Forensics
               - id: e721a338-44de-4de8-a562-43d2db5f4115
                 name: Forensics
               - id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -85,6 +81,7 @@ paths:
               - authors:
                 - dfaa1a6a-9051-4c52-9441-5d664536cf24
                 category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
                 files:
                 - filename: decryptor.exe
@@ -116,6 +113,7 @@ paths:
               - authors:
                 - dfaa1a6a-9051-4c52-9441-5d664536cf24
                 category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
                 files:
                 - filename: decryptor.exe
@@ -147,6 +145,7 @@ paths:
               - authors:
                 - dfaa1a6a-9051-4c52-9441-5d664536cf24
                 category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
                 files:
                 - filename: decryptor.exe
@@ -178,6 +177,7 @@ paths:
               - authors:
                 - dfaa1a6a-9051-4c52-9441-5d664536cf24
                 category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
                 files:
                 - filename: decryptor.exe
@@ -320,33 +320,31 @@ paths:
                 $ref: '#/components/schemas/ChallengeMeta'
               example:
                 solvers:
-                - solved_at: 1199067295829877297
+                - solved_at: 5728570650013284868
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 1199067295829877297
+                - solved_at: 5728570650013284868
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 1199067295829877297
-                  user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 1199067295829877297
+                - solved_at: 5728570650013284868
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
                 submissions:
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 1711531018352293248
+                  submitted_at: 8287603688713421758
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 1711531018352293248
+                  submitted_at: 8287603688713421758
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 1711531018352293248
+                  submitted_at: 8287603688713421758
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 1711531018352293248
+                  submitted_at: 8287603688713421758
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         "400":
@@ -636,6 +634,164 @@ paths:
                 name: bad_request
       security:
       - jwt_header_Authorization: []
+  /admin/events:
+    get:
+      tags:
+      - admin
+      summary: ListCTFEvents admin
+      operationId: admin#ListCTFEvents
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTFEvent'
+                example:
+                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  name: Säkerhet-SM 2023
+                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  name: Säkerhet-SM 2023
+              example:
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+    post:
+      tags:
+      - admin
+      summary: CreateCTFEvent admin
+      operationId: admin#CreateCTFEvent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCTFEventRequestBody'
+            example:
+              name: Säkerhet-SM 2023
+      responses:
+        "204":
+          description: No Content response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/events/{id}:
+    delete:
+      tags:
+      - admin
+      summary: DeleteCTFEvent admin
+      operationId: admin#DeleteCTFEvent
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        example: 71333e34-4c6b-483e-b3c7-c77d73008cca
+      responses:
+        "204":
+          description: No Content response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
   /admin/files/{fileID}:
     delete:
       tags:
@@ -656,6 +812,61 @@ paths:
       responses:
         "204":
           description: No Content response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/import_token:
+    post:
+      tags:
+      - admin
+      summary: CreateCTFEventImportToken admin
+      operationId: admin#CreateCTFEventImportToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCTFEventImportTokenRequestBody'
+            example:
+              event_id: e3bb4dc5-9479-42ce-aed3-b41e8139fccb
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCTFEventImportTokenResponseBody'
+              example:
+                token: Et quia et facilis veritatis tempora vero.
         "400":
           description: Resource not found
           content:
@@ -716,11 +927,15 @@ paths:
                   display_month: Januari/Februari
                   end_date: 1690884841
                   start_date: 1690874841
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  display_month: Januari/Februari
-                  end_date: 1690884841
-                  start_date: 1690874841
               example:
+              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                display_month: Januari/Februari
+                end_date: 1690884841
+                start_date: 1690874841
+              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                display_month: Januari/Februari
+                end_date: 1690884841
+                start_date: 1690874841
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 display_month: Januari/Februari
                 end_date: 1690884841
@@ -879,8 +1094,8 @@ paths:
         schema:
           type: string
           description: Auth token
-          example: Itaque eum eveniet.
-        example: Non consequatur dolore magni.
+          example: ctfimp_7ad44accdcca4c5ea10ea7ea61bec01b_efc6066f6ca0c6cd
+        example: ctfimp_7ad44accdcca4c5ea10ea7ea61bec01b_efc6066f6ca0c6cd
       requestBody:
         required: true
         content:
@@ -905,13 +1120,9 @@ paths:
                 type: regex
               - flag: fl4g_l0l
                 type: regex
-              - flag: fl4g_l0l
-                type: regex
               order: 5
               score: 100
               services:
-              - hyperlink: true
-                user_display: nc 0.0.0.0 1234
               - hyperlink: true
                 user_display: nc 0.0.0.0 1234
               - hyperlink: true
@@ -950,8 +1161,6 @@ paths:
                 id: 3F1FKVRR
                 message: Value of ID must be an integer
                 name: bad_request
-      security:
-      - import_token_header_X-API-Key: []
   /admin/users:
     get:
       tags:
@@ -978,12 +1187,12 @@ paths:
                   id: uuid todo
                   role: admin
                   school_id: 78433202
+                - email: movitz.sunar@ssm.example
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  role: admin
+                  school_id: 78433202
               example:
-              - email: movitz.sunar@ssm.example
-                full_name: Movitz Sunar
-                id: uuid todo
-                role: admin
-                school_id: 78433202
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: uuid todo
@@ -1239,13 +1448,7 @@ paths:
                   name: Säkerhet-SM 2023
                 - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                   name: Säkerhet-SM 2023
-                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  name: Säkerhet-SM 2023
-                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  name: Säkerhet-SM 2023
               example:
-              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -1499,6 +1702,12 @@ paths:
                 - id: 78433202
                   municipality_name: Örebro
                   name: Engelbrektsskolan
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
               example:
               - id: 78433202
                 municipality_name: Örebro
@@ -1527,7 +1736,7 @@ paths:
                 id: uuid todo
                 role: admin
                 school_id: 78433202
-                school_name: Iure sit.
+                school_name: Alias sequi repellat alias voluptas eum sit.
       security:
       - jwt_header_Authorization: []
 components:
@@ -1605,9 +1814,9 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeSolver'
           example:
-          - solved_at: 1199067295829877297
+          - solved_at: 5728570650013284868
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 1199067295829877297
+          - solved_at: 5728570650013284868
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
           type: array
@@ -1616,43 +1825,33 @@ components:
           example:
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 1711531018352293248
+            submitted_at: 8287603688713421758
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 1711531018352293248
-            successful: false
-            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
-          - id: 34062de2-6687-4acb-ab4b-608cc246b133
-            input: SSM{wrong_flag}
-            submitted_at: 1711531018352293248
-            successful: false
-            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
-          - id: 34062de2-6687-4acb-ab4b-608cc246b133
-            input: SSM{wrong_flag}
-            submitted_at: 1711531018352293248
+            submitted_at: 8287603688713421758
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       example:
         solvers:
-        - solved_at: 1199067295829877297
+        - solved_at: 5728570650013284868
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 1199067295829877297
+        - solved_at: 5728570650013284868
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 1199067295829877297
+        - solved_at: 5728570650013284868
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 1199067295829877297
+        - solved_at: 5728570650013284868
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 1711531018352293248
+          submitted_at: 8287603688713421758
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 1711531018352293248
+          submitted_at: 8287603688713421758
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -1678,14 +1877,14 @@ components:
       properties:
         solved_at:
           type: integer
-          example: 7155848123273254506
+          example: 8505969082213694052
           format: int64
         user_id:
           type: string
           example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
           format: uuid
       example:
-        solved_at: 2526045415130440745
+        solved_at: 5942077026701324830
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       required:
       - user_id
@@ -1702,7 +1901,7 @@ components:
           example: SSM{wrong_flag}
         submitted_at:
           type: integer
-          example: 2438339556184461909
+          example: 2154578666446469994
           format: int64
         successful:
           type: boolean
@@ -1714,7 +1913,7 @@ components:
       example:
         id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 7458286420794730734
+        submitted_at: 4669930361167139239
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -1730,14 +1929,14 @@ components:
           type: array
           items:
             type: string
-            example: Quaerat minus.
+            example: Doloribus voluptate omnis vel neque qui.
           example:
           - Movitz Sunar
         categories:
           type: array
           items:
             type: string
-            example: Deserunt quia labore at a nulla.
+            example: Explicabo autem totam impedit dolores itaque dolores.
           example:
           - web
         challenge_id:
@@ -1751,7 +1950,7 @@ components:
           type: array
           items:
             type: string
-            example: Enim velit rerum expedita.
+            example: Quia fugiat in iure.
           example:
           - https://bucket/key
         flag_format_prefix:
@@ -1769,6 +1968,8 @@ components:
             type: regex
           - flag: fl4g_l0l
             type: regex
+          - flag: fl4g_l0l
+            type: regex
         order:
           type: integer
           example: 5
@@ -1782,6 +1983,8 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
@@ -1809,9 +2012,13 @@ components:
           type: regex
         - flag: fl4g_l0l
           type: regex
+        - flag: fl4g_l0l
+          type: regex
         order: 5
         score: 100
         services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -1821,6 +2028,36 @@ components:
       - title
       - description
       - challenge_id
+    CreateCTFEventImportTokenRequestBody:
+      type: object
+      properties:
+        event_id:
+          type: string
+          example: e3bb4dc5-9479-42ce-aed3-b41e8139fccb
+          format: uuid
+      example:
+        event_id: e3bb4dc5-9479-42ce-aed3-b41e8139fccb
+    CreateCTFEventImportTokenResponseBody:
+      type: object
+      properties:
+        token:
+          type: string
+          example: Quia eius molestias optio eum.
+      example:
+        token: Harum iste excepturi tempore voluptas.
+      required:
+      - token
+    CreateCTFEventRequestBody:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Säkerhet-SM 2023
+      example:
+        name: Säkerhet-SM 2023
+      required:
+      - id
+      - name
     CreateChallengeRequestBody:
       type: object
       properties:
@@ -1828,7 +2065,7 @@ components:
           type: array
           items:
             type: string
-            example: Dolores commodi dolor voluptate est.
+            example: Quo dolor.
           example:
           - 1b678293-6737-4cc7-8eae-aa821100293f
         category_id:
@@ -1909,7 +2146,7 @@ components:
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: false
+          example: true
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -1978,14 +2215,14 @@ components:
           format: int64
         school_name:
           type: string
-          example: Et dolor consequatur est beatae molestiae.
+          example: Et adipisci rerum et eveniet velit et.
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: uuid todo
         role: admin
         school_id: 78433202
-        school_name: Voluptatem ipsum odit qui nulla.
+        school_name: Nemo repellat rerum mollitia.
       required:
       - id
       - email
@@ -2115,12 +2352,17 @@ components:
           type: array
           items:
             type: string
-            example: Quo ad eligendi voluptatem.
+            example: Autem temporibus est.
           example:
           - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id:
           type: string
           example: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+          format: uuid
+        ctf_event_id:
+          type: string
+          description: The ID of the CTF the challenge was taken from
+          example: c397efb2-b171-4d77-9166-d105cf4f521a
           format: uuid
         description:
           type: string
@@ -2131,9 +2373,6 @@ components:
           items:
             $ref: '#/components/schemas/AdminChallengeFiles'
           example:
-          - filename: decryptor.exe
-            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-            url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
             url: https://s3/bucket/key?signature
@@ -2196,6 +2435,7 @@ components:
         authors:
         - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
         - filename: decryptor.exe
@@ -2246,6 +2486,7 @@ components:
       - authors:
         - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
         - filename: decryptor.exe
@@ -2277,6 +2518,7 @@ components:
       - authors:
         - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
         - filename: decryptor.exe
@@ -2308,6 +2550,39 @@ components:
       - authors:
         - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        files:
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
+        flags:
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        publish_at: 1638384718
+        score: 50
+        services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        slug: pwnme
+        solves: 3
+        title: pwnme
+      - authors:
+        - dfaa1a6a-9051-4c52-9441-5d664536cf24
+        category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
         - filename: decryptor.exe
@@ -2388,7 +2663,7 @@ components:
           type: array
           items:
             type: string
-            example: Accusantium iusto nam qui consectetur quod sunt.
+            example: Non consequatur dolore magni.
           example:
           - FRA
         score:
@@ -2426,12 +2701,6 @@ components:
           - full_name: Movitz Sunar
             id: uuid todo
             solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: uuid todo
-            solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: uuid todo
-            solved_at: 16123128
         solves:
           type: integer
           description: The numer of people who solved the challenge
@@ -2454,10 +2723,22 @@ components:
           id: uuid todo
           role: admin
           school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
+        - email: movitz.sunar@ssm.example
+          full_name: Movitz Sunar
+          id: uuid todo
+          role: admin
+          school_id: 78433202
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
@@ -2589,50 +2870,6 @@ components:
           solved_at: 16123128
         solves: 3
         title: pwnme
-      - authors:
-        - email: movitz.sunar@ssm.example
-          full_name: Movitz Sunar
-          id: uuid todo
-          role: admin
-          school_id: 78433202
-        - email: movitz.sunar@ssm.example
-          full_name: Movitz Sunar
-          id: uuid todo
-          role: admin
-          school_id: 78433202
-        category: Misc
-        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-        description: A heap overflow challenge
-        files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
-        score: 50
-        services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        slug: pwnme
-        solved: true
-        solvers:
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        solves: 3
-        title: pwnme
     SsmShoolscoreboard:
       type: object
       properties:
@@ -2651,10 +2888,6 @@ components:
             score: 1337
       example:
         scores:
-        - school_name: Stockholm Science and Innovation School
-          score: 1337
-        - school_name: Stockholm Science and Innovation School
-          score: 1337
         - school_name: Stockholm Science and Innovation School
           score: 1337
         - school_name: Stockholm Science and Innovation School
@@ -3013,10 +3246,6 @@ components:
       required:
       - flag
   securitySchemes:
-    import_token_header_X-API-Key:
-      type: apiKey
-      name: X-API-Key
-      in: header
     jwt_header_Authorization:
       type: http
       scheme: bearer

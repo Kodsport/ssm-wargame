@@ -80,3 +80,23 @@ func ListCategoriesAdminPath() string {
 func ChalltoolsImportAdminPath() string {
 	return "/admin/push_challenge"
 }
+
+// ListCTFEventsAdminPath returns the URL path to the admin service ListCTFEvents HTTP endpoint.
+func ListCTFEventsAdminPath() string {
+	return "/admin/events"
+}
+
+// CreateCTFEventAdminPath returns the URL path to the admin service CreateCTFEvent HTTP endpoint.
+func CreateCTFEventAdminPath() string {
+	return "/admin/events"
+}
+
+// DeleteCTFEventAdminPath returns the URL path to the admin service DeleteCTFEvent HTTP endpoint.
+func DeleteCTFEventAdminPath(id string) string {
+	return fmt.Sprintf("/admin/events/%v", id)
+}
+
+// CreateCTFEventImportTokenAdminPath returns the URL path to the admin service CreateCTFEventImportToken HTTP endpoint.
+func CreateCTFEventImportTokenAdminPath() string {
+	return "/admin/import_token"
+}

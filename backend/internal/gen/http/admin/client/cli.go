@@ -376,7 +376,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 	{
 		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 
@@ -428,6 +428,89 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 		}
 	}
 	v.ImportToken = importToken
+
+	return v, nil
+}
+
+// BuildListCTFEventsPayload builds the payload for the admin ListCTFEvents
+// endpoint from CLI flags.
+func BuildListCTFEventsPayload(adminListCTFEventsToken string) (*admin.ListCTFEventsPayload, error) {
+	var token string
+	{
+		token = adminListCTFEventsToken
+	}
+	v := &admin.ListCTFEventsPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildCreateCTFEventPayload builds the payload for the admin CreateCTFEvent
+// endpoint from CLI flags.
+func BuildCreateCTFEventPayload(adminCreateCTFEventBody string, adminCreateCTFEventToken string) (*admin.CreateCTFEventPayload, error) {
+	var err error
+	var body CreateCTFEventRequestBody
+	{
+		err = json.Unmarshal([]byte(adminCreateCTFEventBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"name\": \"Säkerhet-SM 2023\"\n   }'")
+		}
+	}
+	var token string
+	{
+		token = adminCreateCTFEventToken
+	}
+	v := &admin.CreateCTFEventPayload{
+		Name: body.Name,
+	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteCTFEventPayload builds the payload for the admin DeleteCTFEvent
+// endpoint from CLI flags.
+func BuildDeleteCTFEventPayload(adminDeleteCTFEventID string, adminDeleteCTFEventToken string) (*admin.DeleteCTFEventPayload, error) {
+	var id string
+	{
+		id = adminDeleteCTFEventID
+	}
+	var token string
+	{
+		token = adminDeleteCTFEventToken
+	}
+	v := &admin.DeleteCTFEventPayload{}
+	v.ID = id
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildCreateCTFEventImportTokenPayload builds the payload for the admin
+// CreateCTFEventImportToken endpoint from CLI flags.
+func BuildCreateCTFEventImportTokenPayload(adminCreateCTFEventImportTokenBody string, adminCreateCTFEventImportTokenToken string) (*admin.CreateCTFEventImportTokenPayload, error) {
+	var err error
+	var body CreateCTFEventImportTokenRequestBody
+	{
+		err = json.Unmarshal([]byte(adminCreateCTFEventImportTokenBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"event_id\": \"e3bb4dc5-9479-42ce-aed3-b41e8139fccb\"\n   }'")
+		}
+		if body.EventID != nil {
+			err = goa.MergeErrors(err, goa.ValidateFormat("body.event_id", *body.EventID, goa.FormatUUID))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminCreateCTFEventImportTokenToken
+	}
+	v := &admin.CreateCTFEventImportTokenPayload{
+		EventID: body.EventID,
+	}
+	v.Token = token
 
 	return v, nil
 }

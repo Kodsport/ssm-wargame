@@ -73,6 +73,22 @@ type Client struct {
 	// ChalltoolsImport endpoint.
 	ChalltoolsImportDoer goahttp.Doer
 
+	// ListCTFEvents Doer is the HTTP client used to make requests to the
+	// ListCTFEvents endpoint.
+	ListCTFEventsDoer goahttp.Doer
+
+	// CreateCTFEvent Doer is the HTTP client used to make requests to the
+	// CreateCTFEvent endpoint.
+	CreateCTFEventDoer goahttp.Doer
+
+	// DeleteCTFEvent Doer is the HTTP client used to make requests to the
+	// DeleteCTFEvent endpoint.
+	DeleteCTFEventDoer goahttp.Doer
+
+	// CreateCTFEventImportToken Doer is the HTTP client used to make requests to
+	// the CreateCTFEventImportToken endpoint.
+	CreateCTFEventImportTokenDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -93,25 +109,29 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		ListChallengesDoer:         doer,
-		GetChallengeMetaDoer:       doer,
-		CreateChallengeDoer:        doer,
-		UpdateChallengeDoer:        doer,
-		PresignChallFileUploadDoer: doer,
-		ListMonthlyChallengesDoer:  doer,
-		DeleteMonthlyChallengeDoer: doer,
-		DeleteFileDoer:             doer,
-		CreateMonthlyChallengeDoer: doer,
-		ListUsersDoer:              doer,
-		AddFlagDoer:                doer,
-		DeleteFlagDoer:             doer,
-		ListCategoriesDoer:         doer,
-		ChalltoolsImportDoer:       doer,
-		RestoreResponseBody:        restoreBody,
-		scheme:                     scheme,
-		host:                       host,
-		decoder:                    dec,
-		encoder:                    enc,
+		ListChallengesDoer:            doer,
+		GetChallengeMetaDoer:          doer,
+		CreateChallengeDoer:           doer,
+		UpdateChallengeDoer:           doer,
+		PresignChallFileUploadDoer:    doer,
+		ListMonthlyChallengesDoer:     doer,
+		DeleteMonthlyChallengeDoer:    doer,
+		DeleteFileDoer:                doer,
+		CreateMonthlyChallengeDoer:    doer,
+		ListUsersDoer:                 doer,
+		AddFlagDoer:                   doer,
+		DeleteFlagDoer:                doer,
+		ListCategoriesDoer:            doer,
+		ChalltoolsImportDoer:          doer,
+		ListCTFEventsDoer:             doer,
+		CreateCTFEventDoer:            doer,
+		DeleteCTFEventDoer:            doer,
+		CreateCTFEventImportTokenDoer: doer,
+		RestoreResponseBody:           restoreBody,
+		scheme:                        scheme,
+		host:                          host,
+		decoder:                       dec,
+		encoder:                       enc,
 	}
 }
 
@@ -446,6 +466,102 @@ func (c *Client) ChalltoolsImport() goa.Endpoint {
 		resp, err := c.ChalltoolsImportDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "ChalltoolsImport", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// ListCTFEvents returns an endpoint that makes HTTP requests to the admin
+// service ListCTFEvents server.
+func (c *Client) ListCTFEvents() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeListCTFEventsRequest(c.encoder)
+		decodeResponse = DecodeListCTFEventsResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildListCTFEventsRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ListCTFEventsDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "ListCTFEvents", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CreateCTFEvent returns an endpoint that makes HTTP requests to the admin
+// service CreateCTFEvent server.
+func (c *Client) CreateCTFEvent() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeCreateCTFEventRequest(c.encoder)
+		decodeResponse = DecodeCreateCTFEventResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCreateCTFEventRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CreateCTFEventDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "CreateCTFEvent", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// DeleteCTFEvent returns an endpoint that makes HTTP requests to the admin
+// service DeleteCTFEvent server.
+func (c *Client) DeleteCTFEvent() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeDeleteCTFEventRequest(c.encoder)
+		decodeResponse = DecodeDeleteCTFEventResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildDeleteCTFEventRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.DeleteCTFEventDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "DeleteCTFEvent", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CreateCTFEventImportToken returns an endpoint that makes HTTP requests to
+// the admin service CreateCTFEventImportToken server.
+func (c *Client) CreateCTFEventImportToken() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeCreateCTFEventImportTokenRequest(c.encoder)
+		decodeResponse = DecodeCreateCTFEventImportTokenResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCreateCTFEventImportTokenRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CreateCTFEventImportTokenDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "CreateCTFEventImportToken", err)
 		}
 		return decodeResponse(resp)
 	}

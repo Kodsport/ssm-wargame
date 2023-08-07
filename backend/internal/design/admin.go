@@ -2,8 +2,6 @@ package goa
 
 import . "goa.design/goa/v3/dsl"
 
-var ImportAuth = APIKeySecurity("import_token")
-
 var _ = Service("admin", func() {
 	Error("unauthorized")
 	Error("not_found")
@@ -191,14 +189,65 @@ var _ = Service("admin", func() {
 	Method("ChalltoolsImport", func() {
 		Payload(func() {
 			Extend(ChallImport)
-			APIKey("import_token", "import_token")
+			Attribute("import_token", String, func() {
+				Example("ctfimp_7ad44accdcca4c5ea10ea7ea61bec01b_efc6066f6ca0c6cd")
+			})
 			Required("import_token")
 		})
-		Security(ImportAuth)
+		NoSecurity()
 		HTTP(func() {
 			POST("/push_challenge")
 			Header("import_token:X-API-Key", String, "Auth token")
 			Response(StatusOK)
+		})
+	})
+
+	Method("ListCTFEvents", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+		})
+		Result(ArrayOf(CTFEvent))
+		HTTP(func() {
+			GET("/events")
+		})
+	})
+
+	Method("CreateCTFEvent", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Reference(CTFEvent)
+			Attribute("name")
+		})
+		HTTP(func() {
+			POST("/events")
+		})
+	})
+
+	Method("DeleteCTFEvent", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Reference(CTFEvent)
+			Attribute("id")
+		})
+		HTTP(func() {
+			DELETE("/events/{id}")
+		})
+	})
+
+	Method("CreateCTFEventImportToken", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("event_id", String, func() {
+				Example("e3bb4dc5-9479-42ce-aed3-b41e8139fccb")
+				Format(FormatUUID)
+			})
+		})
+		Result(func() {
+			Attribute("token")
+			Required("token")
+		})
+		HTTP(func() {
+			POST("/import_token")
 		})
 	})
 })

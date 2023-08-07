@@ -15,39 +15,47 @@ import (
 
 // Client is the "admin" service client.
 type Client struct {
-	ListChallengesEndpoint         goa.Endpoint
-	GetChallengeMetaEndpoint       goa.Endpoint
-	CreateChallengeEndpoint        goa.Endpoint
-	UpdateChallengeEndpoint        goa.Endpoint
-	PresignChallFileUploadEndpoint goa.Endpoint
-	ListMonthlyChallengesEndpoint  goa.Endpoint
-	DeleteMonthlyChallengeEndpoint goa.Endpoint
-	DeleteFileEndpoint             goa.Endpoint
-	CreateMonthlyChallengeEndpoint goa.Endpoint
-	ListUsersEndpoint              goa.Endpoint
-	AddFlagEndpoint                goa.Endpoint
-	DeleteFlagEndpoint             goa.Endpoint
-	ListCategoriesEndpoint         goa.Endpoint
-	ChalltoolsImportEndpoint       goa.Endpoint
+	ListChallengesEndpoint            goa.Endpoint
+	GetChallengeMetaEndpoint          goa.Endpoint
+	CreateChallengeEndpoint           goa.Endpoint
+	UpdateChallengeEndpoint           goa.Endpoint
+	PresignChallFileUploadEndpoint    goa.Endpoint
+	ListMonthlyChallengesEndpoint     goa.Endpoint
+	DeleteMonthlyChallengeEndpoint    goa.Endpoint
+	DeleteFileEndpoint                goa.Endpoint
+	CreateMonthlyChallengeEndpoint    goa.Endpoint
+	ListUsersEndpoint                 goa.Endpoint
+	AddFlagEndpoint                   goa.Endpoint
+	DeleteFlagEndpoint                goa.Endpoint
+	ListCategoriesEndpoint            goa.Endpoint
+	ChalltoolsImportEndpoint          goa.Endpoint
+	ListCTFEventsEndpoint             goa.Endpoint
+	CreateCTFEventEndpoint            goa.Endpoint
+	DeleteCTFEventEndpoint            goa.Endpoint
+	CreateCTFEventImportTokenEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag, listCategories, challtoolsImport goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken goa.Endpoint) *Client {
 	return &Client{
-		ListChallengesEndpoint:         listChallenges,
-		GetChallengeMetaEndpoint:       getChallengeMeta,
-		CreateChallengeEndpoint:        createChallenge,
-		UpdateChallengeEndpoint:        updateChallenge,
-		PresignChallFileUploadEndpoint: presignChallFileUpload,
-		ListMonthlyChallengesEndpoint:  listMonthlyChallenges,
-		DeleteMonthlyChallengeEndpoint: deleteMonthlyChallenge,
-		DeleteFileEndpoint:             deleteFile,
-		CreateMonthlyChallengeEndpoint: createMonthlyChallenge,
-		ListUsersEndpoint:              listUsers,
-		AddFlagEndpoint:                addFlag,
-		DeleteFlagEndpoint:             deleteFlag,
-		ListCategoriesEndpoint:         listCategories,
-		ChalltoolsImportEndpoint:       challtoolsImport,
+		ListChallengesEndpoint:            listChallenges,
+		GetChallengeMetaEndpoint:          getChallengeMeta,
+		CreateChallengeEndpoint:           createChallenge,
+		UpdateChallengeEndpoint:           updateChallenge,
+		PresignChallFileUploadEndpoint:    presignChallFileUpload,
+		ListMonthlyChallengesEndpoint:     listMonthlyChallenges,
+		DeleteMonthlyChallengeEndpoint:    deleteMonthlyChallenge,
+		DeleteFileEndpoint:                deleteFile,
+		CreateMonthlyChallengeEndpoint:    createMonthlyChallenge,
+		ListUsersEndpoint:                 listUsers,
+		AddFlagEndpoint:                   addFlag,
+		DeleteFlagEndpoint:                deleteFlag,
+		ListCategoriesEndpoint:            listCategories,
+		ChalltoolsImportEndpoint:          challtoolsImport,
+		ListCTFEventsEndpoint:             listCTFEvents,
+		CreateCTFEventEndpoint:            createCTFEvent,
+		DeleteCTFEventEndpoint:            deleteCTFEvent,
+		CreateCTFEventImportTokenEndpoint: createCTFEventImportToken,
 	}
 }
 
@@ -163,4 +171,37 @@ func (c *Client) ListCategories(ctx context.Context, p *ListCategoriesPayload) (
 func (c *Client) ChalltoolsImport(ctx context.Context, p *ChalltoolsImportPayload) (err error) {
 	_, err = c.ChalltoolsImportEndpoint(ctx, p)
 	return
+}
+
+// ListCTFEvents calls the "ListCTFEvents" endpoint of the "admin" service.
+func (c *Client) ListCTFEvents(ctx context.Context, p *ListCTFEventsPayload) (res []*CTFEvent, err error) {
+	var ires interface{}
+	ires, err = c.ListCTFEventsEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*CTFEvent), nil
+}
+
+// CreateCTFEvent calls the "CreateCTFEvent" endpoint of the "admin" service.
+func (c *Client) CreateCTFEvent(ctx context.Context, p *CreateCTFEventPayload) (err error) {
+	_, err = c.CreateCTFEventEndpoint(ctx, p)
+	return
+}
+
+// DeleteCTFEvent calls the "DeleteCTFEvent" endpoint of the "admin" service.
+func (c *Client) DeleteCTFEvent(ctx context.Context, p *DeleteCTFEventPayload) (err error) {
+	_, err = c.DeleteCTFEventEndpoint(ctx, p)
+	return
+}
+
+// CreateCTFEventImportToken calls the "CreateCTFEventImportToken" endpoint of
+// the "admin" service.
+func (c *Client) CreateCTFEventImportToken(ctx context.Context, p *CreateCTFEventImportTokenPayload) (res *CreateCTFEventImportTokenResult, err error) {
+	var ires interface{}
+	ires, err = c.CreateCTFEventImportTokenEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*CreateCTFEventImportTokenResult), nil
 }

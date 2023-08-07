@@ -7,6 +7,7 @@ export const useChallengeStore = defineStore('admin-challenges', {
         challenges: [],
         categories: [],
         monthlies: [],
+        events: [],
     }),
     actions: {
         async getChallenges() {
@@ -20,6 +21,10 @@ export const useChallengeStore = defineStore('admin-challenges', {
         async getCategories() {
             const cats = await http('/admin/categories')
             this.categories = cats
+        },
+        async getEvents() {
+            const events = await http('/admin/events')
+            this.events = events
         }
     },
     getters: {

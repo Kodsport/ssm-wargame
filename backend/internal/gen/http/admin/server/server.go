@@ -18,21 +18,25 @@ import (
 
 // Server lists the admin service endpoint HTTP handlers.
 type Server struct {
-	Mounts                 []*MountPoint
-	ListChallenges         http.Handler
-	GetChallengeMeta       http.Handler
-	CreateChallenge        http.Handler
-	UpdateChallenge        http.Handler
-	PresignChallFileUpload http.Handler
-	ListMonthlyChallenges  http.Handler
-	DeleteMonthlyChallenge http.Handler
-	DeleteFile             http.Handler
-	CreateMonthlyChallenge http.Handler
-	ListUsers              http.Handler
-	AddFlag                http.Handler
-	DeleteFlag             http.Handler
-	ListCategories         http.Handler
-	ChalltoolsImport       http.Handler
+	Mounts                    []*MountPoint
+	ListChallenges            http.Handler
+	GetChallengeMeta          http.Handler
+	CreateChallenge           http.Handler
+	UpdateChallenge           http.Handler
+	PresignChallFileUpload    http.Handler
+	ListMonthlyChallenges     http.Handler
+	DeleteMonthlyChallenge    http.Handler
+	DeleteFile                http.Handler
+	CreateMonthlyChallenge    http.Handler
+	ListUsers                 http.Handler
+	AddFlag                   http.Handler
+	DeleteFlag                http.Handler
+	ListCategories            http.Handler
+	ChalltoolsImport          http.Handler
+	ListCTFEvents             http.Handler
+	CreateCTFEvent            http.Handler
+	DeleteCTFEvent            http.Handler
+	CreateCTFEventImportToken http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -82,21 +86,29 @@ func New(
 			{"DeleteFlag", "DELETE", "/admin/challenges/{challengeID}/flags/{flagID}"},
 			{"ListCategories", "GET", "/admin/categories"},
 			{"ChalltoolsImport", "POST", "/admin/push_challenge"},
+			{"ListCTFEvents", "GET", "/admin/events"},
+			{"CreateCTFEvent", "POST", "/admin/events"},
+			{"DeleteCTFEvent", "DELETE", "/admin/events/{id}"},
+			{"CreateCTFEventImportToken", "POST", "/admin/import_token"},
 		},
-		ListChallenges:         NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
-		GetChallengeMeta:       NewGetChallengeMetaHandler(e.GetChallengeMeta, mux, decoder, encoder, errhandler, formatter),
-		CreateChallenge:        NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
-		UpdateChallenge:        NewUpdateChallengeHandler(e.UpdateChallenge, mux, decoder, encoder, errhandler, formatter),
-		PresignChallFileUpload: NewPresignChallFileUploadHandler(e.PresignChallFileUpload, mux, decoder, encoder, errhandler, formatter),
-		ListMonthlyChallenges:  NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
-		DeleteMonthlyChallenge: NewDeleteMonthlyChallengeHandler(e.DeleteMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
-		DeleteFile:             NewDeleteFileHandler(e.DeleteFile, mux, decoder, encoder, errhandler, formatter),
-		CreateMonthlyChallenge: NewCreateMonthlyChallengeHandler(e.CreateMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
-		ListUsers:              NewListUsersHandler(e.ListUsers, mux, decoder, encoder, errhandler, formatter),
-		AddFlag:                NewAddFlagHandler(e.AddFlag, mux, decoder, encoder, errhandler, formatter),
-		DeleteFlag:             NewDeleteFlagHandler(e.DeleteFlag, mux, decoder, encoder, errhandler, formatter),
-		ListCategories:         NewListCategoriesHandler(e.ListCategories, mux, decoder, encoder, errhandler, formatter),
-		ChalltoolsImport:       NewChalltoolsImportHandler(e.ChalltoolsImport, mux, decoder, encoder, errhandler, formatter),
+		ListChallenges:            NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
+		GetChallengeMeta:          NewGetChallengeMetaHandler(e.GetChallengeMeta, mux, decoder, encoder, errhandler, formatter),
+		CreateChallenge:           NewCreateChallengeHandler(e.CreateChallenge, mux, decoder, encoder, errhandler, formatter),
+		UpdateChallenge:           NewUpdateChallengeHandler(e.UpdateChallenge, mux, decoder, encoder, errhandler, formatter),
+		PresignChallFileUpload:    NewPresignChallFileUploadHandler(e.PresignChallFileUpload, mux, decoder, encoder, errhandler, formatter),
+		ListMonthlyChallenges:     NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
+		DeleteMonthlyChallenge:    NewDeleteMonthlyChallengeHandler(e.DeleteMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
+		DeleteFile:                NewDeleteFileHandler(e.DeleteFile, mux, decoder, encoder, errhandler, formatter),
+		CreateMonthlyChallenge:    NewCreateMonthlyChallengeHandler(e.CreateMonthlyChallenge, mux, decoder, encoder, errhandler, formatter),
+		ListUsers:                 NewListUsersHandler(e.ListUsers, mux, decoder, encoder, errhandler, formatter),
+		AddFlag:                   NewAddFlagHandler(e.AddFlag, mux, decoder, encoder, errhandler, formatter),
+		DeleteFlag:                NewDeleteFlagHandler(e.DeleteFlag, mux, decoder, encoder, errhandler, formatter),
+		ListCategories:            NewListCategoriesHandler(e.ListCategories, mux, decoder, encoder, errhandler, formatter),
+		ChalltoolsImport:          NewChalltoolsImportHandler(e.ChalltoolsImport, mux, decoder, encoder, errhandler, formatter),
+		ListCTFEvents:             NewListCTFEventsHandler(e.ListCTFEvents, mux, decoder, encoder, errhandler, formatter),
+		CreateCTFEvent:            NewCreateCTFEventHandler(e.CreateCTFEvent, mux, decoder, encoder, errhandler, formatter),
+		DeleteCTFEvent:            NewDeleteCTFEventHandler(e.DeleteCTFEvent, mux, decoder, encoder, errhandler, formatter),
+		CreateCTFEventImportToken: NewCreateCTFEventImportTokenHandler(e.CreateCTFEventImportToken, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -119,6 +131,10 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.DeleteFlag = m(s.DeleteFlag)
 	s.ListCategories = m(s.ListCategories)
 	s.ChalltoolsImport = m(s.ChalltoolsImport)
+	s.ListCTFEvents = m(s.ListCTFEvents)
+	s.CreateCTFEvent = m(s.CreateCTFEvent)
+	s.DeleteCTFEvent = m(s.DeleteCTFEvent)
+	s.CreateCTFEventImportToken = m(s.CreateCTFEventImportToken)
 }
 
 // Mount configures the mux to serve the admin endpoints.
@@ -137,6 +153,10 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountDeleteFlagHandler(mux, h.DeleteFlag)
 	MountListCategoriesHandler(mux, h.ListCategories)
 	MountChalltoolsImportHandler(mux, h.ChalltoolsImport)
+	MountListCTFEventsHandler(mux, h.ListCTFEvents)
+	MountCreateCTFEventHandler(mux, h.CreateCTFEvent)
+	MountDeleteCTFEventHandler(mux, h.DeleteCTFEvent)
+	MountCreateCTFEventImportTokenHandler(mux, h.CreateCTFEventImportToken)
 }
 
 // MountListChallengesHandler configures the mux to serve the "admin" service
@@ -832,6 +852,211 @@ func NewChalltoolsImportHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "ChalltoolsImport")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListCTFEventsHandler configures the mux to serve the "admin" service
+// "ListCTFEvents" endpoint.
+func MountListCTFEventsHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/events", f)
+}
+
+// NewListCTFEventsHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "ListCTFEvents" endpoint.
+func NewListCTFEventsHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListCTFEventsRequest(mux, decoder)
+		encodeResponse = EncodeListCTFEventsResponse(encoder)
+		encodeError    = EncodeListCTFEventsError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListCTFEvents")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateCTFEventHandler configures the mux to serve the "admin" service
+// "CreateCTFEvent" endpoint.
+func MountCreateCTFEventHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/events", f)
+}
+
+// NewCreateCTFEventHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "CreateCTFEvent" endpoint.
+func NewCreateCTFEventHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateCTFEventRequest(mux, decoder)
+		encodeResponse = EncodeCreateCTFEventResponse(encoder)
+		encodeError    = EncodeCreateCTFEventError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateCTFEvent")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteCTFEventHandler configures the mux to serve the "admin" service
+// "DeleteCTFEvent" endpoint.
+func MountDeleteCTFEventHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/admin/events/{id}", f)
+}
+
+// NewDeleteCTFEventHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "DeleteCTFEvent" endpoint.
+func NewDeleteCTFEventHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteCTFEventRequest(mux, decoder)
+		encodeResponse = EncodeDeleteCTFEventResponse(encoder)
+		encodeError    = EncodeDeleteCTFEventError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteCTFEvent")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateCTFEventImportTokenHandler configures the mux to serve the
+// "admin" service "CreateCTFEventImportToken" endpoint.
+func MountCreateCTFEventImportTokenHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/import_token", f)
+}
+
+// NewCreateCTFEventImportTokenHandler creates a HTTP handler which loads the
+// HTTP request and calls the "admin" service "CreateCTFEventImportToken"
+// endpoint.
+func NewCreateCTFEventImportTokenHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateCTFEventImportTokenRequest(mux, decoder)
+		encodeResponse = EncodeCreateCTFEventImportTokenResponse(encoder)
+		encodeError    = EncodeCreateCTFEventImportTokenError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateCTFEventImportToken")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

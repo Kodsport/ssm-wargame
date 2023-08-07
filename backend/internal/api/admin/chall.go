@@ -51,6 +51,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Solves:      chall.NumSolves,
 			PublishAt:   utils.NullTimeToUnix(chall.PublishAt),
 			CategoryID:  chall.CategoryID,
+			CtfEventID:  chall.CTFEventID.Ptr(),
 		}
 
 		res[i].Flags = make([]*spec.AdminChallengeFlag, len(chall.R.Flags))

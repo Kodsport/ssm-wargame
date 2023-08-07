@@ -1741,6 +1741,493 @@ func DecodeChalltoolsImportResponse(decoder func(*http.Response) goahttp.Decoder
 	}
 }
 
+// BuildListCTFEventsRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "ListCTFEvents" endpoint
+func (c *Client) BuildListCTFEventsRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListCTFEventsAdminPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "ListCTFEvents", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListCTFEventsRequest returns an encoder for requests sent to the admin
+// ListCTFEvents server.
+func EncodeListCTFEventsRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.ListCTFEventsPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "ListCTFEvents", "*admin.ListCTFEventsPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListCTFEventsResponse returns a decoder for responses returned by the
+// admin ListCTFEvents endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeListCTFEventsResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeListCTFEventsResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListCTFEventsResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCTFEvents", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateCTFEventResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCTFEvents", err)
+			}
+			res := NewListCTFEventsCTFEventOK(body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body ListCTFEventsUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCTFEvents", err)
+			}
+			err = ValidateListCTFEventsUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCTFEvents", err)
+			}
+			return nil, NewListCTFEventsUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ListCTFEventsNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCTFEvents", err)
+			}
+			err = ValidateListCTFEventsNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCTFEvents", err)
+			}
+			return nil, NewListCTFEventsNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ListCTFEventsBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCTFEvents", err)
+			}
+			err = ValidateListCTFEventsBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCTFEvents", err)
+			}
+			return nil, NewListCTFEventsBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "ListCTFEvents", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildCreateCTFEventRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "CreateCTFEvent" endpoint
+func (c *Client) BuildCreateCTFEventRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateCTFEventAdminPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "CreateCTFEvent", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeCreateCTFEventRequest returns an encoder for requests sent to the
+// admin CreateCTFEvent server.
+func EncodeCreateCTFEventRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.CreateCTFEventPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "CreateCTFEvent", "*admin.CreateCTFEventPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewCreateCTFEventRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "CreateCTFEvent", err)
+		}
+		return nil
+	}
+}
+
+// DecodeCreateCTFEventResponse returns a decoder for responses returned by the
+// admin CreateCTFEvent endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeCreateCTFEventResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeCreateCTFEventResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body CreateCTFEventUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFEvent", err)
+			}
+			err = ValidateCreateCTFEventUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFEvent", err)
+			}
+			return nil, NewCreateCTFEventUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body CreateCTFEventNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFEvent", err)
+			}
+			err = ValidateCreateCTFEventNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFEvent", err)
+			}
+			return nil, NewCreateCTFEventNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body CreateCTFEventBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFEvent", err)
+			}
+			err = ValidateCreateCTFEventBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFEvent", err)
+			}
+			return nil, NewCreateCTFEventBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "CreateCTFEvent", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildDeleteCTFEventRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "DeleteCTFEvent" endpoint
+func (c *Client) BuildDeleteCTFEventRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id string
+	)
+	{
+		p, ok := v.(*admin.DeleteCTFEventPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "DeleteCTFEvent", "*admin.DeleteCTFEventPayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteCTFEventAdminPath(id)}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "DeleteCTFEvent", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeDeleteCTFEventRequest returns an encoder for requests sent to the
+// admin DeleteCTFEvent server.
+func EncodeDeleteCTFEventRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.DeleteCTFEventPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "DeleteCTFEvent", "*admin.DeleteCTFEventPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeDeleteCTFEventResponse returns a decoder for responses returned by the
+// admin DeleteCTFEvent endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeDeleteCTFEventResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeDeleteCTFEventResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body DeleteCTFEventUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteCTFEvent", err)
+			}
+			err = ValidateDeleteCTFEventUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteCTFEvent", err)
+			}
+			return nil, NewDeleteCTFEventUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body DeleteCTFEventNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteCTFEvent", err)
+			}
+			err = ValidateDeleteCTFEventNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteCTFEvent", err)
+			}
+			return nil, NewDeleteCTFEventNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body DeleteCTFEventBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteCTFEvent", err)
+			}
+			err = ValidateDeleteCTFEventBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteCTFEvent", err)
+			}
+			return nil, NewDeleteCTFEventBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "DeleteCTFEvent", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildCreateCTFEventImportTokenRequest instantiates a HTTP request object
+// with method and path set to call the "admin" service
+// "CreateCTFEventImportToken" endpoint
+func (c *Client) BuildCreateCTFEventImportTokenRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateCTFEventImportTokenAdminPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "CreateCTFEventImportToken", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeCreateCTFEventImportTokenRequest returns an encoder for requests sent
+// to the admin CreateCTFEventImportToken server.
+func EncodeCreateCTFEventImportTokenRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.CreateCTFEventImportTokenPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "CreateCTFEventImportToken", "*admin.CreateCTFEventImportTokenPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewCreateCTFEventImportTokenRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "CreateCTFEventImportToken", err)
+		}
+		return nil
+	}
+}
+
+// DecodeCreateCTFEventImportTokenResponse returns a decoder for responses
+// returned by the admin CreateCTFEventImportToken endpoint. restoreBody
+// controls whether the response body should be restored after having been read.
+// DecodeCreateCTFEventImportTokenResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeCreateCTFEventImportTokenResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body CreateCTFEventImportTokenResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFEventImportToken", err)
+			}
+			err = ValidateCreateCTFEventImportTokenResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFEventImportToken", err)
+			}
+			res := NewCreateCTFEventImportTokenResultOK(&body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body CreateCTFEventImportTokenUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFEventImportToken", err)
+			}
+			err = ValidateCreateCTFEventImportTokenUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFEventImportToken", err)
+			}
+			return nil, NewCreateCTFEventImportTokenUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body CreateCTFEventImportTokenNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFEventImportToken", err)
+			}
+			err = ValidateCreateCTFEventImportTokenNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFEventImportToken", err)
+			}
+			return nil, NewCreateCTFEventImportTokenNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body CreateCTFEventImportTokenBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFEventImportToken", err)
+			}
+			err = ValidateCreateCTFEventImportTokenBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFEventImportToken", err)
+			}
+			return nil, NewCreateCTFEventImportTokenBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "CreateCTFEventImportToken", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView builds a
 // value of type *adminviews.SsmAdminChallengeView from a value of type
 // *SsmAdminChallengeResponse.
@@ -1753,6 +2240,7 @@ func unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView(v *SsmA
 		Score:       v.Score,
 		PublishAt:   v.PublishAt,
 		Solves:      v.Solves,
+		CtfEventID:  v.CtfEventID,
 		CategoryID:  v.CategoryID,
 	}
 	if v.Services != nil {
@@ -1942,6 +2430,17 @@ func marshalImportChallServiceRequestBodyToAdminImportChallService(v *ImportChal
 	res := &admin.ImportChallService{
 		UserDisplay: v.UserDisplay,
 		Hyperlink:   v.Hyperlink,
+	}
+
+	return res
+}
+
+// unmarshalCTFEventResponseToAdminCTFEvent builds a value of type
+// *admin.CTFEvent from a value of type *CTFEventResponse.
+func unmarshalCTFEventResponseToAdminCTFEvent(v *CTFEventResponse) *admin.CTFEvent {
+	res := &admin.CTFEvent{
+		ID:   *v.ID,
+		Name: *v.Name,
 	}
 
 	return res

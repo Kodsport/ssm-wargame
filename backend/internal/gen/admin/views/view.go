@@ -40,7 +40,9 @@ type SsmAdminChallengeView struct {
 	// unix timestamp
 	PublishAt *int64
 	// The numer of people who solved the challenge
-	Solves     *int
+	Solves *int
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string
 	Flags      []*AdminChallengeFlagView
 	CategoryID *string
 	Authors    []string
@@ -79,6 +81,7 @@ var (
 			"files",
 			"publish_at",
 			"solves",
+			"ctf_event_id",
 			"flags",
 			"category_id",
 			"authors",
@@ -97,6 +100,7 @@ var (
 			"files",
 			"publish_at",
 			"solves",
+			"ctf_event_id",
 			"flags",
 			"category_id",
 			"authors",
@@ -170,6 +174,9 @@ func ValidateSsmAdminChallengeView(result *SsmAdminChallengeView) (err error) {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
+	}
+	if result.CtfEventID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.ctf_event_id", *result.CtfEventID, goa.FormatUUID))
 	}
 	for _, e := range result.Flags {
 		if e != nil {

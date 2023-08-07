@@ -49,6 +49,7 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("files")
 	Attribute("publish_at")
 	Attribute("solves")
+	Attribute("ctf_event_id")
 
 	Attribute("files", ArrayOf(AdminChallengeFile))
 	Attribute("flags", ArrayOf(AdminChallengeFlag))

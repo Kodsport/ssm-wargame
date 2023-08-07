@@ -96,6 +96,18 @@ type ChalltoolsImportRequestBody struct {
 	Services         []*ImportChallServiceRequestBody `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
 }
 
+// CreateCTFEventRequestBody is the type of the "admin" service
+// "CreateCTFEvent" endpoint HTTP request body.
+type CreateCTFEventRequestBody struct {
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+}
+
+// CreateCTFEventImportTokenRequestBody is the type of the "admin" service
+// "CreateCTFEventImportToken" endpoint HTTP request body.
+type CreateCTFEventImportTokenRequestBody struct {
+	EventID *string `form:"event_id,omitempty" json:"event_id,omitempty" xml:"event_id,omitempty"`
+}
+
 // SsmAdminChallengeResponseCollection is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
 type SsmAdminChallengeResponseCollection []*SsmAdminChallengeResponse
@@ -125,6 +137,16 @@ type ListUsersResponseBody []*SsmUserResponse
 // ListCategoriesResponseBody is the type of the "admin" service
 // "ListCategories" endpoint HTTP response body.
 type ListCategoriesResponseBody []*CategoryResponse
+
+// ListCTFEventsResponseBody is the type of the "admin" service "ListCTFEvents"
+// endpoint HTTP response body.
+type ListCTFEventsResponseBody []*CTFEventResponse
+
+// CreateCTFEventImportTokenResponseBody is the type of the "admin" service
+// "CreateCTFEventImportToken" endpoint HTTP response body.
+type CreateCTFEventImportTokenResponseBody struct {
+	Token string `form:"token" json:"token" xml:"token"`
+}
 
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "unauthorized" error.
@@ -894,6 +916,225 @@ type ChalltoolsImportBadRequestResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// ListCTFEventsUnauthorizedResponseBody is the type of the "admin" service
+// "ListCTFEvents" endpoint HTTP response body for the "unauthorized" error.
+type ListCTFEventsUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// ListCTFEventsNotFoundResponseBody is the type of the "admin" service
+// "ListCTFEvents" endpoint HTTP response body for the "not_found" error.
+type ListCTFEventsNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// ListCTFEventsBadRequestResponseBody is the type of the "admin" service
+// "ListCTFEvents" endpoint HTTP response body for the "bad_request" error.
+type ListCTFEventsBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFEventUnauthorizedResponseBody is the type of the "admin" service
+// "CreateCTFEvent" endpoint HTTP response body for the "unauthorized" error.
+type CreateCTFEventUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFEventNotFoundResponseBody is the type of the "admin" service
+// "CreateCTFEvent" endpoint HTTP response body for the "not_found" error.
+type CreateCTFEventNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFEventBadRequestResponseBody is the type of the "admin" service
+// "CreateCTFEvent" endpoint HTTP response body for the "bad_request" error.
+type CreateCTFEventBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteCTFEventUnauthorizedResponseBody is the type of the "admin" service
+// "DeleteCTFEvent" endpoint HTTP response body for the "unauthorized" error.
+type DeleteCTFEventUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteCTFEventNotFoundResponseBody is the type of the "admin" service
+// "DeleteCTFEvent" endpoint HTTP response body for the "not_found" error.
+type DeleteCTFEventNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteCTFEventBadRequestResponseBody is the type of the "admin" service
+// "DeleteCTFEvent" endpoint HTTP response body for the "bad_request" error.
+type DeleteCTFEventBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFEventImportTokenUnauthorizedResponseBody is the type of the "admin"
+// service "CreateCTFEventImportToken" endpoint HTTP response body for the
+// "unauthorized" error.
+type CreateCTFEventImportTokenUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFEventImportTokenNotFoundResponseBody is the type of the "admin"
+// service "CreateCTFEventImportToken" endpoint HTTP response body for the
+// "not_found" error.
+type CreateCTFEventImportTokenNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFEventImportTokenBadRequestResponseBody is the type of the "admin"
+// service "CreateCTFEventImportToken" endpoint HTTP response body for the
+// "bad_request" error.
+type CreateCTFEventImportTokenBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
 	ID string `form:"id" json:"id" xml:"id"`
@@ -910,7 +1151,9 @@ type SsmAdminChallengeResponse struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The numer of people who solved the challenge
-	Solves     int                           `form:"solves" json:"solves" xml:"solves"`
+	Solves int `form:"solves" json:"solves" xml:"solves"`
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string                       `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	Flags      []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
 	CategoryID string                        `form:"category_id" json:"category_id" xml:"category_id"`
 	Authors    []string                      `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
@@ -973,6 +1216,12 @@ type SsmUserResponse struct {
 
 // CategoryResponse is used to define fields on response body types.
 type CategoryResponse struct {
+	ID   string `form:"id" json:"id" xml:"id"`
+	Name string `form:"name" json:"name" xml:"name"`
+}
+
+// CTFEventResponse is used to define fields on response body types.
+type CTFEventResponse struct {
 	ID   string `form:"id" json:"id" xml:"id"`
 	Name string `form:"name" json:"name" xml:"name"`
 }
@@ -1053,6 +1302,26 @@ func NewListCategoriesResponseBody(res []*admin.Category) ListCategoriesResponse
 	body := make([]*CategoryResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalAdminCategoryToCategoryResponse(val)
+	}
+	return body
+}
+
+// NewListCTFEventsResponseBody builds the HTTP response body from the result
+// of the "ListCTFEvents" endpoint of the "admin" service.
+func NewListCTFEventsResponseBody(res []*admin.CTFEvent) ListCTFEventsResponseBody {
+	body := make([]*CTFEventResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalAdminCTFEventToCTFEventResponse(val)
+	}
+	return body
+}
+
+// NewCreateCTFEventImportTokenResponseBody builds the HTTP response body from
+// the result of the "CreateCTFEventImportToken" endpoint of the "admin"
+// service.
+func NewCreateCTFEventImportTokenResponseBody(res *admin.CreateCTFEventImportTokenResult) *CreateCTFEventImportTokenResponseBody {
+	body := &CreateCTFEventImportTokenResponseBody{
+		Token: res.Token,
 	}
 	return body
 }
@@ -1657,6 +1926,177 @@ func NewChalltoolsImportBadRequestResponseBody(res *goa.ServiceError) *Challtool
 	return body
 }
 
+// NewListCTFEventsUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "ListCTFEvents" endpoint of the "admin" service.
+func NewListCTFEventsUnauthorizedResponseBody(res *goa.ServiceError) *ListCTFEventsUnauthorizedResponseBody {
+	body := &ListCTFEventsUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewListCTFEventsNotFoundResponseBody builds the HTTP response body from the
+// result of the "ListCTFEvents" endpoint of the "admin" service.
+func NewListCTFEventsNotFoundResponseBody(res *goa.ServiceError) *ListCTFEventsNotFoundResponseBody {
+	body := &ListCTFEventsNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewListCTFEventsBadRequestResponseBody builds the HTTP response body from
+// the result of the "ListCTFEvents" endpoint of the "admin" service.
+func NewListCTFEventsBadRequestResponseBody(res *goa.ServiceError) *ListCTFEventsBadRequestResponseBody {
+	body := &ListCTFEventsBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFEventUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "CreateCTFEvent" endpoint of the "admin" service.
+func NewCreateCTFEventUnauthorizedResponseBody(res *goa.ServiceError) *CreateCTFEventUnauthorizedResponseBody {
+	body := &CreateCTFEventUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFEventNotFoundResponseBody builds the HTTP response body from the
+// result of the "CreateCTFEvent" endpoint of the "admin" service.
+func NewCreateCTFEventNotFoundResponseBody(res *goa.ServiceError) *CreateCTFEventNotFoundResponseBody {
+	body := &CreateCTFEventNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFEventBadRequestResponseBody builds the HTTP response body from
+// the result of the "CreateCTFEvent" endpoint of the "admin" service.
+func NewCreateCTFEventBadRequestResponseBody(res *goa.ServiceError) *CreateCTFEventBadRequestResponseBody {
+	body := &CreateCTFEventBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteCTFEventUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "DeleteCTFEvent" endpoint of the "admin" service.
+func NewDeleteCTFEventUnauthorizedResponseBody(res *goa.ServiceError) *DeleteCTFEventUnauthorizedResponseBody {
+	body := &DeleteCTFEventUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteCTFEventNotFoundResponseBody builds the HTTP response body from the
+// result of the "DeleteCTFEvent" endpoint of the "admin" service.
+func NewDeleteCTFEventNotFoundResponseBody(res *goa.ServiceError) *DeleteCTFEventNotFoundResponseBody {
+	body := &DeleteCTFEventNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteCTFEventBadRequestResponseBody builds the HTTP response body from
+// the result of the "DeleteCTFEvent" endpoint of the "admin" service.
+func NewDeleteCTFEventBadRequestResponseBody(res *goa.ServiceError) *DeleteCTFEventBadRequestResponseBody {
+	body := &DeleteCTFEventBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFEventImportTokenUnauthorizedResponseBody builds the HTTP
+// response body from the result of the "CreateCTFEventImportToken" endpoint of
+// the "admin" service.
+func NewCreateCTFEventImportTokenUnauthorizedResponseBody(res *goa.ServiceError) *CreateCTFEventImportTokenUnauthorizedResponseBody {
+	body := &CreateCTFEventImportTokenUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFEventImportTokenNotFoundResponseBody builds the HTTP response
+// body from the result of the "CreateCTFEventImportToken" endpoint of the
+// "admin" service.
+func NewCreateCTFEventImportTokenNotFoundResponseBody(res *goa.ServiceError) *CreateCTFEventImportTokenNotFoundResponseBody {
+	body := &CreateCTFEventImportTokenNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFEventImportTokenBadRequestResponseBody builds the HTTP response
+// body from the result of the "CreateCTFEventImportToken" endpoint of the
+// "admin" service.
+func NewCreateCTFEventImportTokenBadRequestResponseBody(res *goa.ServiceError) *CreateCTFEventImportTokenBadRequestResponseBody {
+	body := &CreateCTFEventImportTokenBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewListChallengesPayload builds a admin service ListChallenges endpoint
 // payload.
 func NewListChallengesPayload(token string) *admin.ListChallengesPayload {
@@ -1864,6 +2304,47 @@ func NewChalltoolsImportPayload(body *ChalltoolsImportRequestBody, importToken s
 	return v
 }
 
+// NewListCTFEventsPayload builds a admin service ListCTFEvents endpoint
+// payload.
+func NewListCTFEventsPayload(token string) *admin.ListCTFEventsPayload {
+	v := &admin.ListCTFEventsPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewCreateCTFEventPayload builds a admin service CreateCTFEvent endpoint
+// payload.
+func NewCreateCTFEventPayload(body *CreateCTFEventRequestBody, token string) *admin.CreateCTFEventPayload {
+	v := &admin.CreateCTFEventPayload{
+		Name: *body.Name,
+	}
+	v.Token = token
+
+	return v
+}
+
+// NewDeleteCTFEventPayload builds a admin service DeleteCTFEvent endpoint
+// payload.
+func NewDeleteCTFEventPayload(id string, token string) *admin.DeleteCTFEventPayload {
+	v := &admin.DeleteCTFEventPayload{}
+	v.ID = id
+	v.Token = token
+
+	return v
+}
+
+// NewCreateCTFEventImportTokenPayload builds a admin service
+// CreateCTFEventImportToken endpoint payload.
+func NewCreateCTFEventImportTokenPayload(body *CreateCTFEventImportTokenRequestBody, token string) *admin.CreateCTFEventImportTokenPayload {
+	v := &admin.CreateCTFEventImportTokenPayload{
+		EventID: body.EventID,
+	}
+	v.Token = token
+
+	return v
+}
+
 // ValidateCreateChallengeRequestBody runs the validations defined on
 // CreateChallengeRequestBody
 func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err error) {
@@ -1990,6 +2471,24 @@ func ValidateChalltoolsImportRequestBody(body *ChalltoolsImportRequestBody) (err
 				err = goa.MergeErrors(err, err2)
 			}
 		}
+	}
+	return
+}
+
+// ValidateCreateCTFEventRequestBody runs the validations defined on
+// CreateCTFEventRequestBody
+func ValidateCreateCTFEventRequestBody(body *CreateCTFEventRequestBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	return
+}
+
+// ValidateCreateCTFEventImportTokenRequestBody runs the validations defined on
+// CreateCTFEventImportTokenRequestBody
+func ValidateCreateCTFEventImportTokenRequestBody(body *CreateCTFEventImportTokenRequestBody) (err error) {
+	if body.EventID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.event_id", *body.EventID, goa.FormatUUID))
 	}
 	return
 }

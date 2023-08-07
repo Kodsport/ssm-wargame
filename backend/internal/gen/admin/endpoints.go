@@ -16,20 +16,24 @@ import (
 
 // Endpoints wraps the "admin" service endpoints.
 type Endpoints struct {
-	ListChallenges         goa.Endpoint
-	GetChallengeMeta       goa.Endpoint
-	CreateChallenge        goa.Endpoint
-	UpdateChallenge        goa.Endpoint
-	PresignChallFileUpload goa.Endpoint
-	ListMonthlyChallenges  goa.Endpoint
-	DeleteMonthlyChallenge goa.Endpoint
-	DeleteFile             goa.Endpoint
-	CreateMonthlyChallenge goa.Endpoint
-	ListUsers              goa.Endpoint
-	AddFlag                goa.Endpoint
-	DeleteFlag             goa.Endpoint
-	ListCategories         goa.Endpoint
-	ChalltoolsImport       goa.Endpoint
+	ListChallenges            goa.Endpoint
+	GetChallengeMeta          goa.Endpoint
+	CreateChallenge           goa.Endpoint
+	UpdateChallenge           goa.Endpoint
+	PresignChallFileUpload    goa.Endpoint
+	ListMonthlyChallenges     goa.Endpoint
+	DeleteMonthlyChallenge    goa.Endpoint
+	DeleteFile                goa.Endpoint
+	CreateMonthlyChallenge    goa.Endpoint
+	ListUsers                 goa.Endpoint
+	AddFlag                   goa.Endpoint
+	DeleteFlag                goa.Endpoint
+	ListCategories            goa.Endpoint
+	ChalltoolsImport          goa.Endpoint
+	ListCTFEvents             goa.Endpoint
+	CreateCTFEvent            goa.Endpoint
+	DeleteCTFEvent            goa.Endpoint
+	CreateCTFEventImportToken goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "admin" service with endpoints.
@@ -37,20 +41,24 @@ func NewEndpoints(s Service) *Endpoints {
 	// Casting service to Auther interface
 	a := s.(Auther)
 	return &Endpoints{
-		ListChallenges:         NewListChallengesEndpoint(s, a.JWTAuth),
-		GetChallengeMeta:       NewGetChallengeMetaEndpoint(s, a.JWTAuth),
-		CreateChallenge:        NewCreateChallengeEndpoint(s, a.JWTAuth),
-		UpdateChallenge:        NewUpdateChallengeEndpoint(s, a.JWTAuth),
-		PresignChallFileUpload: NewPresignChallFileUploadEndpoint(s, a.JWTAuth),
-		ListMonthlyChallenges:  NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
-		DeleteMonthlyChallenge: NewDeleteMonthlyChallengeEndpoint(s, a.JWTAuth),
-		DeleteFile:             NewDeleteFileEndpoint(s, a.JWTAuth),
-		CreateMonthlyChallenge: NewCreateMonthlyChallengeEndpoint(s, a.JWTAuth),
-		ListUsers:              NewListUsersEndpoint(s, a.JWTAuth),
-		AddFlag:                NewAddFlagEndpoint(s, a.JWTAuth),
-		DeleteFlag:             NewDeleteFlagEndpoint(s, a.JWTAuth),
-		ListCategories:         NewListCategoriesEndpoint(s, a.JWTAuth),
-		ChalltoolsImport:       NewChalltoolsImportEndpoint(s, a.APIKeyAuth),
+		ListChallenges:            NewListChallengesEndpoint(s, a.JWTAuth),
+		GetChallengeMeta:          NewGetChallengeMetaEndpoint(s, a.JWTAuth),
+		CreateChallenge:           NewCreateChallengeEndpoint(s, a.JWTAuth),
+		UpdateChallenge:           NewUpdateChallengeEndpoint(s, a.JWTAuth),
+		PresignChallFileUpload:    NewPresignChallFileUploadEndpoint(s, a.JWTAuth),
+		ListMonthlyChallenges:     NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
+		DeleteMonthlyChallenge:    NewDeleteMonthlyChallengeEndpoint(s, a.JWTAuth),
+		DeleteFile:                NewDeleteFileEndpoint(s, a.JWTAuth),
+		CreateMonthlyChallenge:    NewCreateMonthlyChallengeEndpoint(s, a.JWTAuth),
+		ListUsers:                 NewListUsersEndpoint(s, a.JWTAuth),
+		AddFlag:                   NewAddFlagEndpoint(s, a.JWTAuth),
+		DeleteFlag:                NewDeleteFlagEndpoint(s, a.JWTAuth),
+		ListCategories:            NewListCategoriesEndpoint(s, a.JWTAuth),
+		ChalltoolsImport:          NewChalltoolsImportEndpoint(s),
+		ListCTFEvents:             NewListCTFEventsEndpoint(s, a.JWTAuth),
+		CreateCTFEvent:            NewCreateCTFEventEndpoint(s, a.JWTAuth),
+		DeleteCTFEvent:            NewDeleteCTFEventEndpoint(s, a.JWTAuth),
+		CreateCTFEventImportToken: NewCreateCTFEventImportTokenEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -70,6 +78,10 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.DeleteFlag = m(e.DeleteFlag)
 	e.ListCategories = m(e.ListCategories)
 	e.ChalltoolsImport = m(e.ChalltoolsImport)
+	e.ListCTFEvents = m(e.ListCTFEvents)
+	e.CreateCTFEvent = m(e.CreateCTFEvent)
+	e.DeleteCTFEvent = m(e.DeleteCTFEvent)
+	e.CreateCTFEventImportToken = m(e.CreateCTFEventImportToken)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -326,19 +338,85 @@ func NewListCategoriesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 
 // NewChalltoolsImportEndpoint returns an endpoint function that calls the
 // method "ChalltoolsImport" of service "admin".
-func NewChalltoolsImportEndpoint(s Service, authAPIKeyFn security.AuthAPIKeyFunc) goa.Endpoint {
+func NewChalltoolsImportEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*ChalltoolsImportPayload)
+		return nil, s.ChalltoolsImport(ctx, p)
+	}
+}
+
+// NewListCTFEventsEndpoint returns an endpoint function that calls the method
+// "ListCTFEvents" of service "admin".
+func NewListCTFEventsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListCTFEventsPayload)
 		var err error
-		sc := security.APIKeyScheme{
-			Name:           "import_token",
+		sc := security.JWTScheme{
+			Name:           "jwt",
 			Scopes:         []string{},
 			RequiredScopes: []string{},
 		}
-		ctx, err = authAPIKeyFn(ctx, p.ImportToken, &sc)
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
 		if err != nil {
 			return nil, err
 		}
-		return nil, s.ChalltoolsImport(ctx, p)
+		return s.ListCTFEvents(ctx, p)
+	}
+}
+
+// NewCreateCTFEventEndpoint returns an endpoint function that calls the method
+// "CreateCTFEvent" of service "admin".
+func NewCreateCTFEventEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CreateCTFEventPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.CreateCTFEvent(ctx, p)
+	}
+}
+
+// NewDeleteCTFEventEndpoint returns an endpoint function that calls the method
+// "DeleteCTFEvent" of service "admin".
+func NewDeleteCTFEventEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*DeleteCTFEventPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.DeleteCTFEvent(ctx, p)
+	}
+}
+
+// NewCreateCTFEventImportTokenEndpoint returns an endpoint function that calls
+// the method "CreateCTFEventImportToken" of service "admin".
+func NewCreateCTFEventImportTokenEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CreateCTFEventImportTokenPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.CreateCTFEventImportToken(ctx, p)
 	}
 }

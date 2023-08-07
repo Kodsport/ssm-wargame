@@ -27,7 +27,7 @@ import (
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-events|list-monthly-challenges|submit-flag|school-scoreboard)
-admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag|list-categories|challtools-import)
+admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token)
 user (get-self|join-school|leave-school|search-schools)
 `
 }
@@ -135,6 +135,21 @@ func ParseEndpoint(
 		adminChalltoolsImportBodyFlag        = adminChalltoolsImportFlags.String("body", "REQUIRED", "")
 		adminChalltoolsImportImportTokenFlag = adminChalltoolsImportFlags.String("import-token", "REQUIRED", "")
 
+		adminListCTFEventsFlags     = flag.NewFlagSet("list-ctf-events", flag.ExitOnError)
+		adminListCTFEventsTokenFlag = adminListCTFEventsFlags.String("token", "REQUIRED", "")
+
+		adminCreateCTFEventFlags     = flag.NewFlagSet("create-ctf-event", flag.ExitOnError)
+		adminCreateCTFEventBodyFlag  = adminCreateCTFEventFlags.String("body", "REQUIRED", "")
+		adminCreateCTFEventTokenFlag = adminCreateCTFEventFlags.String("token", "REQUIRED", "")
+
+		adminDeleteCTFEventFlags     = flag.NewFlagSet("delete-ctf-event", flag.ExitOnError)
+		adminDeleteCTFEventIDFlag    = adminDeleteCTFEventFlags.String("id", "REQUIRED", "")
+		adminDeleteCTFEventTokenFlag = adminDeleteCTFEventFlags.String("token", "REQUIRED", "")
+
+		adminCreateCTFEventImportTokenFlags     = flag.NewFlagSet("create-ctf-event-import-token", flag.ExitOnError)
+		adminCreateCTFEventImportTokenBodyFlag  = adminCreateCTFEventImportTokenFlags.String("body", "REQUIRED", "")
+		adminCreateCTFEventImportTokenTokenFlag = adminCreateCTFEventImportTokenFlags.String("token", "REQUIRED", "")
+
 		userFlags = flag.NewFlagSet("user", flag.ContinueOnError)
 
 		userGetSelfFlags     = flag.NewFlagSet("get-self", flag.ExitOnError)
@@ -177,6 +192,10 @@ func ParseEndpoint(
 	adminDeleteFlagFlags.Usage = adminDeleteFlagUsage
 	adminListCategoriesFlags.Usage = adminListCategoriesUsage
 	adminChalltoolsImportFlags.Usage = adminChalltoolsImportUsage
+	adminListCTFEventsFlags.Usage = adminListCTFEventsUsage
+	adminCreateCTFEventFlags.Usage = adminCreateCTFEventUsage
+	adminDeleteCTFEventFlags.Usage = adminDeleteCTFEventUsage
+	adminCreateCTFEventImportTokenFlags.Usage = adminCreateCTFEventImportTokenUsage
 
 	userFlags.Usage = userUsage
 	userGetSelfFlags.Usage = userGetSelfUsage
@@ -295,6 +314,18 @@ func ParseEndpoint(
 			case "challtools-import":
 				epf = adminChalltoolsImportFlags
 
+			case "list-ctf-events":
+				epf = adminListCTFEventsFlags
+
+			case "create-ctf-event":
+				epf = adminCreateCTFEventFlags
+
+			case "delete-ctf-event":
+				epf = adminDeleteCTFEventFlags
+
+			case "create-ctf-event-import-token":
+				epf = adminCreateCTFEventImportTokenFlags
+
 			}
 
 		case "user":
@@ -407,6 +438,18 @@ func ParseEndpoint(
 			case "challtools-import":
 				endpoint = c.ChalltoolsImport()
 				data, err = adminc.BuildChalltoolsImportPayload(*adminChalltoolsImportBodyFlag, *adminChalltoolsImportImportTokenFlag)
+			case "list-ctf-events":
+				endpoint = c.ListCTFEvents()
+				data, err = adminc.BuildListCTFEventsPayload(*adminListCTFEventsTokenFlag)
+			case "create-ctf-event":
+				endpoint = c.CreateCTFEvent()
+				data, err = adminc.BuildCreateCTFEventPayload(*adminCreateCTFEventBodyFlag, *adminCreateCTFEventTokenFlag)
+			case "delete-ctf-event":
+				endpoint = c.DeleteCTFEvent()
+				data, err = adminc.BuildDeleteCTFEventPayload(*adminDeleteCTFEventIDFlag, *adminDeleteCTFEventTokenFlag)
+			case "create-ctf-event-import-token":
+				endpoint = c.CreateCTFEventImportToken()
+				data, err = adminc.BuildCreateCTFEventImportTokenPayload(*adminCreateCTFEventImportTokenBodyFlag, *adminCreateCTFEventImportTokenTokenFlag)
 			}
 		case "user":
 			c := userc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -569,6 +612,10 @@ COMMAND:
     delete-flag: DeleteFlag implements DeleteFlag.
     list-categories: ListCategories implements ListCategories.
     challtools-import: ChalltoolsImport implements ChalltoolsImport.
+    list-ctf-events: ListCTFEvents implements ListCTFEvents.
+    create-ctf-event: CreateCTFEvent implements CreateCTFEvent.
+    delete-ctf-event: DeleteCTFEvent implements DeleteCTFEvent.
+    create-ctf-event-import-token: CreateCTFEventImportToken implements CreateCTFEventImportToken.
 
 Additional help:
     %[1]s admin COMMAND --help
@@ -797,10 +844,6 @@ Example:
          {
             "flag": "fl4g_l0l",
             "type": "regex"
-         },
-         {
-            "flag": "fl4g_l0l",
-            "type": "regex"
          }
       ],
       "order": 5,
@@ -813,14 +856,61 @@ Example:
          {
             "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"
-         },
-         {
-            "hyperlink": true,
-            "user_display": "nc 0.0.0.0 1234"
          }
       ],
       "title": "DNS 101"
-   }' --import-token "Ut eius voluptatem ut officia."
+   }' --import-token "ctfimp_7ad44accdcca4c5ea10ea7ea61bec01b_efc6066f6ca0c6cd"
+`, os.Args[0])
+}
+
+func adminListCTFEventsUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin list-ctf-events -token STRING
+
+ListCTFEvents implements ListCTFEvents.
+    -token STRING: 
+
+Example:
+    %[1]s admin list-ctf-events --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminCreateCTFEventUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin create-ctf-event -body JSON -token STRING
+
+CreateCTFEvent implements CreateCTFEvent.
+    -body JSON: 
+    -token STRING: 
+
+Example:
+    %[1]s admin create-ctf-event --body '{
+      "name": "Säkerhet-SM 2023"
+   }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminDeleteCTFEventUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin delete-ctf-event -id STRING -token STRING
+
+DeleteCTFEvent implements DeleteCTFEvent.
+    -id STRING: 
+    -token STRING: 
+
+Example:
+    %[1]s admin delete-ctf-event --id "71333e34-4c6b-483e-b3c7-c77d73008cca" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminCreateCTFEventImportTokenUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin create-ctf-event-import-token -body JSON -token STRING
+
+CreateCTFEventImportToken implements CreateCTFEventImportToken.
+    -body JSON: 
+    -token STRING: 
+
+Example:
+    %[1]s admin create-ctf-event-import-token --body '{
+      "event_id": "e3bb4dc5-9479-42ce-aed3-b41e8139fccb"
+   }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

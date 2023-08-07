@@ -32,9 +32,6 @@ func NewService(conn *sql.DB, log *zap.Logger, auther spec.Auther, s3c *s3.S3, c
 	}
 }
 
-func (s *service) APIKeyAuth(ctx context.Context, token string, schema *security.APIKeyScheme) (context.Context, error) {
-	return s.auther.APIKeyAuth(ctx, token, schema)
-}
 func (s *service) JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error) {
 	ctx, err := s.auther.JWTAuth(ctx, token, schema)
 	if err != nil {

@@ -45,14 +45,20 @@ type Service interface {
 	ListCategories(context.Context, *ListCategoriesPayload) (res []*Category, err error)
 	// ChalltoolsImport implements ChalltoolsImport.
 	ChalltoolsImport(context.Context, *ChalltoolsImportPayload) (err error)
+	// ListCTFEvents implements ListCTFEvents.
+	ListCTFEvents(context.Context, *ListCTFEventsPayload) (res []*CTFEvent, err error)
+	// CreateCTFEvent implements CreateCTFEvent.
+	CreateCTFEvent(context.Context, *CreateCTFEventPayload) (err error)
+	// DeleteCTFEvent implements DeleteCTFEvent.
+	DeleteCTFEvent(context.Context, *DeleteCTFEventPayload) (err error)
+	// CreateCTFEventImportToken implements CreateCTFEventImportToken.
+	CreateCTFEventImportToken(context.Context, *CreateCTFEventImportTokenPayload) (res *CreateCTFEventImportTokenResult, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
 type Auther interface {
 	// JWTAuth implements the authorization logic for the JWT security scheme.
 	JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error)
-	// APIKeyAuth implements the authorization logic for the APIKey security scheme.
-	APIKeyAuth(ctx context.Context, key string, schema *security.APIKeyScheme) (context.Context, error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -63,7 +69,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [14]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport"}
+var MethodNames = [18]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -231,6 +237,39 @@ type ChalltoolsImportPayload struct {
 	Services         []*ImportChallService
 }
 
+// ListCTFEventsPayload is the payload type of the admin service ListCTFEvents
+// method.
+type ListCTFEventsPayload struct {
+	Token string
+}
+
+// CreateCTFEventPayload is the payload type of the admin service
+// CreateCTFEvent method.
+type CreateCTFEventPayload struct {
+	Name  string
+	Token string
+}
+
+// DeleteCTFEventPayload is the payload type of the admin service
+// DeleteCTFEvent method.
+type DeleteCTFEventPayload struct {
+	ID    string
+	Token string
+}
+
+// CreateCTFEventImportTokenPayload is the payload type of the admin service
+// CreateCTFEventImportToken method.
+type CreateCTFEventImportTokenPayload struct {
+	EventID *string
+	Token   string
+}
+
+// CreateCTFEventImportTokenResult is the result type of the admin service
+// CreateCTFEventImportToken method.
+type CreateCTFEventImportTokenResult struct {
+	Token string
+}
+
 // A Wargame challenge
 type SsmAdminChallenge struct {
 	ID string
@@ -247,7 +286,9 @@ type SsmAdminChallenge struct {
 	// unix timestamp
 	PublishAt *int64
 	// The numer of people who solved the challenge
-	Solves     int
+	Solves int
+	// The ID of the CTF the challenge was taken from
+	CtfEventID *string
 	Flags      []*AdminChallengeFlag
 	CategoryID string
 	Authors    []string
@@ -313,6 +354,11 @@ type ImportChallFlag struct {
 type ImportChallService struct {
 	UserDisplay string
 	Hyperlink   bool
+}
+
+type CTFEvent struct {
+	ID   string
+	Name string
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.
@@ -382,7 +428,8 @@ func newSsmAdminChallengeCollectionView(res SsmAdminChallengeCollection) adminvi
 // type SsmAdminChallenge.
 func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChallenge {
 	res := &SsmAdminChallenge{
-		PublishAt: vres.PublishAt,
+		PublishAt:  vres.PublishAt,
+		CtfEventID: vres.CtfEventID,
 	}
 	if vres.ID != nil {
 		res.ID = *vres.ID
@@ -443,6 +490,7 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 		Score:       &res.Score,
 		PublishAt:   res.PublishAt,
 		Solves:      &res.Solves,
+		CtfEventID:  res.CtfEventID,
 		CategoryID:  &res.CategoryID,
 	}
 	if res.Services != nil {
