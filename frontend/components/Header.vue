@@ -70,11 +70,11 @@
             </li>
           </ul>
           <template class="d-none d-md-inline">
-            <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">Logga in</a>
-            <a v-else class="btn btn-primary" @click="logout">Logga ut</a>
+            <button v-if="!isAuthenticated" class="btn btn-primary" @click="login">Logga in</button>
+            <button v-else class="btn btn-primary" @click="logout">Logga ut</button>
           </template>
           <template #fallback class="d-none d-md-inline">
-            <a class="btn btn-primary">Logga in</a>
+            <button class="btn btn-primary">Logga in</button>
           </template>
         </client-only>
       </div>
