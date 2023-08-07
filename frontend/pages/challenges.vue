@@ -5,7 +5,6 @@
             Här kan du öva på utmaningar från tidigare års upplagor av Säkerhets-SM.
         </p>
 
-        <ChallengeModal v-if="modalChall" :chall="modalChall" />
         <div class="row pt-4">
 
             <div class="col-3">
@@ -39,7 +38,7 @@
                             <h4 class="text-lowercase">{{ category }}</h4>
                         </div>
 
-                        <div class="row row-cols-5 row-cols-md-5 row-cols-sm-3 g-4 mt-0 mb-2">
+                        <div class="row row-cols-3 row-cols-xl-5 g-4 mt-0 mb-2">
                             <div class="col" v-for="chall in challenges.filter(c => c.category == category)">
                                 <ChallengePreview @click="nav(chall.slug)" :chall="chall" />
                             </div>
@@ -48,26 +47,26 @@
                 </div>
             </div>
         </div>
+        <NuxtPage />
     </div>
 </template>
 
 
 
 <script setup lang="ts">
-import { useChallengeStore } from '../../store/challenges'
+import { useChallengeStore } from '../store/challenges'
 import { storeToRefs } from "pinia";
 
 useHead({
     title: 'SSM - Utmaningar'
 })
 
+
 const challs = useChallengeStore()
 const route = useRoute()
 const router = useRouter()
 
 const { challFilter } = storeToRefs(useChallengeStore())
-
-const modalChall = computed(() => challs.getBySlug(route.params.slug[0]))
 
 onMounted(() => {
     challs.getChallenges()
