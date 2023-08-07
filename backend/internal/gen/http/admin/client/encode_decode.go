@@ -1788,7 +1788,10 @@ func unmarshalChallengeServiceResponseToAdminviewsChallengeServiceView(v *Challe
 	if v == nil {
 		return nil
 	}
-	res := &adminviews.ChallengeServiceView{}
+	res := &adminviews.ChallengeServiceView{
+		UserDisplay: v.UserDisplay,
+		Hyperlink:   v.Hyperlink,
+	}
 
 	return res
 }
@@ -1909,6 +1912,7 @@ func marshalAdminImportChallServiceToImportChallServiceRequestBody(v *admin.Impo
 	}
 	res := &ImportChallServiceRequestBody{
 		UserDisplay: v.UserDisplay,
+		Hyperlink:   v.Hyperlink,
 	}
 
 	return res
@@ -1937,6 +1941,7 @@ func marshalImportChallServiceRequestBodyToAdminImportChallService(v *ImportChal
 	}
 	res := &admin.ImportChallService{
 		UserDisplay: v.UserDisplay,
+		Hyperlink:   v.Hyperlink,
 	}
 
 	return res

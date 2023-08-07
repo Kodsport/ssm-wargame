@@ -102,10 +102,14 @@ paths:
                 publish_at: 1638384718
                 score: 50
                 services:
-                - {}
-                - {}
-                - {}
-                - {}
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
                 slug: pwnme
                 solves: 3
                 title: pwnme
@@ -129,10 +133,14 @@ paths:
                 publish_at: 1638384718
                 score: 50
                 services:
-                - {}
-                - {}
-                - {}
-                - {}
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
                 slug: pwnme
                 solves: 3
                 title: pwnme
@@ -156,10 +164,14 @@ paths:
                 publish_at: 1638384718
                 score: 50
                 services:
-                - {}
-                - {}
-                - {}
-                - {}
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
                 slug: pwnme
                 solves: 3
                 title: pwnme
@@ -183,10 +195,14 @@ paths:
                 publish_at: 1638384718
                 score: 50
                 services:
-                - {}
-                - {}
-                - {}
-                - {}
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
                 slug: pwnme
                 solves: 3
                 title: pwnme
@@ -894,9 +910,12 @@ paths:
               order: 5
               score: 100
               services:
-              - user_display: nc 0.0.0.0 1234
-              - user_display: nc 0.0.0.0 1234
-              - user_display: nc 0.0.0.0 1234
+              - hyperlink: true
+                user_display: nc 0.0.0.0 1234
+              - hyperlink: true
+                user_display: nc 0.0.0.0 1234
+              - hyperlink: true
+                user_display: nc 0.0.0.0 1234
               title: DNS 101
       responses:
         "200":
@@ -1086,8 +1105,10 @@ paths:
                 - FRA
                 score: 50
                 services:
-                - {}
-                - {}
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
                 slug: pwnme
                 solved: true
                 solvers:
@@ -1128,8 +1149,10 @@ paths:
                 - FRA
                 score: 50
                 services:
-                - {}
-                - {}
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
                 slug: pwnme
                 solved: true
                 solvers:
@@ -1272,8 +1295,10 @@ paths:
                   - FRA
                   score: 50
                   services:
-                  - {}
-                  - {}
+                  - hyperlink: true
+                    user_display: nc 0.0.0.0 1234
+                  - hyperlink: true
+                    user_display: nc 0.0.0.0 1234
                   slug: pwnme
                   solved: true
                   solvers:
@@ -1319,8 +1344,10 @@ paths:
                   - FRA
                   score: 50
                   services:
-                  - {}
-                  - {}
+                  - hyperlink: true
+                    user_display: nc 0.0.0.0 1234
+                  - hyperlink: true
+                    user_display: nc 0.0.0.0 1234
                   slug: pwnme
                   solved: true
                   solvers:
@@ -1366,8 +1393,10 @@ paths:
                   - FRA
                   score: 50
                   services:
-                  - {}
-                  - {}
+                  - hyperlink: true
+                    user_display: nc 0.0.0.0 1234
+                  - hyperlink: true
+                    user_display: nc 0.0.0.0 1234
                   slug: pwnme
                   solved: true
                   solvers:
@@ -1631,7 +1660,19 @@ components:
       - submissions
     ChallengeService:
       type: object
-      example: {}
+      properties:
+        hyperlink:
+          type: boolean
+          example: true
+        user_display:
+          type: string
+          example: nc 0.0.0.0 1234
+      example:
+        hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      required:
+      - user_display
+      - hyperlink
     ChallengeSolver:
       type: object
       properties:
@@ -1739,11 +1780,14 @@ components:
         services:
           type: array
           items:
-            $ref: '#/components/schemas/ImportChallService'
+            $ref: '#/components/schemas/ChallengeService'
           example:
-          - user_display: nc 0.0.0.0 1234
-          - user_display: nc 0.0.0.0 1234
-          - user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
         title:
           type: string
           example: DNS 101
@@ -1768,8 +1812,10 @@ components:
         order: 5
         score: 100
         services:
-        - user_display: nc 0.0.0.0 1234
-        - user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         title: DNS 101
       required:
       - title
@@ -1959,14 +2005,7 @@ components:
         type: regex
       required:
       - flag
-    ImportChallService:
-      type: object
-      properties:
-        user_display:
-          type: string
-          example: nc 0.0.0.0 1234
-      example:
-        user_display: nc 0.0.0.0 1234
+      - type
     JoinSchoolRequestBody:
       type: object
       properties:
@@ -2131,10 +2170,14 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
-          - {}
-          - {}
-          - {}
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -2176,9 +2219,12 @@ components:
         publish_at: 1638384718
         score: 50
         services:
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solves: 3
         title: pwnme
@@ -2217,10 +2263,14 @@ components:
         publish_at: 1638384718
         score: 50
         services:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solves: 3
         title: pwnme
@@ -2244,10 +2294,14 @@ components:
         publish_at: 1638384718
         score: 50
         services:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solves: 3
         title: pwnme
@@ -2271,10 +2325,14 @@ components:
         publish_at: 1638384718
         score: 50
         services:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solves: 3
         title: pwnme
@@ -2343,9 +2401,12 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - {}
-          - {}
-          - {}
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -2406,9 +2467,12 @@ components:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
@@ -2463,8 +2527,10 @@ components:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
@@ -2505,8 +2571,10 @@ components:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
@@ -2547,8 +2615,10 @@ components:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
@@ -2695,8 +2765,10 @@ components:
           - FRA
           score: 50
           services:
-          - {}
-          - {}
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           slug: pwnme
           solved: true
           solvers:
@@ -2760,8 +2832,10 @@ components:
           - FRA
           score: 50
           services:
-          - {}
-          - {}
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           slug: pwnme
           solved: true
           solvers:
@@ -2807,8 +2881,10 @@ components:
           - FRA
           score: 50
           services:
-          - {}
-          - {}
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           slug: pwnme
           solved: true
           solvers:
@@ -2854,8 +2930,10 @@ components:
           - FRA
           score: 50
           services:
-          - {}
-          - {}
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           slug: pwnme
           solved: true
           solvers:
@@ -2901,8 +2979,10 @@ components:
           - FRA
           score: 50
           services:
-          - {}
-          - {}
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           slug: pwnme
           solved: true
           solvers:

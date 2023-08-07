@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"regexp"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
@@ -37,10 +39,32 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 		return spec.MakeAlreadySolved(errors.New("already solved"))
 	}
 
-	flagCorrect, err := models.Flags(
+	flags, err := models.Flags(
 		models.FlagWhere.ChallengeID.EQ(challID.String()),
-		models.FlagWhere.Flag.EQ(req.Flag),
-	).Exists(ctx, tx)
+	).All(ctx, tx)
+	if err != nil {
+		s.log.Error("could not get flags", zap.Error(err), utils.C(ctx))
+		return err
+	}
+
+	flagCorrect := false
+	for _, flag := range flags {
+
+		inp := strings.TrimPrefix(strings.TrimSuffix(req.Flag, flag.FlagSuffix), flag.FlagPrefix)
+
+		if flag.Type == "regex" {
+			if regexp.MustCompile(flag.Flag).Match([]byte(inp)) {
+				flagCorrect = true
+				break
+			}
+			continue
+		}
+
+		if flag.Flag == inp {
+			flagCorrect = true
+			break
+		}
+	}
 
 	if err != nil {
 		s.log.Error("FlagExists failed", zap.Error(err), utils.C(ctx))

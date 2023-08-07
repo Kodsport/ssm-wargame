@@ -100,6 +100,8 @@ type SsmChallengeResponse struct {
 
 // ChallengeServiceResponse is used to define fields on response body types.
 type ChallengeServiceResponse struct {
+	UserDisplay *string `form:"user_display,omitempty" json:"user_display,omitempty" xml:"user_display,omitempty"`
+	Hyperlink   *bool   `form:"hyperlink,omitempty" json:"hyperlink,omitempty" xml:"hyperlink,omitempty"`
 }
 
 // ChallengeFilesResponse is used to define fields on response body types.
@@ -313,6 +315,13 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
+	for _, e := range body.Services {
+		if e != nil {
+			if err2 := ValidateChallengeServiceResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
 	for _, e := range body.Files {
 		if e != nil {
 			if err2 := ValidateChallengeFilesResponse(e); err2 != nil {
@@ -336,6 +345,18 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
+	}
+	return
+}
+
+// ValidateChallengeServiceResponse runs the validations defined on
+// ChallengeServiceResponse
+func ValidateChallengeServiceResponse(body *ChallengeServiceResponse) (err error) {
+	if body.UserDisplay == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_display", "body"))
+	}
+	if body.Hyperlink == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("hyperlink", "body"))
 	}
 	return
 }

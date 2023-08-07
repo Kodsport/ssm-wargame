@@ -102,6 +102,8 @@ type SsmChallengeResponse struct {
 
 // ChallengeServiceResponse is used to define fields on response body types.
 type ChallengeServiceResponse struct {
+	UserDisplay string `form:"user_display" json:"user_display" xml:"user_display"`
+	Hyperlink   bool   `form:"hyperlink" json:"hyperlink" xml:"hyperlink"`
 }
 
 // ChallengeFilesResponse is used to define fields on response body types.

@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <div class="col ">
+            <div class="col">
                 <div class="row" v-for="category in categories">
                     <div v-if="challFilter.categoryFilter == '' || category == challFilter.categoryFilter">
 

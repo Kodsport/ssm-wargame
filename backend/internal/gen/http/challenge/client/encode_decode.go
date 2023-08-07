@@ -498,7 +498,10 @@ func unmarshalChallengeServiceResponseToChallengeviewsChallengeServiceView(v *Ch
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.ChallengeServiceView{}
+	res := &challengeviews.ChallengeServiceView{
+		UserDisplay: v.UserDisplay,
+		Hyperlink:   v.Hyperlink,
+	}
 
 	return res
 }

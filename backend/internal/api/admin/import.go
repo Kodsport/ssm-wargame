@@ -124,6 +124,7 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 				Flag:        v.Flag,
 				FlagPrefix:  strDefault(req.FlagFormatPrefix),
 				FlagSuffix:  strDefault(req.FlagFormatSuffix),
+				Type:        v.Type,
 			}
 			err := f.Insert(ctx, tx, boil.Infer())
 			if err != nil {
@@ -165,6 +166,31 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 			})
 			if err != nil {
 				s.log.Error("could not add other authors", zap.Error(err))
+				return err
+			}
+		}
+	}
+
+	// services
+	{
+		_, err = models.ChallengeServices(
+			models.ChallengeServiceWhere.ChallengeID.EQ(req.ChallengeID),
+		).DeleteAll(ctx, tx)
+		if err != nil {
+			s.log.Error("could delete services", zap.Error(err))
+			return err
+		}
+
+		for _, v := range req.Services {
+			f := models.ChallengeService{
+				ID:          uuid.NewString(),
+				ChallengeID: req.ChallengeID,
+				UserDisplay: v.UserDisplay,
+				Hyperlink:   v.Hyperlink,
+			}
+			err = f.Insert(ctx, tx, boil.Infer())
+			if err != nil {
+				s.log.Error("could not insert service", zap.Error(err))
 				return err
 			}
 		}

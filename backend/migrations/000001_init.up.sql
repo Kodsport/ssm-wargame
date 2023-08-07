@@ -55,7 +55,7 @@ CREATE TABLE challenges (
     publish_at TIMESTAMPTZ,
     ctf_event_id UUID REFERENCES ctf_events(id) ON DELETE SET NULL,
     category_id UUID NOT NULL REFERENCES categories(id),
-    other_authors TEXT[] NOT NULL,
+    other_authors TEXT[] NOT NULL DEFAULT '{}',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
@@ -67,7 +67,7 @@ CREATE TABLE challenge_services (
     id UUID PRIMARY KEY,
     challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
     user_display TEXT NOT NULL,
-    hyperlink TEXT NOT NULL,
+    hyperlink BOOLEAN NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );

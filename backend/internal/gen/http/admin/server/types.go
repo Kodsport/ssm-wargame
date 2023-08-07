@@ -918,6 +918,8 @@ type SsmAdminChallengeResponse struct {
 
 // ChallengeServiceResponse is used to define fields on response body types.
 type ChallengeServiceResponse struct {
+	UserDisplay string `form:"user_display" json:"user_display" xml:"user_display"`
+	Hyperlink   bool   `form:"hyperlink" json:"hyperlink" xml:"hyperlink"`
 }
 
 // AdminChallengeFilesResponse is used to define fields on response body types.
@@ -984,6 +986,7 @@ type ImportChallFlagRequestBody struct {
 // ImportChallServiceRequestBody is used to define fields on request body types.
 type ImportChallServiceRequestBody struct {
 	UserDisplay *string `form:"user_display,omitempty" json:"user_display,omitempty" xml:"user_display,omitempty"`
+	Hyperlink   *bool   `form:"hyperlink,omitempty" json:"hyperlink,omitempty" xml:"hyperlink,omitempty"`
 }
 
 // NewSsmAdminChallengeResponseCollection builds the HTTP response body from
@@ -1981,6 +1984,13 @@ func ValidateChalltoolsImportRequestBody(body *ChalltoolsImportRequestBody) (err
 			}
 		}
 	}
+	for _, e := range body.Services {
+		if e != nil {
+			if err2 := ValidateImportChallServiceRequestBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
 	return
 }
 
@@ -1989,6 +1999,21 @@ func ValidateChalltoolsImportRequestBody(body *ChalltoolsImportRequestBody) (err
 func ValidateImportChallFlagRequestBody(body *ImportChallFlagRequestBody) (err error) {
 	if body.Flag == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "body"))
+	}
+	if body.Type == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("type", "body"))
+	}
+	return
+}
+
+// ValidateImportChallServiceRequestBody runs the validations defined on
+// ImportChallServiceRequestBody
+func ValidateImportChallServiceRequestBody(body *ImportChallServiceRequestBody) (err error) {
+	if body.UserDisplay == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_display", "body"))
+	}
+	if body.Hyperlink == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("hyperlink", "body"))
 	}
 	return
 }

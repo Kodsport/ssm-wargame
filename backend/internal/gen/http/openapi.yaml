@@ -1152,9 +1152,12 @@ definitions:
         items:
           $ref: '#/definitions/ImportChallServiceRequestBody'
         example:
-        - user_display: nc 0.0.0.0 1234
-        - user_display: nc 0.0.0.0 1234
-        - user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
       title:
         type: string
         example: DNS 101
@@ -1179,10 +1182,14 @@ definitions:
       order: 5
       score: 100
       services:
-      - user_display: nc 0.0.0.0 1234
-      - user_display: nc 0.0.0.0 1234
-      - user_display: nc 0.0.0.0 1234
-      - user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       title: DNS 101
     required:
     - title
@@ -2955,10 +2962,14 @@ definitions:
       publish_at: 1638384718
       score: 50
       services:
-      - {}
-      - {}
-      - {}
-      - {}
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solves: 3
       title: pwnme
@@ -2990,10 +3001,14 @@ definitions:
       publish_at: 1638384718
       score: 50
       services:
-      - {}
-      - {}
-      - {}
-      - {}
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solves: 3
       title: pwnme
@@ -3025,10 +3040,14 @@ definitions:
       publish_at: 1638384718
       score: 50
       services:
-      - {}
-      - {}
-      - {}
-      - {}
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solves: 3
       title: pwnme
@@ -3060,10 +3079,14 @@ definitions:
       publish_at: 1638384718
       score: 50
       services:
-      - {}
-      - {}
-      - {}
-      - {}
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solves: 3
       title: pwnme
@@ -3380,7 +3403,19 @@ definitions:
   ChallengeServiceResponse:
     title: ChallengeServiceResponse
     type: object
-    example: {}
+    properties:
+      hyperlink:
+        type: boolean
+        example: true
+      user_display:
+        type: string
+        example: nc 0.0.0.0 1234
+    example:
+      hyperlink: true
+      user_display: nc 0.0.0.0 1234
+    required:
+    - user_display
+    - hyperlink
   ChallengeSolverResponseBody:
     title: ChallengeSolverResponseBody
     type: object
@@ -3434,10 +3469,14 @@ definitions:
       - FRA
       score: 50
       services:
-      - {}
-      - {}
-      - {}
-      - {}
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solved: true
       solvers:
@@ -3481,10 +3520,14 @@ definitions:
       - FRA
       score: 50
       services:
-      - {}
-      - {}
-      - {}
-      - {}
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solved: true
       solvers:
@@ -3538,10 +3581,14 @@ definitions:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
@@ -3590,10 +3637,14 @@ definitions:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
@@ -3642,10 +3693,14 @@ definitions:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
@@ -3694,10 +3749,14 @@ definitions:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
@@ -3870,15 +3929,23 @@ definitions:
       type: regex
     required:
     - flag
+    - type
   ImportChallServiceRequestBody:
     title: ImportChallServiceRequestBody
     type: object
     properties:
+      hyperlink:
+        type: boolean
+        example: true
       user_display:
         type: string
         example: nc 0.0.0.0 1234
     example:
+      hyperlink: true
       user_display: nc 0.0.0.0 1234
+    required:
+    - user_display
+    - hyperlink
   MonthlyChallengeResponse:
     title: MonthlyChallengeResponse
     type: object
@@ -4012,10 +4079,14 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeServiceResponse'
         example:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
       slug:
         type: string
         description: A unique string that can be used in URLs
@@ -4056,10 +4127,14 @@ definitions:
       publish_at: 1638384718
       score: 50
       services:
-      - {}
-      - {}
-      - {}
-      - {}
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solves: 3
       title: pwnme
@@ -4140,9 +4215,12 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeServiceResponse'
         example:
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
       slug:
         type: string
         description: A unique string that can be used in URLs
@@ -4204,9 +4282,12 @@ definitions:
       - FRA
       score: 50
       services:
-      - {}
-      - {}
-      - {}
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solved: true
       solvers:
@@ -4338,10 +4419,14 @@ definitions:
         - FRA
         score: 50
         services:
-        - {}
-        - {}
-        - {}
-        - {}
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:

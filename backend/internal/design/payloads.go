@@ -38,9 +38,9 @@ var OptionalTokenPayload = Type("OptionalTokenPayload", func() {
 })
 
 var ImportChallService = Type("ImportChallService", func() {
-	Attribute("user_display", String, func() {
-		Example("nc 0.0.0.0 1234")
-	})
+	Reference(ChallengeService)
+	Attribute("user_display", String)
+	Attribute("hyperlink", Boolean)
 })
 
 var ImportChallFlag = Type("ImportChallFlag", func() {
@@ -50,7 +50,7 @@ var ImportChallFlag = Type("ImportChallFlag", func() {
 	Attribute("flag", String, func() {
 		Example("fl4g_l0l")
 	})
-	Required("flag")
+	Required("flag", "type")
 })
 
 var ChallImport = Type("ChallImport", func() {

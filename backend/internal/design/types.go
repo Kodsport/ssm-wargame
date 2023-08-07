@@ -57,6 +57,13 @@ var Challenge = Type("Challenge", func() {
 })
 
 var ChallengeService = Type("ChallengeService", func() {
+	Attribute("user_display", String, func() {
+		Example("nc 0.0.0.0 1234")
+	})
+	Attribute("hyperlink", Boolean, func() {
+		Example(true)
+	})
+	Required("user_display", "hyperlink")
 })
 
 var School = Type("School", func() {

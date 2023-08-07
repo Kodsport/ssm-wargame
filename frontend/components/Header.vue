@@ -33,7 +33,7 @@
             </nuxt-link>
           </li>
         </ul>
-        <ul class="navbar-nav pe-3">
+        <ul v-if="auth.user" class="navbar-nav pe-3">
 
           <template v-if="auth.user.role == 'admin'">
 
@@ -52,17 +52,16 @@
                 Monthly
               </nuxt-link>
             </li>
-            <li class="nav-item">
-              <nuxt-link v-if="!!auth.user.id" active-class="active" class="nav-link btn border border-primary"
-                to="/user">
-                <span class="d-flex">
-                  {{ auth.user.full_name }}
-                  <span class="material-icons text-primary">person</span>
-                </span>
-
-              </nuxt-link>
-            </li>
           </template>
+          <li class="nav-item">
+            <nuxt-link v-if="!!auth.user.id" active-class="active" class="nav-link btn border border-primary" to="/user">
+              <span class="d-flex">
+                {{ auth.user.full_name }}
+                <span class="material-icons text-primary">person</span>
+              </span>
+
+            </nuxt-link>
+          </li>
         </ul>
         <template class="d-none d-md-inline">
           <a v-if="!isAuthenticated" class="btn btn-primary" @click="login">Logga in</a>

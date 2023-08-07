@@ -1440,7 +1440,10 @@ func marshalAdminviewsChallengeServiceViewToChallengeServiceResponse(v *adminvie
 	if v == nil {
 		return nil
 	}
-	res := &ChallengeServiceResponse{}
+	res := &ChallengeServiceResponse{
+		UserDisplay: *v.UserDisplay,
+		Hyperlink:   *v.Hyperlink,
+	}
 
 	return res
 }
@@ -1545,7 +1548,7 @@ func unmarshalImportChallFlagRequestBodyToAdminImportChallFlag(v *ImportChallFla
 		return nil
 	}
 	res := &admin.ImportChallFlag{
-		Type: v.Type,
+		Type: *v.Type,
 		Flag: *v.Flag,
 	}
 
@@ -1560,7 +1563,8 @@ func unmarshalImportChallServiceRequestBodyToAdminImportChallService(v *ImportCh
 		return nil
 	}
 	res := &admin.ImportChallService{
-		UserDisplay: v.UserDisplay,
+		UserDisplay: *v.UserDisplay,
+		Hyperlink:   *v.Hyperlink,
 	}
 
 	return res

@@ -118,6 +118,8 @@ type SsmChallenge struct {
 }
 
 type ChallengeService struct {
+	UserDisplay string
+	Hyperlink   bool
 }
 
 type ChallengeFiles struct {
@@ -502,7 +504,10 @@ func transformChallengeviewsChallengeServiceViewToChallengeService(v *challengev
 	if v == nil {
 		return nil
 	}
-	res := &ChallengeService{}
+	res := &ChallengeService{
+		UserDisplay: *v.UserDisplay,
+		Hyperlink:   *v.Hyperlink,
+	}
 
 	return res
 }
@@ -560,7 +565,10 @@ func transformChallengeServiceToChallengeviewsChallengeServiceView(v *ChallengeS
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.ChallengeServiceView{}
+	res := &challengeviews.ChallengeServiceView{
+		UserDisplay: &v.UserDisplay,
+		Hyperlink:   &v.Hyperlink,
+	}
 
 	return res
 }

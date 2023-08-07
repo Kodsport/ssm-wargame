@@ -254,6 +254,8 @@ type SsmAdminChallenge struct {
 }
 
 type ChallengeService struct {
+	UserDisplay string
+	Hyperlink   bool
 }
 
 type AdminChallengeFiles struct {
@@ -304,12 +306,13 @@ type Category struct {
 }
 
 type ImportChallFlag struct {
-	Type *string
+	Type string
 	Flag string
 }
 
 type ImportChallService struct {
-	UserDisplay *string
+	UserDisplay string
+	Hyperlink   bool
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.
@@ -475,7 +478,10 @@ func transformAdminviewsChallengeServiceViewToChallengeService(v *adminviews.Cha
 	if v == nil {
 		return nil
 	}
-	res := &ChallengeService{}
+	res := &ChallengeService{
+		UserDisplay: *v.UserDisplay,
+		Hyperlink:   *v.Hyperlink,
+	}
 
 	return res
 }
@@ -517,7 +523,10 @@ func transformChallengeServiceToAdminviewsChallengeServiceView(v *ChallengeServi
 	if v == nil {
 		return nil
 	}
-	res := &adminviews.ChallengeServiceView{}
+	res := &adminviews.ChallengeServiceView{
+		UserDisplay: &v.UserDisplay,
+		Hyperlink:   &v.Hyperlink,
+	}
 
 	return res
 }

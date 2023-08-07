@@ -47,6 +47,11 @@
                                     </span>
                                 </span>
                             </div>
+                            <div class="d-flex" v-for="service in props.chall.services">
+                                <span class="material-icons text-primary">router</span>
+                                <a v-if="service.hyperlink" :href="service.user_display">{{ service.user_display }}</a>
+                                <span v-else>{{ service.user_display }}</span>
+                            </div>
                             <div class="d-flex" v-for="file in props.chall.files">
                                 <span class="material-icons text-primary">description</span>
                                 <a :href="file.url">{{ decodeURIComponent(file.filename) }}</a>

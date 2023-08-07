@@ -27,7 +27,7 @@ type ChallengeService struct {
 	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
 	ChallengeID string    `boil:"challenge_id" json:"challenge_id" toml:"challenge_id" yaml:"challenge_id"`
 	UserDisplay string    `boil:"user_display" json:"user_display" toml:"user_display" yaml:"user_display"`
-	Hyperlink   string    `boil:"hyperlink" json:"hyperlink" toml:"hyperlink" yaml:"hyperlink"`
+	Hyperlink   bool      `boil:"hyperlink" json:"hyperlink" toml:"hyperlink" yaml:"hyperlink"`
 	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt   null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
@@ -69,18 +69,27 @@ var ChallengeServiceTableColumns = struct {
 
 // Generated where
 
+type whereHelperbool struct{ field string }
+
+func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
+func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
+func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
+func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
+func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
+func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
+
 var ChallengeServiceWhere = struct {
 	ID          whereHelperstring
 	ChallengeID whereHelperstring
 	UserDisplay whereHelperstring
-	Hyperlink   whereHelperstring
+	Hyperlink   whereHelperbool
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpernull_Time
 }{
 	ID:          whereHelperstring{field: "\"challenge_services\".\"id\""},
 	ChallengeID: whereHelperstring{field: "\"challenge_services\".\"challenge_id\""},
 	UserDisplay: whereHelperstring{field: "\"challenge_services\".\"user_display\""},
-	Hyperlink:   whereHelperstring{field: "\"challenge_services\".\"hyperlink\""},
+	Hyperlink:   whereHelperbool{field: "\"challenge_services\".\"hyperlink\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"challenge_services\".\"created_at\""},
 	UpdatedAt:   whereHelpernull_Time{field: "\"challenge_services\".\"updated_at\""},
 }

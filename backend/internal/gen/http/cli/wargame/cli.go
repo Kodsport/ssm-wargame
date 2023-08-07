@@ -807,12 +807,15 @@ Example:
       "score": 100,
       "services": [
          {
+            "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"
          },
          {
+            "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"
          },
          {
+            "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"
          }
       ],

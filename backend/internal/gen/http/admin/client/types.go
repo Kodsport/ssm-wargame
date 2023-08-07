@@ -918,6 +918,8 @@ type SsmAdminChallengeResponse struct {
 
 // ChallengeServiceResponse is used to define fields on response body types.
 type ChallengeServiceResponse struct {
+	UserDisplay *string `form:"user_display,omitempty" json:"user_display,omitempty" xml:"user_display,omitempty"`
+	Hyperlink   *bool   `form:"hyperlink,omitempty" json:"hyperlink,omitempty" xml:"hyperlink,omitempty"`
 }
 
 // AdminChallengeFilesResponse is used to define fields on response body types.
@@ -977,13 +979,14 @@ type CategoryResponse struct {
 
 // ImportChallFlagRequestBody is used to define fields on request body types.
 type ImportChallFlagRequestBody struct {
-	Type *string `form:"type,omitempty" json:"type,omitempty" xml:"type,omitempty"`
-	Flag string  `form:"flag" json:"flag" xml:"flag"`
+	Type string `form:"type" json:"type" xml:"type"`
+	Flag string `form:"flag" json:"flag" xml:"flag"`
 }
 
 // ImportChallServiceRequestBody is used to define fields on request body types.
 type ImportChallServiceRequestBody struct {
-	UserDisplay *string `form:"user_display,omitempty" json:"user_display,omitempty" xml:"user_display,omitempty"`
+	UserDisplay string `form:"user_display" json:"user_display" xml:"user_display"`
+	Hyperlink   bool   `form:"hyperlink" json:"hyperlink" xml:"hyperlink"`
 }
 
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
@@ -2877,6 +2880,13 @@ func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err err
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
+	for _, e := range body.Services {
+		if e != nil {
+			if err2 := ValidateChallengeServiceResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
 	for _, e := range body.Files {
 		if e != nil {
 			if err2 := ValidateAdminChallengeFilesResponse(e); err2 != nil {
@@ -2893,6 +2903,18 @@ func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err err
 	}
 	if body.CategoryID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.category_id", *body.CategoryID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateChallengeServiceResponse runs the validations defined on
+// ChallengeServiceResponse
+func ValidateChallengeServiceResponse(body *ChallengeServiceResponse) (err error) {
+	if body.UserDisplay == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_display", "body"))
+	}
+	if body.Hyperlink == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("hyperlink", "body"))
 	}
 	return
 }

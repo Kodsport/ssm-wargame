@@ -69,6 +69,8 @@ type SsmChallengeView struct {
 
 // ChallengeServiceView is a type that runs validations on a projected type.
 type ChallengeServiceView struct {
+	UserDisplay *string
+	Hyperlink   *bool
 }
 
 // ChallengeFilesView is a type that runs validations on a projected type.
@@ -289,6 +291,13 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	if result.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
 	}
+	for _, e := range result.Services {
+		if e != nil {
+			if err2 := ValidateChallengeServiceView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
 	for _, e := range result.Files {
 		if e != nil {
 			if err2 := ValidateChallengeFilesView(e); err2 != nil {
@@ -319,7 +328,12 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 // ValidateChallengeServiceView runs the validations defined on
 // ChallengeServiceView.
 func ValidateChallengeServiceView(result *ChallengeServiceView) (err error) {
-
+	if result.UserDisplay == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_display", "result"))
+	}
+	if result.Hyperlink == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("hyperlink", "result"))
+	}
 	return
 }
 

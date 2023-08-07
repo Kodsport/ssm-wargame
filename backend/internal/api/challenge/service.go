@@ -104,6 +104,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.InnerJoin("categories ON categories.id = c.category_id"),
 		qm.Where("publish_at IS NULL OR publish_at < NOW()"),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
+		qm.Load(models.ChallengeRels.ChallengeServices),
 		qm.Load(models.ChallengeRels.Users),
 		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User), qm.Limit(3), qm.OrderBy(models.UserSolfColumns.CreatedAt)),
 	)
@@ -158,6 +159,14 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				ID:       v.UserID,
 				FullName: v.R.User.FullName,
 				SolvedAt: v.CreatedAt.Unix(),
+			}
+		}
+
+		res[i].Services = make([]*spec.ChallengeService, len(chall.R.ChallengeServices))
+		for i2, v := range chall.R.ChallengeServices {
+			res[i].Services[i2] = &spec.ChallengeService{
+				UserDisplay: v.UserDisplay,
+				Hyperlink:   v.Hyperlink,
 			}
 		}
 	}
