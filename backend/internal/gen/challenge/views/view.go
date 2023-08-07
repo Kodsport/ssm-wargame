@@ -60,10 +60,11 @@ type SsmChallengeView struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
 	// whether the user has solved the challenge or not
-	Solved   *bool
-	Category *string
-	Authors  []*SsmUserView
-	Solvers  []*SsmSolverView
+	Solved       *bool
+	Category     *string
+	Authors      []*SsmUserView
+	OtherAuthors []string
+	Solvers      []*SsmSolverView
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -138,6 +139,7 @@ var (
 			"solved",
 			"category",
 			"authors",
+			"other_authors",
 			"solvers",
 		},
 	}
@@ -175,6 +177,7 @@ var (
 			"solved",
 			"category",
 			"authors",
+			"other_authors",
 			"solvers",
 		},
 	}

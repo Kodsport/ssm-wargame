@@ -2,6 +2,8 @@ package goa
 
 import . "goa.design/goa/v3/dsl"
 
+var ImportAuth = APIKeySecurity("import_token")
+
 var _ = Service("admin", func() {
 	Error("unauthorized")
 	Error("not_found")
@@ -183,6 +185,20 @@ var _ = Service("admin", func() {
 		})
 		HTTP(func() {
 			GET("/categories")
+		})
+	})
+
+	Method("ChalltoolsImport", func() {
+		Payload(func() {
+			Extend(ChallImport)
+			APIKey("import_token", "import_token")
+			Required("import_token")
+		})
+		Security(ImportAuth)
+		HTTP(func() {
+			POST("/push_challenge")
+			Header("import_token:X-API-Key", String, "Auth token")
+			Response(StatusOK)
 		})
 	})
 })

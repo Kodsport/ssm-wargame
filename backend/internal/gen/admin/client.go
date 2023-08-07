@@ -28,10 +28,11 @@ type Client struct {
 	AddFlagEndpoint                goa.Endpoint
 	DeleteFlagEndpoint             goa.Endpoint
 	ListCategoriesEndpoint         goa.Endpoint
+	ChalltoolsImportEndpoint       goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag, listCategories goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, addFlag, deleteFlag, listCategories, challtoolsImport goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:         listChallenges,
 		GetChallengeMetaEndpoint:       getChallengeMeta,
@@ -46,6 +47,7 @@ func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChalleng
 		AddFlagEndpoint:                addFlag,
 		DeleteFlagEndpoint:             deleteFlag,
 		ListCategoriesEndpoint:         listCategories,
+		ChalltoolsImportEndpoint:       challtoolsImport,
 	}
 }
 
@@ -154,4 +156,11 @@ func (c *Client) ListCategories(ctx context.Context, p *ListCategoriesPayload) (
 		return
 	}
 	return ires.([]*Category), nil
+}
+
+// ChalltoolsImport calls the "ChalltoolsImport" endpoint of the "admin"
+// service.
+func (c *Client) ChalltoolsImport(ctx context.Context, p *ChalltoolsImportPayload) (err error) {
+	_, err = c.ChalltoolsImportEndpoint(ctx, p)
+	return
 }

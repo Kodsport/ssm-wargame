@@ -1632,6 +1632,115 @@ func DecodeListCategoriesResponse(decoder func(*http.Response) goahttp.Decoder, 
 	}
 }
 
+// BuildChalltoolsImportRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "ChalltoolsImport" endpoint
+func (c *Client) BuildChalltoolsImportRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ChalltoolsImportAdminPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "ChalltoolsImport", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeChalltoolsImportRequest returns an encoder for requests sent to the
+// admin ChalltoolsImport server.
+func EncodeChalltoolsImportRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.ChalltoolsImportPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "ChalltoolsImport", "*admin.ChalltoolsImportPayload", v)
+		}
+		{
+			head := p.ImportToken
+			req.Header.Set("X-API-Key", head)
+		}
+		body := NewChalltoolsImportRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "ChalltoolsImport", err)
+		}
+		return nil
+	}
+}
+
+// DecodeChalltoolsImportResponse returns a decoder for responses returned by
+// the admin ChalltoolsImport endpoint. restoreBody controls whether the
+// response body should be restored after having been read.
+// DecodeChalltoolsImportResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeChalltoolsImportResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body ChalltoolsImportUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ChalltoolsImport", err)
+			}
+			err = ValidateChalltoolsImportUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ChalltoolsImport", err)
+			}
+			return nil, NewChalltoolsImportUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ChalltoolsImportNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ChalltoolsImport", err)
+			}
+			err = ValidateChalltoolsImportNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ChalltoolsImport", err)
+			}
+			return nil, NewChalltoolsImportNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ChalltoolsImportBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ChalltoolsImport", err)
+			}
+			err = ValidateChalltoolsImportBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ChalltoolsImport", err)
+			}
+			return nil, NewChalltoolsImportBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "ChalltoolsImport", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView builds a
 // value of type *adminviews.SsmAdminChallengeView from a value of type
 // *SsmAdminChallengeResponse.
@@ -1772,6 +1881,62 @@ func unmarshalCategoryResponseToAdminCategory(v *CategoryResponse) *admin.Catego
 	res := &admin.Category{
 		ID:   *v.ID,
 		Name: *v.Name,
+	}
+
+	return res
+}
+
+// marshalAdminImportChallFlagToImportChallFlagRequestBody builds a value of
+// type *ImportChallFlagRequestBody from a value of type *admin.ImportChallFlag.
+func marshalAdminImportChallFlagToImportChallFlagRequestBody(v *admin.ImportChallFlag) *ImportChallFlagRequestBody {
+	if v == nil {
+		return nil
+	}
+	res := &ImportChallFlagRequestBody{
+		Type: v.Type,
+		Flag: v.Flag,
+	}
+
+	return res
+}
+
+// marshalAdminImportChallServiceToImportChallServiceRequestBody builds a value
+// of type *ImportChallServiceRequestBody from a value of type
+// *admin.ImportChallService.
+func marshalAdminImportChallServiceToImportChallServiceRequestBody(v *admin.ImportChallService) *ImportChallServiceRequestBody {
+	if v == nil {
+		return nil
+	}
+	res := &ImportChallServiceRequestBody{
+		UserDisplay: v.UserDisplay,
+	}
+
+	return res
+}
+
+// marshalImportChallFlagRequestBodyToAdminImportChallFlag builds a value of
+// type *admin.ImportChallFlag from a value of type *ImportChallFlagRequestBody.
+func marshalImportChallFlagRequestBodyToAdminImportChallFlag(v *ImportChallFlagRequestBody) *admin.ImportChallFlag {
+	if v == nil {
+		return nil
+	}
+	res := &admin.ImportChallFlag{
+		Type: v.Type,
+		Flag: v.Flag,
+	}
+
+	return res
+}
+
+// marshalImportChallServiceRequestBodyToAdminImportChallService builds a value
+// of type *admin.ImportChallService from a value of type
+// *ImportChallServiceRequestBody.
+func marshalImportChallServiceRequestBodyToAdminImportChallService(v *ImportChallServiceRequestBody) *admin.ImportChallService {
+	if v == nil {
+		return nil
+	}
+	res := &admin.ImportChallService{
+		UserDisplay: v.UserDisplay,
 	}
 
 	return res

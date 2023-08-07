@@ -19,72 +19,78 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"github.com/volatiletech/sqlboiler/v4/queries/qmhelper"
+	"github.com/volatiletech/sqlboiler/v4/types"
 	"github.com/volatiletech/strmangle"
 )
 
 // Challenge is an object representing the database table.
 type Challenge struct {
-	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Slug        string      `boil:"slug" json:"slug" toml:"slug" yaml:"slug"`
-	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
-	Description string      `boil:"description" json:"description" toml:"description" yaml:"description"`
-	Score       int         `boil:"score" json:"score" toml:"score" yaml:"score"`
-	PublishAt   null.Time   `boil:"publish_at" json:"publish_at,omitempty" toml:"publish_at" yaml:"publish_at,omitempty"`
-	CTFEventID  null.String `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
-	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
-	CategoryID  string      `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
+	ID           string            `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Slug         string            `boil:"slug" json:"slug" toml:"slug" yaml:"slug"`
+	Title        string            `boil:"title" json:"title" toml:"title" yaml:"title"`
+	Description  string            `boil:"description" json:"description" toml:"description" yaml:"description"`
+	Score        int               `boil:"score" json:"score" toml:"score" yaml:"score"`
+	PublishAt    null.Time         `boil:"publish_at" json:"publish_at,omitempty" toml:"publish_at" yaml:"publish_at,omitempty"`
+	CTFEventID   null.String       `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
+	CreatedAt    time.Time         `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt    null.Time         `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	CategoryID   string            `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
+	OtherAuthors types.StringArray `boil:"other_authors" json:"other_authors" toml:"other_authors" yaml:"other_authors"`
 
 	R *challengeR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L challengeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var ChallengeColumns = struct {
-	ID          string
-	Slug        string
-	Title       string
-	Description string
-	Score       string
-	PublishAt   string
-	CTFEventID  string
-	CreatedAt   string
-	UpdatedAt   string
-	CategoryID  string
+	ID           string
+	Slug         string
+	Title        string
+	Description  string
+	Score        string
+	PublishAt    string
+	CTFEventID   string
+	CreatedAt    string
+	UpdatedAt    string
+	CategoryID   string
+	OtherAuthors string
 }{
-	ID:          "id",
-	Slug:        "slug",
-	Title:       "title",
-	Description: "description",
-	Score:       "score",
-	PublishAt:   "publish_at",
-	CTFEventID:  "ctf_event_id",
-	CreatedAt:   "created_at",
-	UpdatedAt:   "updated_at",
-	CategoryID:  "category_id",
+	ID:           "id",
+	Slug:         "slug",
+	Title:        "title",
+	Description:  "description",
+	Score:        "score",
+	PublishAt:    "publish_at",
+	CTFEventID:   "ctf_event_id",
+	CreatedAt:    "created_at",
+	UpdatedAt:    "updated_at",
+	CategoryID:   "category_id",
+	OtherAuthors: "other_authors",
 }
 
 var ChallengeTableColumns = struct {
-	ID          string
-	Slug        string
-	Title       string
-	Description string
-	Score       string
-	PublishAt   string
-	CTFEventID  string
-	CreatedAt   string
-	UpdatedAt   string
-	CategoryID  string
+	ID           string
+	Slug         string
+	Title        string
+	Description  string
+	Score        string
+	PublishAt    string
+	CTFEventID   string
+	CreatedAt    string
+	UpdatedAt    string
+	CategoryID   string
+	OtherAuthors string
 }{
-	ID:          "challenges.id",
-	Slug:        "challenges.slug",
-	Title:       "challenges.title",
-	Description: "challenges.description",
-	Score:       "challenges.score",
-	PublishAt:   "challenges.publish_at",
-	CTFEventID:  "challenges.ctf_event_id",
-	CreatedAt:   "challenges.created_at",
-	UpdatedAt:   "challenges.updated_at",
-	CategoryID:  "challenges.category_id",
+	ID:           "challenges.id",
+	Slug:         "challenges.slug",
+	Title:        "challenges.title",
+	Description:  "challenges.description",
+	Score:        "challenges.score",
+	PublishAt:    "challenges.publish_at",
+	CTFEventID:   "challenges.ctf_event_id",
+	CreatedAt:    "challenges.created_at",
+	UpdatedAt:    "challenges.updated_at",
+	CategoryID:   "challenges.category_id",
+	OtherAuthors: "challenges.other_authors",
 }
 
 // Generated where
@@ -112,28 +118,51 @@ func (w whereHelperint) NIN(slice []int) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
+type whereHelpertypes_StringArray struct{ field string }
+
+func (w whereHelpertypes_StringArray) EQ(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.EQ, x)
+}
+func (w whereHelpertypes_StringArray) NEQ(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.NEQ, x)
+}
+func (w whereHelpertypes_StringArray) LT(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpertypes_StringArray) LTE(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpertypes_StringArray) GT(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpertypes_StringArray) GTE(x types.StringArray) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
 var ChallengeWhere = struct {
-	ID          whereHelperstring
-	Slug        whereHelperstring
-	Title       whereHelperstring
-	Description whereHelperstring
-	Score       whereHelperint
-	PublishAt   whereHelpernull_Time
-	CTFEventID  whereHelpernull_String
-	CreatedAt   whereHelpertime_Time
-	UpdatedAt   whereHelpernull_Time
-	CategoryID  whereHelperstring
+	ID           whereHelperstring
+	Slug         whereHelperstring
+	Title        whereHelperstring
+	Description  whereHelperstring
+	Score        whereHelperint
+	PublishAt    whereHelpernull_Time
+	CTFEventID   whereHelpernull_String
+	CreatedAt    whereHelpertime_Time
+	UpdatedAt    whereHelpernull_Time
+	CategoryID   whereHelperstring
+	OtherAuthors whereHelpertypes_StringArray
 }{
-	ID:          whereHelperstring{field: "\"challenges\".\"id\""},
-	Slug:        whereHelperstring{field: "\"challenges\".\"slug\""},
-	Title:       whereHelperstring{field: "\"challenges\".\"title\""},
-	Description: whereHelperstring{field: "\"challenges\".\"description\""},
-	Score:       whereHelperint{field: "\"challenges\".\"score\""},
-	PublishAt:   whereHelpernull_Time{field: "\"challenges\".\"publish_at\""},
-	CTFEventID:  whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
-	CreatedAt:   whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
-	UpdatedAt:   whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
-	CategoryID:  whereHelperstring{field: "\"challenges\".\"category_id\""},
+	ID:           whereHelperstring{field: "\"challenges\".\"id\""},
+	Slug:         whereHelperstring{field: "\"challenges\".\"slug\""},
+	Title:        whereHelperstring{field: "\"challenges\".\"title\""},
+	Description:  whereHelperstring{field: "\"challenges\".\"description\""},
+	Score:        whereHelperint{field: "\"challenges\".\"score\""},
+	PublishAt:    whereHelpernull_Time{field: "\"challenges\".\"publish_at\""},
+	CTFEventID:   whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
+	CreatedAt:    whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
+	UpdatedAt:    whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
+	CategoryID:   whereHelperstring{field: "\"challenges\".\"category_id\""},
+	OtherAuthors: whereHelpertypes_StringArray{field: "\"challenges\".\"other_authors\""},
 }
 
 // ChallengeRels is where relationship names are stored.
@@ -244,9 +273,9 @@ func (r *challengeR) GetUserSolves() UserSolfSlice {
 type challengeL struct{}
 
 var (
-	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "publish_at", "ctf_event_id", "created_at", "updated_at", "category_id"}
+	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "publish_at", "ctf_event_id", "created_at", "updated_at", "category_id", "other_authors"}
 	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "score", "category_id"}
-	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at"}
+	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at", "other_authors"}
 	challengePrimaryKeyColumns     = []string{"id"}
 	challengeGeneratedColumns      = []string{}
 )

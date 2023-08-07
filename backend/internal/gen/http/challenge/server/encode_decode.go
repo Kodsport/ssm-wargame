@@ -292,6 +292,12 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengevie
 			res.Authors[i] = marshalChallengeviewsSsmUserViewToSsmUserResponse(val)
 		}
 	}
+	if v.OtherAuthors != nil {
+		res.OtherAuthors = make([]string, len(v.OtherAuthors))
+		for i, val := range v.OtherAuthors {
+			res.OtherAuthors[i] = val
+		}
+	}
 	if v.Solvers != nil {
 		res.Solvers = make([]*SsmSolverResponse, len(v.Solvers))
 		for i, val := range v.Solvers {

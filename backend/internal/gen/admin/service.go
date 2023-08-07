@@ -43,12 +43,16 @@ type Service interface {
 	DeleteFlag(context.Context, *DeleteFlagPayload) (err error)
 	// ListCategories implements ListCategories.
 	ListCategories(context.Context, *ListCategoriesPayload) (res []*Category, err error)
+	// ChalltoolsImport implements ChalltoolsImport.
+	ChalltoolsImport(context.Context, *ChalltoolsImportPayload) (err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
 type Auther interface {
 	// JWTAuth implements the authorization logic for the JWT security scheme.
 	JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error)
+	// APIKeyAuth implements the authorization logic for the APIKey security scheme.
+	APIKeyAuth(ctx context.Context, key string, schema *security.APIKeyScheme) (context.Context, error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -59,7 +63,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [13]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag", "ListCategories"}
+var MethodNames = [14]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -209,6 +213,24 @@ type ListCategoriesPayload struct {
 	Token string
 }
 
+// ChalltoolsImportPayload is the payload type of the admin service
+// ChalltoolsImport method.
+type ChalltoolsImportPayload struct {
+	ImportToken      string
+	Title            string
+	Description      string
+	Authors          []string
+	Categories       []string
+	Score            *int
+	ChallengeID      string
+	FlagFormatPrefix *string
+	FlagFormatSuffix *string
+	FileUrls         []string
+	Flags            []*ImportChallFlag
+	Order            *int
+	Services         []*ImportChallService
+}
+
 // A Wargame challenge
 type SsmAdminChallenge struct {
 	ID string
@@ -279,6 +301,15 @@ type SsmUser struct {
 type Category struct {
 	ID   string
 	Name string
+}
+
+type ImportChallFlag struct {
+	Type *string
+	Flag string
+}
+
+type ImportChallService struct {
+	UserDisplay *string
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.

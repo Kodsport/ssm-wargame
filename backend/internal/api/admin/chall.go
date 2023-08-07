@@ -296,7 +296,11 @@ func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) e
 		return err
 	}
 
-	out, err := s.s3.DeleteObjectWithContext(ctx, &s3.DeleteObjectInput{}, func(r *request.Request) {
+	fake := "fake"
+	out, err := s.s3.DeleteObjectWithContext(ctx, &s3.DeleteObjectInput{
+		Bucket: &fake,
+		Key:    &fake,
+	}, func(r *request.Request) {
 		r.HTTPRequest.URL = url // hack since challtools won't let us know specifics
 	})
 	if err != nil {

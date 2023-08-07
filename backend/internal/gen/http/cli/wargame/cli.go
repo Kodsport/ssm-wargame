@@ -27,7 +27,7 @@ import (
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-events|list-monthly-challenges|submit-flag|school-scoreboard)
-admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag|list-categories)
+admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag|list-categories|challtools-import)
 user (get-self|join-school|leave-school|search-schools)
 `
 }
@@ -131,6 +131,10 @@ func ParseEndpoint(
 		adminListCategoriesFlags     = flag.NewFlagSet("list-categories", flag.ExitOnError)
 		adminListCategoriesTokenFlag = adminListCategoriesFlags.String("token", "REQUIRED", "")
 
+		adminChalltoolsImportFlags           = flag.NewFlagSet("challtools-import", flag.ExitOnError)
+		adminChalltoolsImportBodyFlag        = adminChalltoolsImportFlags.String("body", "REQUIRED", "")
+		adminChalltoolsImportImportTokenFlag = adminChalltoolsImportFlags.String("import-token", "REQUIRED", "")
+
 		userFlags = flag.NewFlagSet("user", flag.ContinueOnError)
 
 		userGetSelfFlags     = flag.NewFlagSet("get-self", flag.ExitOnError)
@@ -172,6 +176,7 @@ func ParseEndpoint(
 	adminAddFlagFlags.Usage = adminAddFlagUsage
 	adminDeleteFlagFlags.Usage = adminDeleteFlagUsage
 	adminListCategoriesFlags.Usage = adminListCategoriesUsage
+	adminChalltoolsImportFlags.Usage = adminChalltoolsImportUsage
 
 	userFlags.Usage = userUsage
 	userGetSelfFlags.Usage = userGetSelfUsage
@@ -287,6 +292,9 @@ func ParseEndpoint(
 			case "list-categories":
 				epf = adminListCategoriesFlags
 
+			case "challtools-import":
+				epf = adminChalltoolsImportFlags
+
 			}
 
 		case "user":
@@ -396,6 +404,9 @@ func ParseEndpoint(
 			case "list-categories":
 				endpoint = c.ListCategories()
 				data, err = adminc.BuildListCategoriesPayload(*adminListCategoriesTokenFlag)
+			case "challtools-import":
+				endpoint = c.ChalltoolsImport()
+				data, err = adminc.BuildChalltoolsImportPayload(*adminChalltoolsImportBodyFlag, *adminChalltoolsImportImportTokenFlag)
 			}
 		case "user":
 			c := userc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -557,6 +568,7 @@ COMMAND:
     add-flag: AddFlag implements AddFlag.
     delete-flag: DeleteFlag implements DeleteFlag.
     list-categories: ListCategories implements ListCategories.
+    challtools-import: ChalltoolsImport implements ChalltoolsImport.
 
 Additional help:
     %[1]s admin COMMAND --help
@@ -748,6 +760,64 @@ ListCategories implements ListCategories.
 
 Example:
     %[1]s admin list-categories --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminChalltoolsImportUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin challtools-import -body JSON -import-token STRING
+
+ChalltoolsImport implements ChalltoolsImport.
+    -body JSON: 
+    -import-token STRING: 
+
+Example:
+    %[1]s admin challtools-import --body '{
+      "authors": [
+         "Movitz Sunar"
+      ],
+      "categories": [
+         "web"
+      ],
+      "challenge_id": "225ada44-3fde-460d-84a4-2f16ff579618",
+      "description": "how to dns",
+      "file_urls": [
+         "https://bucket/key"
+      ],
+      "flag_format_prefix": "SSM{",
+      "flag_format_suffix": "}",
+      "flags": [
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
+         }
+      ],
+      "order": 5,
+      "score": 100,
+      "services": [
+         {
+            "user_display": "nc 0.0.0.0 1234"
+         },
+         {
+            "user_display": "nc 0.0.0.0 1234"
+         },
+         {
+            "user_display": "nc 0.0.0.0 1234"
+         }
+      ],
+      "title": "DNS 101"
+   }' --import-token "Ut eius voluptatem ut officia."
 `, os.Args[0])
 }
 

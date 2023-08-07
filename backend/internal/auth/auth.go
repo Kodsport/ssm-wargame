@@ -32,6 +32,13 @@ func New(cfg *config.Config, log *zap.Logger, db *sql.DB) *Auther {
 	}
 }
 
+func (s *Auther) APIKeyAuth(ctx context.Context, token string, schema *security.APIKeyScheme) (context.Context, error) {
+	if token != "special-value-only-i-know" {
+		return ctx, errors.New("nope")
+	}
+	return ctx, nil
+}
+
 func (s *Auther) JWTAuth(ctx context.Context, token string, schema *security.JWTScheme) (context.Context, error) {
 	if token == "" {
 		return ctx, nil

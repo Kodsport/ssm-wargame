@@ -475,6 +475,12 @@ func unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v *SsmChallen
 			res.Authors[i] = unmarshalSsmUserResponseToChallengeviewsSsmUserView(val)
 		}
 	}
+	if v.OtherAuthors != nil {
+		res.OtherAuthors = make([]string, len(v.OtherAuthors))
+		for i, val := range v.OtherAuthors {
+			res.OtherAuthors[i] = val
+		}
+	}
 	if v.Solvers != nil {
 		res.Solvers = make([]*challengeviews.SsmSolverView, len(v.Solvers))
 		for i, val := range v.Solvers {

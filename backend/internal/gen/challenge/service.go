@@ -110,10 +110,11 @@ type SsmChallenge struct {
 	// The ID of the CTF the challenge was taken from
 	CtfEventID *string
 	// whether the user has solved the challenge or not
-	Solved   bool
-	Category string
-	Authors  []*SsmUser
-	Solvers  []*SsmSolver
+	Solved       bool
+	Category     string
+	Authors      []*SsmUser
+	OtherAuthors []string
+	Solvers      []*SsmSolver
 }
 
 type ChallengeService struct {
@@ -287,6 +288,12 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 			res.Authors[i] = transformChallengeviewsSsmUserViewToSsmUser(val)
 		}
 	}
+	if vres.OtherAuthors != nil {
+		res.OtherAuthors = make([]string, len(vres.OtherAuthors))
+		for i, val := range vres.OtherAuthors {
+			res.OtherAuthors[i] = val
+		}
+	}
 	if vres.Solvers != nil {
 		res.Solvers = make([]*SsmSolver, len(vres.Solvers))
 		for i, val := range vres.Solvers {
@@ -326,6 +333,12 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 		vres.Authors = make([]*challengeviews.SsmUserView, len(res.Authors))
 		for i, val := range res.Authors {
 			vres.Authors[i] = transformSsmUserToChallengeviewsSsmUserView(val)
+		}
+	}
+	if res.OtherAuthors != nil {
+		vres.OtherAuthors = make([]string, len(res.OtherAuthors))
+		for i, val := range res.OtherAuthors {
+			vres.OtherAuthors[i] = val
 		}
 	}
 	if res.Solvers != nil {

@@ -89,6 +89,10 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	})
 
 	Attribute("authors", ArrayOf(User))
+	Attribute("other_authors", ArrayOf(String), func() {
+		Example([]string{"FRA"})
+	})
+
 	Attribute("solvers", ArrayOf(Solver))
 
 	Required("solved", "category")

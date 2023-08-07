@@ -29,6 +29,7 @@ type Endpoints struct {
 	AddFlag                goa.Endpoint
 	DeleteFlag             goa.Endpoint
 	ListCategories         goa.Endpoint
+	ChalltoolsImport       goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "admin" service with endpoints.
@@ -49,6 +50,7 @@ func NewEndpoints(s Service) *Endpoints {
 		AddFlag:                NewAddFlagEndpoint(s, a.JWTAuth),
 		DeleteFlag:             NewDeleteFlagEndpoint(s, a.JWTAuth),
 		ListCategories:         NewListCategoriesEndpoint(s, a.JWTAuth),
+		ChalltoolsImport:       NewChalltoolsImportEndpoint(s, a.APIKeyAuth),
 	}
 }
 
@@ -67,6 +69,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.AddFlag = m(e.AddFlag)
 	e.DeleteFlag = m(e.DeleteFlag)
 	e.ListCategories = m(e.ListCategories)
+	e.ChalltoolsImport = m(e.ChalltoolsImport)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -318,5 +321,24 @@ func NewListCategoriesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 			return nil, err
 		}
 		return s.ListCategories(ctx, p)
+	}
+}
+
+// NewChalltoolsImportEndpoint returns an endpoint function that calls the
+// method "ChalltoolsImport" of service "admin".
+func NewChalltoolsImportEndpoint(s Service, authAPIKeyFn security.AuthAPIKeyFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ChalltoolsImportPayload)
+		var err error
+		sc := security.APIKeyScheme{
+			Name:           "import_token",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authAPIKeyFn(ctx, p.ImportToken, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.ChalltoolsImport(ctx, p)
 	}
 }

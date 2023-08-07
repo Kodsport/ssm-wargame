@@ -79,6 +79,23 @@ type AddFlagRequestBody struct {
 	Flag string `form:"flag" json:"flag" xml:"flag"`
 }
 
+// ChalltoolsImportRequestBody is the type of the "admin" service
+// "ChalltoolsImport" endpoint HTTP request body.
+type ChalltoolsImportRequestBody struct {
+	Title            string                           `form:"title" json:"title" xml:"title"`
+	Description      string                           `form:"description" json:"description" xml:"description"`
+	Authors          []string                         `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Categories       []string                         `form:"categories,omitempty" json:"categories,omitempty" xml:"categories,omitempty"`
+	Score            *int                             `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	ChallengeID      string                           `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
+	FlagFormatPrefix *string                          `form:"flag_format_prefix,omitempty" json:"flag_format_prefix,omitempty" xml:"flag_format_prefix,omitempty"`
+	FlagFormatSuffix *string                          `form:"flag_format_suffix,omitempty" json:"flag_format_suffix,omitempty" xml:"flag_format_suffix,omitempty"`
+	FileUrls         []string                         `form:"file_urls,omitempty" json:"file_urls,omitempty" xml:"file_urls,omitempty"`
+	Flags            []*ImportChallFlagRequestBody    `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
+	Order            *int                             `form:"order,omitempty" json:"order,omitempty" xml:"order,omitempty"`
+	Services         []*ImportChallServiceRequestBody `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+}
+
 // ListChallengesResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmAdminChallengeResponse
@@ -823,6 +840,60 @@ type ListCategoriesBadRequestResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// ChalltoolsImportUnauthorizedResponseBody is the type of the "admin" service
+// "ChalltoolsImport" endpoint HTTP response body for the "unauthorized" error.
+type ChalltoolsImportUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ChalltoolsImportNotFoundResponseBody is the type of the "admin" service
+// "ChalltoolsImport" endpoint HTTP response body for the "not_found" error.
+type ChalltoolsImportNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ChalltoolsImportBadRequestResponseBody is the type of the "admin" service
+// "ChalltoolsImport" endpoint HTTP response body for the "bad_request" error.
+type ChalltoolsImportBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
@@ -904,6 +975,17 @@ type CategoryResponse struct {
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 }
 
+// ImportChallFlagRequestBody is used to define fields on request body types.
+type ImportChallFlagRequestBody struct {
+	Type *string `form:"type,omitempty" json:"type,omitempty" xml:"type,omitempty"`
+	Flag string  `form:"flag" json:"flag" xml:"flag"`
+}
+
+// ImportChallServiceRequestBody is used to define fields on request body types.
+type ImportChallServiceRequestBody struct {
+	UserDisplay *string `form:"user_display,omitempty" json:"user_display,omitempty" xml:"user_display,omitempty"`
+}
+
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
 // of the "CreateChallenge" endpoint of the "admin" service.
 func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChallengeRequestBody {
@@ -974,6 +1056,51 @@ func NewCreateMonthlyChallengeRequestBody(p *admin.CreateMonthlyChallengePayload
 func NewAddFlagRequestBody(p *admin.AddFlagPayload) *AddFlagRequestBody {
 	body := &AddFlagRequestBody{
 		Flag: p.Flag,
+	}
+	return body
+}
+
+// NewChalltoolsImportRequestBody builds the HTTP request body from the payload
+// of the "ChalltoolsImport" endpoint of the "admin" service.
+func NewChalltoolsImportRequestBody(p *admin.ChalltoolsImportPayload) *ChalltoolsImportRequestBody {
+	body := &ChalltoolsImportRequestBody{
+		Title:            p.Title,
+		Description:      p.Description,
+		Score:            p.Score,
+		ChallengeID:      p.ChallengeID,
+		FlagFormatPrefix: p.FlagFormatPrefix,
+		FlagFormatSuffix: p.FlagFormatSuffix,
+		Order:            p.Order,
+	}
+	if p.Authors != nil {
+		body.Authors = make([]string, len(p.Authors))
+		for i, val := range p.Authors {
+			body.Authors[i] = val
+		}
+	}
+	if p.Categories != nil {
+		body.Categories = make([]string, len(p.Categories))
+		for i, val := range p.Categories {
+			body.Categories[i] = val
+		}
+	}
+	if p.FileUrls != nil {
+		body.FileUrls = make([]string, len(p.FileUrls))
+		for i, val := range p.FileUrls {
+			body.FileUrls[i] = val
+		}
+	}
+	if p.Flags != nil {
+		body.Flags = make([]*ImportChallFlagRequestBody, len(p.Flags))
+		for i, val := range p.Flags {
+			body.Flags[i] = marshalAdminImportChallFlagToImportChallFlagRequestBody(val)
+		}
+	}
+	if p.Services != nil {
+		body.Services = make([]*ImportChallServiceRequestBody, len(p.Services))
+		for i, val := range p.Services {
+			body.Services[i] = marshalAdminImportChallServiceToImportChallServiceRequestBody(val)
+		}
 	}
 	return body
 }
@@ -1620,6 +1747,51 @@ func NewListCategoriesNotFound(body *ListCategoriesNotFoundResponseBody) *goa.Se
 // NewListCategoriesBadRequest builds a admin service ListCategories endpoint
 // bad_request error.
 func NewListCategoriesBadRequest(body *ListCategoriesBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewChalltoolsImportUnauthorized builds a admin service ChalltoolsImport
+// endpoint unauthorized error.
+func NewChalltoolsImportUnauthorized(body *ChalltoolsImportUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewChalltoolsImportNotFound builds a admin service ChalltoolsImport endpoint
+// not_found error.
+func NewChalltoolsImportNotFound(body *ChalltoolsImportNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewChalltoolsImportBadRequest builds a admin service ChalltoolsImport
+// endpoint bad_request error.
+func NewChalltoolsImportBadRequest(body *ChalltoolsImportBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -2582,6 +2754,78 @@ func ValidateListCategoriesNotFoundResponseBody(body *ListCategoriesNotFoundResp
 // ValidateListCategoriesBadRequestResponseBody runs the validations defined on
 // ListCategories_bad_request_Response_Body
 func ValidateListCategoriesBadRequestResponseBody(body *ListCategoriesBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateChalltoolsImportUnauthorizedResponseBody runs the validations
+// defined on ChalltoolsImport_unauthorized_Response_Body
+func ValidateChalltoolsImportUnauthorizedResponseBody(body *ChalltoolsImportUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateChalltoolsImportNotFoundResponseBody runs the validations defined on
+// ChalltoolsImport_not_found_Response_Body
+func ValidateChalltoolsImportNotFoundResponseBody(body *ChalltoolsImportNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateChalltoolsImportBadRequestResponseBody runs the validations defined
+// on ChalltoolsImport_bad_request_Response_Body
+func ValidateChalltoolsImportBadRequestResponseBody(body *ChalltoolsImportBadRequestResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}

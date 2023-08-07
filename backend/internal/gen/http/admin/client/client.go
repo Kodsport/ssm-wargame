@@ -69,6 +69,10 @@ type Client struct {
 	// ListCategories endpoint.
 	ListCategoriesDoer goahttp.Doer
 
+	// ChalltoolsImport Doer is the HTTP client used to make requests to the
+	// ChalltoolsImport endpoint.
+	ChalltoolsImportDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -102,6 +106,7 @@ func NewClient(
 		AddFlagDoer:                doer,
 		DeleteFlagDoer:             doer,
 		ListCategoriesDoer:         doer,
+		ChalltoolsImportDoer:       doer,
 		RestoreResponseBody:        restoreBody,
 		scheme:                     scheme,
 		host:                       host,
@@ -417,6 +422,30 @@ func (c *Client) ListCategories() goa.Endpoint {
 		resp, err := c.ListCategoriesDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "ListCategories", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// ChalltoolsImport returns an endpoint that makes HTTP requests to the admin
+// service ChalltoolsImport server.
+func (c *Client) ChalltoolsImport() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeChalltoolsImportRequest(c.encoder)
+		decodeResponse = DecodeChalltoolsImportResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildChalltoolsImportRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ChalltoolsImportDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "ChalltoolsImport", err)
 		}
 		return decodeResponse(resp)
 	}

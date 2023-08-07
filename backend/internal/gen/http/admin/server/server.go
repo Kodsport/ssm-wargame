@@ -32,6 +32,7 @@ type Server struct {
 	AddFlag                http.Handler
 	DeleteFlag             http.Handler
 	ListCategories         http.Handler
+	ChalltoolsImport       http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -80,6 +81,7 @@ func New(
 			{"AddFlag", "POST", "/admin/challenges/{challengeID}/flags"},
 			{"DeleteFlag", "DELETE", "/admin/challenges/{challengeID}/flags/{flagID}"},
 			{"ListCategories", "GET", "/admin/categories"},
+			{"ChalltoolsImport", "POST", "/admin/push_challenge"},
 		},
 		ListChallenges:         NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		GetChallengeMeta:       NewGetChallengeMetaHandler(e.GetChallengeMeta, mux, decoder, encoder, errhandler, formatter),
@@ -94,6 +96,7 @@ func New(
 		AddFlag:                NewAddFlagHandler(e.AddFlag, mux, decoder, encoder, errhandler, formatter),
 		DeleteFlag:             NewDeleteFlagHandler(e.DeleteFlag, mux, decoder, encoder, errhandler, formatter),
 		ListCategories:         NewListCategoriesHandler(e.ListCategories, mux, decoder, encoder, errhandler, formatter),
+		ChalltoolsImport:       NewChalltoolsImportHandler(e.ChalltoolsImport, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -115,6 +118,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.AddFlag = m(s.AddFlag)
 	s.DeleteFlag = m(s.DeleteFlag)
 	s.ListCategories = m(s.ListCategories)
+	s.ChalltoolsImport = m(s.ChalltoolsImport)
 }
 
 // Mount configures the mux to serve the admin endpoints.
@@ -132,6 +136,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountAddFlagHandler(mux, h.AddFlag)
 	MountDeleteFlagHandler(mux, h.DeleteFlag)
 	MountListCategoriesHandler(mux, h.ListCategories)
+	MountChalltoolsImportHandler(mux, h.ChalltoolsImport)
 }
 
 // MountListChallengesHandler configures the mux to serve the "admin" service
@@ -776,6 +781,57 @@ func NewListCategoriesHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "ListCategories")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountChalltoolsImportHandler configures the mux to serve the "admin" service
+// "ChalltoolsImport" endpoint.
+func MountChalltoolsImportHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/push_challenge", f)
+}
+
+// NewChalltoolsImportHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "ChalltoolsImport" endpoint.
+func NewChalltoolsImportHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeChalltoolsImportRequest(mux, decoder)
+		encodeResponse = EncodeChalltoolsImportResponse(encoder)
+		encodeError    = EncodeChalltoolsImportError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ChalltoolsImport")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

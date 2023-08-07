@@ -367,3 +367,67 @@ func BuildListCategoriesPayload(adminListCategoriesToken string) (*admin.ListCat
 
 	return v, nil
 }
+
+// BuildChalltoolsImportPayload builds the payload for the admin
+// ChalltoolsImport endpoint from CLI flags.
+func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChalltoolsImportImportToken string) (*admin.ChalltoolsImportPayload, error) {
+	var err error
+	var body ChalltoolsImportRequestBody
+	{
+		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+		}
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var importToken string
+	{
+		importToken = adminChalltoolsImportImportToken
+	}
+	v := &admin.ChalltoolsImportPayload{
+		Title:            body.Title,
+		Description:      body.Description,
+		Score:            body.Score,
+		ChallengeID:      body.ChallengeID,
+		FlagFormatPrefix: body.FlagFormatPrefix,
+		FlagFormatSuffix: body.FlagFormatSuffix,
+		Order:            body.Order,
+	}
+	if body.Authors != nil {
+		v.Authors = make([]string, len(body.Authors))
+		for i, val := range body.Authors {
+			v.Authors[i] = val
+		}
+	}
+	if body.Categories != nil {
+		v.Categories = make([]string, len(body.Categories))
+		for i, val := range body.Categories {
+			v.Categories[i] = val
+		}
+	}
+	if body.FileUrls != nil {
+		v.FileUrls = make([]string, len(body.FileUrls))
+		for i, val := range body.FileUrls {
+			v.FileUrls[i] = val
+		}
+	}
+	if body.Flags != nil {
+		v.Flags = make([]*admin.ImportChallFlag, len(body.Flags))
+		for i, val := range body.Flags {
+			v.Flags[i] = marshalImportChallFlagRequestBodyToAdminImportChallFlag(val)
+		}
+	}
+	if body.Services != nil {
+		v.Services = make([]*admin.ImportChallService, len(body.Services))
+		for i, val := range body.Services {
+			v.Services[i] = marshalImportChallServiceRequestBodyToAdminImportChallService(val)
+		}
+	}
+	v.ImportToken = importToken
+
+	return v, nil
+}

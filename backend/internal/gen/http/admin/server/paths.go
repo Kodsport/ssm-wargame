@@ -75,3 +75,8 @@ func DeleteFlagAdminPath(challengeID string, flagID string) string {
 func ListCategoriesAdminPath() string {
 	return "/admin/categories"
 }
+
+// ChalltoolsImportAdminPath returns the URL path to the admin service ChalltoolsImport HTTP endpoint.
+func ChalltoolsImportAdminPath() string {
+	return "/admin/push_challenge"
+}

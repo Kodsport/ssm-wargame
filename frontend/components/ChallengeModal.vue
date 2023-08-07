@@ -35,14 +35,21 @@
                     <div class="row">
                         <div class="col" v-html="renderMarkdown(props.chall.description)"></div>
                         <div class="col">
-                            <div class="d-flex" v-if="props.chall?.authors?.length">
+                            <div class="d-flex" v-if="props.chall?.authors?.length || props.chall.other_authors?.length">
                                 <span class="material-icons text-primary pe-1">group</span>
                                 <span class="material-icons text-primary pe-1">edit</span>
-                                <span>{{ props.chall.authors.map(a => a.full_name).join(', ') }}</span>
+                                <span>
+                                    <nuxt-link v-for="a in props.chall.authors" :to="`/author/${a.id}`">
+                                        {{ a.full_name }}
+                                    </nuxt-link>
+                                    <span v-if="props.chall.other_authors">
+                                        {{ props.chall.other_authors.join(' ') }}
+                                    </span>
+                                </span>
                             </div>
                             <div class="d-flex" v-for="file in props.chall.files">
                                 <span class="material-icons text-primary">description</span>
-                                <a :href="file.url">{{ file.filename }}</a>
+                                <a :href="file.url">{{ decodeURIComponent(file.filename) }}</a>
                             </div>
                             <div class="pt-3" v-if="props.chall.solvers">
                                 <b>Första lösarna</b>
