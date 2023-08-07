@@ -6,9 +6,7 @@ RUN yarn
 
 COPY . /app/
 COPY .env /app/.env
-RUN yarn generate
+RUN yarn build
 
-FROM caddy:2.6.4-alpine
+ENTRYPOINT node .output/server/index.mjs
 
-COPY --from=build /app/.output/public /var/www
-COPY Caddyfile /etc/caddy/Caddyfile
