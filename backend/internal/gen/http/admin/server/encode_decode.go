@@ -1351,10 +1351,6 @@ func marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse(v *ad
 		ID:       *v.ID,
 		Filename: *v.Filename,
 		URL:      *v.URL,
-		Bucket:   *v.Bucket,
-		Key:      *v.Key,
-		Size:     *v.Size,
-		Md5:      *v.Md5,
 	}
 
 	return res

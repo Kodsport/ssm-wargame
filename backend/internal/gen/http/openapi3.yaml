@@ -87,19 +87,11 @@ paths:
                 category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
                 description: A heap overflow challenge
                 files:
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
+                - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
                   url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
+                - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
                   url: https://s3/bucket/key?signature
                 flags:
                 - flag: SSM{yo}
@@ -122,19 +114,11 @@ paths:
                 category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
                 description: A heap overflow challenge
                 files:
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
+                - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
                   url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
+                - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
                   url: https://s3/bucket/key?signature
                 flags:
                 - flag: SSM{yo}
@@ -157,19 +141,11 @@ paths:
                 category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
                 description: A heap overflow challenge
                 files:
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
+                - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
                   url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
+                - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
                   url: https://s3/bucket/key?signature
                 flags:
                 - flag: SSM{yo}
@@ -192,19 +168,11 @@ paths:
                 category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
                 description: A heap overflow challenge
                 files:
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
+                - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
                   url: https://s3/bucket/key?signature
-                - bucket: ssm-prod-bucket
-                  filename: decryptor.exe
+                - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  key: file.exe
-                  md5: cq02dBbcuugBHM1oKyvMlQ==
-                  size: 87123
                   url: https://s3/bucket/key?signature
                 flags:
                 - flag: SSM{yo}
@@ -1465,45 +1433,23 @@ components:
     AdminChallengeFiles:
       type: object
       properties:
-        bucket:
-          type: string
-          example: ssm-prod-bucket
         filename:
           type: string
           example: decryptor.exe
         id:
           type: string
           example: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        key:
-          type: string
-          example: file.exe
-        md5:
-          type: string
-          description: MD5 hash of the file content in base64
-          example: cq02dBbcuugBHM1oKyvMlQ==
-        size:
-          type: integer
-          example: 87123
-          format: int64
         url:
           type: string
           example: https://s3/bucket/key?signature
       example:
-        bucket: ssm-prod-bucket
         filename: decryptor.exe
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        key: file.exe
-        md5: cq02dBbcuugBHM1oKyvMlQ==
-        size: 87123
         url: https://s3/bucket/key?signature
       required:
       - id
       - filename
       - url
-      - key
-      - bucket
-      - size
-      - md5
     AdminChallengeFlag:
       type: object
       properties:
@@ -1965,26 +1911,14 @@ components:
           items:
             $ref: '#/components/schemas/AdminChallengeFiles'
           example:
-          - bucket: ssm-prod-bucket
-            filename: decryptor.exe
+          - filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-            key: file.exe
-            md5: cq02dBbcuugBHM1oKyvMlQ==
-            size: 87123
             url: https://s3/bucket/key?signature
-          - bucket: ssm-prod-bucket
-            filename: decryptor.exe
+          - filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-            key: file.exe
-            md5: cq02dBbcuugBHM1oKyvMlQ==
-            size: 87123
             url: https://s3/bucket/key?signature
-          - bucket: ssm-prod-bucket
-            filename: decryptor.exe
+          - filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-            key: file.exe
-            md5: cq02dBbcuugBHM1oKyvMlQ==
-            size: 87123
             url: https://s3/bucket/key?signature
         flags:
           type: array
@@ -2039,33 +1973,17 @@ components:
         category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
         description: A heap overflow challenge
         files:
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
+        - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
+        - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
+        - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
+        - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
           url: https://s3/bucket/key?signature
         flags:
         - flag: SSM{yo}
@@ -2101,19 +2019,11 @@ components:
         category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
         description: A heap overflow challenge
         files:
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
+        - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
+        - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
           url: https://s3/bucket/key?signature
         flags:
         - flag: SSM{yo}
@@ -2136,19 +2046,11 @@ components:
         category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
         description: A heap overflow challenge
         files:
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
+        - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
           url: https://s3/bucket/key?signature
-        - bucket: ssm-prod-bucket
-          filename: decryptor.exe
+        - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          key: file.exe
-          md5: cq02dBbcuugBHM1oKyvMlQ==
-          size: 87123
           url: https://s3/bucket/key?signature
         flags:
         - flag: SSM{yo}

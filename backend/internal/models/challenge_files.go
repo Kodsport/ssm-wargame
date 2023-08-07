@@ -27,11 +27,7 @@ type ChallengeFile struct {
 	ID           string      `boil:"id" json:"id" toml:"id" yaml:"id"`
 	ChallengeID  null.String `boil:"challenge_id" json:"challenge_id,omitempty" toml:"challenge_id" yaml:"challenge_id,omitempty"`
 	FriendlyName string      `boil:"friendly_name" json:"friendly_name" toml:"friendly_name" yaml:"friendly_name"`
-	Bucket       string      `boil:"bucket" json:"bucket" toml:"bucket" yaml:"bucket"`
-	Key          string      `boil:"key" json:"key" toml:"key" yaml:"key"`
-	MD5          string      `boil:"md5" json:"md5" toml:"md5" yaml:"md5"`
-	Uploaded     bool        `boil:"uploaded" json:"uploaded" toml:"uploaded" yaml:"uploaded"`
-	Size         int64       `boil:"size" json:"size" toml:"size" yaml:"size"`
+	URL          string      `boil:"url" json:"url" toml:"url" yaml:"url"`
 	CreatedAt    time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt    null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
@@ -43,22 +39,14 @@ var ChallengeFileColumns = struct {
 	ID           string
 	ChallengeID  string
 	FriendlyName string
-	Bucket       string
-	Key          string
-	MD5          string
-	Uploaded     string
-	Size         string
+	URL          string
 	CreatedAt    string
 	UpdatedAt    string
 }{
 	ID:           "id",
 	ChallengeID:  "challenge_id",
 	FriendlyName: "friendly_name",
-	Bucket:       "bucket",
-	Key:          "key",
-	MD5:          "md5",
-	Uploaded:     "uploaded",
-	Size:         "size",
+	URL:          "url",
 	CreatedAt:    "created_at",
 	UpdatedAt:    "updated_at",
 }
@@ -67,22 +55,14 @@ var ChallengeFileTableColumns = struct {
 	ID           string
 	ChallengeID  string
 	FriendlyName string
-	Bucket       string
-	Key          string
-	MD5          string
-	Uploaded     string
-	Size         string
+	URL          string
 	CreatedAt    string
 	UpdatedAt    string
 }{
 	ID:           "challenge_files.id",
 	ChallengeID:  "challenge_files.challenge_id",
 	FriendlyName: "challenge_files.friendly_name",
-	Bucket:       "challenge_files.bucket",
-	Key:          "challenge_files.key",
-	MD5:          "challenge_files.md5",
-	Uploaded:     "challenge_files.uploaded",
-	Size:         "challenge_files.size",
+	URL:          "challenge_files.url",
 	CreatedAt:    "challenge_files.created_at",
 	UpdatedAt:    "challenge_files.updated_at",
 }
@@ -127,58 +107,18 @@ func (w whereHelpernull_String) NIN(slice []string) qm.QueryMod {
 func (w whereHelpernull_String) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
 func (w whereHelpernull_String) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
-type whereHelperbool struct{ field string }
-
-func (w whereHelperbool) EQ(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperbool) NEQ(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperbool) LT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperbool) LTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperbool) GT(x bool) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperbool) GTE(x bool) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-
-type whereHelperint64 struct{ field string }
-
-func (w whereHelperint64) EQ(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint64) NEQ(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint64) LT(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint64) LTE(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint64) GT(x int64) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint64) GTE(x int64) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint64) IN(slice []int64) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelperint64) NIN(slice []int64) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
 var ChallengeFileWhere = struct {
 	ID           whereHelperstring
 	ChallengeID  whereHelpernull_String
 	FriendlyName whereHelperstring
-	Bucket       whereHelperstring
-	Key          whereHelperstring
-	MD5          whereHelperstring
-	Uploaded     whereHelperbool
-	Size         whereHelperint64
+	URL          whereHelperstring
 	CreatedAt    whereHelpertime_Time
 	UpdatedAt    whereHelpernull_Time
 }{
 	ID:           whereHelperstring{field: "\"challenge_files\".\"id\""},
 	ChallengeID:  whereHelpernull_String{field: "\"challenge_files\".\"challenge_id\""},
 	FriendlyName: whereHelperstring{field: "\"challenge_files\".\"friendly_name\""},
-	Bucket:       whereHelperstring{field: "\"challenge_files\".\"bucket\""},
-	Key:          whereHelperstring{field: "\"challenge_files\".\"key\""},
-	MD5:          whereHelperstring{field: "\"challenge_files\".\"md5\""},
-	Uploaded:     whereHelperbool{field: "\"challenge_files\".\"uploaded\""},
-	Size:         whereHelperint64{field: "\"challenge_files\".\"size\""},
+	URL:          whereHelperstring{field: "\"challenge_files\".\"url\""},
 	CreatedAt:    whereHelpertime_Time{field: "\"challenge_files\".\"created_at\""},
 	UpdatedAt:    whereHelpernull_Time{field: "\"challenge_files\".\"updated_at\""},
 }
@@ -211,8 +151,8 @@ func (r *challengeFileR) GetChallenge() *Challenge {
 type challengeFileL struct{}
 
 var (
-	challengeFileAllColumns            = []string{"id", "challenge_id", "friendly_name", "bucket", "key", "md5", "uploaded", "size", "created_at", "updated_at"}
-	challengeFileColumnsWithoutDefault = []string{"id", "friendly_name", "bucket", "key", "md5", "uploaded", "size"}
+	challengeFileAllColumns            = []string{"id", "challenge_id", "friendly_name", "url", "created_at", "updated_at"}
+	challengeFileColumnsWithoutDefault = []string{"id", "friendly_name", "url"}
 	challengeFileColumnsWithDefault    = []string{"challenge_id", "created_at", "updated_at"}
 	challengeFilePrimaryKeyColumns     = []string{"id"}
 	challengeFileGeneratedColumns      = []string{}

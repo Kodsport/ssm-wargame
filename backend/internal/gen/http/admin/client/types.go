@@ -854,11 +854,6 @@ type AdminChallengeFilesResponse struct {
 	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Filename *string `form:"filename,omitempty" json:"filename,omitempty" xml:"filename,omitempty"`
 	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
-	Bucket   *string `form:"bucket,omitempty" json:"bucket,omitempty" xml:"bucket,omitempty"`
-	Key      *string `form:"key,omitempty" json:"key,omitempty" xml:"key,omitempty"`
-	Size     *int64  `form:"size,omitempty" json:"size,omitempty" xml:"size,omitempty"`
-	// MD5 hash of the file content in base64
-	Md5 *string `form:"md5,omitempty" json:"md5,omitempty" xml:"md5,omitempty"`
 }
 
 // AdminChallengeFlagResponse is used to define fields on response body types.
@@ -2669,18 +2664,6 @@ func ValidateAdminChallengeFilesResponse(body *AdminChallengeFilesResponse) (err
 	}
 	if body.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
-	}
-	if body.Key == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("key", "body"))
-	}
-	if body.Bucket == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("bucket", "body"))
-	}
-	if body.Size == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("size", "body"))
-	}
-	if body.Md5 == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("md5", "body"))
 	}
 	return
 }

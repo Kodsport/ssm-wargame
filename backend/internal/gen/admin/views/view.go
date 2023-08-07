@@ -55,11 +55,6 @@ type AdminChallengeFilesView struct {
 	ID       *string
 	Filename *string
 	URL      *string
-	Bucket   *string
-	Key      *string
-	Size     *int64
-	// MD5 hash of the file content in base64
-	Md5 *string
 }
 
 // AdminChallengeFlagView is a type that runs validations on a projected type.
@@ -198,18 +193,6 @@ func ValidateAdminChallengeFilesView(result *AdminChallengeFilesView) (err error
 	}
 	if result.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "result"))
-	}
-	if result.Key == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("key", "result"))
-	}
-	if result.Bucket == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("bucket", "result"))
-	}
-	if result.Size == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("size", "result"))
-	}
-	if result.Md5 == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("md5", "result"))
 	}
 	return
 }

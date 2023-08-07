@@ -77,15 +77,9 @@ CREATE TABLE challenge_files (
     id UUID PRIMARY KEY,
     challenge_id UUID REFERENCES challenges(id) ON DELETE SET NULL,
     friendly_name TEXT NOT NULL,
-    bucket TEXT NOT NULL,
-    key TEXT NOT NULL,
-    md5 TEXT NOT NULL,
-    uploaded BOOLEAN NOT NULL,
-    size BIGINT NOT NULL,
+    url TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ,
-
-    UNIQUE (bucket, key)
+    updated_at TIMESTAMPTZ
 );
 
 CREATE INDEX challenge_files_challenge_id_idx ON challenge_files ( challenge_id );

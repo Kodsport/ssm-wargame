@@ -238,11 +238,6 @@ type AdminChallengeFiles struct {
 	ID       string
 	Filename string
 	URL      string
-	Bucket   string
-	Key      string
-	Size     int64
-	// MD5 hash of the file content in base64
-	Md5 string
 }
 
 type AdminChallengeFlag struct {
@@ -465,10 +460,6 @@ func transformAdminviewsAdminChallengeFilesViewToAdminChallengeFiles(v *adminvie
 		ID:       *v.ID,
 		Filename: *v.Filename,
 		URL:      *v.URL,
-		Bucket:   *v.Bucket,
-		Key:      *v.Key,
-		Size:     *v.Size,
-		Md5:      *v.Md5,
 	}
 
 	return res
@@ -508,10 +499,6 @@ func transformAdminChallengeFilesToAdminviewsAdminChallengeFilesView(v *AdminCha
 		ID:       &v.ID,
 		Filename: &v.Filename,
 		URL:      &v.URL,
-		Bucket:   &v.Bucket,
-		Key:      &v.Key,
-		Size:     &v.Size,
-		Md5:      &v.Md5,
 	}
 
 	return res

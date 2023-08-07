@@ -854,11 +854,6 @@ type AdminChallengeFilesResponse struct {
 	ID       string `form:"id" json:"id" xml:"id"`
 	Filename string `form:"filename" json:"filename" xml:"filename"`
 	URL      string `form:"url" json:"url" xml:"url"`
-	Bucket   string `form:"bucket" json:"bucket" xml:"bucket"`
-	Key      string `form:"key" json:"key" xml:"key"`
-	Size     int64  `form:"size" json:"size" xml:"size"`
-	// MD5 hash of the file content in base64
-	Md5 string `form:"md5" json:"md5" xml:"md5"`
 }
 
 // AdminChallengeFlagResponse is used to define fields on response body types.

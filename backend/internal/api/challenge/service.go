@@ -76,7 +76,10 @@ func (s *service) ListMonthlyChallenges(ctx context.Context, req *spec.ListMonth
 
 		res[i].Challenge.Files = make([]*spec.ChallengeFiles, len(chall.R.Challenge.R.ChallengeFiles))
 		for i2, file := range chall.R.Challenge.R.ChallengeFiles {
-			res[i].Challenge.Files[i2] = s.signFile(ctx, file)
+			res[i].Challenge.Files[i2] = &spec.ChallengeFiles{
+				Filename: file.FriendlyName,
+				URL:      file.URL,
+			}
 		}
 
 		res[i].Challenge.Authors = make([]*spec.SsmUser, len(chall.R.Challenge.R.Users))
@@ -134,7 +137,10 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))
 		for i2, file := range chall.R.ChallengeFiles {
-			res[i].Files[i2] = s.signFile(ctx, file)
+			res[i].Files[i2] = &spec.ChallengeFiles{
+				Filename: file.FriendlyName,
+				URL:      file.URL,
+			}
 		}
 
 		res[i].Authors = make([]*spec.SsmUser, len(chall.R.Users))
@@ -156,22 +162,4 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	}
 
 	return res, nil
-}
-
-func (s *service) signFile(ctx context.Context, file *models.ChallengeFile) *spec.ChallengeFiles {
-
-	req, _ := s.s3.GetObjectRequest(&s3.GetObjectInput{
-		Bucket: &file.Bucket,
-		Key:    &file.Key,
-	})
-
-	url, err := req.Presign(time.Hour * 1)
-	if err != nil {
-		s.log.Warn("could not sign url", zap.Error(err), utils.C(ctx))
-	}
-
-	return &spec.ChallengeFiles{
-		Filename: file.FriendlyName,
-		URL:      url,
-	}
 }

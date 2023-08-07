@@ -125,20 +125,8 @@ var AdminChallengeFile = Type("AdminChallengeFiles", func() {
 	Attribute("url", String, func() {
 		Example("https://s3/bucket/key?signature")
 	})
-	Attribute("bucket", String, func() {
-		Example("ssm-prod-bucket")
-	})
-	Attribute("key", String, func() {
-		Example("file.exe")
-	})
-	Attribute("size", Int64, func() {
-		Example(87123)
-	})
-	Attribute("md5", String, "MD5 hash of the file content in base64", func() {
-		Example("cq02dBbcuugBHM1oKyvMlQ==")
-	})
 
-	Required("id", "filename", "url", "key", "bucket", "size", "md5")
+	Required("id", "filename", "url")
 })
 
 var CTFEvent = Type("CTFEvent", func() {

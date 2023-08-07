@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -61,25 +63,10 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 		res[i].Files = make([]*spec.AdminChallengeFiles, len(chall.R.ChallengeFiles))
 		for i2, file := range chall.R.ChallengeFiles {
-
-			req, _ := s.s3.GetObjectRequest(&s3.GetObjectInput{
-				Bucket: &file.Bucket,
-				Key:    &file.Key,
-			})
-
-			url, err := req.Presign(time.Hour * 4)
-			if err != nil {
-				s.log.Warn("could not sign url", zap.Error(err), utils.C(ctx))
-			}
-
 			res[i].Files[i2] = &spec.AdminChallengeFiles{
 				ID:       file.ID,
 				Filename: file.FriendlyName,
-				Bucket:   file.Bucket,
-				URL:      url,
-				Key:      file.Key,
-				Size:     file.Size,
-				Md5:      file.MD5,
+				URL:      file.URL,
 			}
 		}
 
@@ -217,10 +204,7 @@ func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignC
 		ID:           fileID.String(),
 		ChallengeID:  null.StringFrom(req.ChallengeID),
 		FriendlyName: req.Filename,
-		Bucket:       s.cfg.S3.Bucket,
-		Key:          objectKey,
-		MD5:          req.Md5,
-		Size:         req.Size,
+		URL:          fmt.Sprintf("%s/%s/%s", s.cfg.S3.Endpoint, s.cfg.S3.Bucket, objectKey),
 	}
 	err = file.Insert(ctx, s.db, boil.Infer())
 
@@ -252,12 +236,6 @@ func (s *service) checkUploaded(ctx context.Context, fileID uuid.UUID, bucket, k
 	}, request.WithWaiterDelay(request.ConstantWaiterDelay(time.Second*5)), request.WithWaiterMaxAttempts(5))
 
 	if err == nil {
-		_, err = models.ChallengeFiles(
-			models.ChallengeFileWhere.ID.EQ(fileID.String()),
-		).UpdateAll(ctx, s.db, models.M{models.ChallengeFileColumns.Uploaded: true})
-		if err != nil {
-			log.Error("could not mark file as uploaded", zap.Error(err))
-		}
 		return
 	}
 
@@ -312,9 +290,14 @@ func (s *service) DeleteFile(ctx context.Context, req *spec.DeleteFilePayload) e
 		return err
 	}
 
-	out, err := s.s3.DeleteObjectWithContext(ctx, &s3.DeleteObjectInput{
-		Bucket: &file.Bucket,
-		Key:    &file.Key,
+	url, err := url.Parse(file.URL)
+	if err != nil {
+		log.Error("bad file url", zap.Error(err), zap.String("url", file.URL))
+		return err
+	}
+
+	out, err := s.s3.DeleteObjectWithContext(ctx, &s3.DeleteObjectInput{}, func(r *request.Request) {
+		r.HTTPRequest.URL = url // hack since challtools won't let us know specifics
 	})
 	if err != nil {
 		log.Error("delete object errored", zap.Error(err))
