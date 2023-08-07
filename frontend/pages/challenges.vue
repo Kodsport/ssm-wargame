@@ -23,7 +23,9 @@
 
                         <div class="form-check" v-for="event in challs.events">
                             <input type="checkbox" class="form-check-input" v-model="challFilter.eventFilter[event.id]">
-                            <label class="form-check-label">{{ event.name }}</label>
+                            <label class="form-check-label"
+                                @click="challFilter.eventFilter[event.id] = !challFilter.eventFilter[event.id]">{{
+                                    event.name }}</label>
                         </div>
                     </div>
                 </div>
@@ -61,9 +63,7 @@ useHead({
     title: 'SSM - Utmaningar'
 })
 
-
 const challs = useChallengeStore()
-const route = useRoute()
 const router = useRouter()
 
 const { challFilter } = storeToRefs(useChallengeStore())
@@ -98,14 +98,3 @@ function nav(slug: string) {
 
 </script>
 
-
-<style scoped>
-.challenge-container {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-h5 {
-    margin-bottom: 0;
-}
-</style>

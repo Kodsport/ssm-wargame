@@ -32,8 +32,8 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col" v-html="renderMarkdown(chall.description)"></div>
-                        <div class="col">
+                        <div class="col-12 col-lg-6 order-2 order-lg-1" v-html="renderMarkdown(chall.description)"></div>
+                        <div class="col-12 col-lg-6 order-1 order-lg-2 mb-3 mb-lg-0">
                             <div class="d-flex" v-if="chall?.authors?.length || chall.other_authors?.length">
                                 <span class="material-icons text-primary pe-1">group</span>
                                 <span class="material-icons text-primary pe-1">edit</span>
@@ -67,7 +67,6 @@
                         </div>
                     </div>
                     <form @submit.prevent>
-
                         <div class="row mt-3">
                             <div v-if="!chall.solved" class="form-group alert" v-bind:class="{ 'alert-danger': warn }">
                                 <input v-if="!!auth.user.id" type="text" class="form-control" placeholder="SSM{..."
