@@ -17,7 +17,7 @@
         <div class="py-3">
             <div class="d-none d-md-inline">
                 <client-only>
-                    <div v-if="!!auth.user.id">
+                    <div v-if="auth.isAuthed">
                         <div v-if="!props.chall.solved" v-bind:class="{ 'alert': warn, 'alert-danger': warn }">
                             <input class="form-control" type="text" placeholder="SSM{..." v-model="flag"
                                 @keypress.enter="submitFlag">

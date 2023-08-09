@@ -46,7 +46,9 @@
                     <td><nuxt-link :to="`/admin/challenges/${c.slug}`">{{ c.title }}</nuxt-link></td>
                     <td>{{ c.solves }}</td>
                     <td>
-                        {{ monthly.start_date + " -> " + monthly.end_date }} ({{ monthly.display_month }})
+                        {{ moment.default(monthly.start_date * 1000).format('ll') + " -> " +
+                            moment.default(monthly.end_date * 1000).format('ll') }} ({{
+        monthly.display_month }})
                     </td>
                     <td>
                         <button class="btn btn-danger" @click="deleteMontly(c.id)">Delete</button>
@@ -58,6 +60,7 @@
 </template>
   
 <script lang="ts" setup>
+import * as moment from 'moment'
 import { useChallengeStore } from '../../store/admin/challenges'
 const http = useHttp()
 
