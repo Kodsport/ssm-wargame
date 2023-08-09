@@ -193,6 +193,15 @@ type UserScoreboardScore struct {
 	Score      int
 }
 
+// MakeNotFound builds a goa.ServiceError from an error.
+func MakeNotFound(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "not_found",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
+}
+
 // MakeAlreadySolved builds a goa.ServiceError from an error.
 func MakeAlreadySolved(err error) *goa.ServiceError {
 	return &goa.ServiceError{

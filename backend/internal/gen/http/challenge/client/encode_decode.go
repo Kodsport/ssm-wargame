@@ -218,6 +218,9 @@ func EncodeGetCurrentMonthlyChallengeRequest(encoder func(*http.Request) goahttp
 // DecodeGetCurrentMonthlyChallengeResponse returns a decoder for responses
 // returned by the challenge GetCurrentMonthlyChallenge endpoint. restoreBody
 // controls whether the response body should be restored after having been read.
+// DecodeGetCurrentMonthlyChallengeResponse may return the following errors:
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - error: internal error
 func DecodeGetCurrentMonthlyChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
@@ -250,6 +253,20 @@ func DecodeGetCurrentMonthlyChallengeResponse(decoder func(*http.Response) goaht
 			}
 			res := challenge.NewSsmUserMonthlyChallenge(vres)
 			return res, nil
+		case http.StatusNotFound:
+			var (
+				body GetCurrentMonthlyChallengeNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "GetCurrentMonthlyChallenge", err)
+			}
+			err = ValidateGetCurrentMonthlyChallengeNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "GetCurrentMonthlyChallenge", err)
+			}
+			return nil, NewGetCurrentMonthlyChallengeNotFound(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("challenge", "GetCurrentMonthlyChallenge", resp.StatusCode, string(body))

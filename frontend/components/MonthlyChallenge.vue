@@ -2,9 +2,9 @@
     <div class="border border-dark bg-dark rounded p-4">
         <h4>{{ props.chall.title }}</h4>
 
-        <div class="d-flex pb-2" v-if="props.chall.authors?.length">
-            <span class="material-icons text-primary pe-1">group</span>
-            <span class="material-icons text-primary pe-1">edit</span>
+        <div class="pb-2" v-if="props.chall.authors?.length">
+            <span class="material-symbols-outlined pe-1">group</span>
+            <span class="material-symbols-outlined pe-1">edit</span>
             <span>{{ props.chall.authors.map(a => a.full_name).join(', ') }}</span>
         </div>
 

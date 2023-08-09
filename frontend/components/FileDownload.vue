@@ -1,5 +1,5 @@
 <template>
-    <span class="material-icons text-primary">description</span>
+    <span class="material-symbols-outlined pe-2">description</span>
     <a rel="nofollow" :href="props.file.url">{{ decodeURIComponent(props.file.filename) }}</a>
 </template>
 

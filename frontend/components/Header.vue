@@ -61,9 +61,9 @@
             <li class="nav-item">
               <nuxt-link v-if="!!auth.user.id" active-class="active" class="nav-link btn border border-primary"
                 to="/user">
-                <span class="d-flex">
+                <span>
                   {{ auth.user.full_name }}
-                  <span class="material-icons text-primary">person</span>
+                  <span class="material-symbols-outlined">person</span>
                 </span>
 
               </nuxt-link>

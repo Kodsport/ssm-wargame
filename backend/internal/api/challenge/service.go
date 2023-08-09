@@ -3,6 +3,7 @@ package challenge
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -38,6 +39,9 @@ func (s *service) GetCurrentMonthlyChallenge(ctx context.Context, req *spec.GetC
 
 	chall := &custommodels.UserMonthlyChall{}
 	err := q.Bind(ctx, s.db, chall)
+	if err == sql.ErrNoRows {
+		return nil, spec.MakeNotFound(errors.New("no current monthly chall"))
+	}
 	if err != nil {
 		s.log.Error("could not list monthly challs", zap.Error(err), utils.C(ctx))
 		return nil, err

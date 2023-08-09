@@ -31,9 +31,13 @@ var _ = Service("challenge", func() {
 		Payload(func() {
 			Extend(OptionalTokenPayload)
 		})
+		Error("not_found")
 		HTTP(func() {
 			GET("/current_monthly_challenge")
 			Response(StatusOK)
+			Response("not_found", StatusNotFound, func() {
+				Description("If there is no current monthly challenge")
+			})
 		})
 	})
 	Method("ListMonthlyChallenges", func() {

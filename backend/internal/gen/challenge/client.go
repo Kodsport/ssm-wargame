@@ -60,6 +60,9 @@ func (c *Client) ListEvents(ctx context.Context, p *ListEventsPayload) (res []*C
 
 // GetCurrentMonthlyChallenge calls the "GetCurrentMonthlyChallenge" endpoint
 // of the "challenge" service.
+// GetCurrentMonthlyChallenge may return the following errors:
+//   - "not_found" (type *goa.ServiceError)
+//   - error: internal error
 func (c *Client) GetCurrentMonthlyChallenge(ctx context.Context, p *GetCurrentMonthlyChallengePayload) (res *SsmUserMonthlyChallenge, err error) {
 	var ires interface{}
 	ires, err = c.GetCurrentMonthlyChallengeEndpoint(ctx, p)

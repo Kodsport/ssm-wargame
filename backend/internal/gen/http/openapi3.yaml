@@ -29,8 +29,6 @@ paths:
                   name: Forensics
                 - id: e721a338-44de-4de8-a562-43d2db5f4115
                   name: Forensics
-                - id: e721a338-44de-4de8-a562-43d2db5f4115
-                  name: Forensics
               example:
               - id: e721a338-44de-4de8-a562-43d2db5f4115
                 name: Forensics
@@ -677,6 +675,10 @@ paths:
                 name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 name: Säkerhet-SM 2023
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
         "400":
           description: Resource not found
           content:
@@ -929,14 +931,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/MonthlyChallenge'
                 example:
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  display_month: Januari/Februari
-                  end_date: 1690884841
-                  start_date: 1690874841
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  display_month: Januari/Februari
-                  end_date: 1690884841
-                  start_date: 1690874841
                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                   display_month: Januari/Februari
                   end_date: 1690884841
@@ -1203,7 +1197,22 @@ paths:
                   id: uuid todo
                   role: admin
                   school_id: 78433202
+                - email: movitz.sunar@ssm.example
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  role: admin
+                  school_id: 78433202
+                - email: movitz.sunar@ssm.example
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  role: admin
+                  school_id: 78433202
               example:
+              - email: movitz.sunar@ssm.example
+                full_name: Movitz Sunar
+                id: uuid todo
+                role: admin
+                school_id: 78433202
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: uuid todo
@@ -1502,6 +1511,16 @@ paths:
                 display_month: Januari/Februari
                 end_date: 1690884841
                 start_date: 1690874841
+        "404":
+          description: If there is no current monthly challenge
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
       security:
       - jwt_header_Authorization: []
   /events:
@@ -1526,9 +1545,9 @@ paths:
                   name: Säkerhet-SM 2023
                 - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                   name: Säkerhet-SM 2023
+                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  name: Säkerhet-SM 2023
               example:
-              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -1780,7 +1799,16 @@ paths:
                 - id: 78433202
                   municipality_name: Örebro
                   name: Engelbrektsskolan
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
+                - id: 78433202
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
               example:
+              - id: 78433202
+                municipality_name: Örebro
+                name: Engelbrektsskolan
               - id: 78433202
                 municipality_name: Örebro
                 name: Engelbrektsskolan
@@ -1928,6 +1956,8 @@ components:
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
           - solved_at: 7513817883815790178
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+          - solved_at: 7513817883815790178
+            user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
           type: array
           items:
@@ -1956,9 +1986,12 @@ components:
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         - solved_at: 7513817883815790178
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 7513817883815790178
-          user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
+        - id: 34062de2-6687-4acb-ab4b-608cc246b133
+          input: SSM{wrong_flag}
+          submitted_at: 1138045893676732979
+          successful: false
+          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
           submitted_at: 1138045893676732979
@@ -1997,14 +2030,14 @@ components:
       properties:
         solved_at:
           type: integer
-          example: 2828629780412990773
+          example: 5502230724297656806
           format: int64
         user_id:
           type: string
           example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
           format: uuid
       example:
-        solved_at: 3292397500309912484
+        solved_at: 2123715514406408235
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       required:
       - user_id
@@ -2021,7 +2054,7 @@ components:
           example: SSM{wrong_flag}
         submitted_at:
           type: integer
-          example: 8784580605737682678
+          example: 6264149472227820412
           format: int64
         successful:
           type: boolean
@@ -2033,7 +2066,7 @@ components:
       example:
         id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 1146281508963973141
+        submitted_at: 6450285299075037144
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -2049,14 +2082,14 @@ components:
           type: array
           items:
             type: string
-            example: Repellat est a.
+            example: Harum voluptatem.
           example:
           - Movitz Sunar
         categories:
           type: array
           items:
             type: string
-            example: Error ratione harum voluptatem.
+            example: Repudiandae sed error quia quia quibusdam voluptates.
           example:
           - web
         challenge_id:
@@ -2070,7 +2103,7 @@ components:
           type: array
           items:
             type: string
-            example: Repudiandae sed error quia quia quibusdam voluptates.
+            example: Aut soluta.
           example:
           - https://bucket/key
         flag_format_prefix:
@@ -2088,8 +2121,6 @@ components:
             type: regex
           - flag: fl4g_l0l
             type: regex
-          - flag: fl4g_l0l
-            type: regex
         order:
           type: integer
           example: 5
@@ -2103,6 +2134,10 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
@@ -2128,11 +2163,13 @@ components:
           type: regex
         - flag: fl4g_l0l
           type: regex
-        - flag: fl4g_l0l
-          type: regex
         order: 5
         score: 100
         services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -2156,9 +2193,9 @@ components:
       properties:
         token:
           type: string
-          example: Qui temporibus eveniet vel beatae.
+          example: Vel beatae quibusdam.
       example:
-        token: Et fugit.
+        token: Fugit doloremque earum non cumque.
       required:
       - token
     CreateCTFEventRequestBody:
@@ -2179,7 +2216,7 @@ components:
           type: array
           items:
             type: string
-            example: Rerum mollitia et praesentium quis iusto qui.
+            example: Voluptatum repellat est.
           example:
           - 1b678293-6737-4cc7-8eae-aa821100293f
         category_id:
@@ -2199,7 +2236,7 @@ components:
           type: array
           items:
             type: string
-            example: Eveniet velit et quisquam nemo.
+            example: Quis iusto qui consequuntur praesentium.
           example:
           - FRA
         publish_at:
@@ -2269,7 +2306,7 @@ components:
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: true
+          example: false
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -2338,14 +2375,14 @@ components:
           format: int64
         school_name:
           type: string
-          example: Earum non cumque.
+          example: Qui nisi.
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: uuid todo
         role: admin
         school_id: 78433202
-        school_name: Qui nisi.
+        school_name: Consequuntur unde exercitationem.
       required:
       - id
       - email
@@ -2475,7 +2512,7 @@ components:
           type: array
           items:
             type: string
-            example: Sit facere qui dolores quia eius molestias.
+            example: Iste excepturi tempore voluptas tempora et.
           example:
           - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id:
@@ -2502,17 +2539,13 @@ components:
           - filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
             url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-            url: https://s3/bucket/key?signature
         flags:
           type: array
           items:
             $ref: '#/components/schemas/AdminChallengeFlag'
           example:
+          - flag: SSM{yo}
+            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           - flag: SSM{yo}
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           - flag: SSM{yo}
@@ -2527,7 +2560,7 @@ components:
           type: array
           items:
             type: string
-            example: Sequi quia fugiat in iure.
+            example: Quia eius molestias optio eum.
           example:
           - FRA
         publish_at:
@@ -2581,12 +2614,7 @@ components:
         - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          url: https://s3/bucket/key?signature
         flags:
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -2625,6 +2653,38 @@ components:
       items:
         $ref: '#/components/schemas/SsmAdminChallenge'
       example:
+      - authors:
+        - dfaa1a6a-9051-4c52-9441-5d664536cf24
+        category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        files:
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
+        flags:
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        other_authors:
+        - FRA
+        publish_at: 1638384718
+        score: 50
+        services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        slug: pwnme
+        solves: 3
+        title: pwnme
       - authors:
         - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
@@ -2728,6 +2788,8 @@ components:
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
@@ -2736,7 +2798,7 @@ components:
           type: array
           items:
             type: string
-            example: Earum quam velit aut quo.
+            example: Velit doloribus voluptate omnis vel neque qui.
           example:
           - FRA
         score:
@@ -2749,6 +2811,8 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
@@ -2772,9 +2836,6 @@ components:
           - full_name: Movitz Sunar
             id: uuid todo
             solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: uuid todo
-            solved_at: 16123128
         solves:
           type: integer
           description: The numer of people who solved the challenge
@@ -2787,11 +2848,6 @@ components:
       description: A Wargame challenge
       example:
         authors:
-        - email: movitz.sunar@ssm.example
-          full_name: Movitz Sunar
-          id: uuid todo
-          role: admin
-          school_id: 78433202
         - email: movitz.sunar@ssm.example
           full_name: Movitz Sunar
           id: uuid todo
@@ -2829,9 +2885,6 @@ components:
         slug: pwnme
         solved: true
         solvers:
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
         - full_name: Movitz Sunar
           id: uuid todo
           solved_at: 16123128
@@ -3041,6 +3094,8 @@ components:
           items:
             $ref: '#/components/schemas/SchoolScoreboardScore'
           example:
+          - school_name: Stockholm Science and Innovation School
+            score: 1337
           - school_name: Stockholm Science and Innovation School
             score: 1337
           - school_name: Stockholm Science and Innovation School
@@ -3362,8 +3417,20 @@ components:
             school_name: Stockholm Science and Innovation School
             score: 1337
             user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+          - name: Movitz Sunar
+            school_name: Stockholm Science and Innovation School
+            score: 1337
+            user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+          - name: Movitz Sunar
+            school_name: Stockholm Science and Innovation School
+            score: 1337
+            user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
       example:
         scores:
+        - name: Movitz Sunar
+          school_name: Stockholm Science and Innovation School
+          score: 1337
+          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
         - name: Movitz Sunar
           school_name: Stockholm Science and Innovation School
           score: 1337

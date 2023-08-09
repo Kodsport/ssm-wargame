@@ -127,6 +127,34 @@ func DecodeGetCurrentMonthlyChallengeRequest(mux goahttp.Muxer, decoder func(*ht
 	}
 }
 
+// EncodeGetCurrentMonthlyChallengeError returns an encoder for errors returned
+// by the GetCurrentMonthlyChallenge challenge endpoint.
+func EncodeGetCurrentMonthlyChallengeError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetCurrentMonthlyChallengeNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeListMonthlyChallengesResponse returns an encoder for responses
 // returned by the challenge ListMonthlyChallenges endpoint.
 func EncodeListMonthlyChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {

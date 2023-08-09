@@ -17,13 +17,13 @@
                             <span class="me-1">
                                 {{ chall.score }}
                             </span>
-                            <span class="material-icons text-primary">control_point_duplicate</span>
+                            <span class="material-symbols-outlined">control_point_duplicate</span>
                         </span>
                         <span class="mx-3 d-flex">
                             <span class="me-1">
                                 {{ chall.solves }}
                             </span>
-                            <span class="material-icons text-primary">flag</span>
+                            <span class="material-symbols-outlined">flag</span>
                         </span>
                     </div>
                 </h5>
@@ -32,9 +32,9 @@
                     <div class="row">
                         <div class="col-12 col-lg-6 order-2 order-lg-1" v-html="renderMarkdown(chall.description)"></div>
                         <div class="col-12 col-lg-6 order-1 order-lg-2 mb-3 mb-lg-0">
-                            <div class="d-flex" v-if="chall?.authors?.length || chall.other_authors?.length">
-                                <span class="material-icons text-primary pe-1">group</span>
-                                <span class="material-icons text-primary pe-1">edit</span>
+                            <div v-if="chall?.authors?.length || chall.other_authors?.length">
+                                <span class="material-symbols-outlined pe-1">group</span>
+                                <span class="material-symbols-outlined pe-1">edit</span>
                                 <span>
                                     <nuxt-link class="author" v-for="a in chall.authors" :to="`/author/${a.id}`">
                                         {{ a.full_name }}
@@ -45,11 +45,11 @@
                                 </span>
                             </div>
                             <div class="d-flex" v-for="service in chall.services">
-                                <span class="material-icons text-primary">router</span>
+                                <span class="material-symbols-outlined pe-2">router</span>
                                 <a v-if="service.hyperlink" :href="service.user_display">{{ service.user_display }}</a>
                                 <span v-else>{{ service.user_display }}</span>
                             </div>
-                            <div class="d-flex" v-for="file in chall.files">
+                            <div v-for="file in chall.files">
                                 <FileDownload :file="file" />
                             </div>
                             <div class="pt-3" v-if="chall.solvers">

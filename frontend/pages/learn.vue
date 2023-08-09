@@ -16,20 +16,31 @@
                     <a href="https://www.youtube.com/channel/UClcE-kVhqyiHCcjYwcpfj9w">LiveOverflow</a>: En väldigt
                     pedagogisk kanal med många bra videos. Nedan är två videos från kanalen.
                     <ul>
-
-                        <li><a href="https://www.youtube.com/watch?v=2TofunAI6fU">The Secret step-by-step Guide to learn
-                                Hacking</a></li>
-                        <li><a href="https://www.youtube.com/watch?v=8ev9ZX9J45A">What is CTF? An introduction to security
-                                Capture The Flag competitions</a></li><br>
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=2TofunAI6fU">
+                                The Secret step-by-step Guide to learn Hacking
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=8ev9ZX9J45A">
+                                What is CTF? An introduction to security Capture The Flag competitions
+                            </a>
+                        </li>
                     </ul>
                 </li>
-                <li><a href="https://www.youtube.com/user/GynvaelEN">Gynvael</a>: Långa, lite mer avancerade videos, men
-                    väldigt lärorika.</li>
-                <li><a href="https://www.youtube.com/user/ZetaTwo">ZetaTwo</a>: Calle Svensson har många års erfarenhet
-                    av CTF-tävlingar. <a
-                        href="https://www.youtube.com/playlist?list=PLzzz0pYwY0M0u5daM96-QvHagA5v7FhLP">Här</a> går
-                    Calle igenom alla problem från tidigare SSM-tävlingar.</li>
-                <li><a href="https://www.youtube.com/user/RootOfTheNull">John Hammond</a></li>
+                <li>
+                    <a href="https://www.youtube.com/user/GynvaelEN">Gynvael</a>: Långa, lite mer avancerade videos, men
+                    väldigt lärorika.
+                </li>
+                <li>
+                    <a href="https://www.youtube.com/user/ZetaTwo">ZetaTwo</a>:
+                    Calle Svensson har många års erfarenhet av CTF-tävlingar.
+                    <a href="https://www.youtube.com/playlist?list=PLzzz0pYwY0M0u5daM96-QvHagA5v7FhLP">Här</a>
+                    går Calle igenom alla problem från tidigare SSM-tävlingar.
+                </li>
+                <li>
+                    <a href="https://www.youtube.com/user/RootOfTheNull">John Hammond</a>
+                </li>
             </ul>
             <h3 class="text-primary">CTF och Wargames</h3>
             <p>Wargames är som en CTF, fast den är uppe permanent. PicoCTF är en CTF som körs under en period och

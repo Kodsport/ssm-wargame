@@ -58,6 +58,25 @@ type UserScoreboardResponseBody struct {
 	Scores []*UserScoreboardScoreResponseBody `form:"scores" json:"scores" xml:"scores"`
 }
 
+// GetCurrentMonthlyChallengeNotFoundResponseBody is the type of the
+// "challenge" service "GetCurrentMonthlyChallenge" endpoint HTTP response body
+// for the "not_found" error.
+type GetCurrentMonthlyChallengeNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
 type SubmitFlagAlreadySolvedResponseBody struct {
@@ -304,6 +323,21 @@ func NewUserScoreboardResponseBody(res *challengeviews.SsmUserScoreboardView) *U
 		for i, val := range res.Scores {
 			body.Scores[i] = marshalChallengeviewsUserScoreboardScoreViewToUserScoreboardScoreResponseBody(val)
 		}
+	}
+	return body
+}
+
+// NewGetCurrentMonthlyChallengeNotFoundResponseBody builds the HTTP response
+// body from the result of the "GetCurrentMonthlyChallenge" endpoint of the
+// "challenge" service.
+func NewGetCurrentMonthlyChallengeNotFoundResponseBody(res *goa.ServiceError) *GetCurrentMonthlyChallengeNotFoundResponseBody {
+	body := &GetCurrentMonthlyChallengeNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
 	}
 	return body
 }

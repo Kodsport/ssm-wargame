@@ -14,11 +14,9 @@
                         <nuxt-link to="/challenges/terry">Se Terry's utmaningar</nuxt-link>
 
 
-                        <span class="d-flex text-primary pt-2">
-                            <span class="material-icons text-decoration-none pe-1">email</span>
-                            <a href="mailto:terry@kodsport.se">
-                                terry@kodsport.se
-                            </a>
+                        <span class="text-primary pt-2">
+                            <span class="material-symbols-outlined text-decoration-none pe-2">email</span>
+                            <a href="mailto:terry@kodsport.se">terry@kodsport.se</a>
                         </span>
                     </div>
                 </div>
