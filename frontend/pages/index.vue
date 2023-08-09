@@ -33,7 +33,7 @@
 
             <div v-if="monthly.status.value == 'success'" class="col pt-3 pt-md-0">
                 <h1 class="text-primary">Månadens utmaning - {{ monthly.data.value.display_month }}</h1>
-                <MontlyChallenge :chall="monthly.data.value.challenge" />
+                <MonthlyChallenge :chall="monthly.data.value.challenge" />
             </div>
         </div>
     </div>
