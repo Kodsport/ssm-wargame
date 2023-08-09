@@ -7,6 +7,6 @@ marked.use({
 });
 
 export default function renderMarkdown(text: string) {
-    const md = marked.parse(text)
+    const md = marked.parse(text || '')
     return DOMPurify.isSupported ? DOMPurify.sanitize(md) : md;
 }
