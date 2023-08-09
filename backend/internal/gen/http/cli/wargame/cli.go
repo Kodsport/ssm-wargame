@@ -26,7 +26,7 @@ import (
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
-challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard)
+challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard)
 admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token)
 user (get-self|join-school|leave-school|search-schools)
 `
@@ -79,6 +79,9 @@ func ParseEndpoint(
 
 		challengeSchoolScoreboardFlags     = flag.NewFlagSet("school-scoreboard", flag.ExitOnError)
 		challengeSchoolScoreboardTokenFlag = challengeSchoolScoreboardFlags.String("token", "", "")
+
+		challengeUserScoreboardFlags     = flag.NewFlagSet("user-scoreboard", flag.ExitOnError)
+		challengeUserScoreboardTokenFlag = challengeUserScoreboardFlags.String("token", "", "")
 
 		adminFlags = flag.NewFlagSet("admin", flag.ContinueOnError)
 
@@ -180,6 +183,7 @@ func ParseEndpoint(
 	challengeListMonthlyChallengesFlags.Usage = challengeListMonthlyChallengesUsage
 	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
 	challengeSchoolScoreboardFlags.Usage = challengeSchoolScoreboardUsage
+	challengeUserScoreboardFlags.Usage = challengeUserScoreboardUsage
 
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
@@ -274,6 +278,9 @@ func ParseEndpoint(
 
 			case "school-scoreboard":
 				epf = challengeSchoolScoreboardFlags
+
+			case "user-scoreboard":
+				epf = challengeUserScoreboardFlags
 
 			}
 
@@ -402,6 +409,9 @@ func ParseEndpoint(
 			case "school-scoreboard":
 				endpoint = c.SchoolScoreboard()
 				data, err = challengec.BuildSchoolScoreboardPayload(*challengeSchoolScoreboardTokenFlag)
+			case "user-scoreboard":
+				endpoint = c.UserScoreboard()
+				data, err = challengec.BuildUserScoreboardPayload(*challengeUserScoreboardTokenFlag)
 			}
 		case "admin":
 			c := adminc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -538,6 +548,7 @@ COMMAND:
     list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
     submit-flag: SubmitFlag implements SubmitFlag.
     school-scoreboard: SchoolScoreboard implements SchoolScoreboard.
+    user-scoreboard: UserScoreboard implements UserScoreboard.
 
 Additional help:
     %[1]s challenge COMMAND --help
@@ -610,6 +621,17 @@ SchoolScoreboard implements SchoolScoreboard.
 
 Example:
     %[1]s challenge school-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeUserScoreboardUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge user-scoreboard -token STRING
+
+UserScoreboard implements UserScoreboard.
+    -token STRING: 
+
+Example:
+    %[1]s challenge user-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -877,6 +899,10 @@ Example:
       "order": 5,
       "score": 100,
       "services": [
+         {
+            "hyperlink": true,
+            "user_display": "nc 0.0.0.0 1234"
+         },
          {
             "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"

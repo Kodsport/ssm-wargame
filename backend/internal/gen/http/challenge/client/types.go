@@ -50,6 +50,12 @@ type SchoolScoreboardResponseBody struct {
 	Scores []*SchoolScoreboardScoreResponseBody `form:"scores,omitempty" json:"scores,omitempty" xml:"scores,omitempty"`
 }
 
+// UserScoreboardResponseBody is the type of the "challenge" service
+// "UserScoreboard" endpoint HTTP response body.
+type UserScoreboardResponseBody struct {
+	Scores []*UserScoreboardScoreResponseBody `form:"scores,omitempty" json:"scores,omitempty" xml:"scores,omitempty"`
+}
+
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
 type SubmitFlagAlreadySolvedResponseBody struct {
@@ -218,6 +224,15 @@ type SchoolScoreboardScoreResponseBody struct {
 	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
 }
 
+// UserScoreboardScoreResponseBody is used to define fields on response body
+// types.
+type UserScoreboardScoreResponseBody struct {
+	UserID     *string `form:"user_id,omitempty" json:"user_id,omitempty" xml:"user_id,omitempty"`
+	Name       *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
+	Score      *int    `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+}
+
 // NewSubmitFlagRequestBody builds the HTTP request body from the payload of
 // the "SubmitFlag" endpoint of the "challenge" service.
 func NewSubmitFlagRequestBody(p *challenge.SubmitFlagPayload) *SubmitFlagRequestBody {
@@ -306,13 +321,25 @@ func NewSubmitFlagIncorrectFlag(body *SubmitFlagIncorrectFlagResponseBody) *goa.
 	return v
 }
 
-// NewSchoolScoreboardSsmShoolscoreboardOK builds a "challenge" service
+// NewSchoolScoreboardSsmSchoolScoreboardOK builds a "challenge" service
 // "SchoolScoreboard" endpoint result from a HTTP "OK" response.
-func NewSchoolScoreboardSsmShoolscoreboardOK(body *SchoolScoreboardResponseBody) *challengeviews.SsmShoolscoreboardView {
-	v := &challengeviews.SsmShoolscoreboardView{}
+func NewSchoolScoreboardSsmSchoolScoreboardOK(body *SchoolScoreboardResponseBody) *challengeviews.SsmSchoolScoreboardView {
+	v := &challengeviews.SsmSchoolScoreboardView{}
 	v.Scores = make([]*challengeviews.SchoolScoreboardScoreView, len(body.Scores))
 	for i, val := range body.Scores {
 		v.Scores[i] = unmarshalSchoolScoreboardScoreResponseBodyToChallengeviewsSchoolScoreboardScoreView(val)
+	}
+
+	return v
+}
+
+// NewUserScoreboardSsmUserScoreboardOK builds a "challenge" service
+// "UserScoreboard" endpoint result from a HTTP "OK" response.
+func NewUserScoreboardSsmUserScoreboardOK(body *UserScoreboardResponseBody) *challengeviews.SsmUserScoreboardView {
+	v := &challengeviews.SsmUserScoreboardView{}
+	v.Scores = make([]*challengeviews.UserScoreboardScoreView, len(body.Scores))
+	for i, val := range body.Scores {
+		v.Scores[i] = unmarshalUserScoreboardScoreResponseBodyToChallengeviewsUserScoreboardScoreView(val)
 	}
 
 	return v
@@ -654,6 +681,24 @@ func ValidateSchoolScoreboardScoreResponseBody(body *SchoolScoreboardScoreRespon
 	}
 	if body.Score == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	return
+}
+
+// ValidateUserScoreboardScoreResponseBody runs the validations defined on
+// UserScoreboardScoreResponseBody
+func ValidateUserScoreboardScoreResponseBody(body *UserScoreboardScoreResponseBody) (err error) {
+	if body.UserID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_id", "body"))
+	}
+	if body.SchoolName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("school_name", "body"))
+	}
+	if body.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
 	return
 }

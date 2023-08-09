@@ -98,9 +98,15 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Required("solved", "category")
 })
 
-var SchoolScoreboard = ResultType("application/vnd.ssm.shoolscoreboard", func() {
+var SchoolScoreboard = ResultType("application/vnd.ssm.school.scoreboard", func() {
 	Description("A scoreboard of schools")
 	Attribute("scores", ArrayOf(SchoolScoreboardScore))
+	Required("scores")
+})
+
+var UserScoreboard = ResultType("application/vnd.ssm.user.scoreboard", func() {
+	Description("A scoreboard of user")
+	Attribute("scores", ArrayOf(UserScoreboardScore))
 	Required("scores")
 })
 
@@ -112,6 +118,22 @@ var SchoolScoreboardScore = Type("SchoolScoreboardScore", func() {
 		Example("Stockholm Science and Innovation School")
 	})
 	Required("school_name", "score")
+})
+
+var UserScoreboardScore = Type("UserScoreboardScore", func() {
+	Attribute("user_id", String, func() {
+		Example("97ee0ee4-b65f-445b-97cc-b61d96db8d8e")
+	})
+	Attribute("name", String, func() {
+		Example("Movitz Sunar")
+	})
+	Attribute("school_name", String, func() {
+		Example("Stockholm Science and Innovation School")
+	})
+	Attribute("score", Int, func() {
+		Example(1337)
+	})
+	Required("user_id", "school_name", "score", "name")
 })
 
 var UserMonthlyChallenge = ResultType("application/vnd.ssm.user.monthly.challenge", func() {

@@ -28,7 +28,9 @@ type Service interface {
 	// SubmitFlag implements SubmitFlag.
 	SubmitFlag(context.Context, *SubmitFlagPayload) (err error)
 	// SchoolScoreboard implements SchoolScoreboard.
-	SchoolScoreboard(context.Context, *SchoolScoreboardPayload) (res *SsmShoolscoreboard, err error)
+	SchoolScoreboard(context.Context, *SchoolScoreboardPayload) (res *SsmSchoolScoreboard, err error)
+	// UserScoreboard implements UserScoreboard.
+	UserScoreboard(context.Context, *UserScoreboardPayload) (res *SsmUserScoreboard, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -45,7 +47,7 @@ const ServiceName = "challenge"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [6]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyChallenge", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard"}
+var MethodNames = [7]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyChallenge", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard", "UserScoreboard"}
 
 // ListChallengesPayload is the payload type of the challenge service
 // ListChallenges method.
@@ -107,10 +109,22 @@ type SchoolScoreboardPayload struct {
 	Token *string
 }
 
-// SsmShoolscoreboard is the result type of the challenge service
+// SsmSchoolScoreboard is the result type of the challenge service
 // SchoolScoreboard method.
-type SsmShoolscoreboard struct {
+type SsmSchoolScoreboard struct {
 	Scores []*SchoolScoreboardScore
+}
+
+// UserScoreboardPayload is the payload type of the challenge service
+// UserScoreboard method.
+type UserScoreboardPayload struct {
+	Token *string
+}
+
+// SsmUserScoreboard is the result type of the challenge service UserScoreboard
+// method.
+type SsmUserScoreboard struct {
+	Scores []*UserScoreboardScore
 }
 
 // A Wargame challenge
@@ -170,6 +184,13 @@ type CTFEvent struct {
 type SchoolScoreboardScore struct {
 	Score      int
 	SchoolName string
+}
+
+type UserScoreboardScore struct {
+	UserID     string
+	Name       string
+	SchoolName string
+	Score      int
 }
 
 // MakeAlreadySolved builds a goa.ServiceError from an error.
@@ -233,17 +254,31 @@ func NewViewedSsmUserMonthlyChallengeCollection(res SsmUserMonthlyChallengeColle
 	return challengeviews.SsmUserMonthlyChallengeCollection{Projected: p, View: "default"}
 }
 
-// NewSsmShoolscoreboard initializes result type SsmShoolscoreboard from viewed
-// result type SsmShoolscoreboard.
-func NewSsmShoolscoreboard(vres *challengeviews.SsmShoolscoreboard) *SsmShoolscoreboard {
-	return newSsmShoolscoreboard(vres.Projected)
+// NewSsmSchoolScoreboard initializes result type SsmSchoolScoreboard from
+// viewed result type SsmSchoolScoreboard.
+func NewSsmSchoolScoreboard(vres *challengeviews.SsmSchoolScoreboard) *SsmSchoolScoreboard {
+	return newSsmSchoolScoreboard(vres.Projected)
 }
 
-// NewViewedSsmShoolscoreboard initializes viewed result type
-// SsmShoolscoreboard from result type SsmShoolscoreboard using the given view.
-func NewViewedSsmShoolscoreboard(res *SsmShoolscoreboard, view string) *challengeviews.SsmShoolscoreboard {
-	p := newSsmShoolscoreboardView(res)
-	return &challengeviews.SsmShoolscoreboard{Projected: p, View: "default"}
+// NewViewedSsmSchoolScoreboard initializes viewed result type
+// SsmSchoolScoreboard from result type SsmSchoolScoreboard using the given
+// view.
+func NewViewedSsmSchoolScoreboard(res *SsmSchoolScoreboard, view string) *challengeviews.SsmSchoolScoreboard {
+	p := newSsmSchoolScoreboardView(res)
+	return &challengeviews.SsmSchoolScoreboard{Projected: p, View: "default"}
+}
+
+// NewSsmUserScoreboard initializes result type SsmUserScoreboard from viewed
+// result type SsmUserScoreboard.
+func NewSsmUserScoreboard(vres *challengeviews.SsmUserScoreboard) *SsmUserScoreboard {
+	return newSsmUserScoreboard(vres.Projected)
+}
+
+// NewViewedSsmUserScoreboard initializes viewed result type SsmUserScoreboard
+// from result type SsmUserScoreboard using the given view.
+func NewViewedSsmUserScoreboard(res *SsmUserScoreboard, view string) *challengeviews.SsmUserScoreboard {
+	p := newSsmUserScoreboardView(res)
+	return &challengeviews.SsmUserScoreboard{Projected: p, View: "default"}
 }
 
 // newSsmChallengeCollection converts projected type SsmChallengeCollection to
@@ -494,10 +529,10 @@ func newSsmUserMonthlyChallengeCollectionView(res SsmUserMonthlyChallengeCollect
 	return vres
 }
 
-// newSsmShoolscoreboard converts projected type SsmShoolscoreboard to service
-// type SsmShoolscoreboard.
-func newSsmShoolscoreboard(vres *challengeviews.SsmShoolscoreboardView) *SsmShoolscoreboard {
-	res := &SsmShoolscoreboard{}
+// newSsmSchoolScoreboard converts projected type SsmSchoolScoreboard to
+// service type SsmSchoolScoreboard.
+func newSsmSchoolScoreboard(vres *challengeviews.SsmSchoolScoreboardView) *SsmSchoolScoreboard {
+	res := &SsmSchoolScoreboard{}
 	if vres.Scores != nil {
 		res.Scores = make([]*SchoolScoreboardScore, len(vres.Scores))
 		for i, val := range vres.Scores {
@@ -507,14 +542,40 @@ func newSsmShoolscoreboard(vres *challengeviews.SsmShoolscoreboardView) *SsmShoo
 	return res
 }
 
-// newSsmShoolscoreboardView projects result type SsmShoolscoreboard to
-// projected type SsmShoolscoreboardView using the "default" view.
-func newSsmShoolscoreboardView(res *SsmShoolscoreboard) *challengeviews.SsmShoolscoreboardView {
-	vres := &challengeviews.SsmShoolscoreboardView{}
+// newSsmSchoolScoreboardView projects result type SsmSchoolScoreboard to
+// projected type SsmSchoolScoreboardView using the "default" view.
+func newSsmSchoolScoreboardView(res *SsmSchoolScoreboard) *challengeviews.SsmSchoolScoreboardView {
+	vres := &challengeviews.SsmSchoolScoreboardView{}
 	if res.Scores != nil {
 		vres.Scores = make([]*challengeviews.SchoolScoreboardScoreView, len(res.Scores))
 		for i, val := range res.Scores {
 			vres.Scores[i] = transformSchoolScoreboardScoreToChallengeviewsSchoolScoreboardScoreView(val)
+		}
+	}
+	return vres
+}
+
+// newSsmUserScoreboard converts projected type SsmUserScoreboard to service
+// type SsmUserScoreboard.
+func newSsmUserScoreboard(vres *challengeviews.SsmUserScoreboardView) *SsmUserScoreboard {
+	res := &SsmUserScoreboard{}
+	if vres.Scores != nil {
+		res.Scores = make([]*UserScoreboardScore, len(vres.Scores))
+		for i, val := range vres.Scores {
+			res.Scores[i] = transformChallengeviewsUserScoreboardScoreViewToUserScoreboardScore(val)
+		}
+	}
+	return res
+}
+
+// newSsmUserScoreboardView projects result type SsmUserScoreboard to projected
+// type SsmUserScoreboardView using the "default" view.
+func newSsmUserScoreboardView(res *SsmUserScoreboard) *challengeviews.SsmUserScoreboardView {
+	vres := &challengeviews.SsmUserScoreboardView{}
+	if res.Scores != nil {
+		vres.Scores = make([]*challengeviews.UserScoreboardScoreView, len(res.Scores))
+		for i, val := range res.Scores {
+			vres.Scores[i] = transformUserScoreboardScoreToChallengeviewsUserScoreboardScoreView(val)
 		}
 	}
 	return vres
@@ -664,6 +725,37 @@ func transformSchoolScoreboardScoreToChallengeviewsSchoolScoreboardScoreView(v *
 	res := &challengeviews.SchoolScoreboardScoreView{
 		Score:      &v.Score,
 		SchoolName: &v.SchoolName,
+	}
+
+	return res
+}
+
+// transformChallengeviewsUserScoreboardScoreViewToUserScoreboardScore builds a
+// value of type *UserScoreboardScore from a value of type
+// *challengeviews.UserScoreboardScoreView.
+func transformChallengeviewsUserScoreboardScoreViewToUserScoreboardScore(v *challengeviews.UserScoreboardScoreView) *UserScoreboardScore {
+	if v == nil {
+		return nil
+	}
+	res := &UserScoreboardScore{
+		UserID:     *v.UserID,
+		Name:       *v.Name,
+		SchoolName: *v.SchoolName,
+		Score:      *v.Score,
+	}
+
+	return res
+}
+
+// transformUserScoreboardScoreToChallengeviewsUserScoreboardScoreView builds a
+// value of type *challengeviews.UserScoreboardScoreView from a value of type
+// *UserScoreboardScore.
+func transformUserScoreboardScoreToChallengeviewsUserScoreboardScoreView(v *UserScoreboardScore) *challengeviews.UserScoreboardScoreView {
+	res := &challengeviews.UserScoreboardScoreView{
+		UserID:     &v.UserID,
+		Name:       &v.Name,
+		SchoolName: &v.SchoolName,
+		Score:      &v.Score,
 	}
 
 	return res

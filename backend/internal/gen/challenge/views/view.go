@@ -38,11 +38,20 @@ type SsmUserMonthlyChallengeCollection struct {
 	View string
 }
 
-// SsmShoolscoreboard is the viewed result type that is projected based on a
+// SsmSchoolScoreboard is the viewed result type that is projected based on a
 // view.
-type SsmShoolscoreboard struct {
+type SsmSchoolScoreboard struct {
 	// Type to project
-	Projected *SsmShoolscoreboardView
+	Projected *SsmSchoolScoreboardView
+	// View to render
+	View string
+}
+
+// SsmUserScoreboard is the viewed result type that is projected based on a
+// view.
+type SsmUserScoreboard struct {
+	// Type to project
+	Projected *SsmUserScoreboardView
 	// View to render
 	View string
 }
@@ -121,8 +130,8 @@ type SsmUserMonthlyChallengeView struct {
 // projected type.
 type SsmUserMonthlyChallengeCollectionView []*SsmUserMonthlyChallengeView
 
-// SsmShoolscoreboardView is a type that runs validations on a projected type.
-type SsmShoolscoreboardView struct {
+// SsmSchoolScoreboardView is a type that runs validations on a projected type.
+type SsmSchoolScoreboardView struct {
 	Scores []*SchoolScoreboardScoreView
 }
 
@@ -131,6 +140,19 @@ type SsmShoolscoreboardView struct {
 type SchoolScoreboardScoreView struct {
 	Score      *int
 	SchoolName *string
+}
+
+// SsmUserScoreboardView is a type that runs validations on a projected type.
+type SsmUserScoreboardView struct {
+	Scores []*UserScoreboardScoreView
+}
+
+// UserScoreboardScoreView is a type that runs validations on a projected type.
+type UserScoreboardScoreView struct {
+	UserID     *string
+	Name       *string
+	SchoolName *string
+	Score      *int
 }
 
 var (
@@ -176,9 +198,16 @@ var (
 			"challenge",
 		},
 	}
-	// SsmShoolscoreboardMap is a map indexing the attribute names of
-	// SsmShoolscoreboard by view name.
-	SsmShoolscoreboardMap = map[string][]string{
+	// SsmSchoolScoreboardMap is a map indexing the attribute names of
+	// SsmSchoolScoreboard by view name.
+	SsmSchoolScoreboardMap = map[string][]string{
+		"default": {
+			"scores",
+		},
+	}
+	// SsmUserScoreboardMap is a map indexing the attribute names of
+	// SsmUserScoreboard by view name.
+	SsmUserScoreboardMap = map[string][]string{
 		"default": {
 			"scores",
 		},
@@ -259,12 +288,24 @@ func ValidateSsmUserMonthlyChallengeCollection(result SsmUserMonthlyChallengeCol
 	return
 }
 
-// ValidateSsmShoolscoreboard runs the validations defined on the viewed result
-// type SsmShoolscoreboard.
-func ValidateSsmShoolscoreboard(result *SsmShoolscoreboard) (err error) {
+// ValidateSsmSchoolScoreboard runs the validations defined on the viewed
+// result type SsmSchoolScoreboard.
+func ValidateSsmSchoolScoreboard(result *SsmSchoolScoreboard) (err error) {
 	switch result.View {
 	case "default", "":
-		err = ValidateSsmShoolscoreboardView(result.Projected)
+		err = ValidateSsmSchoolScoreboardView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
+// ValidateSsmUserScoreboard runs the validations defined on the viewed result
+// type SsmUserScoreboard.
+func ValidateSsmUserScoreboard(result *SsmUserScoreboard) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmUserScoreboardView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
@@ -440,9 +481,9 @@ func ValidateSsmUserMonthlyChallengeCollectionView(result SsmUserMonthlyChalleng
 	return
 }
 
-// ValidateSsmShoolscoreboardView runs the validations defined on
-// SsmShoolscoreboardView using the "default" view.
-func ValidateSsmShoolscoreboardView(result *SsmShoolscoreboardView) (err error) {
+// ValidateSsmSchoolScoreboardView runs the validations defined on
+// SsmSchoolScoreboardView using the "default" view.
+func ValidateSsmSchoolScoreboardView(result *SsmSchoolScoreboardView) (err error) {
 	if result.Scores == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("scores", "result"))
 	}
@@ -464,6 +505,40 @@ func ValidateSchoolScoreboardScoreView(result *SchoolScoreboardScoreView) (err e
 	}
 	if result.Score == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
+	}
+	return
+}
+
+// ValidateSsmUserScoreboardView runs the validations defined on
+// SsmUserScoreboardView using the "default" view.
+func ValidateSsmUserScoreboardView(result *SsmUserScoreboardView) (err error) {
+	if result.Scores == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("scores", "result"))
+	}
+	for _, e := range result.Scores {
+		if e != nil {
+			if err2 := ValidateUserScoreboardScoreView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// ValidateUserScoreboardScoreView runs the validations defined on
+// UserScoreboardScoreView.
+func ValidateUserScoreboardScoreView(result *UserScoreboardScoreView) (err error) {
+	if result.UserID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_id", "result"))
+	}
+	if result.SchoolName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("school_name", "result"))
+	}
+	if result.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
+	}
+	if result.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "result"))
 	}
 	return
 }

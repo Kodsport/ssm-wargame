@@ -21,10 +21,11 @@ type Client struct {
 	ListMonthlyChallengesEndpoint      goa.Endpoint
 	SubmitFlagEndpoint                 goa.Endpoint
 	SchoolScoreboardEndpoint           goa.Endpoint
+	UserScoreboardEndpoint             goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard goa.Endpoint) *Client {
+func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard, userScoreboard goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:             listChallenges,
 		ListEventsEndpoint:                 listEvents,
@@ -32,6 +33,7 @@ func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonth
 		ListMonthlyChallengesEndpoint:      listMonthlyChallenges,
 		SubmitFlagEndpoint:                 submitFlag,
 		SchoolScoreboardEndpoint:           schoolScoreboard,
+		UserScoreboardEndpoint:             userScoreboard,
 	}
 }
 
@@ -90,11 +92,22 @@ func (c *Client) SubmitFlag(ctx context.Context, p *SubmitFlagPayload) (err erro
 
 // SchoolScoreboard calls the "SchoolScoreboard" endpoint of the "challenge"
 // service.
-func (c *Client) SchoolScoreboard(ctx context.Context, p *SchoolScoreboardPayload) (res *SsmShoolscoreboard, err error) {
+func (c *Client) SchoolScoreboard(ctx context.Context, p *SchoolScoreboardPayload) (res *SsmSchoolScoreboard, err error) {
 	var ires interface{}
 	ires, err = c.SchoolScoreboardEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(*SsmShoolscoreboard), nil
+	return ires.(*SsmSchoolScoreboard), nil
+}
+
+// UserScoreboard calls the "UserScoreboard" endpoint of the "challenge"
+// service.
+func (c *Client) UserScoreboard(ctx context.Context, p *UserScoreboardPayload) (res *SsmUserScoreboard, err error) {
+	var ires interface{}
+	ires, err = c.UserScoreboardEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*SsmUserScoreboard), nil
 }

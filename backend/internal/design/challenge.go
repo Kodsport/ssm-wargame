@@ -79,4 +79,14 @@ var _ = Service("challenge", func() {
 			Response(StatusOK)
 		})
 	})
+	Method("UserScoreboard", func() {
+		Result(UserScoreboard)
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+		})
+		HTTP(func() {
+			GET("/user_scoreboard")
+			Response(StatusOK)
+		})
+	})
 })

@@ -263,7 +263,7 @@ func EncodeSubmitFlagError(encoder func(context.Context, http.ResponseWriter) go
 // the challenge SchoolScoreboard endpoint.
 func EncodeSchoolScoreboardResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(*challengeviews.SsmShoolscoreboard)
+		res := v.(*challengeviews.SsmSchoolScoreboard)
 		enc := encoder(ctx, w)
 		body := NewSchoolScoreboardResponseBody(res.Projected)
 		w.WriteHeader(http.StatusOK)
@@ -283,6 +283,42 @@ func DecodeSchoolScoreboardRequest(mux goahttp.Muxer, decoder func(*http.Request
 			token = &tokenRaw
 		}
 		payload := NewSchoolScoreboardPayload(token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeUserScoreboardResponse returns an encoder for responses returned by
+// the challenge UserScoreboard endpoint.
+func EncodeUserScoreboardResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*challengeviews.SsmUserScoreboard)
+		enc := encoder(ctx, w)
+		body := NewUserScoreboardResponseBody(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeUserScoreboardRequest returns a decoder for requests sent to the
+// challenge UserScoreboard endpoint.
+func DecodeUserScoreboardRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewUserScoreboardPayload(token)
 		if payload.Token != nil {
 			if strings.Contains(*payload.Token, " ") {
 				// Remove authorization scheme prefix (e.g. "Bearer")
@@ -553,6 +589,20 @@ func marshalChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScoreRespon
 	res := &SchoolScoreboardScoreResponseBody{
 		Score:      *v.Score,
 		SchoolName: *v.SchoolName,
+	}
+
+	return res
+}
+
+// marshalChallengeviewsUserScoreboardScoreViewToUserScoreboardScoreResponseBody
+// builds a value of type *UserScoreboardScoreResponseBody from a value of type
+// *challengeviews.UserScoreboardScoreView.
+func marshalChallengeviewsUserScoreboardScoreViewToUserScoreboardScoreResponseBody(v *challengeviews.UserScoreboardScoreView) *UserScoreboardScoreResponseBody {
+	res := &UserScoreboardScoreResponseBody{
+		UserID:     *v.UserID,
+		Name:       *v.Name,
+		SchoolName: *v.SchoolName,
+		Score:      *v.Score,
 	}
 
 	return res

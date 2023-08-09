@@ -980,6 +980,26 @@ paths:
       - http
       security:
       - jwt_header_Authorization: []
+  /user_scoreboard:
+    get:
+      tags:
+      - challenge
+      summary: UserScoreboard challenge
+      operationId: challenge#UserScoreboard
+      parameters:
+      - name: Authorization
+        in: header
+        required: false
+        type: string
+      responses:
+        "200":
+          description: OK response.
+          schema:
+            $ref: '#/definitions/ChallengeUserScoreboardResponseBody'
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
 definitions:
   AdminAddFlagBadRequestResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
@@ -1741,7 +1761,7 @@ definitions:
         example: true
     description: CreateChallenge_bad_request_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -1761,7 +1781,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1783,15 +1803,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: CreateChallenge_not_found_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
       temporary: true
-      timeout: false
+      timeout: true
     required:
     - name
     - id
@@ -1807,7 +1827,7 @@ definitions:
         type: array
         items:
           type: string
-          example: In reprehenderit repellendus et vel.
+          example: Qui cum eum.
         example:
         - 1b678293-6737-4cc7-8eae-aa821100293f
       category_id:
@@ -1827,7 +1847,7 @@ definitions:
         type: array
         items:
           type: string
-          example: Nobis dolorem necessitatibus autem aut odio dolores.
+          example: Et in reprehenderit repellendus et.
         example:
         - FRA
       publish_at:
@@ -1876,7 +1896,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -1905,8 +1925,8 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: true
+      temporary: false
+      timeout: false
     required:
     - name
     - id
@@ -2634,7 +2654,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -2659,7 +2679,7 @@ definitions:
         example: false
     description: GetChallengeMeta_bad_request_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -2697,19 +2717,19 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: false
     description: GetChallengeMeta_not_found_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
-      timeout: true
+      temporary: true
+      timeout: false
     required:
     - name
     - id
@@ -2726,13 +2746,11 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeSolverResponseBody'
         example:
-        - solved_at: 5728570650013284868
+        - solved_at: 7513817883815790178
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 5728570650013284868
+        - solved_at: 7513817883815790178
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 5728570650013284868
-          user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 5728570650013284868
+        - solved_at: 7513817883815790178
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       submissions:
         type: array
@@ -2741,41 +2759,38 @@ definitions:
         example:
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 8287603688713421758
+          submitted_at: 1138045893676732979
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 8287603688713421758
+          submitted_at: 1138045893676732979
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 8287603688713421758
-          successful: false
-          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
-        - id: 34062de2-6687-4acb-ab4b-608cc246b133
-          input: SSM{wrong_flag}
-          submitted_at: 8287603688713421758
+          submitted_at: 1138045893676732979
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
     example:
       solvers:
-      - solved_at: 5728570650013284868
+      - solved_at: 7513817883815790178
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-      - solved_at: 5728570650013284868
+      - solved_at: 7513817883815790178
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-      - solved_at: 5728570650013284868
+      - solved_at: 7513817883815790178
+        user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+      - solved_at: 7513817883815790178
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       submissions:
       - id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 8287603688713421758
+        submitted_at: 1138045893676732979
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       - id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 8287603688713421758
+        submitted_at: 1138045893676732979
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
     required:
@@ -2806,7 +2821,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: true
+        example: false
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -2818,7 +2833,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: false
+      temporary: true
       timeout: false
     required:
     - name
@@ -3104,7 +3119,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3126,14 +3141,14 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: ListChallenges_bad_request_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: false
     required:
     - name
@@ -3171,15 +3186,15 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: ListChallenges_not_found_Response_Body result type (default view)
     example:
       fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -3194,7 +3209,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3212,7 +3227,7 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
@@ -3223,7 +3238,7 @@ definitions:
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: false
     required:
     - name
@@ -3703,9 +3718,6 @@ definitions:
       - filename: decryptor.exe
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         url: https://s3/bucket/key?signature
-      - filename: decryptor.exe
-        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        url: https://s3/bucket/key?signature
       flags:
       - flag: SSM{yo}
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -3719,8 +3731,6 @@ definitions:
       publish_at: 1638384718
       score: 50
       services:
-      - hyperlink: true
-        user_display: nc 0.0.0.0 1234
       - hyperlink: true
         user_display: nc 0.0.0.0 1234
       - hyperlink: true
@@ -3745,6 +3755,40 @@ definitions:
       - filename: decryptor.exe
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         url: https://s3/bucket/key?signature
+      flags:
+      - flag: SSM{yo}
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+      - flag: SSM{yo}
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+      - flag: SSM{yo}
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+      id: e721a338-44de-4de8-a562-43d2db5f4115
+      other_authors:
+      - FRA
+      publish_at: 1638384718
+      score: 50
+      services:
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      - hyperlink: true
+        user_display: nc 0.0.0.0 1234
+      slug: pwnme
+      solves: 3
+      title: pwnme
+    - authors:
+      - dfaa1a6a-9051-4c52-9441-5d664536cf24
+      category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+      ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+      description: A heap overflow challenge
+      files:
+      - filename: decryptor.exe
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        url: https://s3/bucket/key?signature
+      - filename: decryptor.exe
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        url: https://s3/bucket/key?signature
       - filename: decryptor.exe
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         url: https://s3/bucket/key?signature
@@ -3767,8 +3811,6 @@ definitions:
         user_display: nc 0.0.0.0 1234
       - hyperlink: true
         user_display: nc 0.0.0.0 1234
-      - hyperlink: true
-        user_display: nc 0.0.0.0 1234
       slug: pwnme
       solves: 3
       title: pwnme
@@ -3779,7 +3821,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3797,14 +3839,14 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: false
+        example: true
     description: UpdateChallenge_bad_request_Response_Body result type (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -3824,7 +3866,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3846,7 +3888,7 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: UpdateChallenge_not_found_Response_Body result type (default view)
     example:
       fault: false
@@ -3890,7 +3932,7 @@ definitions:
         type: array
         items:
           type: string
-          example: Eaque est porro inventore cupiditate delectus.
+          example: Inventore cupiditate delectus.
         example:
         - FRA
       publish_at:
@@ -3939,7 +3981,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: true
+        example: false
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -3964,12 +4006,12 @@ definitions:
         example: false
     description: UpdateChallenge_unauthorized_Response_Body result type (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
-      timeout: false
+      temporary: false
+      timeout: true
     required:
     - name
     - id
@@ -4178,7 +4220,7 @@ definitions:
     - display_month
     - challenge_id
   ChallengeSchoolScoreboardResponseBody:
-    title: 'Mediatype identifier: application/vnd.ssm.shoolscoreboard; view=default'
+    title: 'Mediatype identifier: application/vnd.ssm.school.scoreboard; view=default'
     type: object
     properties:
       scores:
@@ -4243,14 +4285,14 @@ definitions:
     properties:
       solved_at:
         type: integer
-        example: 5430418523587840927
+        example: 509000934919518840
         format: int64
       user_id:
         type: string
         example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         format: uuid
     example:
-      solved_at: 1212800587779152579
+      solved_at: 2113763155450921738
       user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
     required:
     - user_id
@@ -4714,7 +4756,7 @@ definitions:
         example: SSM{wrong_flag}
       submitted_at:
         type: integer
-        example: 7783393280038368132
+        example: 7271764970893003711
         format: int64
       successful:
         type: boolean
@@ -4726,7 +4768,7 @@ definitions:
     example:
       id: 34062de2-6687-4acb-ab4b-608cc246b133
       input: SSM{wrong_flag}
-      submitted_at: 1133722835015675771
+      submitted_at: 1917886316777101491
       successful: false
       user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
     required:
@@ -4837,6 +4879,44 @@ definitions:
       flag: SSM{flag}
     required:
     - flag
+  ChallengeUserScoreboardResponseBody:
+    title: 'Mediatype identifier: application/vnd.ssm.user.scoreboard; view=default'
+    type: object
+    properties:
+      scores:
+        type: array
+        items:
+          $ref: '#/definitions/UserScoreboardScoreResponseBody'
+        example:
+        - name: Movitz Sunar
+          school_name: Stockholm Science and Innovation School
+          score: 1337
+          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+        - name: Movitz Sunar
+          school_name: Stockholm Science and Innovation School
+          score: 1337
+          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+    description: UserScoreboardResponseBody result type (default view)
+    example:
+      scores:
+      - name: Movitz Sunar
+        school_name: Stockholm Science and Innovation School
+        score: 1337
+        user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+      - name: Movitz Sunar
+        school_name: Stockholm Science and Innovation School
+        score: 1337
+        user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+      - name: Movitz Sunar
+        school_name: Stockholm Science and Innovation School
+        score: 1337
+        user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+      - name: Movitz Sunar
+        school_name: Stockholm Science and Innovation School
+        score: 1337
+        user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+    required:
+    - scores
   ImportChallFlagRequestBody:
     title: ImportChallFlagRequestBody
     type: object
@@ -4948,7 +5028,7 @@ definitions:
         type: array
         items:
           type: string
-          example: Quae error molestias neque.
+          example: Dolorum illum nemo aut illum.
         example:
         - dfaa1a6a-9051-4c52-9441-5d664536cf24
       category_id:
@@ -4978,9 +5058,6 @@ definitions:
         - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          url: https://s3/bucket/key?signature
       flags:
         type: array
         items:
@@ -5000,7 +5077,7 @@ definitions:
         type: array
         items:
           type: string
-          example: Vel porro.
+          example: Sit minus quae error molestias neque.
         example:
         - FRA
       publish_at:
@@ -5018,6 +5095,8 @@ definitions:
         items:
           $ref: '#/definitions/ChallengeServiceResponse'
         example:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -5056,6 +5135,10 @@ definitions:
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         url: https://s3/bucket/key?signature
       flags:
+      - flag: SSM{yo}
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+      - flag: SSM{yo}
+        id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
         id: 71333e34-4c6b-483e-b3c7-c77d73008cca
       - flag: SSM{yo}
@@ -5687,6 +5770,33 @@ definitions:
       school_id: 78433202
     required:
     - school_id
+  UserScoreboardScoreResponseBody:
+    title: UserScoreboardScoreResponseBody
+    type: object
+    properties:
+      name:
+        type: string
+        example: Movitz Sunar
+      school_name:
+        type: string
+        example: Stockholm Science and Innovation School
+      score:
+        type: integer
+        example: 1337
+        format: int64
+      user_id:
+        type: string
+        example: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+    example:
+      name: Movitz Sunar
+      school_name: Stockholm Science and Innovation School
+      score: 1337
+      user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+    required:
+    - user_id
+    - school_name
+    - score
+    - name
 securityDefinitions:
   jwt_header_Authorization:
     type: apiKey

@@ -40,3 +40,8 @@ func SubmitFlagChallengePath(challengeID string) string {
 func SchoolScoreboardChallengePath() string {
 	return "/scoreboard"
 }
+
+// UserScoreboardChallengePath returns the URL path to the challenge service UserScoreboard HTTP endpoint.
+func UserScoreboardChallengePath() string {
+	return "/user_scoreboard"
+}

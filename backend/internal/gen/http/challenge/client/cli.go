@@ -129,3 +129,18 @@ func BuildSchoolScoreboardPayload(challengeSchoolScoreboardToken string) (*chall
 
 	return v, nil
 }
+
+// BuildUserScoreboardPayload builds the payload for the challenge
+// UserScoreboard endpoint from CLI flags.
+func BuildUserScoreboardPayload(challengeUserScoreboardToken string) (*challenge.UserScoreboardPayload, error) {
+	var token *string
+	{
+		if challengeUserScoreboardToken != "" {
+			token = &challengeUserScoreboardToken
+		}
+	}
+	v := &challenge.UserScoreboardPayload{}
+	v.Token = token
+
+	return v, nil
+}

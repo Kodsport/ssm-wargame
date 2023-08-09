@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <h1>Challs</h1>
-        <div class="col-6">
+        <div>
             <form @submit.prevent>
                 <div class="form-group">
                     <label>Title</label>
@@ -73,7 +73,7 @@
                             </NuxtLink>
                         </td>
                         <td>{{ chall.solves }}</td>
-                        <td v-if="store.getCategory">{{ store.getCategory(chall.category_id).name }}</td>
+                        <td>{{ getCategoryName(chall.category_id) }}</td>
                         <td class="text-right">
                             <NuxtLink class="btn btn-primary" :to="`/admin/challenges/${chall.slug}/edit`">
                                 Edit
@@ -136,4 +136,9 @@ function pushAuthor(event) {
     form.value.authors.push(event.target.value)
     authSelect.value.value = ''
 }
+
+function getCategoryName(id) {
+    return store.getCategory(id)?.name
+}
+
 </script>

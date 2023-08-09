@@ -52,6 +52,12 @@ type SchoolScoreboardResponseBody struct {
 	Scores []*SchoolScoreboardScoreResponseBody `form:"scores" json:"scores" xml:"scores"`
 }
 
+// UserScoreboardResponseBody is the type of the "challenge" service
+// "UserScoreboard" endpoint HTTP response body.
+type UserScoreboardResponseBody struct {
+	Scores []*UserScoreboardScoreResponseBody `form:"scores" json:"scores" xml:"scores"`
+}
+
 // SubmitFlagAlreadySolvedResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "already_solved" error.
 type SubmitFlagAlreadySolvedResponseBody struct {
@@ -220,6 +226,15 @@ type SchoolScoreboardScoreResponseBody struct {
 	SchoolName string `form:"school_name" json:"school_name" xml:"school_name"`
 }
 
+// UserScoreboardScoreResponseBody is used to define fields on response body
+// types.
+type UserScoreboardScoreResponseBody struct {
+	UserID     string `form:"user_id" json:"user_id" xml:"user_id"`
+	Name       string `form:"name" json:"name" xml:"name"`
+	SchoolName string `form:"school_name" json:"school_name" xml:"school_name"`
+	Score      int    `form:"score" json:"score" xml:"score"`
+}
+
 // NewSsmChallengeResponseCollection builds the HTTP response body from the
 // result of the "ListChallenges" endpoint of the "challenge" service.
 func NewSsmChallengeResponseCollection(res challengeviews.SsmChallengeCollectionView) SsmChallengeResponseCollection {
@@ -269,12 +284,25 @@ func NewSsmUserMonthlyChallengeResponseCollection(res challengeviews.SsmUserMont
 
 // NewSchoolScoreboardResponseBody builds the HTTP response body from the
 // result of the "SchoolScoreboard" endpoint of the "challenge" service.
-func NewSchoolScoreboardResponseBody(res *challengeviews.SsmShoolscoreboardView) *SchoolScoreboardResponseBody {
+func NewSchoolScoreboardResponseBody(res *challengeviews.SsmSchoolScoreboardView) *SchoolScoreboardResponseBody {
 	body := &SchoolScoreboardResponseBody{}
 	if res.Scores != nil {
 		body.Scores = make([]*SchoolScoreboardScoreResponseBody, len(res.Scores))
 		for i, val := range res.Scores {
 			body.Scores[i] = marshalChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScoreResponseBody(val)
+		}
+	}
+	return body
+}
+
+// NewUserScoreboardResponseBody builds the HTTP response body from the result
+// of the "UserScoreboard" endpoint of the "challenge" service.
+func NewUserScoreboardResponseBody(res *challengeviews.SsmUserScoreboardView) *UserScoreboardResponseBody {
+	body := &UserScoreboardResponseBody{}
+	if res.Scores != nil {
+		body.Scores = make([]*UserScoreboardScoreResponseBody, len(res.Scores))
+		for i, val := range res.Scores {
+			body.Scores[i] = marshalChallengeviewsUserScoreboardScoreViewToUserScoreboardScoreResponseBody(val)
 		}
 	}
 	return body
@@ -358,6 +386,15 @@ func NewSubmitFlagPayload(body *SubmitFlagRequestBody, challengeID string, token
 // endpoint payload.
 func NewSchoolScoreboardPayload(token *string) *challenge.SchoolScoreboardPayload {
 	v := &challenge.SchoolScoreboardPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewUserScoreboardPayload builds a challenge service UserScoreboard endpoint
+// payload.
+func NewUserScoreboardPayload(token *string) *challenge.UserScoreboardPayload {
+	v := &challenge.UserScoreboardPayload{}
 	v.Token = token
 
 	return v

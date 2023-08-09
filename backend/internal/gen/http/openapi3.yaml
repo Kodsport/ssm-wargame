@@ -29,7 +29,11 @@ paths:
                   name: Forensics
                 - id: e721a338-44de-4de8-a562-43d2db5f4115
                   name: Forensics
+                - id: e721a338-44de-4de8-a562-43d2db5f4115
+                  name: Forensics
               example:
+              - id: e721a338-44de-4de8-a562-43d2db5f4115
+                name: Forensics
               - id: e721a338-44de-4de8-a562-43d2db5f4115
                 name: Forensics
               - id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -99,16 +103,14 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 other_authors:
                 - FRA
                 publish_at: 1638384718
                 score: 50
                 services:
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
                 - hyperlink: true
                   user_display: nc 0.0.0.0 1234
                 - hyperlink: true
@@ -133,16 +135,14 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 other_authors:
                 - FRA
                 publish_at: 1638384718
                 score: 50
                 services:
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
                 - hyperlink: true
                   user_display: nc 0.0.0.0 1234
                 - hyperlink: true
@@ -167,16 +167,14 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 other_authors:
                 - FRA
                 publish_at: 1638384718
                 score: 50
                 services:
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
                 - hyperlink: true
                   user_display: nc 0.0.0.0 1234
                 - hyperlink: true
@@ -201,16 +199,14 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                - flag: SSM{yo}
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 other_authors:
                 - FRA
                 publish_at: 1638384718
                 score: 50
                 services:
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
                 - hyperlink: true
                   user_display: nc 0.0.0.0 1234
                 - hyperlink: true
@@ -334,31 +330,33 @@ paths:
                 $ref: '#/components/schemas/ChallengeMeta'
               example:
                 solvers:
-                - solved_at: 5728570650013284868
+                - solved_at: 7513817883815790178
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 5728570650013284868
+                - solved_at: 7513817883815790178
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 5728570650013284868
+                - solved_at: 7513817883815790178
+                  user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+                - solved_at: 7513817883815790178
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
                 submissions:
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 8287603688713421758
+                  submitted_at: 1138045893676732979
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 8287603688713421758
+                  submitted_at: 1138045893676732979
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 8287603688713421758
+                  submitted_at: 1138045893676732979
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 8287603688713421758
+                  submitted_at: 1138045893676732979
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         "400":
@@ -670,9 +668,11 @@ paths:
                   name: Säkerhet-SM 2023
                 - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                   name: Säkerhet-SM 2023
+                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  name: Säkerhet-SM 2023
+                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  name: Säkerhet-SM 2023
               example:
-              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -880,7 +880,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateCTFEventImportTokenResponseBody'
               example:
-                token: Et quia et facilis veritatis tempora vero.
+                token: Et facilis veritatis tempora vero.
         "400":
           description: Resource not found
           content:
@@ -937,11 +937,15 @@ paths:
                   display_month: Januari/Februari
                   end_date: 1690884841
                   start_date: 1690874841
+                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  display_month: Januari/Februari
+                  end_date: 1690884841
+                  start_date: 1690874841
+                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  display_month: Januari/Februari
+                  end_date: 1690884841
+                  start_date: 1690874841
               example:
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                display_month: Januari/Februari
-                end_date: 1690884841
-                start_date: 1690874841
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 display_month: Januari/Februari
                 end_date: 1690884841
@@ -1137,6 +1141,8 @@ paths:
                 user_display: nc 0.0.0.0 1234
               - hyperlink: true
                 user_display: nc 0.0.0.0 1234
+              - hyperlink: true
+                user_display: nc 0.0.0.0 1234
               title: DNS 101
       responses:
         "200":
@@ -1187,16 +1193,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/SsmUser'
                 example:
-                - email: movitz.sunar@ssm.example
-                  full_name: Movitz Sunar
-                  id: uuid todo
-                  role: admin
-                  school_id: 78433202
-                - email: movitz.sunar@ssm.example
-                  full_name: Movitz Sunar
-                  id: uuid todo
-                  role: admin
-                  school_id: 78433202
                 - email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
                   id: uuid todo
@@ -1714,7 +1710,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SsmShoolscoreboard'
+                $ref: '#/components/schemas/SsmSchoolScoreboard'
               example:
                 scores:
                 - school_name: Stockholm Science and Innovation School
@@ -1791,6 +1787,9 @@ paths:
               - id: 78433202
                 municipality_name: Örebro
                 name: Engelbrektsskolan
+              - id: 78433202
+                municipality_name: Örebro
+                name: Engelbrektsskolan
       security:
       - jwt_header_Authorization: []
   /user/self:
@@ -1813,6 +1812,39 @@ paths:
                 role: admin
                 school_id: 78433202
                 school_name: Alias sequi repellat alias voluptas eum sit.
+      security:
+      - jwt_header_Authorization: []
+  /user_scoreboard:
+    get:
+      tags:
+      - challenge
+      summary: UserScoreboard challenge
+      operationId: challenge#UserScoreboard
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsmUserScoreboard'
+              example:
+                scores:
+                - name: Movitz Sunar
+                  school_name: Stockholm Science and Innovation School
+                  score: 1337
+                  user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+                - name: Movitz Sunar
+                  school_name: Stockholm Science and Innovation School
+                  score: 1337
+                  user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+                - name: Movitz Sunar
+                  school_name: Stockholm Science and Innovation School
+                  score: 1337
+                  user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+                - name: Movitz Sunar
+                  school_name: Stockholm Science and Innovation School
+                  score: 1337
+                  user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
       security:
       - jwt_header_Authorization: []
 components:
@@ -1890,11 +1922,11 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeSolver'
           example:
-          - solved_at: 5728570650013284868
+          - solved_at: 7513817883815790178
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 5728570650013284868
+          - solved_at: 7513817883815790178
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 5728570650013284868
+          - solved_at: 7513817883815790178
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
           type: array
@@ -1903,44 +1935,43 @@ components:
           example:
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 8287603688713421758
+            submitted_at: 1138045893676732979
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 8287603688713421758
+            submitted_at: 1138045893676732979
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 8287603688713421758
-            successful: false
-            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
-          - id: 34062de2-6687-4acb-ab4b-608cc246b133
-            input: SSM{wrong_flag}
-            submitted_at: 8287603688713421758
+            submitted_at: 1138045893676732979
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       example:
         solvers:
-        - solved_at: 5728570650013284868
+        - solved_at: 7513817883815790178
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 5728570650013284868
+        - solved_at: 7513817883815790178
+          user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+        - solved_at: 7513817883815790178
+          user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+        - solved_at: 7513817883815790178
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 8287603688713421758
+          submitted_at: 1138045893676732979
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 8287603688713421758
+          submitted_at: 1138045893676732979
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 8287603688713421758
+          submitted_at: 1138045893676732979
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -1966,14 +1997,14 @@ components:
       properties:
         solved_at:
           type: integer
-          example: 5663962955847345847
+          example: 2828629780412990773
           format: int64
         user_id:
           type: string
           example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
           format: uuid
       example:
-        solved_at: 1402847149092518479
+        solved_at: 3292397500309912484
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       required:
       - user_id
@@ -1990,7 +2021,7 @@ components:
           example: SSM{wrong_flag}
         submitted_at:
           type: integer
-          example: 8232133162143154892
+          example: 8784580605737682678
           format: int64
         successful:
           type: boolean
@@ -2002,7 +2033,7 @@ components:
       example:
         id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 1833922578500581457
+        submitted_at: 1146281508963973141
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -2018,14 +2049,14 @@ components:
           type: array
           items:
             type: string
-            example: Rerum mollitia et praesentium quis iusto qui.
+            example: Repellat est a.
           example:
           - Movitz Sunar
         categories:
           type: array
           items:
             type: string
-            example: Praesentium natus voluptatum repellat est a.
+            example: Error ratione harum voluptatem.
           example:
           - web
         challenge_id:
@@ -2039,7 +2070,7 @@ components:
           type: array
           items:
             type: string
-            example: Error ratione harum voluptatem.
+            example: Repudiandae sed error quia quia quibusdam voluptates.
           example:
           - https://bucket/key
         flag_format_prefix:
@@ -2076,8 +2107,6 @@ components:
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
         title:
           type: string
           example: DNS 101
@@ -2093,6 +2122,10 @@ components:
         flag_format_prefix: SSM{
         flag_format_suffix: '}'
         flags:
+        - flag: fl4g_l0l
+          type: regex
+        - flag: fl4g_l0l
+          type: regex
         - flag: fl4g_l0l
           type: regex
         - flag: fl4g_l0l
@@ -2123,9 +2156,9 @@ components:
       properties:
         token:
           type: string
-          example: Quibusdam voluptates delectus aut soluta.
+          example: Qui temporibus eveniet vel beatae.
       example:
-        token: Optio culpa qui temporibus.
+        token: Et fugit.
       required:
       - token
     CreateCTFEventRequestBody:
@@ -2146,7 +2179,7 @@ components:
           type: array
           items:
             type: string
-            example: Adipisci rerum et eveniet velit.
+            example: Rerum mollitia et praesentium quis iusto qui.
           example:
           - 1b678293-6737-4cc7-8eae-aa821100293f
         category_id:
@@ -2166,7 +2199,7 @@ components:
           type: array
           items:
             type: string
-            example: Tempore voluptas tempora.
+            example: Eveniet velit et quisquam nemo.
           example:
           - FRA
         publish_at:
@@ -2305,14 +2338,14 @@ components:
           format: int64
         school_name:
           type: string
-          example: Vel beatae quibusdam.
+          example: Earum non cumque.
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: uuid todo
         role: admin
         school_id: 78433202
-        school_name: Fugit doloremque earum non cumque.
+        school_name: Qui nisi.
       required:
       - id
       - email
@@ -2442,7 +2475,7 @@ components:
           type: array
           items:
             type: string
-            example: Fugiat in iure vero aut.
+            example: Sit facere qui dolores quia eius molestias.
           example:
           - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id:
@@ -2472,6 +2505,9 @@ components:
           - filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
             url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+            url: https://s3/bucket/key?signature
         flags:
           type: array
           items:
@@ -2491,7 +2527,7 @@ components:
           type: array
           items:
             type: string
-            example: Itaque dolores.
+            example: Sequi quia fugiat in iure.
           example:
           - FRA
         publish_at:
@@ -2509,6 +2545,8 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
@@ -2543,7 +2581,14 @@ components:
         - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
         flags:
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
@@ -2597,16 +2642,14 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
         other_authors:
         - FRA
         publish_at: 1638384718
         score: 50
         services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -2631,38 +2674,6 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
-        publish_at: 1638384718
-        score: 50
-        services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        slug: pwnme
-        solves: 3
-        title: pwnme
-      - authors:
-        - dfaa1a6a-9051-4c52-9441-5d664536cf24
-        category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
-        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-        description: A heap overflow challenge
-        files:
-        - filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          url: https://s3/bucket/key?signature
-        flags:
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -2671,10 +2682,6 @@ components:
         publish_at: 1638384718
         score: 50
         services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -3026,7 +3033,7 @@ components:
           solved_at: 16123128
         solves: 3
         title: pwnme
-    SsmShoolscoreboard:
+    SsmSchoolScoreboard:
       type: object
       properties:
         scores:
@@ -3339,6 +3346,38 @@ components:
         display_month: Januari/Februari
         end_date: 1690884841
         start_date: 1690874841
+    SsmUserScoreboard:
+      type: object
+      properties:
+        scores:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserScoreboardScore'
+          example:
+          - name: Movitz Sunar
+            school_name: Stockholm Science and Innovation School
+            score: 1337
+            user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+          - name: Movitz Sunar
+            school_name: Stockholm Science and Innovation School
+            score: 1337
+            user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+      example:
+        scores:
+        - name: Movitz Sunar
+          school_name: Stockholm Science and Innovation School
+          score: 1337
+          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+        - name: Movitz Sunar
+          school_name: Stockholm Science and Innovation School
+          score: 1337
+          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+        - name: Movitz Sunar
+          school_name: Stockholm Science and Innovation School
+          score: 1337
+          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+      required:
+      - scores
     SubmitFlagRequestBody:
       type: object
       properties:
@@ -3350,6 +3389,32 @@ components:
         flag: SSM{flag}
       required:
       - flag
+    UserScoreboardScore:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Movitz Sunar
+        school_name:
+          type: string
+          example: Stockholm Science and Innovation School
+        score:
+          type: integer
+          example: 1337
+          format: int64
+        user_id:
+          type: string
+          example: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+      example:
+        name: Movitz Sunar
+        school_name: Stockholm Science and Innovation School
+        score: 1337
+        user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+      required:
+      - user_id
+      - school_name
+      - score
+      - name
   securitySchemes:
     jwt_header_Authorization:
       type: http

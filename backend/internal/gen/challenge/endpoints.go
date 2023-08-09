@@ -22,6 +22,7 @@ type Endpoints struct {
 	ListMonthlyChallenges      goa.Endpoint
 	SubmitFlag                 goa.Endpoint
 	SchoolScoreboard           goa.Endpoint
+	UserScoreboard             goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "challenge" service with endpoints.
@@ -35,6 +36,7 @@ func NewEndpoints(s Service) *Endpoints {
 		ListMonthlyChallenges:      NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
 		SubmitFlag:                 NewSubmitFlagEndpoint(s, a.JWTAuth),
 		SchoolScoreboard:           NewSchoolScoreboardEndpoint(s, a.JWTAuth),
+		UserScoreboard:             NewUserScoreboardEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -46,6 +48,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListMonthlyChallenges = m(e.ListMonthlyChallenges)
 	e.SubmitFlag = m(e.SubmitFlag)
 	e.SchoolScoreboard = m(e.SchoolScoreboard)
+	e.UserScoreboard = m(e.UserScoreboard)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -197,7 +200,35 @@ func NewSchoolScoreboardEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.
 		if err != nil {
 			return nil, err
 		}
-		vres := NewViewedSsmShoolscoreboard(res, "default")
+		vres := NewViewedSsmSchoolScoreboard(res, "default")
+		return vres, nil
+	}
+}
+
+// NewUserScoreboardEndpoint returns an endpoint function that calls the method
+// "UserScoreboard" of service "challenge".
+func NewUserScoreboardEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*UserScoreboardPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		res, err := s.UserScoreboard(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedSsmUserScoreboard(res, "default")
 		return vres, nil
 	}
 }

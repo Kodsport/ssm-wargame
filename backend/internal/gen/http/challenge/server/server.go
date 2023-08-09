@@ -25,6 +25,7 @@ type Server struct {
 	ListMonthlyChallenges      http.Handler
 	SubmitFlag                 http.Handler
 	SchoolScoreboard           http.Handler
+	UserScoreboard             http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -66,6 +67,7 @@ func New(
 			{"ListMonthlyChallenges", "GET", "/monthly_challenges"},
 			{"SubmitFlag", "POST", "/challenges/{challengeID}/attempt"},
 			{"SchoolScoreboard", "GET", "/scoreboard"},
+			{"UserScoreboard", "GET", "/user_scoreboard"},
 		},
 		ListChallenges:             NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		ListEvents:                 NewListEventsHandler(e.ListEvents, mux, decoder, encoder, errhandler, formatter),
@@ -73,6 +75,7 @@ func New(
 		ListMonthlyChallenges:      NewListMonthlyChallengesHandler(e.ListMonthlyChallenges, mux, decoder, encoder, errhandler, formatter),
 		SubmitFlag:                 NewSubmitFlagHandler(e.SubmitFlag, mux, decoder, encoder, errhandler, formatter),
 		SchoolScoreboard:           NewSchoolScoreboardHandler(e.SchoolScoreboard, mux, decoder, encoder, errhandler, formatter),
+		UserScoreboard:             NewUserScoreboardHandler(e.UserScoreboard, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -87,6 +90,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListMonthlyChallenges = m(s.ListMonthlyChallenges)
 	s.SubmitFlag = m(s.SubmitFlag)
 	s.SchoolScoreboard = m(s.SchoolScoreboard)
+	s.UserScoreboard = m(s.UserScoreboard)
 }
 
 // Mount configures the mux to serve the challenge endpoints.
@@ -97,6 +101,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountListMonthlyChallengesHandler(mux, h.ListMonthlyChallenges)
 	MountSubmitFlagHandler(mux, h.SubmitFlag)
 	MountSchoolScoreboardHandler(mux, h.SchoolScoreboard)
+	MountUserScoreboardHandler(mux, h.UserScoreboard)
 }
 
 // MountListChallengesHandler configures the mux to serve the "challenge"
@@ -385,6 +390,57 @@ func NewSchoolScoreboardHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "SchoolScoreboard")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountUserScoreboardHandler configures the mux to serve the "challenge"
+// service "UserScoreboard" endpoint.
+func MountUserScoreboardHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/user_scoreboard", f)
+}
+
+// NewUserScoreboardHandler creates a HTTP handler which loads the HTTP request
+// and calls the "challenge" service "UserScoreboard" endpoint.
+func NewUserScoreboardHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUserScoreboardRequest(mux, decoder)
+		encodeResponse = EncodeUserScoreboardResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UserScoreboard")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
 		payload, err := decodeRequest(r)
 		if err != nil {
