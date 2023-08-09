@@ -102,13 +102,13 @@ type SsmChallengeResponse struct {
 	// The numer of people who solved the challenge
 	Solves *int `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CtfEventID   *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	OtherAuthors []string `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
 	// whether the user has solved the challenge or not
-	Solved       *bool                `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
-	Category     *string              `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
-	Authors      []*SsmUserResponse   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
-	OtherAuthors []string             `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
-	Solvers      []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+	Solved   *bool                `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
+	Category *string              `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	Authors  []*SsmUserResponse   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Solvers  []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -161,13 +161,13 @@ type SsmChallengeResponseBody struct {
 	// The numer of people who solved the challenge
 	Solves *int `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CtfEventID   *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	OtherAuthors []string `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
 	// whether the user has solved the challenge or not
-	Solved       *bool                    `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
-	Category     *string                  `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
-	Authors      []*SsmUserResponseBody   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
-	OtherAuthors []string                 `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
-	Solvers      []*SsmSolverResponseBody `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+	Solved   *bool                    `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
+	Category *string                  `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	Authors  []*SsmUserResponseBody   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Solvers  []*SsmSolverResponseBody `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
 // ChallengeServiceResponseBody is used to define fields on response body types.

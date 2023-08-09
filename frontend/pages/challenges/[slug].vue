@@ -143,6 +143,7 @@ function timeAgo(unixTime) {
     padding-right: 0.5em;
     text-decoration: none;
     display: inline-block;
+    color: #ffffff; // todo, use variable
 }
 
 .author:last-child:after {

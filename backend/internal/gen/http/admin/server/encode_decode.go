@@ -1801,6 +1801,12 @@ func marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(v *adminv
 			res.Files[i] = marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse(val)
 		}
 	}
+	if v.OtherAuthors != nil {
+		res.OtherAuthors = make([]string, len(v.OtherAuthors))
+		for i, val := range v.OtherAuthors {
+			res.OtherAuthors[i] = val
+		}
+	}
 	if v.Flags != nil {
 		res.Flags = make([]*AdminChallengeFlagResponse, len(v.Flags))
 		for i, val := range v.Flags {

@@ -50,6 +50,10 @@ var Challenge = Type("Challenge", func() {
 		Example("Forensics")
 	})
 
+	Attribute("other_authors", ArrayOf(String), func() {
+		Example([]string{"FRA"})
+	})
+
 	Attribute("services", ArrayOf(ChallengeService))
 	Attribute("files", ArrayOf(ChallengeFiles))
 

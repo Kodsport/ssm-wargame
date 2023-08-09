@@ -18,6 +18,7 @@ import (
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
+	"github.com/volatiletech/sqlboiler/v4/types"
 	"go.uber.org/zap"
 
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
@@ -43,15 +44,16 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 	for i, chall := range challs {
 		res[i] = &spec.SsmAdminChallenge{
-			ID:          chall.ID,
-			Slug:        chall.Slug,
-			Title:       chall.Title,
-			Description: chall.Description,
-			Score:       chall.Score,
-			Solves:      chall.NumSolves,
-			PublishAt:   utils.NullTimeToUnix(chall.PublishAt),
-			CategoryID:  chall.CategoryID,
-			CtfEventID:  chall.CTFEventID.Ptr(),
+			ID:           chall.ID,
+			Slug:         chall.Slug,
+			Title:        chall.Title,
+			Description:  chall.Description,
+			Score:        chall.Score,
+			Solves:       chall.NumSolves,
+			PublishAt:    utils.NullTimeToUnix(chall.PublishAt),
+			CategoryID:   chall.CategoryID,
+			CtfEventID:   chall.CTFEventID.Ptr(),
+			OtherAuthors: chall.OtherAuthors,
 		}
 
 		res[i].Flags = make([]*spec.AdminChallengeFlag, len(chall.R.Flags))
@@ -88,14 +90,15 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 	}
 
 	chall := models.Challenge{
-		ID:          uuid.New().String(),
-		Title:       req.Title,
-		Slug:        req.Slug,
-		Description: req.Description,
-		Score:       int(req.Score),
-		PublishAt:   pubAt,
-		CTFEventID:  null.StringFromPtr(req.CtfEventID),
-		CategoryID:  req.CategoryID,
+		ID:           uuid.New().String(),
+		Title:        req.Title,
+		Slug:         req.Slug,
+		Description:  req.Description,
+		Score:        int(req.Score),
+		PublishAt:    pubAt,
+		CTFEventID:   null.StringFromPtr(req.CtfEventID),
+		CategoryID:   req.CategoryID,
+		OtherAuthors: req.OtherAuthors,
 	}
 
 	err := chall.Insert(ctx, s.db, boil.Infer())
@@ -130,13 +133,14 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 	n, err := models.Challenges(
 		models.ChallengeWhere.ID.EQ(req.ChallengeID),
 	).UpdateAll(ctx, tx, models.M{
-		models.ChallengeColumns.Title:       req.Title,
-		models.ChallengeColumns.Score:       req.Score,
-		models.ChallengeColumns.Slug:        req.Slug,
-		models.ChallengeColumns.Description: req.Description,
-		models.ChallengeColumns.PublishAt:   pubAt,
-		models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID),
-		models.ChallengeColumns.CategoryID:  req.CategoryID,
+		models.ChallengeColumns.Title:        req.Title,
+		models.ChallengeColumns.Score:        req.Score,
+		models.ChallengeColumns.Slug:         req.Slug,
+		models.ChallengeColumns.Description:  req.Description,
+		models.ChallengeColumns.PublishAt:    pubAt,
+		models.ChallengeColumns.CTFEventID:   null.StringFromPtr(req.CtfEventID),
+		models.ChallengeColumns.CategoryID:   req.CategoryID,
+		models.ChallengeColumns.OtherAuthors: types.StringArray(req.OtherAuthors),
 	})
 	if err != nil {
 		s.log.Error("could not update chall", zap.Error(err))

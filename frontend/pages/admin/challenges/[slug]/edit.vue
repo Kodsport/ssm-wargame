@@ -48,6 +48,11 @@
                             {{ user.email }}</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label>Other authors</label>
+                    <input type="text" class="form-control" v-model="form.otherAuthors">
+                </div>
+
                 <div class="form-group pt-2">
                     <button class="btn btn-primary" @click="updateChall">Update</button>
                 </div>
@@ -100,18 +105,12 @@
                     <thead>
                         <tr>
                             <th>Filename</th>
-                            <th>Bucket location</th>
-                            <th>Size</th>
-                            <th>MD5</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="file in chall.files" :key="file.id">
                             <td>{{ file.filename }}</td>
-                            <td>{{ file.bucket + "/" + file.key }}</td>
-                            <td>{{ fileSize(file.size) }}</td>
-                            <td>{{ file.md5 }}</td>
                             <td>
                                 <a class="btn btn-primary" :href="file.url">Download</a>
                                 <button class="btn btn-danger" @click="deleteFile(file.id)">
@@ -184,7 +183,8 @@ onMounted(async () => {
         slug: chall.value.slug,
         categoryId: chall.value.category_id,
         publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16), // hacky af,pls fix
-        authors: chall.value.authors || []
+        authors: chall.value.authors || [],
+        otherAuthors: chall.value.other_authors?.join(',')
 
     };
     publishImm.value = chall.value.publish_at == null
@@ -235,7 +235,8 @@ async function updateChall() {
             slug: form.value.slug,
             category_id: form.value.categoryId,
             publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,
-            authors: form.value.authors
+            authors: form.value.authors,
+            other_authors: form.value.otherAuthors.split(',').map(e => e.trim()).filter(e => e != '')
         }
     });
 

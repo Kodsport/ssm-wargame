@@ -27,9 +27,10 @@ type CreateChallengeRequestBody struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	CategoryID *string  `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
-	Authors    []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	CtfEventID   *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	OtherAuthors []string `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
+	CategoryID   *string  `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
+	Authors      []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -46,9 +47,10 @@ type UpdateChallengeRequestBody struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	CategoryID *string  `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
-	Authors    []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	CtfEventID   *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	OtherAuthors []string `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
+	CategoryID   *string  `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
+	Authors      []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -1153,10 +1155,11 @@ type SsmAdminChallengeResponse struct {
 	// The numer of people who solved the challenge
 	Solves int `form:"solves" json:"solves" xml:"solves"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string                       `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	Flags      []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
-	CategoryID string                        `form:"category_id" json:"category_id" xml:"category_id"`
-	Authors    []string                      `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	CtfEventID   *string                       `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	OtherAuthors []string                      `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
+	Flags        []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
+	CategoryID   string                        `form:"category_id" json:"category_id" xml:"category_id"`
+	Authors      []string                      `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -2128,6 +2131,12 @@ func NewCreateChallengePayload(body *CreateChallengeRequestBody, token string) *
 		CtfEventID:  body.CtfEventID,
 		CategoryID:  *body.CategoryID,
 	}
+	if body.OtherAuthors != nil {
+		v.OtherAuthors = make([]string, len(body.OtherAuthors))
+		for i, val := range body.OtherAuthors {
+			v.OtherAuthors[i] = val
+		}
+	}
 	if body.Authors != nil {
 		v.Authors = make([]string, len(body.Authors))
 		for i, val := range body.Authors {
@@ -2150,6 +2159,12 @@ func NewUpdateChallengePayload(body *UpdateChallengeRequestBody, challengeID str
 		PublishAt:   body.PublishAt,
 		CtfEventID:  body.CtfEventID,
 		CategoryID:  *body.CategoryID,
+	}
+	if body.OtherAuthors != nil {
+		v.OtherAuthors = make([]string, len(body.OtherAuthors))
+		for i, val := range body.OtherAuthors {
+			v.OtherAuthors[i] = val
+		}
 	}
 	if body.Authors != nil {
 		v.Authors = make([]string, len(body.Authors))

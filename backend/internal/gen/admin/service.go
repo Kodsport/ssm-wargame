@@ -110,10 +110,11 @@ type CreateChallengePayload struct {
 	// unix timestamp
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
-	CategoryID string
-	Authors    []string
-	Token      string
+	CtfEventID   *string
+	OtherAuthors []string
+	CategoryID   string
+	Authors      []string
+	Token        string
 }
 
 // UpdateChallengePayload is the payload type of the admin service
@@ -130,10 +131,11 @@ type UpdateChallengePayload struct {
 	// unix timestamp
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
-	CategoryID string
-	Authors    []string
-	Token      string
+	CtfEventID   *string
+	OtherAuthors []string
+	CategoryID   string
+	Authors      []string
+	Token        string
 	// ID of a challenge
 	ChallengeID string
 }
@@ -288,10 +290,11 @@ type SsmAdminChallenge struct {
 	// The numer of people who solved the challenge
 	Solves int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
-	Flags      []*AdminChallengeFlag
-	CategoryID string
-	Authors    []string
+	CtfEventID   *string
+	OtherAuthors []string
+	Flags        []*AdminChallengeFlag
+	CategoryID   string
+	Authors      []string
 }
 
 type ChallengeService struct {
@@ -464,6 +467,12 @@ func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChall
 			res.Files[i] = transformAdminviewsAdminChallengeFilesViewToAdminChallengeFiles(val)
 		}
 	}
+	if vres.OtherAuthors != nil {
+		res.OtherAuthors = make([]string, len(vres.OtherAuthors))
+		for i, val := range vres.OtherAuthors {
+			res.OtherAuthors[i] = val
+		}
+	}
 	if vres.Flags != nil {
 		res.Flags = make([]*AdminChallengeFlag, len(vres.Flags))
 		for i, val := range vres.Flags {
@@ -503,6 +512,12 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 		vres.Files = make([]*adminviews.AdminChallengeFilesView, len(res.Files))
 		for i, val := range res.Files {
 			vres.Files[i] = transformAdminChallengeFilesToAdminviewsAdminChallengeFilesView(val)
+		}
+	}
+	if res.OtherAuthors != nil {
+		vres.OtherAuthors = make([]string, len(res.OtherAuthors))
+		for i, val := range res.OtherAuthors {
+			vres.OtherAuthors[i] = val
 		}
 	}
 	if res.Flags != nil {

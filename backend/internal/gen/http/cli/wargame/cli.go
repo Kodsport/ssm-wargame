@@ -681,6 +681,9 @@ Example:
       "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
+      "other_authors": [
+         "FRA"
+      ],
       "publish_at": 1638384718,
       "score": 50,
       "slug": "pwnme",
@@ -705,6 +708,9 @@ Example:
       "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
+      "other_authors": [
+         "FRA"
+      ],
       "publish_at": 1638384718,
       "score": 50,
       "slug": "pwnme",

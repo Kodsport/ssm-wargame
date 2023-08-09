@@ -129,13 +129,13 @@ type SsmChallenge struct {
 	// The numer of people who solved the challenge
 	Solves int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
-	// whether the user has solved the challenge or not
-	Solved       bool
-	Category     string
-	Authors      []*SsmUser
+	CtfEventID   *string
 	OtherAuthors []string
-	Solvers      []*SsmSolver
+	// whether the user has solved the challenge or not
+	Solved   bool
+	Category string
+	Authors  []*SsmUser
+	Solvers  []*SsmSolver
 }
 
 type ChallengeService struct {
@@ -308,16 +308,16 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 			res.Files[i] = transformChallengeviewsChallengeFilesViewToChallengeFiles(val)
 		}
 	}
-	if vres.Authors != nil {
-		res.Authors = make([]*SsmUser, len(vres.Authors))
-		for i, val := range vres.Authors {
-			res.Authors[i] = transformChallengeviewsSsmUserViewToSsmUser(val)
-		}
-	}
 	if vres.OtherAuthors != nil {
 		res.OtherAuthors = make([]string, len(vres.OtherAuthors))
 		for i, val := range vres.OtherAuthors {
 			res.OtherAuthors[i] = val
+		}
+	}
+	if vres.Authors != nil {
+		res.Authors = make([]*SsmUser, len(vres.Authors))
+		for i, val := range vres.Authors {
+			res.Authors[i] = transformChallengeviewsSsmUserViewToSsmUser(val)
 		}
 	}
 	if vres.Solvers != nil {
@@ -355,16 +355,16 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 			vres.Files[i] = transformChallengeFilesToChallengeviewsChallengeFilesView(val)
 		}
 	}
-	if res.Authors != nil {
-		vres.Authors = make([]*challengeviews.SsmUserView, len(res.Authors))
-		for i, val := range res.Authors {
-			vres.Authors[i] = transformSsmUserToChallengeviewsSsmUserView(val)
-		}
-	}
 	if res.OtherAuthors != nil {
 		vres.OtherAuthors = make([]string, len(res.OtherAuthors))
 		for i, val := range res.OtherAuthors {
 			vres.OtherAuthors[i] = val
+		}
+	}
+	if res.Authors != nil {
+		vres.Authors = make([]*challengeviews.SsmUserView, len(res.Authors))
+		for i, val := range res.Authors {
+			vres.Authors[i] = transformSsmUserToChallengeviewsSsmUserView(val)
 		}
 	}
 	if res.Solvers != nil {

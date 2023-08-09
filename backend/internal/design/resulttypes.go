@@ -50,6 +50,7 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("publish_at")
 	Attribute("solves")
 	Attribute("ctf_event_id")
+	Attribute("other_authors")
 
 	Attribute("files", ArrayOf(AdminChallengeFile))
 	Attribute("flags", ArrayOf(AdminChallengeFlag))
@@ -80,6 +81,7 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Attribute("files")
 	Attribute("solves")
 	Attribute("ctf_event_id")
+	Attribute("other_authors")
 
 	Attribute("solved", Boolean, func() {
 		Example(true)
@@ -90,9 +92,6 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	})
 
 	Attribute("authors", ArrayOf(User))
-	Attribute("other_authors", ArrayOf(String), func() {
-		Example([]string{"FRA"})
-	})
 
 	Attribute("solvers", ArrayOf(Solver))
 

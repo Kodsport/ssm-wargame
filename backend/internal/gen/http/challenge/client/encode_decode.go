@@ -547,16 +547,16 @@ func unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v *SsmChallen
 			res.Files[i] = unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(val)
 		}
 	}
-	if v.Authors != nil {
-		res.Authors = make([]*challengeviews.SsmUserView, len(v.Authors))
-		for i, val := range v.Authors {
-			res.Authors[i] = unmarshalSsmUserResponseToChallengeviewsSsmUserView(val)
-		}
-	}
 	if v.OtherAuthors != nil {
 		res.OtherAuthors = make([]string, len(v.OtherAuthors))
 		for i, val := range v.OtherAuthors {
 			res.OtherAuthors[i] = val
+		}
+	}
+	if v.Authors != nil {
+		res.Authors = make([]*challengeviews.SsmUserView, len(v.Authors))
+		for i, val := range v.Authors {
+			res.Authors[i] = unmarshalSsmUserResponseToChallengeviewsSsmUserView(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -669,16 +669,16 @@ func unmarshalSsmChallengeResponseBodyToChallengeviewsSsmChallengeView(v *SsmCha
 			res.Files[i] = unmarshalChallengeFilesResponseBodyToChallengeviewsChallengeFilesView(val)
 		}
 	}
-	if v.Authors != nil {
-		res.Authors = make([]*challengeviews.SsmUserView, len(v.Authors))
-		for i, val := range v.Authors {
-			res.Authors[i] = unmarshalSsmUserResponseBodyToChallengeviewsSsmUserView(val)
-		}
-	}
 	if v.OtherAuthors != nil {
 		res.OtherAuthors = make([]string, len(v.OtherAuthors))
 		for i, val := range v.OtherAuthors {
 			res.OtherAuthors[i] = val
+		}
+	}
+	if v.Authors != nil {
+		res.Authors = make([]*challengeviews.SsmUserView, len(v.Authors))
+		for i, val := range v.Authors {
+			res.Authors[i] = unmarshalSsmUserResponseBodyToChallengeviewsSsmUserView(val)
 		}
 	}
 	if v.Solvers != nil {

@@ -60,7 +60,7 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 	{
 		err = json.Unmarshal([]byte(adminCreateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"other_authors\": [\n         \"FRA\"\n      ],\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
 		}
 		if body.CtfEventID != nil {
 			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
@@ -84,6 +84,12 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 		CtfEventID:  body.CtfEventID,
 		CategoryID:  body.CategoryID,
 	}
+	if body.OtherAuthors != nil {
+		v.OtherAuthors = make([]string, len(body.OtherAuthors))
+		for i, val := range body.OtherAuthors {
+			v.OtherAuthors[i] = val
+		}
+	}
 	if body.Authors != nil {
 		v.Authors = make([]string, len(body.Authors))
 		for i, val := range body.Authors {
@@ -103,7 +109,7 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 	{
 		err = json.Unmarshal([]byte(adminUpdateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"other_authors\": [\n         \"FRA\"\n      ],\n      \"publish_at\": 1638384718,\n      \"score\": 50,\n      \"slug\": \"pwnme\",\n      \"title\": \"pwnme\"\n   }'")
 		}
 		if body.CtfEventID != nil {
 			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
@@ -135,6 +141,12 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 		PublishAt:   body.PublishAt,
 		CtfEventID:  body.CtfEventID,
 		CategoryID:  body.CategoryID,
+	}
+	if body.OtherAuthors != nil {
+		v.OtherAuthors = make([]string, len(body.OtherAuthors))
+		for i, val := range body.OtherAuthors {
+			v.OtherAuthors[i] = val
+		}
 	}
 	if body.Authors != nil {
 		v.Authors = make([]string, len(body.Authors))

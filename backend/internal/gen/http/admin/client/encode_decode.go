@@ -2253,6 +2253,12 @@ func unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView(v *SsmA
 	for i, val := range v.Files {
 		res.Files[i] = unmarshalAdminChallengeFilesResponseToAdminviewsAdminChallengeFilesView(val)
 	}
+	if v.OtherAuthors != nil {
+		res.OtherAuthors = make([]string, len(v.OtherAuthors))
+		for i, val := range v.OtherAuthors {
+			res.OtherAuthors[i] = val
+		}
+	}
 	if v.Flags != nil {
 		res.Flags = make([]*adminviews.AdminChallengeFlagView, len(v.Flags))
 		for i, val := range v.Flags {
