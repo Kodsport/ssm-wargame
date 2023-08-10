@@ -39,6 +39,8 @@ import { useChallengeStore } from '../../../../store/admin/challenges'
 
 const store = useChallengeStore()
 const route = useRoute()
+const router = useRouter()
+
 const http = useHttp()
 
 const a = computed(() => store.getAuthorBySlug(route.params.slug))
@@ -54,7 +56,15 @@ const form = ref({
 
 onMounted(async () => {
     await store.getAuthors()
-    form.value = store.getAuthorBySlug(route.params.slug)
+    let x = store.getAuthorBySlug(route.params.slug);
+    form.value = {
+        full_name: x.full_name,
+        slug: x.slug,
+        description: x.description,
+        image_url: x.image_url,
+        sponsor: x.sponsor,
+        publish: x.publish,
+    }
 })
 
 async function update() {
@@ -63,6 +73,7 @@ async function update() {
         body: form.value
     })
     await store.getAuthors()
+    router.replace(`/admin/authors/${form.value.slug}/edit`)
 }
 
 </script>
