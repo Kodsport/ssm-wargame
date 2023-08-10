@@ -68,11 +68,12 @@ const router = useRouter()
 
 const { challFilter } = storeToRefs(useChallengeStore())
 
+await useAsyncData('challenges', challs.getChallenges)
+await useAsyncData('events', challs.getEvents)
+
 onMounted(() => {
     challs.getChallenges()
-    challs.getEvents()
 })
-
 
 const categories = computed(() => challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i))
 

@@ -4,6 +4,7 @@
             <h1>{{ author.full_name }}</h1>
             <div v-html="renderMarkdown(author.description)"></div>
         </div>
+        <h5 class="pt-5">Utmaningar av {{ author.full_name }}</h5>
         <div class="row row-cols-3 row-cols-xl-5 g-4 mt-0 mb-2">
             <div class="col" v-for="chall in authorsChalls">
                 <ChallengePreview @click="showChall = chall" :chall="chall" />
