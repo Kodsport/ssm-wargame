@@ -108,7 +108,7 @@ const warn = ref(false)
 
 async function submitFlag() {
     try {
-        await http(`/challenges/${chall.id}/attempt`, {
+        await http(`/challenges/${chall.value.id}/attempt`, {
             method: 'POST',
             body: {
                 flag: flag.value
