@@ -26,6 +26,7 @@ type Server struct {
 	SubmitFlag                 http.Handler
 	SchoolScoreboard           http.Handler
 	UserScoreboard             http.Handler
+	ListAuthors                http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -68,6 +69,7 @@ func New(
 			{"SubmitFlag", "POST", "/challenges/{challengeID}/attempt"},
 			{"SchoolScoreboard", "GET", "/scoreboard"},
 			{"UserScoreboard", "GET", "/user_scoreboard"},
+			{"ListAuthors", "GET", "/authors"},
 		},
 		ListChallenges:             NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		ListEvents:                 NewListEventsHandler(e.ListEvents, mux, decoder, encoder, errhandler, formatter),
@@ -76,6 +78,7 @@ func New(
 		SubmitFlag:                 NewSubmitFlagHandler(e.SubmitFlag, mux, decoder, encoder, errhandler, formatter),
 		SchoolScoreboard:           NewSchoolScoreboardHandler(e.SchoolScoreboard, mux, decoder, encoder, errhandler, formatter),
 		UserScoreboard:             NewUserScoreboardHandler(e.UserScoreboard, mux, decoder, encoder, errhandler, formatter),
+		ListAuthors:                NewListAuthorsHandler(e.ListAuthors, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -91,6 +94,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.SubmitFlag = m(s.SubmitFlag)
 	s.SchoolScoreboard = m(s.SchoolScoreboard)
 	s.UserScoreboard = m(s.UserScoreboard)
+	s.ListAuthors = m(s.ListAuthors)
 }
 
 // Mount configures the mux to serve the challenge endpoints.
@@ -102,6 +106,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountSubmitFlagHandler(mux, h.SubmitFlag)
 	MountSchoolScoreboardHandler(mux, h.SchoolScoreboard)
 	MountUserScoreboardHandler(mux, h.UserScoreboard)
+	MountListAuthorsHandler(mux, h.ListAuthors)
 }
 
 // MountListChallengesHandler configures the mux to serve the "challenge"
@@ -441,6 +446,57 @@ func NewUserScoreboardHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "UserScoreboard")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListAuthorsHandler configures the mux to serve the "challenge" service
+// "ListAuthors" endpoint.
+func MountListAuthorsHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/authors", f)
+}
+
+// NewListAuthorsHandler creates a HTTP handler which loads the HTTP request
+// and calls the "challenge" service "ListAuthors" endpoint.
+func NewListAuthorsHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListAuthorsRequest(mux, decoder)
+		encodeResponse = EncodeListAuthorsResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListAuthors")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
 		payload, err := decodeRequest(r)
 		if err != nil {

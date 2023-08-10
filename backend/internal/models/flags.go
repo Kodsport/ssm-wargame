@@ -26,12 +26,12 @@ import (
 type Flag struct {
 	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
 	ChallengeID string    `boil:"challenge_id" json:"challenge_id" toml:"challenge_id" yaml:"challenge_id"`
+	Type        string    `boil:"type" json:"type" toml:"type" yaml:"type"`
 	Flag        string    `boil:"flag" json:"flag" toml:"flag" yaml:"flag"`
 	FlagPrefix  string    `boil:"flag_prefix" json:"flag_prefix" toml:"flag_prefix" yaml:"flag_prefix"`
 	FlagSuffix  string    `boil:"flag_suffix" json:"flag_suffix" toml:"flag_suffix" yaml:"flag_suffix"`
 	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt   null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
-	Type        string    `boil:"type" json:"type" toml:"type" yaml:"type"`
 
 	R *flagR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L flagL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -40,41 +40,41 @@ type Flag struct {
 var FlagColumns = struct {
 	ID          string
 	ChallengeID string
+	Type        string
 	Flag        string
 	FlagPrefix  string
 	FlagSuffix  string
 	CreatedAt   string
 	UpdatedAt   string
-	Type        string
 }{
 	ID:          "id",
 	ChallengeID: "challenge_id",
+	Type:        "type",
 	Flag:        "flag",
 	FlagPrefix:  "flag_prefix",
 	FlagSuffix:  "flag_suffix",
 	CreatedAt:   "created_at",
 	UpdatedAt:   "updated_at",
-	Type:        "type",
 }
 
 var FlagTableColumns = struct {
 	ID          string
 	ChallengeID string
+	Type        string
 	Flag        string
 	FlagPrefix  string
 	FlagSuffix  string
 	CreatedAt   string
 	UpdatedAt   string
-	Type        string
 }{
 	ID:          "flags.id",
 	ChallengeID: "flags.challenge_id",
+	Type:        "flags.type",
 	Flag:        "flags.flag",
 	FlagPrefix:  "flags.flag_prefix",
 	FlagSuffix:  "flags.flag_suffix",
 	CreatedAt:   "flags.created_at",
 	UpdatedAt:   "flags.updated_at",
-	Type:        "flags.type",
 }
 
 // Generated where
@@ -82,21 +82,21 @@ var FlagTableColumns = struct {
 var FlagWhere = struct {
 	ID          whereHelperstring
 	ChallengeID whereHelperstring
+	Type        whereHelperstring
 	Flag        whereHelperstring
 	FlagPrefix  whereHelperstring
 	FlagSuffix  whereHelperstring
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpernull_Time
-	Type        whereHelperstring
 }{
 	ID:          whereHelperstring{field: "\"flags\".\"id\""},
 	ChallengeID: whereHelperstring{field: "\"flags\".\"challenge_id\""},
+	Type:        whereHelperstring{field: "\"flags\".\"type\""},
 	Flag:        whereHelperstring{field: "\"flags\".\"flag\""},
 	FlagPrefix:  whereHelperstring{field: "\"flags\".\"flag_prefix\""},
 	FlagSuffix:  whereHelperstring{field: "\"flags\".\"flag_suffix\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"flags\".\"created_at\""},
 	UpdatedAt:   whereHelpernull_Time{field: "\"flags\".\"updated_at\""},
-	Type:        whereHelperstring{field: "\"flags\".\"type\""},
 }
 
 // FlagRels is where relationship names are stored.
@@ -127,9 +127,9 @@ func (r *flagR) GetChallenge() *Challenge {
 type flagL struct{}
 
 var (
-	flagAllColumns            = []string{"id", "challenge_id", "flag", "flag_prefix", "flag_suffix", "created_at", "updated_at", "type"}
-	flagColumnsWithoutDefault = []string{"id", "challenge_id", "flag", "flag_prefix", "flag_suffix"}
-	flagColumnsWithDefault    = []string{"created_at", "updated_at", "type"}
+	flagAllColumns            = []string{"id", "challenge_id", "type", "flag", "flag_prefix", "flag_suffix", "created_at", "updated_at"}
+	flagColumnsWithoutDefault = []string{"id", "challenge_id", "type", "flag", "flag_prefix", "flag_suffix"}
+	flagColumnsWithDefault    = []string{"created_at", "updated_at"}
 	flagPrimaryKeyColumns     = []string{"id"}
 	flagGeneratedColumns      = []string{}
 )

@@ -1260,6 +1260,257 @@ func DecodeListUsersResponse(decoder func(*http.Response) goahttp.Decoder, resto
 	}
 }
 
+// BuildListAuthorsRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "ListAuthors" endpoint
+func (c *Client) BuildListAuthorsRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListAuthorsAdminPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "ListAuthors", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListAuthorsRequest returns an encoder for requests sent to the admin
+// ListAuthors server.
+func EncodeListAuthorsRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.ListAuthorsPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "ListAuthors", "*admin.ListAuthorsPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListAuthorsResponse returns a decoder for responses returned by the
+// admin ListAuthors endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeListAuthorsResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeListAuthorsResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListAuthorsResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListAuthors", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateSsmAuthorResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListAuthors", err)
+			}
+			res := NewListAuthorsSsmAuthorOK(body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body ListAuthorsUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListAuthors", err)
+			}
+			err = ValidateListAuthorsUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListAuthors", err)
+			}
+			return nil, NewListAuthorsUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ListAuthorsNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListAuthors", err)
+			}
+			err = ValidateListAuthorsNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListAuthors", err)
+			}
+			return nil, NewListAuthorsNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ListAuthorsBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListAuthors", err)
+			}
+			err = ValidateListAuthorsBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListAuthors", err)
+			}
+			return nil, NewListAuthorsBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "ListAuthors", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildUpdateAuthorRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "UpdateAuthor" endpoint
+func (c *Client) BuildUpdateAuthorRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id string
+	)
+	{
+		p, ok := v.(*admin.UpdateAuthorPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "UpdateAuthor", "*admin.UpdateAuthorPayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateAuthorAdminPath(id)}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "UpdateAuthor", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeUpdateAuthorRequest returns an encoder for requests sent to the admin
+// UpdateAuthor server.
+func EncodeUpdateAuthorRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.UpdateAuthorPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "UpdateAuthor", "*admin.UpdateAuthorPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewUpdateAuthorRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "UpdateAuthor", err)
+		}
+		return nil
+	}
+}
+
+// DecodeUpdateAuthorResponse returns a decoder for responses returned by the
+// admin UpdateAuthor endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeUpdateAuthorResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeUpdateAuthorResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusNoContent:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body UpdateAuthorUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateAuthor", err)
+			}
+			err = ValidateUpdateAuthorUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateAuthor", err)
+			}
+			return nil, NewUpdateAuthorUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body UpdateAuthorNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateAuthor", err)
+			}
+			err = ValidateUpdateAuthorNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateAuthor", err)
+			}
+			return nil, NewUpdateAuthorNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body UpdateAuthorBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateAuthor", err)
+			}
+			err = ValidateUpdateAuthorBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateAuthor", err)
+			}
+			return nil, NewUpdateAuthorBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "UpdateAuthor", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildAddFlagRequest instantiates a HTTP request object with method and path
 // set to call the "admin" service "AddFlag" endpoint
 func (c *Client) BuildAddFlagRequest(ctx context.Context, v interface{}) (*http.Request, error) {
@@ -2253,12 +2504,6 @@ func unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView(v *SsmA
 	for i, val := range v.Files {
 		res.Files[i] = unmarshalAdminChallengeFilesResponseToAdminviewsAdminChallengeFilesView(val)
 	}
-	if v.OtherAuthors != nil {
-		res.OtherAuthors = make([]string, len(v.OtherAuthors))
-		for i, val := range v.OtherAuthors {
-			res.OtherAuthors[i] = val
-		}
-	}
 	if v.Flags != nil {
 		res.Flags = make([]*adminviews.AdminChallengeFlagView, len(v.Flags))
 		for i, val := range v.Flags {
@@ -2367,6 +2612,22 @@ func unmarshalSsmUserResponseToAdminSsmUser(v *SsmUserResponse) *admin.SsmUser {
 		FullName: *v.FullName,
 		Role:     *v.Role,
 		SchoolID: v.SchoolID,
+	}
+
+	return res
+}
+
+// unmarshalSsmAuthorResponseToAdminSsmAuthor builds a value of type
+// *admin.SsmAuthor from a value of type *SsmAuthorResponse.
+func unmarshalSsmAuthorResponseToAdminSsmAuthor(v *SsmAuthorResponse) *admin.SsmAuthor {
+	res := &admin.SsmAuthor{
+		ID:          *v.ID,
+		FullName:    *v.FullName,
+		Description: *v.Description,
+		Sponsor:     *v.Sponsor,
+		Slug:        *v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     *v.Publish,
 	}
 
 	return res

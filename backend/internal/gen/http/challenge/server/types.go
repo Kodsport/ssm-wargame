@@ -58,6 +58,10 @@ type UserScoreboardResponseBody struct {
 	Scores []*UserScoreboardScoreResponseBody `form:"scores" json:"scores" xml:"scores"`
 }
 
+// SsmAuthorResponseCollection is the type of the "challenge" service
+// "ListAuthors" endpoint HTTP response body.
+type SsmAuthorResponseCollection []*SsmAuthorResponse
+
 // GetCurrentMonthlyChallengeNotFoundResponseBody is the type of the
 // "challenge" service "GetCurrentMonthlyChallenge" endpoint HTTP response body
 // for the "not_found" error.
@@ -129,12 +133,11 @@ type SsmChallengeResponse struct {
 	// The numer of people who solved the challenge
 	Solves int `form:"solves" json:"solves" xml:"solves"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID   *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	OtherAuthors []string `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	// whether the user has solved the challenge or not
 	Solved   bool                 `form:"solved" json:"solved" xml:"solved"`
 	Category string               `form:"category" json:"category" xml:"category"`
-	Authors  []*SsmUserResponse   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Authors  []*SsmAuthorResponse `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 	Solvers  []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
@@ -150,13 +153,15 @@ type ChallengeFilesResponse struct {
 	URL      string `form:"url" json:"url" xml:"url"`
 }
 
-// SsmUserResponse is used to define fields on response body types.
-type SsmUserResponse struct {
-	ID       string `form:"id" json:"id" xml:"id"`
-	Email    string `form:"email" json:"email" xml:"email"`
-	FullName string `form:"full_name" json:"full_name" xml:"full_name"`
-	Role     string `form:"role" json:"role" xml:"role"`
-	SchoolID *int   `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+// SsmAuthorResponse is used to define fields on response body types.
+type SsmAuthorResponse struct {
+	ID          string  `form:"id" json:"id" xml:"id"`
+	FullName    string  `form:"full_name" json:"full_name" xml:"full_name"`
+	Description string  `form:"description" json:"description" xml:"description"`
+	Sponsor     bool    `form:"sponsor" json:"sponsor" xml:"sponsor"`
+	Slug        string  `form:"slug" json:"slug" xml:"slug"`
+	ImageURL    *string `form:"image_url,omitempty" json:"image_url,omitempty" xml:"image_url,omitempty"`
+	Publish     bool    `form:"publish" json:"publish" xml:"publish"`
 }
 
 // SsmSolverResponse is used to define fields on response body types.
@@ -188,12 +193,11 @@ type SsmChallengeResponseBody struct {
 	// The numer of people who solved the challenge
 	Solves int `form:"solves" json:"solves" xml:"solves"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID   *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	OtherAuthors []string `form:"other_authors,omitempty" json:"other_authors,omitempty" xml:"other_authors,omitempty"`
+	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	// whether the user has solved the challenge or not
 	Solved   bool                     `form:"solved" json:"solved" xml:"solved"`
 	Category string                   `form:"category" json:"category" xml:"category"`
-	Authors  []*SsmUserResponseBody   `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Authors  []*SsmAuthorResponseBody `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 	Solvers  []*SsmSolverResponseBody `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
@@ -209,13 +213,15 @@ type ChallengeFilesResponseBody struct {
 	URL      string `form:"url" json:"url" xml:"url"`
 }
 
-// SsmUserResponseBody is used to define fields on response body types.
-type SsmUserResponseBody struct {
-	ID       string `form:"id" json:"id" xml:"id"`
-	Email    string `form:"email" json:"email" xml:"email"`
-	FullName string `form:"full_name" json:"full_name" xml:"full_name"`
-	Role     string `form:"role" json:"role" xml:"role"`
-	SchoolID *int   `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+// SsmAuthorResponseBody is used to define fields on response body types.
+type SsmAuthorResponseBody struct {
+	ID          string  `form:"id" json:"id" xml:"id"`
+	FullName    string  `form:"full_name" json:"full_name" xml:"full_name"`
+	Description string  `form:"description" json:"description" xml:"description"`
+	Sponsor     bool    `form:"sponsor" json:"sponsor" xml:"sponsor"`
+	Slug        string  `form:"slug" json:"slug" xml:"slug"`
+	ImageURL    *string `form:"image_url,omitempty" json:"image_url,omitempty" xml:"image_url,omitempty"`
+	Publish     bool    `form:"publish" json:"publish" xml:"publish"`
 }
 
 // SsmSolverResponseBody is used to define fields on response body types.
@@ -327,6 +333,16 @@ func NewUserScoreboardResponseBody(res *challengeviews.SsmUserScoreboardView) *U
 	return body
 }
 
+// NewSsmAuthorResponseCollection builds the HTTP response body from the result
+// of the "ListAuthors" endpoint of the "challenge" service.
+func NewSsmAuthorResponseCollection(res challengeviews.SsmAuthorCollectionView) SsmAuthorResponseCollection {
+	body := make([]*SsmAuthorResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalChallengeviewsSsmAuthorViewToSsmAuthorResponse(val)
+	}
+	return body
+}
+
 // NewGetCurrentMonthlyChallengeNotFoundResponseBody builds the HTTP response
 // body from the result of the "GetCurrentMonthlyChallenge" endpoint of the
 // "challenge" service.
@@ -372,8 +388,10 @@ func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIn
 
 // NewListChallengesPayload builds a challenge service ListChallenges endpoint
 // payload.
-func NewListChallengesPayload(token *string) *challenge.ListChallengesPayload {
+func NewListChallengesPayload(slug *string, authorSlug *string, token *string) *challenge.ListChallengesPayload {
 	v := &challenge.ListChallengesPayload{}
+	v.Slug = slug
+	v.AuthorSlug = authorSlug
 	v.Token = token
 
 	return v
@@ -429,6 +447,15 @@ func NewSchoolScoreboardPayload(token *string) *challenge.SchoolScoreboardPayloa
 // payload.
 func NewUserScoreboardPayload(token *string) *challenge.UserScoreboardPayload {
 	v := &challenge.UserScoreboardPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewListAuthorsPayload builds a challenge service ListAuthors endpoint
+// payload.
+func NewListAuthorsPayload(token *string) *challenge.ListAuthorsPayload {
+	v := &challenge.ListAuthorsPayload{}
 	v.Token = token
 
 	return v

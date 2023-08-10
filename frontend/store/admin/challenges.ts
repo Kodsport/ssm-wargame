@@ -8,6 +8,7 @@ export const useChallengeStore = defineStore('admin-challenges', {
         categories: [],
         monthlies: [],
         events: [],
+        authors: [],
     }),
     actions: {
         async getChallenges() {
@@ -25,10 +26,15 @@ export const useChallengeStore = defineStore('admin-challenges', {
         async getEvents() {
             const events = await http('/admin/events')
             this.events = events
+        },
+        async getAuthors() {
+            const authors = await http('/admin/authors')
+            this.authors = authors
         }
     },
     getters: {
         getBySlug: (state) => (slug: string) => state.challenges.find(c => c.slug == slug),
+        getAuthorBySlug: (state) => (slug: string) => state.authors.find(c => c.slug == slug),
         getById: (state) => (id: string) => state.challenges.find(c => c.id == id),
         getCategory: (state) => (id: string) => state.categories.find(c => c.id == id),
         getCurrentMonthly: () => null

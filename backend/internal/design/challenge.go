@@ -1,6 +1,8 @@
 package goa
 
-import . "goa.design/goa/v3/dsl"
+import (
+	. "goa.design/goa/v3/dsl"
+)
 
 var _ = Service("challenge", func() {
 	HTTP(func() {
@@ -10,10 +12,20 @@ var _ = Service("challenge", func() {
 		Result(CollectionOf(ResultChallenge))
 		Payload(func() {
 			Extend(OptionalTokenPayload)
+			Attribute("slug", String, func() {
+				Example("brumm")
+				Description("Filter by slug")
+			})
+			Attribute("author_slug", String, func() {
+				Example("movitz_sunar")
+				Description("Filter by author")
+			})
 		})
 		HTTP(func() {
 			GET("/challenges")
 			Response(StatusOK)
+			Param("slug")
+			Param("author_slug")
 		})
 	})
 	Method("ListEvents", func() {
@@ -90,6 +102,16 @@ var _ = Service("challenge", func() {
 		})
 		HTTP(func() {
 			GET("/user_scoreboard")
+			Response(StatusOK)
+		})
+	})
+	Method("ListAuthors", func() {
+		Result(CollectionOf(Author))
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+		})
+		HTTP(func() {
+			GET("/authors")
 			Response(StatusOK)
 		})
 	})

@@ -17,6 +17,18 @@ CREATE TABLE schools (
 
 CREATE INDEX schools_name_idx ON schools ( name );
 
+CREATE TABLE authors (
+    id UUID PRIMARY KEY,
+    slug TEXT NOT NULL UNIQUE,
+    full_name TEXT NOT NULL,
+    sponsor BOOLEAN NOT NULL,
+    description TEXT NOT NULL,
+    image_url TEXT,
+    publish BOOLEAN NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ
+);
+
 CREATE TABLE users (
     id UUID PRIMARY KEY,
     discord_id TEXT UNIQUE,
@@ -24,6 +36,7 @@ CREATE TABLE users (
     email TEXT NOT NULL,
     role TEXT NOT NULL,
     school_id INT REFERENCES schools(id) ON DELETE SET NULL,
+    author_id UUID UNIQUE REFERENCES authors(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
@@ -55,7 +68,6 @@ CREATE TABLE challenges (
     publish_at TIMESTAMPTZ,
     ctf_event_id UUID REFERENCES ctf_events(id) ON DELETE SET NULL,
     category_id UUID NOT NULL REFERENCES categories(id),
-    other_authors TEXT[] NOT NULL DEFAULT '{}',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
@@ -123,9 +135,9 @@ CREATE INDEX submissions_user_id_idx ON submissions ( user_id );
 
 CREATE TABLE challenge_authors (
     challenge_id UUID REFERENCES challenges(id) ON DELETE CASCADE,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+    author_id UUID REFERENCES authors(id) ON DELETE CASCADE,
 
-    PRIMARY KEY (challenge_id, user_id)
+    PRIMARY KEY (challenge_id, author_id)
 );
 
 CREATE TABLE user_solves (
@@ -135,5 +147,14 @@ CREATE TABLE user_solves (
 
     PRIMARY KEY (user_id, challenge_id)
 );
+
+CREATE TABLE challtools_import_token (
+    id UUID NOT NULL PRIMARY KEY,
+    token TEXT NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    ctf_event_id UUID REFERENCES ctf_events(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 
 END;

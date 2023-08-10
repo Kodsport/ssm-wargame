@@ -61,6 +61,16 @@ func ListUsersAdminPath() string {
 	return "/admin/users"
 }
 
+// ListAuthorsAdminPath returns the URL path to the admin service ListAuthors HTTP endpoint.
+func ListAuthorsAdminPath() string {
+	return "/admin/authors"
+}
+
+// UpdateAuthorAdminPath returns the URL path to the admin service UpdateAuthor HTTP endpoint.
+func UpdateAuthorAdminPath(id string) string {
+	return fmt.Sprintf("/admin/authors/%v", id)
+}
+
 // AddFlagAdminPath returns the URL path to the admin service AddFlag HTTP endpoint.
 func AddFlagAdminPath(challengeID string) string {
 	return fmt.Sprintf("/admin/challenges/%v/flags", challengeID)

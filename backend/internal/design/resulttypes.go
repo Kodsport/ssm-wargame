@@ -23,6 +23,34 @@ var User = ResultType("application/vnd.ssm.user", func() {
 	Required("id", "email", "full_name", "role")
 })
 
+var Author = ResultType("application/vnd.ssm.author", func() {
+	Attribute("id", String, func() {
+		Example("uuid todo")
+	})
+	Attribute("full_name", String, func() {
+		Example("Movitz Sunar")
+	})
+	Attribute("description", String, func() {
+		Example("Movitz gör saker")
+	})
+	Attribute("sponsor", Boolean, func() {
+		Example(true)
+	})
+	Attribute("slug", String, func() {
+		Example("movitz")
+	})
+	Attribute("image_url", String, func() {
+		Example("movitz")
+	})
+
+	Attribute("publish", Boolean, func() {
+		Example(true)
+	})
+
+	Required("id", "sponsor", "full_name", "description", "slug", "publish")
+
+})
+
 var Solver = ResultType("application/vnd.ssm.solver", func() {
 	Reference(User)
 
@@ -50,7 +78,6 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("publish_at")
 	Attribute("solves")
 	Attribute("ctf_event_id")
-	Attribute("other_authors")
 
 	Attribute("files", ArrayOf(AdminChallengeFile))
 	Attribute("flags", ArrayOf(AdminChallengeFlag))
@@ -81,7 +108,6 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Attribute("files")
 	Attribute("solves")
 	Attribute("ctf_event_id")
-	Attribute("other_authors")
 
 	Attribute("solved", Boolean, func() {
 		Example(true)
@@ -91,7 +117,7 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 		Example("Misc")
 	})
 
-	Attribute("authors", ArrayOf(User))
+	Attribute("authors", ArrayOf(Author))
 
 	Attribute("solvers", ArrayOf(Solver))
 

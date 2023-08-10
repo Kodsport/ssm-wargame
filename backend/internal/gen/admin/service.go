@@ -37,6 +37,10 @@ type Service interface {
 	CreateMonthlyChallenge(context.Context, *CreateMonthlyChallengePayload) (err error)
 	// ListUsers implements ListUsers.
 	ListUsers(context.Context, *ListUsersPayload) (res []*SsmUser, err error)
+	// ListAuthors implements ListAuthors.
+	ListAuthors(context.Context, *ListAuthorsPayload) (res []*SsmAuthor, err error)
+	// UpdateAuthor implements UpdateAuthor.
+	UpdateAuthor(context.Context, *UpdateAuthorPayload) (err error)
 	// AddFlag implements AddFlag.
 	AddFlag(context.Context, *AddFlagPayload) (err error)
 	// DeleteFlag implements DeleteFlag.
@@ -69,7 +73,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [18]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken"}
+var MethodNames = [20]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -110,11 +114,10 @@ type CreateChallengePayload struct {
 	// unix timestamp
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
-	CtfEventID   *string
-	OtherAuthors []string
-	CategoryID   string
-	Authors      []string
-	Token        string
+	CtfEventID *string
+	CategoryID string
+	Authors    []string
+	Token      string
 }
 
 // UpdateChallengePayload is the payload type of the admin service
@@ -131,11 +134,10 @@ type UpdateChallengePayload struct {
 	// unix timestamp
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
-	CtfEventID   *string
-	OtherAuthors []string
-	CategoryID   string
-	Authors      []string
-	Token        string
+	CtfEventID *string
+	CategoryID string
+	Authors    []string
+	Token      string
 	// ID of a challenge
 	ChallengeID string
 }
@@ -197,6 +199,25 @@ type CreateMonthlyChallengePayload struct {
 // ListUsersPayload is the payload type of the admin service ListUsers method.
 type ListUsersPayload struct {
 	Token string
+}
+
+// ListAuthorsPayload is the payload type of the admin service ListAuthors
+// method.
+type ListAuthorsPayload struct {
+	Token string
+}
+
+// UpdateAuthorPayload is the payload type of the admin service UpdateAuthor
+// method.
+type UpdateAuthorPayload struct {
+	Token       string
+	ID          string
+	FullName    string
+	Description string
+	Sponsor     bool
+	Slug        string
+	ImageURL    *string
+	Publish     bool
 }
 
 // AddFlagPayload is the payload type of the admin service AddFlag method.
@@ -290,11 +311,10 @@ type SsmAdminChallenge struct {
 	// The numer of people who solved the challenge
 	Solves int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID   *string
-	OtherAuthors []string
-	Flags        []*AdminChallengeFlag
-	CategoryID   string
-	Authors      []string
+	CtfEventID *string
+	Flags      []*AdminChallengeFlag
+	CategoryID string
+	Authors    []string
 }
 
 type ChallengeService struct {
@@ -342,6 +362,16 @@ type SsmUser struct {
 	FullName string
 	Role     string
 	SchoolID *int
+}
+
+type SsmAuthor struct {
+	ID          string
+	FullName    string
+	Description string
+	Sponsor     bool
+	Slug        string
+	ImageURL    *string
+	Publish     bool
 }
 
 type Category struct {
@@ -467,12 +497,6 @@ func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChall
 			res.Files[i] = transformAdminviewsAdminChallengeFilesViewToAdminChallengeFiles(val)
 		}
 	}
-	if vres.OtherAuthors != nil {
-		res.OtherAuthors = make([]string, len(vres.OtherAuthors))
-		for i, val := range vres.OtherAuthors {
-			res.OtherAuthors[i] = val
-		}
-	}
 	if vres.Flags != nil {
 		res.Flags = make([]*AdminChallengeFlag, len(vres.Flags))
 		for i, val := range vres.Flags {
@@ -512,12 +536,6 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 		vres.Files = make([]*adminviews.AdminChallengeFilesView, len(res.Files))
 		for i, val := range res.Files {
 			vres.Files[i] = transformAdminChallengeFilesToAdminviewsAdminChallengeFilesView(val)
-		}
-	}
-	if res.OtherAuthors != nil {
-		vres.OtherAuthors = make([]string, len(res.OtherAuthors))
-		for i, val := range res.OtherAuthors {
-			vres.OtherAuthors[i] = val
 		}
 	}
 	if res.Flags != nil {

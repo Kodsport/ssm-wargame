@@ -22,10 +22,11 @@ type Client struct {
 	SubmitFlagEndpoint                 goa.Endpoint
 	SchoolScoreboardEndpoint           goa.Endpoint
 	UserScoreboardEndpoint             goa.Endpoint
+	ListAuthorsEndpoint                goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard, userScoreboard goa.Endpoint) *Client {
+func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard, userScoreboard, listAuthors goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:             listChallenges,
 		ListEventsEndpoint:                 listEvents,
@@ -34,6 +35,7 @@ func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonth
 		SubmitFlagEndpoint:                 submitFlag,
 		SchoolScoreboardEndpoint:           schoolScoreboard,
 		UserScoreboardEndpoint:             userScoreboard,
+		ListAuthorsEndpoint:                listAuthors,
 	}
 }
 
@@ -113,4 +115,14 @@ func (c *Client) UserScoreboard(ctx context.Context, p *UserScoreboardPayload) (
 		return
 	}
 	return ires.(*SsmUserScoreboard), nil
+}
+
+// ListAuthors calls the "ListAuthors" endpoint of the "challenge" service.
+func (c *Client) ListAuthors(ctx context.Context, p *ListAuthorsPayload) (res SsmAuthorCollection, err error) {
+	var ires interface{}
+	ires, err = c.ListAuthorsEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(SsmAuthorCollection), nil
 }

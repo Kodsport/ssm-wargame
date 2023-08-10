@@ -31,6 +31,8 @@ type Service interface {
 	SchoolScoreboard(context.Context, *SchoolScoreboardPayload) (res *SsmSchoolScoreboard, err error)
 	// UserScoreboard implements UserScoreboard.
 	UserScoreboard(context.Context, *UserScoreboardPayload) (res *SsmUserScoreboard, err error)
+	// ListAuthors implements ListAuthors.
+	ListAuthors(context.Context, *ListAuthorsPayload) (res SsmAuthorCollection, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -47,12 +49,16 @@ const ServiceName = "challenge"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [7]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyChallenge", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard", "UserScoreboard"}
+var MethodNames = [8]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyChallenge", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard", "UserScoreboard", "ListAuthors"}
 
 // ListChallengesPayload is the payload type of the challenge service
 // ListChallenges method.
 type ListChallengesPayload struct {
-	Token *string
+	// Filter by slug
+	Slug *string
+	// Filter by author
+	AuthorSlug *string
+	Token      *string
 }
 
 // SsmChallengeCollection is the result type of the challenge service
@@ -127,6 +133,16 @@ type SsmUserScoreboard struct {
 	Scores []*UserScoreboardScore
 }
 
+// ListAuthorsPayload is the payload type of the challenge service ListAuthors
+// method.
+type ListAuthorsPayload struct {
+	Token *string
+}
+
+// SsmAuthorCollection is the result type of the challenge service ListAuthors
+// method.
+type SsmAuthorCollection []*SsmAuthor
+
 // A Wargame challenge
 type SsmChallenge struct {
 	ID string
@@ -143,12 +159,11 @@ type SsmChallenge struct {
 	// The numer of people who solved the challenge
 	Solves int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID   *string
-	OtherAuthors []string
+	CtfEventID *string
 	// whether the user has solved the challenge or not
 	Solved   bool
 	Category string
-	Authors  []*SsmUser
+	Authors  []*SsmAuthor
 	Solvers  []*SsmSolver
 }
 
@@ -162,12 +177,14 @@ type ChallengeFiles struct {
 	URL      string
 }
 
-type SsmUser struct {
-	ID       string
-	Email    string
-	FullName string
-	Role     string
-	SchoolID *int
+type SsmAuthor struct {
+	ID          string
+	FullName    string
+	Description string
+	Sponsor     bool
+	Slug        string
+	ImageURL    *string
+	Publish     bool
 }
 
 type SsmSolver struct {
@@ -290,6 +307,20 @@ func NewViewedSsmUserScoreboard(res *SsmUserScoreboard, view string) *challengev
 	return &challengeviews.SsmUserScoreboard{Projected: p, View: "default"}
 }
 
+// NewSsmAuthorCollection initializes result type SsmAuthorCollection from
+// viewed result type SsmAuthorCollection.
+func NewSsmAuthorCollection(vres challengeviews.SsmAuthorCollection) SsmAuthorCollection {
+	return newSsmAuthorCollection(vres.Projected)
+}
+
+// NewViewedSsmAuthorCollection initializes viewed result type
+// SsmAuthorCollection from result type SsmAuthorCollection using the given
+// view.
+func NewViewedSsmAuthorCollection(res SsmAuthorCollection, view string) challengeviews.SsmAuthorCollection {
+	p := newSsmAuthorCollectionView(res)
+	return challengeviews.SsmAuthorCollection{Projected: p, View: "default"}
+}
+
 // newSsmChallengeCollection converts projected type SsmChallengeCollection to
 // service type SsmChallengeCollection.
 func newSsmChallengeCollection(vres challengeviews.SsmChallengeCollectionView) SsmChallengeCollection {
@@ -352,16 +383,10 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 			res.Files[i] = transformChallengeviewsChallengeFilesViewToChallengeFiles(val)
 		}
 	}
-	if vres.OtherAuthors != nil {
-		res.OtherAuthors = make([]string, len(vres.OtherAuthors))
-		for i, val := range vres.OtherAuthors {
-			res.OtherAuthors[i] = val
-		}
-	}
 	if vres.Authors != nil {
-		res.Authors = make([]*SsmUser, len(vres.Authors))
+		res.Authors = make([]*SsmAuthor, len(vres.Authors))
 		for i, val := range vres.Authors {
-			res.Authors[i] = transformChallengeviewsSsmUserViewToSsmUser(val)
+			res.Authors[i] = transformChallengeviewsSsmAuthorViewToSsmAuthor(val)
 		}
 	}
 	if vres.Solvers != nil {
@@ -399,16 +424,10 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 			vres.Files[i] = transformChallengeFilesToChallengeviewsChallengeFilesView(val)
 		}
 	}
-	if res.OtherAuthors != nil {
-		vres.OtherAuthors = make([]string, len(res.OtherAuthors))
-		for i, val := range res.OtherAuthors {
-			vres.OtherAuthors[i] = val
-		}
-	}
 	if res.Authors != nil {
-		vres.Authors = make([]*challengeviews.SsmUserView, len(res.Authors))
+		vres.Authors = make([]*challengeviews.SsmAuthorView, len(res.Authors))
 		for i, val := range res.Authors {
-			vres.Authors[i] = transformSsmUserToChallengeviewsSsmUserView(val)
+			vres.Authors[i] = transformSsmAuthorToChallengeviewsSsmAuthorView(val)
 		}
 	}
 	if res.Solvers != nil {
@@ -420,35 +439,43 @@ func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 	return vres
 }
 
-// newSsmUser converts projected type SsmUser to service type SsmUser.
-func newSsmUser(vres *challengeviews.SsmUserView) *SsmUser {
-	res := &SsmUser{
-		SchoolID: vres.SchoolID,
+// newSsmAuthor converts projected type SsmAuthor to service type SsmAuthor.
+func newSsmAuthor(vres *challengeviews.SsmAuthorView) *SsmAuthor {
+	res := &SsmAuthor{
+		ImageURL: vres.ImageURL,
 	}
 	if vres.ID != nil {
 		res.ID = *vres.ID
 	}
-	if vres.Email != nil {
-		res.Email = *vres.Email
-	}
 	if vres.FullName != nil {
 		res.FullName = *vres.FullName
 	}
-	if vres.Role != nil {
-		res.Role = *vres.Role
+	if vres.Description != nil {
+		res.Description = *vres.Description
+	}
+	if vres.Sponsor != nil {
+		res.Sponsor = *vres.Sponsor
+	}
+	if vres.Slug != nil {
+		res.Slug = *vres.Slug
+	}
+	if vres.Publish != nil {
+		res.Publish = *vres.Publish
 	}
 	return res
 }
 
-// newSsmUserView projects result type SsmUser to projected type SsmUserView
-// using the "default" view.
-func newSsmUserView(res *SsmUser) *challengeviews.SsmUserView {
-	vres := &challengeviews.SsmUserView{
-		ID:       &res.ID,
-		Email:    &res.Email,
-		FullName: &res.FullName,
-		Role:     &res.Role,
-		SchoolID: res.SchoolID,
+// newSsmAuthorView projects result type SsmAuthor to projected type
+// SsmAuthorView using the "default" view.
+func newSsmAuthorView(res *SsmAuthor) *challengeviews.SsmAuthorView {
+	vres := &challengeviews.SsmAuthorView{
+		ID:          &res.ID,
+		FullName:    &res.FullName,
+		Description: &res.Description,
+		Sponsor:     &res.Sponsor,
+		Slug:        &res.Slug,
+		ImageURL:    res.ImageURL,
+		Publish:     &res.Publish,
 	}
 	return vres
 }
@@ -590,6 +617,26 @@ func newSsmUserScoreboardView(res *SsmUserScoreboard) *challengeviews.SsmUserSco
 	return vres
 }
 
+// newSsmAuthorCollection converts projected type SsmAuthorCollection to
+// service type SsmAuthorCollection.
+func newSsmAuthorCollection(vres challengeviews.SsmAuthorCollectionView) SsmAuthorCollection {
+	res := make(SsmAuthorCollection, len(vres))
+	for i, n := range vres {
+		res[i] = newSsmAuthor(n)
+	}
+	return res
+}
+
+// newSsmAuthorCollectionView projects result type SsmAuthorCollection to
+// projected type SsmAuthorCollectionView using the "default" view.
+func newSsmAuthorCollectionView(res SsmAuthorCollection) challengeviews.SsmAuthorCollectionView {
+	vres := make(challengeviews.SsmAuthorCollectionView, len(res))
+	for i, n := range res {
+		vres[i] = newSsmAuthorView(n)
+	}
+	return vres
+}
+
 // transformChallengeviewsChallengeServiceViewToChallengeService builds a value
 // of type *ChallengeService from a value of type
 // *challengeviews.ChallengeServiceView.
@@ -619,18 +666,20 @@ func transformChallengeviewsChallengeFilesViewToChallengeFiles(v *challengeviews
 	return res
 }
 
-// transformChallengeviewsSsmUserViewToSsmUser builds a value of type *SsmUser
-// from a value of type *challengeviews.SsmUserView.
-func transformChallengeviewsSsmUserViewToSsmUser(v *challengeviews.SsmUserView) *SsmUser {
+// transformChallengeviewsSsmAuthorViewToSsmAuthor builds a value of type
+// *SsmAuthor from a value of type *challengeviews.SsmAuthorView.
+func transformChallengeviewsSsmAuthorViewToSsmAuthor(v *challengeviews.SsmAuthorView) *SsmAuthor {
 	if v == nil {
 		return nil
 	}
-	res := &SsmUser{
-		ID:       *v.ID,
-		Email:    *v.Email,
-		FullName: *v.FullName,
-		Role:     *v.Role,
-		SchoolID: v.SchoolID,
+	res := &SsmAuthor{
+		ID:          *v.ID,
+		FullName:    *v.FullName,
+		Description: *v.Description,
+		Sponsor:     *v.Sponsor,
+		Slug:        *v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     *v.Publish,
 	}
 
 	return res
@@ -680,18 +729,20 @@ func transformChallengeFilesToChallengeviewsChallengeFilesView(v *ChallengeFiles
 	return res
 }
 
-// transformSsmUserToChallengeviewsSsmUserView builds a value of type
-// *challengeviews.SsmUserView from a value of type *SsmUser.
-func transformSsmUserToChallengeviewsSsmUserView(v *SsmUser) *challengeviews.SsmUserView {
+// transformSsmAuthorToChallengeviewsSsmAuthorView builds a value of type
+// *challengeviews.SsmAuthorView from a value of type *SsmAuthor.
+func transformSsmAuthorToChallengeviewsSsmAuthorView(v *SsmAuthor) *challengeviews.SsmAuthorView {
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.SsmUserView{
-		ID:       &v.ID,
-		Email:    &v.Email,
-		FullName: &v.FullName,
-		Role:     &v.Role,
-		SchoolID: v.SchoolID,
+	res := &challengeviews.SsmAuthorView{
+		ID:          &v.ID,
+		FullName:    &v.FullName,
+		Description: &v.Description,
+		Sponsor:     &v.Sponsor,
+		Slug:        &v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     &v.Publish,
 	}
 
 	return res

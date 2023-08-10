@@ -7,6 +7,159 @@ servers:
 - url: http://localhost:80
   description: Default server for wargame
 paths:
+  /admin/authors:
+    get:
+      tags:
+      - admin
+      summary: ListAuthors admin
+      operationId: admin#ListAuthors
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SsmAuthor'
+                example:
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: uuid todo
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+              example:
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: uuid todo
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: uuid todo
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: uuid todo
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: uuid todo
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/authors/{id}:
+    put:
+      tags:
+      - admin
+      summary: UpdateAuthor admin
+      operationId: admin#UpdateAuthor
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: uuid todo
+        example: uuid todo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAuthorRequestBody'
+            example:
+              description: Movitz gör saker
+              full_name: Movitz Sunar
+              image_url: movitz
+              publish: true
+              slug: movitz
+              sponsor: true
+      responses:
+        "204":
+          description: No Content response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
   /admin/categories:
     get:
       tags:
@@ -29,11 +182,9 @@ paths:
                   name: Forensics
                 - id: e721a338-44de-4de8-a562-43d2db5f4115
                   name: Forensics
+                - id: e721a338-44de-4de8-a562-43d2db5f4115
+                  name: Forensics
               example:
-              - id: e721a338-44de-4de8-a562-43d2db5f4115
-                name: Forensics
-              - id: e721a338-44de-4de8-a562-43d2db5f4115
-                name: Forensics
               - id: e721a338-44de-4de8-a562-43d2db5f4115
                 name: Forensics
               - id: e721a338-44de-4de8-a562-43d2db5f4115
@@ -96,16 +247,15 @@ paths:
                 - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                   url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                  url: https://s3/bucket/key?signature
                 flags:
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                other_authors:
-                - FRA
                 publish_at: 1638384718
                 score: 50
                 services:
@@ -128,35 +278,6 @@ paths:
                 - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                   url: https://s3/bucket/key?signature
-                flags:
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                other_authors:
-                - FRA
-                publish_at: 1638384718
-                score: 50
-                services:
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - authors:
-                - dfaa1a6a-9051-4c52-9441-5d664536cf24
-                category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
-                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-                description: A heap overflow challenge
-                files:
-                - filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  url: https://s3/bucket/key?signature
                 - filename: decryptor.exe
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                   url: https://s3/bucket/key?signature
@@ -165,43 +286,7 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 - flag: SSM{yo}
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                other_authors:
-                - FRA
-                publish_at: 1638384718
-                score: 50
-                services:
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                slug: pwnme
-                solves: 3
-                title: pwnme
-              - authors:
-                - dfaa1a6a-9051-4c52-9441-5d664536cf24
-                category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
-                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-                description: A heap overflow challenge
-                files:
-                - filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  url: https://s3/bucket/key?signature
-                flags:
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                - flag: SSM{yo}
-                  id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                id: e721a338-44de-4de8-a562-43d2db5f4115
-                other_authors:
-                - FRA
                 publish_at: 1638384718
                 score: 50
                 services:
@@ -261,8 +346,6 @@ paths:
               category_id: 1b678292-6737-4cc7-8eae-aa821100293f
               ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
               description: A heap overflow challenge
-              other_authors:
-              - FRA
               publish_at: 1638384718
               score: 50
               slug: pwnme
@@ -328,33 +411,33 @@ paths:
                 $ref: '#/components/schemas/ChallengeMeta'
               example:
                 solvers:
-                - solved_at: 7513817883815790178
+                - solved_at: 8287603688713421758
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 7513817883815790178
+                - solved_at: 8287603688713421758
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 7513817883815790178
+                - solved_at: 8287603688713421758
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 7513817883815790178
+                - solved_at: 8287603688713421758
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
                 submissions:
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 1138045893676732979
+                  submitted_at: 7513817883815790178
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 1138045893676732979
+                  submitted_at: 7513817883815790178
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 1138045893676732979
+                  submitted_at: 7513817883815790178
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 34062de2-6687-4acb-ab4b-608cc246b133
                   input: SSM{wrong_flag}
-                  submitted_at: 1138045893676732979
+                  submitted_at: 7513817883815790178
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         "400":
@@ -417,8 +500,6 @@ paths:
               category_id: 1b678292-6737-4cc7-8eae-aa821100293f
               ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
               description: A heap overflow challenge
-              other_authors:
-              - FRA
               publish_at: 1638384718
               score: 50
               slug: pwnme
@@ -677,8 +758,6 @@ paths:
                 name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 name: Säkerhet-SM 2023
-              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                name: Säkerhet-SM 2023
         "400":
           description: Resource not found
           content:
@@ -882,7 +961,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateCTFEventImportTokenResponseBody'
               example:
-                token: Et facilis veritatis tempora vero.
+                token: Veritatis tempora vero in alias sequi.
         "400":
           description: Resource not found
           content:
@@ -1128,11 +1207,11 @@ paths:
                 type: regex
               - flag: fl4g_l0l
                 type: regex
+              - flag: fl4g_l0l
+                type: regex
               order: 5
               score: 100
               services:
-              - hyperlink: true
-                user_display: nc 0.0.0.0 1234
               - hyperlink: true
                 user_display: nc 0.0.0.0 1234
               - hyperlink: true
@@ -1218,11 +1297,6 @@ paths:
                 id: uuid todo
                 role: admin
                 school_id: 78433202
-              - email: movitz.sunar@ssm.example
-                full_name: Movitz Sunar
-                id: uuid todo
-                role: admin
-                school_id: 78433202
         "400":
           description: Resource not found
           content:
@@ -1294,12 +1368,75 @@ paths:
                 $ref: '#/components/schemas/GenerateDiscordAuthURLResponseBody'
               example:
                 url: https://discord.com/api/oauth2/authorize?response_type=code&client_id=157730590492196864&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https%3A%2F%2Fnicememe.website&prompt=consent
+  /authors:
+    get:
+      tags:
+      - challenge
+      summary: ListAuthors challenge
+      operationId: challenge#ListAuthors
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsmAuthorCollection'
+              example:
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: uuid todo
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: uuid todo
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: uuid todo
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: uuid todo
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+      security:
+      - jwt_header_Authorization: []
   /challenges:
     get:
       tags:
       - challenge
       summary: ListChallenges challenge
       operationId: challenge#ListChallenges
+      parameters:
+      - name: slug
+        in: query
+        description: Filter by slug
+        allowEmptyValue: true
+        schema:
+          type: string
+          description: Filter by slug
+          example: brumm
+        example: brumm
+      - name: author_slug
+        in: query
+        description: Filter by author
+        allowEmptyValue: true
+        schema:
+          type: string
+          description: Filter by author
+          example: movitz_sunar
+        example: movitz_sunar
       responses:
         "200":
           description: OK response.
@@ -1309,16 +1446,20 @@ paths:
                 $ref: '#/components/schemas/SsmChallengeCollection'
               example:
               - authors:
-                - email: movitz.sunar@ssm.example
+                - description: Movitz gör saker
                   full_name: Movitz Sunar
                   id: uuid todo
-                  role: admin
-                  school_id: 78433202
-                - email: movitz.sunar@ssm.example
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                - description: Movitz gör saker
                   full_name: Movitz Sunar
                   id: uuid todo
-                  role: admin
-                  school_id: 78433202
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
                 category: Misc
                 ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
@@ -1330,8 +1471,6 @@ paths:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                other_authors:
-                - FRA
                 score: 50
                 services:
                 - hyperlink: true
@@ -1353,16 +1492,20 @@ paths:
                 solves: 3
                 title: pwnme
               - authors:
-                - email: movitz.sunar@ssm.example
+                - description: Movitz gör saker
                   full_name: Movitz Sunar
                   id: uuid todo
-                  role: admin
-                  school_id: 78433202
-                - email: movitz.sunar@ssm.example
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                - description: Movitz gör saker
                   full_name: Movitz Sunar
                   id: uuid todo
-                  role: admin
-                  school_id: 78433202
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
                 category: Misc
                 ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
@@ -1374,8 +1517,6 @@ paths:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 id: e721a338-44de-4de8-a562-43d2db5f4115
-                other_authors:
-                - FRA
                 score: 50
                 services:
                 - hyperlink: true
@@ -1464,16 +1605,20 @@ paths:
               example:
                 challenge:
                   authors:
-                  - email: movitz.sunar@ssm.example
+                  - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: uuid todo
-                    role: admin
-                    school_id: 78433202
-                  - email: movitz.sunar@ssm.example
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: uuid todo
-                    role: admin
-                    school_id: 78433202
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
                   category: Misc
                   ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
@@ -1485,8 +1630,6 @@ paths:
                   - filename: decryptor.exe
                     url: https://s3/bucket/key?signature
                   id: e721a338-44de-4de8-a562-43d2db5f4115
-                  other_authors:
-                  - FRA
                   score: 50
                   services:
                   - hyperlink: true
@@ -1545,9 +1688,9 @@ paths:
                   name: Säkerhet-SM 2023
                 - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                   name: Säkerhet-SM 2023
-                - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-                  name: Säkerhet-SM 2023
               example:
+              - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+                name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 name: Säkerhet-SM 2023
               - id: 71333e34-4c6b-483e-b3c7-c77d73008cca
@@ -1570,16 +1713,20 @@ paths:
               example:
               - challenge:
                   authors:
-                  - email: movitz.sunar@ssm.example
+                  - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: uuid todo
-                    role: admin
-                    school_id: 78433202
-                  - email: movitz.sunar@ssm.example
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: uuid todo
-                    role: admin
-                    school_id: 78433202
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
                   category: Misc
                   ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
@@ -1591,8 +1738,6 @@ paths:
                   - filename: decryptor.exe
                     url: https://s3/bucket/key?signature
                   id: e721a338-44de-4de8-a562-43d2db5f4115
-                  other_authors:
-                  - FRA
                   score: 50
                   services:
                   - hyperlink: true
@@ -1619,16 +1764,20 @@ paths:
                 start_date: 1690874841
               - challenge:
                   authors:
-                  - email: movitz.sunar@ssm.example
+                  - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: uuid todo
-                    role: admin
-                    school_id: 78433202
-                  - email: movitz.sunar@ssm.example
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: uuid todo
-                    role: admin
-                    school_id: 78433202
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
                   category: Misc
                   ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
@@ -1640,8 +1789,6 @@ paths:
                   - filename: decryptor.exe
                     url: https://s3/bucket/key?signature
                   id: e721a338-44de-4de8-a562-43d2db5f4115
-                  other_authors:
-                  - FRA
                   score: 50
                   services:
                   - hyperlink: true
@@ -1668,16 +1815,20 @@ paths:
                 start_date: 1690874841
               - challenge:
                   authors:
-                  - email: movitz.sunar@ssm.example
+                  - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: uuid todo
-                    role: admin
-                    school_id: 78433202
-                  - email: movitz.sunar@ssm.example
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: uuid todo
-                    role: admin
-                    school_id: 78433202
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
                   category: Misc
                   ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                   description: A heap overflow challenge
@@ -1689,8 +1840,6 @@ paths:
                   - filename: decryptor.exe
                     url: https://s3/bucket/key?signature
                   id: e721a338-44de-4de8-a562-43d2db5f4115
-                  other_authors:
-                  - FRA
                   score: 50
                   services:
                   - hyperlink: true
@@ -1732,6 +1881,8 @@ paths:
                 $ref: '#/components/schemas/SsmSchoolScoreboard'
               example:
                 scores:
+                - school_name: Stockholm Science and Innovation School
+                  score: 1337
                 - school_name: Stockholm Science and Innovation School
                   score: 1337
                 - school_name: Stockholm Science and Innovation School
@@ -1799,16 +1950,7 @@ paths:
                 - id: 78433202
                   municipality_name: Örebro
                   name: Engelbrektsskolan
-                - id: 78433202
-                  municipality_name: Örebro
-                  name: Engelbrektsskolan
-                - id: 78433202
-                  municipality_name: Örebro
-                  name: Engelbrektsskolan
               example:
-              - id: 78433202
-                municipality_name: Örebro
-                name: Engelbrektsskolan
               - id: 78433202
                 municipality_name: Örebro
                 name: Engelbrektsskolan
@@ -1839,7 +1981,7 @@ paths:
                 id: uuid todo
                 role: admin
                 school_id: 78433202
-                school_name: Alias sequi repellat alias voluptas eum sit.
+                school_name: Alias voluptas eum sit.
       security:
       - jwt_header_Authorization: []
   /user_scoreboard:
@@ -1857,14 +1999,6 @@ paths:
                 $ref: '#/components/schemas/SsmUserScoreboard'
               example:
                 scores:
-                - name: Movitz Sunar
-                  school_name: Stockholm Science and Innovation School
-                  score: 1337
-                  user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
-                - name: Movitz Sunar
-                  school_name: Stockholm Science and Innovation School
-                  score: 1337
-                  user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
                 - name: Movitz Sunar
                   school_name: Stockholm Science and Innovation School
                   score: 1337
@@ -1950,13 +2084,11 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeSolver'
           example:
-          - solved_at: 7513817883815790178
+          - solved_at: 8287603688713421758
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 7513817883815790178
+          - solved_at: 8287603688713421758
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 7513817883815790178
-            user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 7513817883815790178
+          - solved_at: 8287603688713421758
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
           type: array
@@ -1965,46 +2097,41 @@ components:
           example:
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 1138045893676732979
+            submitted_at: 7513817883815790178
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 1138045893676732979
+            submitted_at: 7513817883815790178
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
           - id: 34062de2-6687-4acb-ab4b-608cc246b133
             input: SSM{wrong_flag}
-            submitted_at: 1138045893676732979
+            submitted_at: 7513817883815790178
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 34062de2-6687-4acb-ab4b-608cc246b133
+            input: SSM{wrong_flag}
+            submitted_at: 7513817883815790178
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       example:
         solvers:
-        - solved_at: 7513817883815790178
+        - solved_at: 8287603688713421758
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 7513817883815790178
+        - solved_at: 8287603688713421758
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 7513817883815790178
+        - solved_at: 8287603688713421758
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 1138045893676732979
+          submitted_at: 7513817883815790178
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 34062de2-6687-4acb-ab4b-608cc246b133
           input: SSM{wrong_flag}
-          submitted_at: 1138045893676732979
-          successful: false
-          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
-        - id: 34062de2-6687-4acb-ab4b-608cc246b133
-          input: SSM{wrong_flag}
-          submitted_at: 1138045893676732979
-          successful: false
-          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
-        - id: 34062de2-6687-4acb-ab4b-608cc246b133
-          input: SSM{wrong_flag}
-          submitted_at: 1138045893676732979
+          submitted_at: 7513817883815790178
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -2030,14 +2157,14 @@ components:
       properties:
         solved_at:
           type: integer
-          example: 5502230724297656806
+          example: 5639974920426868198
           format: int64
         user_id:
           type: string
           example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
           format: uuid
       example:
-        solved_at: 2123715514406408235
+        solved_at: 285561187501634530
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       required:
       - user_id
@@ -2054,7 +2181,7 @@ components:
           example: SSM{wrong_flag}
         submitted_at:
           type: integer
-          example: 6264149472227820412
+          example: 5502230724297656806
           format: int64
         successful:
           type: boolean
@@ -2066,7 +2193,7 @@ components:
       example:
         id: 34062de2-6687-4acb-ab4b-608cc246b133
         input: SSM{wrong_flag}
-        submitted_at: 6450285299075037144
+        submitted_at: 2123715514406408235
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -2082,14 +2209,14 @@ components:
           type: array
           items:
             type: string
-            example: Harum voluptatem.
+            example: Repellat est a.
           example:
           - Movitz Sunar
         categories:
           type: array
           items:
             type: string
-            example: Repudiandae sed error quia quia quibusdam voluptates.
+            example: Error ratione harum voluptatem.
           example:
           - web
         challenge_id:
@@ -2103,7 +2230,7 @@ components:
           type: array
           items:
             type: string
-            example: Aut soluta.
+            example: Repudiandae sed error quia quia quibusdam voluptates.
           example:
           - https://bucket/key
         flag_format_prefix:
@@ -2121,6 +2248,8 @@ components:
             type: regex
           - flag: fl4g_l0l
             type: regex
+          - flag: fl4g_l0l
+            type: regex
         order:
           type: integer
           example: 5
@@ -2134,10 +2263,6 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
@@ -2163,13 +2288,11 @@ components:
           type: regex
         - flag: fl4g_l0l
           type: regex
+        - flag: fl4g_l0l
+          type: regex
         order: 5
         score: 100
         services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -2193,9 +2316,9 @@ components:
       properties:
         token:
           type: string
-          example: Vel beatae quibusdam.
+          example: Qui temporibus eveniet vel beatae.
       example:
-        token: Fugit doloremque earum non cumque.
+        token: Et fugit.
       required:
       - token
     CreateCTFEventRequestBody:
@@ -2216,7 +2339,7 @@ components:
           type: array
           items:
             type: string
-            example: Voluptatum repellat est.
+            example: Mollitia et praesentium quis iusto.
           example:
           - 1b678293-6737-4cc7-8eae-aa821100293f
         category_id:
@@ -2232,13 +2355,6 @@ components:
           type: string
           description: A short text describing the challenge
           example: A heap overflow challenge
-        other_authors:
-          type: array
-          items:
-            type: string
-            example: Quis iusto qui consequuntur praesentium.
-          example:
-          - FRA
         publish_at:
           type: integer
           description: unix timestamp
@@ -2263,8 +2379,6 @@ components:
         category_id: 1b678292-6737-4cc7-8eae-aa821100293f
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
-        other_authors:
-        - FRA
         publish_at: 1638384718
         score: 50
         slug: pwnme
@@ -2284,7 +2398,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: true
+          example: false
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -2306,7 +2420,7 @@ components:
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: false
+          example: true
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -2375,14 +2489,14 @@ components:
           format: int64
         school_name:
           type: string
-          example: Qui nisi.
+          example: Earum non cumque.
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: uuid todo
         role: admin
         school_id: 78433202
-        school_name: Consequuntur unde exercitationem.
+        school_name: Qui nisi.
       required:
       - id
       - email
@@ -2512,7 +2626,7 @@ components:
           type: array
           items:
             type: string
-            example: Iste excepturi tempore voluptas tempora et.
+            example: Excepturi tempore.
           example:
           - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id:
@@ -2539,6 +2653,12 @@ components:
           - filename: decryptor.exe
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
             url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+            url: https://s3/bucket/key?signature
         flags:
           type: array
           items:
@@ -2548,21 +2668,10 @@ components:
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           - flag: SSM{yo}
             id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          - flag: SSM{yo}
-            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-          - flag: SSM{yo}
-            id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
           format: uuid
-        other_authors:
-          type: array
-          items:
-            type: string
-            example: Quia eius molestias optio eum.
-          example:
-          - FRA
         publish_at:
           type: integer
           description: unix timestamp
@@ -2578,6 +2687,8 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
@@ -2622,15 +2733,9 @@ components:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
         publish_at: 1638384718
         score: 50
         services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -2665,16 +2770,15 @@ components:
         - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
         flags:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
         publish_at: 1638384718
         score: 50
         services:
@@ -2697,16 +2801,15 @@ components:
         - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
         flags:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
         publish_at: 1638384718
         score: 50
         services:
@@ -2729,16 +2832,15 @@ components:
         - filename: decryptor.exe
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
           url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
         flags:
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         - flag: SSM{yo}
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
-        - flag: SSM{yo}
-          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
         publish_at: 1638384718
         score: 50
         services:
@@ -2749,24 +2851,145 @@ components:
         slug: pwnme
         solves: 3
         title: pwnme
+      - authors:
+        - dfaa1a6a-9051-4c52-9441-5d664536cf24
+        category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        files:
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+          url: https://s3/bucket/key?signature
+        flags:
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        - flag: SSM{yo}
+          id: 71333e34-4c6b-483e-b3c7-c77d73008cca
+        id: e721a338-44de-4de8-a562-43d2db5f4115
+        publish_at: 1638384718
+        score: 50
+        services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        slug: pwnme
+        solves: 3
+        title: pwnme
+    SsmAuthor:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Movitz gör saker
+        full_name:
+          type: string
+          example: Movitz Sunar
+        id:
+          type: string
+          example: uuid todo
+        image_url:
+          type: string
+          example: movitz
+        publish:
+          type: boolean
+          example: true
+        slug:
+          type: string
+          example: movitz
+        sponsor:
+          type: boolean
+          example: true
+      example:
+        description: Movitz gör saker
+        full_name: Movitz Sunar
+        id: uuid todo
+        image_url: movitz
+        publish: true
+        slug: movitz
+        sponsor: true
+      required:
+      - id
+      - sponsor
+      - full_name
+      - description
+      - slug
+      - publish
+    SsmAuthorCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/SsmAuthor'
+      example:
+      - description: Movitz gör saker
+        full_name: Movitz Sunar
+        id: uuid todo
+        image_url: movitz
+        publish: true
+        slug: movitz
+        sponsor: true
+      - description: Movitz gör saker
+        full_name: Movitz Sunar
+        id: uuid todo
+        image_url: movitz
+        publish: true
+        slug: movitz
+        sponsor: true
+      - description: Movitz gör saker
+        full_name: Movitz Sunar
+        id: uuid todo
+        image_url: movitz
+        publish: true
+        slug: movitz
+        sponsor: true
+      - description: Movitz gör saker
+        full_name: Movitz Sunar
+        id: uuid todo
+        image_url: movitz
+        publish: true
+        slug: movitz
+        sponsor: true
     SsmChallenge:
       type: object
       properties:
         authors:
           type: array
           items:
-            $ref: '#/components/schemas/SsmUser'
+            $ref: '#/components/schemas/SsmAuthor'
           example:
-          - email: movitz.sunar@ssm.example
+          - description: Movitz gör saker
             full_name: Movitz Sunar
             id: uuid todo
-            role: admin
-            school_id: 78433202
-          - email: movitz.sunar@ssm.example
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
+          - description: Movitz gör saker
             full_name: Movitz Sunar
             id: uuid todo
-            role: admin
-            school_id: 78433202
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
+          - description: Movitz gör saker
+            full_name: Movitz Sunar
+            id: uuid todo
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
+          - description: Movitz gör saker
+            full_name: Movitz Sunar
+            id: uuid todo
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
         category:
           type: string
           example: Misc
@@ -2794,13 +3017,6 @@ components:
           type: string
           example: e721a338-44de-4de8-a562-43d2db5f4115
           format: uuid
-        other_authors:
-          type: array
-          items:
-            type: string
-            example: Velit doloribus voluptate omnis vel neque qui.
-          example:
-          - FRA
         score:
           type: integer
           description: The number of points given to the solver
@@ -2836,6 +3052,12 @@ components:
           - full_name: Movitz Sunar
             id: uuid todo
             solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: uuid todo
+            solved_at: 16123128
         solves:
           type: integer
           description: The numer of people who solved the challenge
@@ -2848,21 +3070,34 @@ components:
       description: A Wargame challenge
       example:
         authors:
-        - email: movitz.sunar@ssm.example
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
-        - email: movitz.sunar@ssm.example
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
-        - email: movitz.sunar@ssm.example
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: uuid todo
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -2871,9 +3106,11 @@ components:
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
         score: 50
         services:
         - hyperlink: true
@@ -2911,16 +3148,20 @@ components:
         $ref: '#/components/schemas/SsmChallenge'
       example:
       - authors:
-        - email: movitz.sunar@ssm.example
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
-        - email: movitz.sunar@ssm.example
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -2932,8 +3173,6 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
         score: 50
         services:
         - hyperlink: true
@@ -2955,16 +3194,20 @@ components:
         solves: 3
         title: pwnme
       - authors:
-        - email: movitz.sunar@ssm.example
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
-        - email: movitz.sunar@ssm.example
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -2976,8 +3219,6 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
         score: 50
         services:
         - hyperlink: true
@@ -2999,16 +3240,20 @@ components:
         solves: 3
         title: pwnme
       - authors:
-        - email: movitz.sunar@ssm.example
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
-        - email: movitz.sunar@ssm.example
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
           full_name: Movitz Sunar
           id: uuid todo
-          role: admin
-          school_id: 78433202
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
         category: Misc
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
@@ -3020,52 +3265,6 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
-        score: 50
-        services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        slug: pwnme
-        solved: true
-        solvers:
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        solves: 3
-        title: pwnme
-      - authors:
-        - email: movitz.sunar@ssm.example
-          full_name: Movitz Sunar
-          id: uuid todo
-          role: admin
-          school_id: 78433202
-        - email: movitz.sunar@ssm.example
-          full_name: Movitz Sunar
-          id: uuid todo
-          role: admin
-          school_id: 78433202
-        category: Misc
-        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-        description: A heap overflow challenge
-        files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        id: e721a338-44de-4de8-a562-43d2db5f4115
-        other_authors:
-        - FRA
         score: 50
         services:
         - hyperlink: true
@@ -3189,16 +3388,20 @@ components:
       example:
         challenge:
           authors:
-          - email: movitz.sunar@ssm.example
+          - description: Movitz gör saker
             full_name: Movitz Sunar
             id: uuid todo
-            role: admin
-            school_id: 78433202
-          - email: movitz.sunar@ssm.example
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
+          - description: Movitz gör saker
             full_name: Movitz Sunar
             id: uuid todo
-            role: admin
-            school_id: 78433202
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
           category: Misc
           ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
@@ -3210,8 +3413,6 @@ components:
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
           id: e721a338-44de-4de8-a562-43d2db5f4115
-          other_authors:
-          - FRA
           score: 50
           services:
           - hyperlink: true
@@ -3256,16 +3457,20 @@ components:
       example:
       - challenge:
           authors:
-          - email: movitz.sunar@ssm.example
+          - description: Movitz gör saker
             full_name: Movitz Sunar
             id: uuid todo
-            role: admin
-            school_id: 78433202
-          - email: movitz.sunar@ssm.example
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
+          - description: Movitz gör saker
             full_name: Movitz Sunar
             id: uuid todo
-            role: admin
-            school_id: 78433202
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
           category: Misc
           ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
@@ -3277,8 +3482,6 @@ components:
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
           id: e721a338-44de-4de8-a562-43d2db5f4115
-          other_authors:
-          - FRA
           score: 50
           services:
           - hyperlink: true
@@ -3305,16 +3508,20 @@ components:
         start_date: 1690874841
       - challenge:
           authors:
-          - email: movitz.sunar@ssm.example
+          - description: Movitz gör saker
             full_name: Movitz Sunar
             id: uuid todo
-            role: admin
-            school_id: 78433202
-          - email: movitz.sunar@ssm.example
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
+          - description: Movitz gör saker
             full_name: Movitz Sunar
             id: uuid todo
-            role: admin
-            school_id: 78433202
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
           category: Misc
           ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
           description: A heap overflow challenge
@@ -3326,57 +3533,6 @@ components:
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
           id: e721a338-44de-4de8-a562-43d2db5f4115
-          other_authors:
-          - FRA
-          score: 50
-          services:
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
-          slug: pwnme
-          solved: true
-          solvers:
-          - full_name: Movitz Sunar
-            id: uuid todo
-            solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: uuid todo
-            solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: uuid todo
-            solved_at: 16123128
-          solves: 3
-          title: pwnme
-        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-        display_month: Januari/Februari
-        end_date: 1690884841
-        start_date: 1690874841
-      - challenge:
-          authors:
-          - email: movitz.sunar@ssm.example
-            full_name: Movitz Sunar
-            id: uuid todo
-            role: admin
-            school_id: 78433202
-          - email: movitz.sunar@ssm.example
-            full_name: Movitz Sunar
-            id: uuid todo
-            role: admin
-            school_id: 78433202
-          category: Misc
-          ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-          description: A heap overflow challenge
-          files:
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          id: e721a338-44de-4de8-a562-43d2db5f4115
-          other_authors:
-          - FRA
           score: 50
           services:
           - hyperlink: true
@@ -3421,16 +3577,8 @@ components:
             school_name: Stockholm Science and Innovation School
             score: 1337
             user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
-          - name: Movitz Sunar
-            school_name: Stockholm Science and Innovation School
-            score: 1337
-            user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
       example:
         scores:
-        - name: Movitz Sunar
-          school_name: Stockholm Science and Innovation School
-          score: 1337
-          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
         - name: Movitz Sunar
           school_name: Stockholm Science and Innovation School
           score: 1337
@@ -3456,6 +3604,40 @@ components:
         flag: SSM{flag}
       required:
       - flag
+    UpdateAuthorRequestBody:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Movitz gör saker
+        full_name:
+          type: string
+          example: Movitz Sunar
+        image_url:
+          type: string
+          example: movitz
+        publish:
+          type: boolean
+          example: true
+        slug:
+          type: string
+          example: movitz
+        sponsor:
+          type: boolean
+          example: true
+      example:
+        description: Movitz gör saker
+        full_name: Movitz Sunar
+        image_url: movitz
+        publish: true
+        slug: movitz
+        sponsor: true
+      required:
+      - sponsor
+      - full_name
+      - description
+      - slug
+      - publish
     UserScoreboardScore:
       type: object
       properties:

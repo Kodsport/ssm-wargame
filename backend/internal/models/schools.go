@@ -28,6 +28,7 @@ type School struct {
 	ID                   int          `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Name                 string       `boil:"name" json:"name" toml:"name" yaml:"name"`
 	GeographicalAreaCode string       `boil:"geographical_area_code" json:"geographical_area_code" toml:"geographical_area_code" yaml:"geographical_area_code"`
+	MunicipalityName     string       `boil:"municipality_name" json:"municipality_name" toml:"municipality_name" yaml:"municipality_name"`
 	RawSkolverketData    types.JSON   `boil:"raw_skolverket_data" json:"raw_skolverket_data" toml:"raw_skolverket_data" yaml:"raw_skolverket_data"`
 	IsHighSchool         bool         `boil:"is_high_school" json:"is_high_school" toml:"is_high_school" yaml:"is_high_school"`
 	IsElementarySchool   bool         `boil:"is_elementary_school" json:"is_elementary_school" toml:"is_elementary_school" yaml:"is_elementary_school"`
@@ -36,7 +37,6 @@ type School struct {
 	Status               string       `boil:"status" json:"status" toml:"status" yaml:"status"`
 	CreatedAt            time.Time    `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt            null.Time    `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
-	MunicipalityName     string       `boil:"municipality_name" json:"municipality_name" toml:"municipality_name" yaml:"municipality_name"`
 
 	R *schoolR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L schoolL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -46,6 +46,7 @@ var SchoolColumns = struct {
 	ID                   string
 	Name                 string
 	GeographicalAreaCode string
+	MunicipalityName     string
 	RawSkolverketData    string
 	IsHighSchool         string
 	IsElementarySchool   string
@@ -54,11 +55,11 @@ var SchoolColumns = struct {
 	Status               string
 	CreatedAt            string
 	UpdatedAt            string
-	MunicipalityName     string
 }{
 	ID:                   "id",
 	Name:                 "name",
 	GeographicalAreaCode: "geographical_area_code",
+	MunicipalityName:     "municipality_name",
 	RawSkolverketData:    "raw_skolverket_data",
 	IsHighSchool:         "is_high_school",
 	IsElementarySchool:   "is_elementary_school",
@@ -67,13 +68,13 @@ var SchoolColumns = struct {
 	Status:               "status",
 	CreatedAt:            "created_at",
 	UpdatedAt:            "updated_at",
-	MunicipalityName:     "municipality_name",
 }
 
 var SchoolTableColumns = struct {
 	ID                   string
 	Name                 string
 	GeographicalAreaCode string
+	MunicipalityName     string
 	RawSkolverketData    string
 	IsHighSchool         string
 	IsElementarySchool   string
@@ -82,11 +83,11 @@ var SchoolTableColumns = struct {
 	Status               string
 	CreatedAt            string
 	UpdatedAt            string
-	MunicipalityName     string
 }{
 	ID:                   "schools.id",
 	Name:                 "schools.name",
 	GeographicalAreaCode: "schools.geographical_area_code",
+	MunicipalityName:     "schools.municipality_name",
 	RawSkolverketData:    "schools.raw_skolverket_data",
 	IsHighSchool:         "schools.is_high_school",
 	IsElementarySchool:   "schools.is_elementary_school",
@@ -95,7 +96,6 @@ var SchoolTableColumns = struct {
 	Status:               "schools.status",
 	CreatedAt:            "schools.created_at",
 	UpdatedAt:            "schools.updated_at",
-	MunicipalityName:     "schools.municipality_name",
 }
 
 // Generated where
@@ -163,6 +163,7 @@ var SchoolWhere = struct {
 	ID                   whereHelperint
 	Name                 whereHelperstring
 	GeographicalAreaCode whereHelperstring
+	MunicipalityName     whereHelperstring
 	RawSkolverketData    whereHelpertypes_JSON
 	IsHighSchool         whereHelperbool
 	IsElementarySchool   whereHelperbool
@@ -171,11 +172,11 @@ var SchoolWhere = struct {
 	Status               whereHelperstring
 	CreatedAt            whereHelpertime_Time
 	UpdatedAt            whereHelpernull_Time
-	MunicipalityName     whereHelperstring
 }{
 	ID:                   whereHelperint{field: "\"schools\".\"id\""},
 	Name:                 whereHelperstring{field: "\"schools\".\"name\""},
 	GeographicalAreaCode: whereHelperstring{field: "\"schools\".\"geographical_area_code\""},
+	MunicipalityName:     whereHelperstring{field: "\"schools\".\"municipality_name\""},
 	RawSkolverketData:    whereHelpertypes_JSON{field: "\"schools\".\"raw_skolverket_data\""},
 	IsHighSchool:         whereHelperbool{field: "\"schools\".\"is_high_school\""},
 	IsElementarySchool:   whereHelperbool{field: "\"schools\".\"is_elementary_school\""},
@@ -184,7 +185,6 @@ var SchoolWhere = struct {
 	Status:               whereHelperstring{field: "\"schools\".\"status\""},
 	CreatedAt:            whereHelpertime_Time{field: "\"schools\".\"created_at\""},
 	UpdatedAt:            whereHelpernull_Time{field: "\"schools\".\"updated_at\""},
-	MunicipalityName:     whereHelperstring{field: "\"schools\".\"municipality_name\""},
 }
 
 // SchoolRels is where relationship names are stored.
@@ -215,9 +215,9 @@ func (r *schoolR) GetUsers() UserSlice {
 type schoolL struct{}
 
 var (
-	schoolAllColumns            = []string{"id", "name", "geographical_area_code", "raw_skolverket_data", "is_high_school", "is_elementary_school", "latitude", "longitude", "status", "created_at", "updated_at", "municipality_name"}
-	schoolColumnsWithoutDefault = []string{"id", "name", "geographical_area_code", "raw_skolverket_data", "is_high_school", "is_elementary_school", "status"}
-	schoolColumnsWithDefault    = []string{"latitude", "longitude", "created_at", "updated_at", "municipality_name"}
+	schoolAllColumns            = []string{"id", "name", "geographical_area_code", "municipality_name", "raw_skolverket_data", "is_high_school", "is_elementary_school", "latitude", "longitude", "status", "created_at", "updated_at"}
+	schoolColumnsWithoutDefault = []string{"id", "name", "geographical_area_code", "municipality_name", "raw_skolverket_data", "is_high_school", "is_elementary_school", "status"}
+	schoolColumnsWithDefault    = []string{"latitude", "longitude", "created_at", "updated_at"}
 	schoolPrimaryKeyColumns     = []string{"id"}
 	schoolGeneratedColumns      = []string{}
 )

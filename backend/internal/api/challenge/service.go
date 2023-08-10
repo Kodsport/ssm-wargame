@@ -79,14 +79,22 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.Where("publish_at IS NULL OR publish_at < NOW()"),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
 		qm.Load(models.ChallengeRels.ChallengeServices),
-		qm.Load(models.ChallengeRels.Users),
-		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User), qm.Limit(3), qm.OrderBy(models.UserSolfColumns.CreatedAt)),
+		qm.Load(models.ChallengeRels.Authors),
+		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User), qm.Limit(5), qm.OrderBy(models.UserSolfColumns.CreatedAt)),
 	)
 
 	if auth.IsAuthed(ctx) {
 		qm.Select(
 			"EXISTS(SELECT 1 FROM user_solves us2 WHERE us2.challenge_id = c.id AND us2.user_id = '" + auth.GetUser(ctx).ID + "') AS solved",
 		).Apply(q)
+	}
+
+	if req.Slug != nil {
+		qm.Where("slug = ?", req.Slug).Apply(q)
+	}
+
+	if req.AuthorSlug != nil {
+		// qm.Where("author_id = ?", req.AuthorSlug).Apply(q)
 	}
 
 	err := q.Bind(ctx, s.db, &challs)
@@ -99,16 +107,15 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 	for i, chall := range challs {
 		res[i] = &spec.SsmChallenge{
-			ID:           chall.ID,
-			Slug:         chall.Slug,
-			Title:        chall.Title,
-			Description:  chall.Description,
-			Score:        chall.Score,
-			Solves:       chall.NumSolves,
-			Solved:       chall.Solved,
-			Category:     chall.Category,
-			CtfEventID:   chall.CTFEventID.Ptr(),
-			OtherAuthors: chall.OtherAuthors,
+			ID:          chall.ID,
+			Slug:        chall.Slug,
+			Title:       chall.Title,
+			Description: chall.Description,
+			Score:       chall.Score,
+			Solves:      chall.NumSolves,
+			Solved:      chall.Solved,
+			Category:    chall.Category,
+			CtfEventID:  chall.CTFEventID.Ptr(),
 		}
 
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))
@@ -119,11 +126,16 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 		}
 
-		res[i].Authors = make([]*spec.SsmUser, len(chall.R.Users))
-		for i2, v := range chall.R.Users {
-			res[i].Authors[i2] = &spec.SsmUser{
-				ID:       v.ID,
-				FullName: v.FullName,
+		res[i].Authors = make([]*spec.SsmAuthor, len(chall.R.Authors))
+		for i2, v := range chall.R.Authors {
+			res[i].Authors[i2] = &spec.SsmAuthor{
+				ID:          v.ID,
+				FullName:    v.FullName,
+				Description: v.Description,
+				Sponsor:     v.Sponsor,
+				Slug:        v.Slug,
+				ImageURL:    v.ImageURL.Ptr(),
+				Publish:     v.Publish,
 			}
 		}
 
@@ -142,6 +154,30 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				UserDisplay: v.UserDisplay,
 				Hyperlink:   v.Hyperlink,
 			}
+		}
+	}
+
+	return res, nil
+}
+
+func (s *service) ListAuthors(ctx context.Context, req *spec.ListAuthorsPayload) (spec.SsmAuthorCollection, error) {
+	authors, err := models.Authors(
+		models.AuthorWhere.Publish.EQ(true),
+	).All(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make(spec.SsmAuthorCollection, len(authors))
+	for i, v := range authors {
+		res[i] = &spec.SsmAuthor{
+			ID:          v.ID,
+			FullName:    v.FullName,
+			Description: v.Description,
+			Sponsor:     v.Sponsor,
+			Slug:        v.Slug,
+			Publish:     v.Publish,
+			ImageURL:    v.ImageURL.Ptr(),
 		}
 	}
 

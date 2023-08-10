@@ -57,6 +57,11 @@
                   Events
                 </nuxt-link>
               </li>
+              <li class="nav-item">
+                <nuxt-link active-class="active" class="nav-link" to="/admin/authors">
+                  Authors
+                </nuxt-link>
+              </li>
             </template>
             <li class="nav-item">
               <nuxt-link v-if="!!auth.user.id" active-class="active" class="nav-link btn border border-primary"

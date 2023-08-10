@@ -994,6 +994,202 @@ func EncodeListUsersError(encoder func(context.Context, http.ResponseWriter) goa
 	}
 }
 
+// EncodeListAuthorsResponse returns an encoder for responses returned by the
+// admin ListAuthors endpoint.
+func EncodeListAuthorsResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.([]*admin.SsmAuthor)
+		enc := encoder(ctx, w)
+		body := NewListAuthorsResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListAuthorsRequest returns a decoder for requests sent to the admin
+// ListAuthors endpoint.
+func DecodeListAuthorsRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token string
+			err   error
+		)
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewListAuthorsPayload(token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeListAuthorsError returns an encoder for errors returned by the
+// ListAuthors admin endpoint.
+func EncodeListAuthorsError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListAuthorsUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListAuthorsNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListAuthorsBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeUpdateAuthorResponse returns an encoder for responses returned by the
+// admin UpdateAuthor endpoint.
+func EncodeUpdateAuthorResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusNoContent)
+		return nil
+	}
+}
+
+// DecodeUpdateAuthorRequest returns a decoder for requests sent to the admin
+// UpdateAuthor endpoint.
+func DecodeUpdateAuthorRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body UpdateAuthorRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateUpdateAuthorRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			id    string
+			token string
+
+			params = mux.Vars(r)
+		)
+		id = params["id"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewUpdateAuthorPayload(&body, id, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeUpdateAuthorError returns an encoder for errors returned by the
+// UpdateAuthor admin endpoint.
+func EncodeUpdateAuthorError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateAuthorUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateAuthorNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateAuthorBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeAddFlagResponse returns an encoder for responses returned by the admin
 // AddFlag endpoint.
 func EncodeAddFlagResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -1801,12 +1997,6 @@ func marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(v *adminv
 			res.Files[i] = marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse(val)
 		}
 	}
-	if v.OtherAuthors != nil {
-		res.OtherAuthors = make([]string, len(v.OtherAuthors))
-		for i, val := range v.OtherAuthors {
-			res.OtherAuthors[i] = val
-		}
-	}
 	if v.Flags != nil {
 		res.Flags = make([]*AdminChallengeFlagResponse, len(v.Flags))
 		for i, val := range v.Flags {
@@ -1915,6 +2105,22 @@ func marshalAdminSsmUserToSsmUserResponse(v *admin.SsmUser) *SsmUserResponse {
 		FullName: v.FullName,
 		Role:     v.Role,
 		SchoolID: v.SchoolID,
+	}
+
+	return res
+}
+
+// marshalAdminSsmAuthorToSsmAuthorResponse builds a value of type
+// *SsmAuthorResponse from a value of type *admin.SsmAuthor.
+func marshalAdminSsmAuthorToSsmAuthorResponse(v *admin.SsmAuthor) *SsmAuthorResponse {
+	res := &SsmAuthorResponse{
+		ID:          v.ID,
+		FullName:    v.FullName,
+		Description: v.Description,
+		Sponsor:     v.Sponsor,
+		Slug:        v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     v.Publish,
 	}
 
 	return res

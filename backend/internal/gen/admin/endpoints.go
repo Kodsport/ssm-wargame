@@ -26,6 +26,8 @@ type Endpoints struct {
 	DeleteFile                goa.Endpoint
 	CreateMonthlyChallenge    goa.Endpoint
 	ListUsers                 goa.Endpoint
+	ListAuthors               goa.Endpoint
+	UpdateAuthor              goa.Endpoint
 	AddFlag                   goa.Endpoint
 	DeleteFlag                goa.Endpoint
 	ListCategories            goa.Endpoint
@@ -51,6 +53,8 @@ func NewEndpoints(s Service) *Endpoints {
 		DeleteFile:                NewDeleteFileEndpoint(s, a.JWTAuth),
 		CreateMonthlyChallenge:    NewCreateMonthlyChallengeEndpoint(s, a.JWTAuth),
 		ListUsers:                 NewListUsersEndpoint(s, a.JWTAuth),
+		ListAuthors:               NewListAuthorsEndpoint(s, a.JWTAuth),
+		UpdateAuthor:              NewUpdateAuthorEndpoint(s, a.JWTAuth),
 		AddFlag:                   NewAddFlagEndpoint(s, a.JWTAuth),
 		DeleteFlag:                NewDeleteFlagEndpoint(s, a.JWTAuth),
 		ListCategories:            NewListCategoriesEndpoint(s, a.JWTAuth),
@@ -74,6 +78,8 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.DeleteFile = m(e.DeleteFile)
 	e.CreateMonthlyChallenge = m(e.CreateMonthlyChallenge)
 	e.ListUsers = m(e.ListUsers)
+	e.ListAuthors = m(e.ListAuthors)
+	e.UpdateAuthor = m(e.UpdateAuthor)
 	e.AddFlag = m(e.AddFlag)
 	e.DeleteFlag = m(e.DeleteFlag)
 	e.ListCategories = m(e.ListCategories)
@@ -276,6 +282,44 @@ func NewListUsersEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoin
 			return nil, err
 		}
 		return s.ListUsers(ctx, p)
+	}
+}
+
+// NewListAuthorsEndpoint returns an endpoint function that calls the method
+// "ListAuthors" of service "admin".
+func NewListAuthorsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListAuthorsPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.ListAuthors(ctx, p)
+	}
+}
+
+// NewUpdateAuthorEndpoint returns an endpoint function that calls the method
+// "UpdateAuthor" of service "admin".
+func NewUpdateAuthorEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*UpdateAuthorPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.UpdateAuthor(ctx, p)
 	}
 }
 

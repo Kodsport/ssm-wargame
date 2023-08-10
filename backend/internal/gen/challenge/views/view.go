@@ -56,6 +56,15 @@ type SsmUserScoreboard struct {
 	View string
 }
 
+// SsmAuthorCollection is the viewed result type that is projected based on a
+// view.
+type SsmAuthorCollection struct {
+	// Type to project
+	Projected SsmAuthorCollectionView
+	// View to render
+	View string
+}
+
 // SsmChallengeCollectionView is a type that runs validations on a projected
 // type.
 type SsmChallengeCollectionView []*SsmChallengeView
@@ -76,12 +85,11 @@ type SsmChallengeView struct {
 	// The numer of people who solved the challenge
 	Solves *int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID   *string
-	OtherAuthors []string
+	CtfEventID *string
 	// whether the user has solved the challenge or not
 	Solved   *bool
 	Category *string
-	Authors  []*SsmUserView
+	Authors  []*SsmAuthorView
 	Solvers  []*SsmSolverView
 }
 
@@ -97,13 +105,15 @@ type ChallengeFilesView struct {
 	URL      *string
 }
 
-// SsmUserView is a type that runs validations on a projected type.
-type SsmUserView struct {
-	ID       *string
-	Email    *string
-	FullName *string
-	Role     *string
-	SchoolID *int
+// SsmAuthorView is a type that runs validations on a projected type.
+type SsmAuthorView struct {
+	ID          *string
+	FullName    *string
+	Description *string
+	Sponsor     *bool
+	Slug        *string
+	ImageURL    *string
+	Publish     *bool
 }
 
 // SsmSolverView is a type that runs validations on a projected type.
@@ -155,6 +165,9 @@ type UserScoreboardScoreView struct {
 	Score      *int
 }
 
+// SsmAuthorCollectionView is a type that runs validations on a projected type.
+type SsmAuthorCollectionView []*SsmAuthorView
+
 var (
 	// SsmChallengeCollectionMap is a map indexing the attribute names of
 	// SsmChallengeCollection by view name.
@@ -169,7 +182,6 @@ var (
 			"files",
 			"solves",
 			"ctf_event_id",
-			"other_authors",
 			"solved",
 			"category",
 			"authors",
@@ -212,6 +224,19 @@ var (
 			"scores",
 		},
 	}
+	// SsmAuthorCollectionMap is a map indexing the attribute names of
+	// SsmAuthorCollection by view name.
+	SsmAuthorCollectionMap = map[string][]string{
+		"default": {
+			"id",
+			"full_name",
+			"description",
+			"sponsor",
+			"slug",
+			"image_url",
+			"publish",
+		},
+	}
 	// SsmChallengeMap is a map indexing the attribute names of SsmChallenge by
 	// view name.
 	SsmChallengeMap = map[string][]string{
@@ -225,21 +250,22 @@ var (
 			"files",
 			"solves",
 			"ctf_event_id",
-			"other_authors",
 			"solved",
 			"category",
 			"authors",
 			"solvers",
 		},
 	}
-	// SsmUserMap is a map indexing the attribute names of SsmUser by view name.
-	SsmUserMap = map[string][]string{
+	// SsmAuthorMap is a map indexing the attribute names of SsmAuthor by view name.
+	SsmAuthorMap = map[string][]string{
 		"default": {
 			"id",
-			"email",
 			"full_name",
-			"role",
-			"school_id",
+			"description",
+			"sponsor",
+			"slug",
+			"image_url",
+			"publish",
 		},
 	}
 	// SsmSolverMap is a map indexing the attribute names of SsmSolver by view name.
@@ -312,6 +338,18 @@ func ValidateSsmUserScoreboard(result *SsmUserScoreboard) (err error) {
 	return
 }
 
+// ValidateSsmAuthorCollection runs the validations defined on the viewed
+// result type SsmAuthorCollection.
+func ValidateSsmAuthorCollection(result SsmAuthorCollection) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmAuthorCollectionView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
 // ValidateSsmChallengeCollectionView runs the validations defined on
 // SsmChallengeCollectionView using the "default" view.
 func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err error) {
@@ -372,7 +410,7 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	}
 	for _, e := range result.Authors {
 		if e != nil {
-			if err2 := ValidateSsmUserView(e); err2 != nil {
+			if err2 := ValidateSsmAuthorView(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
@@ -411,20 +449,26 @@ func ValidateChallengeFilesView(result *ChallengeFilesView) (err error) {
 	return
 }
 
-// ValidateSsmUserView runs the validations defined on SsmUserView using the
-// "default" view.
-func ValidateSsmUserView(result *SsmUserView) (err error) {
+// ValidateSsmAuthorView runs the validations defined on SsmAuthorView using
+// the "default" view.
+func ValidateSsmAuthorView(result *SsmAuthorView) (err error) {
 	if result.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
-	if result.Email == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("email", "result"))
+	if result.Sponsor == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("sponsor", "result"))
 	}
 	if result.FullName == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "result"))
 	}
-	if result.Role == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("role", "result"))
+	if result.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "result"))
+	}
+	if result.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "result"))
+	}
+	if result.Publish == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "result"))
 	}
 	return
 }
@@ -539,6 +583,17 @@ func ValidateUserScoreboardScoreView(result *UserScoreboardScoreView) (err error
 	}
 	if result.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "result"))
+	}
+	return
+}
+
+// ValidateSsmAuthorCollectionView runs the validations defined on
+// SsmAuthorCollectionView using the "default" view.
+func ValidateSsmAuthorCollectionView(result SsmAuthorCollectionView) (err error) {
+	for _, item := range result {
+		if err2 := ValidateSsmAuthorView(item); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
 	}
 	return
 }

@@ -36,13 +36,23 @@ func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWri
 func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			token *string
+			slug       *string
+			authorSlug *string
+			token      *string
 		)
+		slugRaw := r.URL.Query().Get("slug")
+		if slugRaw != "" {
+			slug = &slugRaw
+		}
+		authorSlugRaw := r.URL.Query().Get("author_slug")
+		if authorSlugRaw != "" {
+			authorSlug = &authorSlugRaw
+		}
 		tokenRaw := r.Header.Get("Authorization")
 		if tokenRaw != "" {
 			token = &tokenRaw
 		}
-		payload := NewListChallengesPayload(token)
+		payload := NewListChallengesPayload(slug, authorSlug, token)
 		if payload.Token != nil {
 			if strings.Contains(*payload.Token, " ") {
 				// Remove authorization scheme prefix (e.g. "Bearer")
@@ -359,6 +369,42 @@ func DecodeUserScoreboardRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 	}
 }
 
+// EncodeListAuthorsResponse returns an encoder for responses returned by the
+// challenge ListAuthors endpoint.
+func EncodeListAuthorsResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(challengeviews.SsmAuthorCollection)
+		enc := encoder(ctx, w)
+		body := NewSsmAuthorResponseCollection(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListAuthorsRequest returns a decoder for requests sent to the
+// challenge ListAuthors endpoint.
+func DecodeListAuthorsRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewListAuthorsPayload(token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
 // marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse builds a value
 // of type *SsmChallengeResponse from a value of type
 // *challengeviews.SsmChallengeView.
@@ -386,16 +432,10 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengevie
 			res.Files[i] = marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(val)
 		}
 	}
-	if v.OtherAuthors != nil {
-		res.OtherAuthors = make([]string, len(v.OtherAuthors))
-		for i, val := range v.OtherAuthors {
-			res.OtherAuthors[i] = val
-		}
-	}
 	if v.Authors != nil {
-		res.Authors = make([]*SsmUserResponse, len(v.Authors))
+		res.Authors = make([]*SsmAuthorResponse, len(v.Authors))
 		for i, val := range v.Authors {
-			res.Authors[i] = marshalChallengeviewsSsmUserViewToSsmUserResponse(val)
+			res.Authors[i] = marshalChallengeviewsSsmAuthorViewToSsmAuthorResponse(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -438,18 +478,20 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 	return res
 }
 
-// marshalChallengeviewsSsmUserViewToSsmUserResponse builds a value of type
-// *SsmUserResponse from a value of type *challengeviews.SsmUserView.
-func marshalChallengeviewsSsmUserViewToSsmUserResponse(v *challengeviews.SsmUserView) *SsmUserResponse {
+// marshalChallengeviewsSsmAuthorViewToSsmAuthorResponse builds a value of type
+// *SsmAuthorResponse from a value of type *challengeviews.SsmAuthorView.
+func marshalChallengeviewsSsmAuthorViewToSsmAuthorResponse(v *challengeviews.SsmAuthorView) *SsmAuthorResponse {
 	if v == nil {
 		return nil
 	}
-	res := &SsmUserResponse{
-		ID:       *v.ID,
-		Email:    *v.Email,
-		FullName: *v.FullName,
-		Role:     *v.Role,
-		SchoolID: v.SchoolID,
+	res := &SsmAuthorResponse{
+		ID:          *v.ID,
+		FullName:    *v.FullName,
+		Description: *v.Description,
+		Sponsor:     *v.Sponsor,
+		Slug:        *v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     *v.Publish,
 	}
 
 	return res
@@ -508,16 +550,10 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseBody(v *challeng
 			res.Files[i] = marshalChallengeviewsChallengeFilesViewToChallengeFilesResponseBody(val)
 		}
 	}
-	if v.OtherAuthors != nil {
-		res.OtherAuthors = make([]string, len(v.OtherAuthors))
-		for i, val := range v.OtherAuthors {
-			res.OtherAuthors[i] = val
-		}
-	}
 	if v.Authors != nil {
-		res.Authors = make([]*SsmUserResponseBody, len(v.Authors))
+		res.Authors = make([]*SsmAuthorResponseBody, len(v.Authors))
 		for i, val := range v.Authors {
-			res.Authors[i] = marshalChallengeviewsSsmUserViewToSsmUserResponseBody(val)
+			res.Authors[i] = marshalChallengeviewsSsmAuthorViewToSsmAuthorResponseBody(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -560,18 +596,21 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponseBody(v *chal
 	return res
 }
 
-// marshalChallengeviewsSsmUserViewToSsmUserResponseBody builds a value of type
-// *SsmUserResponseBody from a value of type *challengeviews.SsmUserView.
-func marshalChallengeviewsSsmUserViewToSsmUserResponseBody(v *challengeviews.SsmUserView) *SsmUserResponseBody {
+// marshalChallengeviewsSsmAuthorViewToSsmAuthorResponseBody builds a value of
+// type *SsmAuthorResponseBody from a value of type
+// *challengeviews.SsmAuthorView.
+func marshalChallengeviewsSsmAuthorViewToSsmAuthorResponseBody(v *challengeviews.SsmAuthorView) *SsmAuthorResponseBody {
 	if v == nil {
 		return nil
 	}
-	res := &SsmUserResponseBody{
-		ID:       *v.ID,
-		Email:    *v.Email,
-		FullName: *v.FullName,
-		Role:     *v.Role,
-		SchoolID: v.SchoolID,
+	res := &SsmAuthorResponseBody{
+		ID:          *v.ID,
+		FullName:    *v.FullName,
+		Description: *v.Description,
+		Sponsor:     *v.Sponsor,
+		Slug:        *v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     *v.Publish,
 	}
 
 	return res

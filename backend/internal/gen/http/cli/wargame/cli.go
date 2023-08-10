@@ -26,8 +26,8 @@ import (
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
-challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard)
-admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token)
+challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors)
+admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token)
 user (get-self|join-school|leave-school|search-schools)
 `
 }
@@ -35,7 +35,7 @@ user (get-self|join-school|leave-school|search-schools)
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
-		os.Args[0] + ` challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
+		os.Args[0] + ` challenge list-challenges --slug "brumm" --author-slug "movitz_sunar" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		""
@@ -60,8 +60,10 @@ func ParseEndpoint(
 
 		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
 
-		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
-		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
+		challengeListChallengesFlags          = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+		challengeListChallengesSlugFlag       = challengeListChallengesFlags.String("slug", "", "")
+		challengeListChallengesAuthorSlugFlag = challengeListChallengesFlags.String("author-slug", "", "")
+		challengeListChallengesTokenFlag      = challengeListChallengesFlags.String("token", "", "")
 
 		challengeListEventsFlags     = flag.NewFlagSet("list-events", flag.ExitOnError)
 		challengeListEventsTokenFlag = challengeListEventsFlags.String("token", "", "")
@@ -82,6 +84,9 @@ func ParseEndpoint(
 
 		challengeUserScoreboardFlags     = flag.NewFlagSet("user-scoreboard", flag.ExitOnError)
 		challengeUserScoreboardTokenFlag = challengeUserScoreboardFlags.String("token", "", "")
+
+		challengeListAuthorsFlags     = flag.NewFlagSet("list-authors", flag.ExitOnError)
+		challengeListAuthorsTokenFlag = challengeListAuthorsFlags.String("token", "", "")
 
 		adminFlags = flag.NewFlagSet("admin", flag.ContinueOnError)
 
@@ -123,6 +128,14 @@ func ParseEndpoint(
 
 		adminListUsersFlags     = flag.NewFlagSet("list-users", flag.ExitOnError)
 		adminListUsersTokenFlag = adminListUsersFlags.String("token", "REQUIRED", "")
+
+		adminListAuthorsFlags     = flag.NewFlagSet("list-authors", flag.ExitOnError)
+		adminListAuthorsTokenFlag = adminListAuthorsFlags.String("token", "REQUIRED", "")
+
+		adminUpdateAuthorFlags     = flag.NewFlagSet("update-author", flag.ExitOnError)
+		adminUpdateAuthorBodyFlag  = adminUpdateAuthorFlags.String("body", "REQUIRED", "")
+		adminUpdateAuthorIDFlag    = adminUpdateAuthorFlags.String("id", "REQUIRED", "")
+		adminUpdateAuthorTokenFlag = adminUpdateAuthorFlags.String("token", "REQUIRED", "")
 
 		adminAddFlagFlags           = flag.NewFlagSet("add-flag", flag.ExitOnError)
 		adminAddFlagBodyFlag        = adminAddFlagFlags.String("body", "REQUIRED", "")
@@ -184,6 +197,7 @@ func ParseEndpoint(
 	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
 	challengeSchoolScoreboardFlags.Usage = challengeSchoolScoreboardUsage
 	challengeUserScoreboardFlags.Usage = challengeUserScoreboardUsage
+	challengeListAuthorsFlags.Usage = challengeListAuthorsUsage
 
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
@@ -196,6 +210,8 @@ func ParseEndpoint(
 	adminDeleteFileFlags.Usage = adminDeleteFileUsage
 	adminCreateMonthlyChallengeFlags.Usage = adminCreateMonthlyChallengeUsage
 	adminListUsersFlags.Usage = adminListUsersUsage
+	adminListAuthorsFlags.Usage = adminListAuthorsUsage
+	adminUpdateAuthorFlags.Usage = adminUpdateAuthorUsage
 	adminAddFlagFlags.Usage = adminAddFlagUsage
 	adminDeleteFlagFlags.Usage = adminDeleteFlagUsage
 	adminListCategoriesFlags.Usage = adminListCategoriesUsage
@@ -282,6 +298,9 @@ func ParseEndpoint(
 			case "user-scoreboard":
 				epf = challengeUserScoreboardFlags
 
+			case "list-authors":
+				epf = challengeListAuthorsFlags
+
 			}
 
 		case "admin":
@@ -315,6 +334,12 @@ func ParseEndpoint(
 
 			case "list-users":
 				epf = adminListUsersFlags
+
+			case "list-authors":
+				epf = adminListAuthorsFlags
+
+			case "update-author":
+				epf = adminUpdateAuthorFlags
 
 			case "add-flag":
 				epf = adminAddFlagFlags
@@ -393,7 +418,7 @@ func ParseEndpoint(
 			switch epn {
 			case "list-challenges":
 				endpoint = c.ListChallenges()
-				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesTokenFlag)
+				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesSlugFlag, *challengeListChallengesAuthorSlugFlag, *challengeListChallengesTokenFlag)
 			case "list-events":
 				endpoint = c.ListEvents()
 				data, err = challengec.BuildListEventsPayload(*challengeListEventsTokenFlag)
@@ -412,6 +437,9 @@ func ParseEndpoint(
 			case "user-scoreboard":
 				endpoint = c.UserScoreboard()
 				data, err = challengec.BuildUserScoreboardPayload(*challengeUserScoreboardTokenFlag)
+			case "list-authors":
+				endpoint = c.ListAuthors()
+				data, err = challengec.BuildListAuthorsPayload(*challengeListAuthorsTokenFlag)
 			}
 		case "admin":
 			c := adminc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -446,6 +474,12 @@ func ParseEndpoint(
 			case "list-users":
 				endpoint = c.ListUsers()
 				data, err = adminc.BuildListUsersPayload(*adminListUsersTokenFlag)
+			case "list-authors":
+				endpoint = c.ListAuthors()
+				data, err = adminc.BuildListAuthorsPayload(*adminListAuthorsTokenFlag)
+			case "update-author":
+				endpoint = c.UpdateAuthor()
+				data, err = adminc.BuildUpdateAuthorPayload(*adminUpdateAuthorBodyFlag, *adminUpdateAuthorIDFlag, *adminUpdateAuthorTokenFlag)
 			case "add-flag":
 				endpoint = c.AddFlag()
 				data, err = adminc.BuildAddFlagPayload(*adminAddFlagBodyFlag, *adminAddFlagChallengeIDFlag, *adminAddFlagTokenFlag)
@@ -549,19 +583,22 @@ COMMAND:
     submit-flag: SubmitFlag implements SubmitFlag.
     school-scoreboard: SchoolScoreboard implements SchoolScoreboard.
     user-scoreboard: UserScoreboard implements UserScoreboard.
+    list-authors: ListAuthors implements ListAuthors.
 
 Additional help:
     %[1]s challenge COMMAND --help
 `, os.Args[0])
 }
 func challengeListChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -token STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -slug STRING -author-slug STRING -token STRING
 
 ListChallenges implements ListChallenges.
+    -slug STRING: 
+    -author-slug STRING: 
     -token STRING: 
 
 Example:
-    %[1]s challenge list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s challenge list-challenges --slug "brumm" --author-slug "movitz_sunar" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -635,6 +672,17 @@ Example:
 `, os.Args[0])
 }
 
+func challengeListAuthorsUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-authors -token STRING
+
+ListAuthors implements ListAuthors.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-authors --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
 // adminUsage displays the usage of the admin command and its subcommands.
 func adminUsage() {
 	fmt.Fprintf(os.Stderr, `Service is the admin service interface.
@@ -652,6 +700,8 @@ COMMAND:
     delete-file: DeleteFile implements DeleteFile.
     create-monthly-challenge: CreateMonthlyChallenge implements CreateMonthlyChallenge.
     list-users: ListUsers implements ListUsers.
+    list-authors: ListAuthors implements ListAuthors.
+    update-author: UpdateAuthor implements UpdateAuthor.
     add-flag: AddFlag implements AddFlag.
     delete-flag: DeleteFlag implements DeleteFlag.
     list-categories: ListCategories implements ListCategories.
@@ -703,9 +753,6 @@ Example:
       "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
-      "other_authors": [
-         "FRA"
-      ],
       "publish_at": 1638384718,
       "score": 50,
       "slug": "pwnme",
@@ -730,9 +777,6 @@ Example:
       "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
-      "other_authors": [
-         "FRA"
-      ],
       "publish_at": 1638384718,
       "score": 50,
       "slug": "pwnme",
@@ -821,6 +865,37 @@ Example:
 `, os.Args[0])
 }
 
+func adminListAuthorsUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin list-authors -token STRING
+
+ListAuthors implements ListAuthors.
+    -token STRING: 
+
+Example:
+    %[1]s admin list-authors --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminUpdateAuthorUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin update-author -body JSON -id STRING -token STRING
+
+UpdateAuthor implements UpdateAuthor.
+    -body JSON: 
+    -id STRING: 
+    -token STRING: 
+
+Example:
+    %[1]s admin update-author --body '{
+      "description": "Movitz gör saker",
+      "full_name": "Movitz Sunar",
+      "image_url": "movitz",
+      "publish": true,
+      "slug": "movitz",
+      "sponsor": true
+   }' --id "uuid todo" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
 func adminAddFlagUsage() {
 	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin add-flag -body JSON -challenge-id STRING -token STRING
 
@@ -894,15 +969,15 @@ Example:
          {
             "flag": "fl4g_l0l",
             "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
          }
       ],
       "order": 5,
       "score": 100,
       "services": [
-         {
-            "hyperlink": true,
-            "user_display": "nc 0.0.0.0 1234"
-         },
          {
             "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"

@@ -23,6 +23,7 @@ type Endpoints struct {
 	SubmitFlag                 goa.Endpoint
 	SchoolScoreboard           goa.Endpoint
 	UserScoreboard             goa.Endpoint
+	ListAuthors                goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "challenge" service with endpoints.
@@ -37,6 +38,7 @@ func NewEndpoints(s Service) *Endpoints {
 		SubmitFlag:                 NewSubmitFlagEndpoint(s, a.JWTAuth),
 		SchoolScoreboard:           NewSchoolScoreboardEndpoint(s, a.JWTAuth),
 		UserScoreboard:             NewUserScoreboardEndpoint(s, a.JWTAuth),
+		ListAuthors:                NewListAuthorsEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -49,6 +51,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.SubmitFlag = m(e.SubmitFlag)
 	e.SchoolScoreboard = m(e.SchoolScoreboard)
 	e.UserScoreboard = m(e.UserScoreboard)
+	e.ListAuthors = m(e.ListAuthors)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -229,6 +232,34 @@ func NewUserScoreboardEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 			return nil, err
 		}
 		vres := NewViewedSsmUserScoreboard(res, "default")
+		return vres, nil
+	}
+}
+
+// NewListAuthorsEndpoint returns an endpoint function that calls the method
+// "ListAuthors" of service "challenge".
+func NewListAuthorsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListAuthorsPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		res, err := s.ListAuthors(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedSsmAuthorCollection(res, "default")
 		return vres, nil
 	}
 }

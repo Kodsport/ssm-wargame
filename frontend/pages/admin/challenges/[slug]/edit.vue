@@ -38,21 +38,19 @@
                 <div class="form-group pt-2">
                     <label>Authors</label>
                     <ul>
-                        <li v-for="(author, i) in form.authors">{{ users.byId(author).full_name }} ({{
-                            users.byId(author).email }}) <span @click="form.authors = form.authors.splice(i, i)">[x]</span>
+                        <li v-for="(author, i) in challs.authors.filter(a => form.authors.indexOf(a.id) != -1)">
+                            {{ author.full_name
+                            }}
+                            <span @click="form.authors.splice(i, 1)">[x]</span>
                         </li>
                     </ul>
                     <select ref="authSelect" class="form-control" @change="pushAuthor">
                         <option value="" disabled selected>Choose Authors</option>
-                        <option v-for="user in users.users.filter(u => form.authors.indexOf(u.id) == -1)" :value="user.id">
-                            {{ user.email }}</option>
+                        <option v-for="author in challs.authors.filter(u => form.authors.indexOf(u.id) == -1)"
+                            :value="author.id">
+                            {{ author.full_name }}</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Other authors</label>
-                    <input type="text" class="form-control" v-model="form.otherAuthors">
-                </div>
-
                 <div class="form-group pt-2">
                     <button class="btn btn-primary" @click="updateChall">Update</button>
                 </div>
@@ -172,6 +170,7 @@ onMounted(async () => {
 
     challs.getCategories()
     users.getUsers()
+    challs.getAuthors()
     if (!chall.value) {
         await challs.getChallenges()
     }
@@ -184,7 +183,6 @@ onMounted(async () => {
         categoryId: chall.value.category_id,
         publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16), // hacky af,pls fix
         authors: chall.value.authors || [],
-        otherAuthors: chall.value.other_authors?.join(',')
 
     };
     publishImm.value = chall.value.publish_at == null
@@ -236,7 +234,6 @@ async function updateChall() {
             category_id: form.value.categoryId,
             publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,
             authors: form.value.authors,
-            other_authors: form.value.otherAuthors.split(',').map(e => e.trim()).filter(e => e != '')
         }
     });
 

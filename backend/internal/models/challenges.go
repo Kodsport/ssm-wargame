@@ -19,78 +19,72 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"github.com/volatiletech/sqlboiler/v4/queries/qmhelper"
-	"github.com/volatiletech/sqlboiler/v4/types"
 	"github.com/volatiletech/strmangle"
 )
 
 // Challenge is an object representing the database table.
 type Challenge struct {
-	ID           string            `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Slug         string            `boil:"slug" json:"slug" toml:"slug" yaml:"slug"`
-	Title        string            `boil:"title" json:"title" toml:"title" yaml:"title"`
-	Description  string            `boil:"description" json:"description" toml:"description" yaml:"description"`
-	Score        int               `boil:"score" json:"score" toml:"score" yaml:"score"`
-	PublishAt    null.Time         `boil:"publish_at" json:"publish_at,omitempty" toml:"publish_at" yaml:"publish_at,omitempty"`
-	CTFEventID   null.String       `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
-	CreatedAt    time.Time         `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt    null.Time         `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
-	CategoryID   string            `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
-	OtherAuthors types.StringArray `boil:"other_authors" json:"other_authors" toml:"other_authors" yaml:"other_authors"`
+	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Slug        string      `boil:"slug" json:"slug" toml:"slug" yaml:"slug"`
+	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
+	Description string      `boil:"description" json:"description" toml:"description" yaml:"description"`
+	Score       int         `boil:"score" json:"score" toml:"score" yaml:"score"`
+	PublishAt   null.Time   `boil:"publish_at" json:"publish_at,omitempty" toml:"publish_at" yaml:"publish_at,omitempty"`
+	CTFEventID  null.String `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
+	CategoryID  string      `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
+	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
 	R *challengeR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L challengeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var ChallengeColumns = struct {
-	ID           string
-	Slug         string
-	Title        string
-	Description  string
-	Score        string
-	PublishAt    string
-	CTFEventID   string
-	CreatedAt    string
-	UpdatedAt    string
-	CategoryID   string
-	OtherAuthors string
+	ID          string
+	Slug        string
+	Title       string
+	Description string
+	Score       string
+	PublishAt   string
+	CTFEventID  string
+	CategoryID  string
+	CreatedAt   string
+	UpdatedAt   string
 }{
-	ID:           "id",
-	Slug:         "slug",
-	Title:        "title",
-	Description:  "description",
-	Score:        "score",
-	PublishAt:    "publish_at",
-	CTFEventID:   "ctf_event_id",
-	CreatedAt:    "created_at",
-	UpdatedAt:    "updated_at",
-	CategoryID:   "category_id",
-	OtherAuthors: "other_authors",
+	ID:          "id",
+	Slug:        "slug",
+	Title:       "title",
+	Description: "description",
+	Score:       "score",
+	PublishAt:   "publish_at",
+	CTFEventID:  "ctf_event_id",
+	CategoryID:  "category_id",
+	CreatedAt:   "created_at",
+	UpdatedAt:   "updated_at",
 }
 
 var ChallengeTableColumns = struct {
-	ID           string
-	Slug         string
-	Title        string
-	Description  string
-	Score        string
-	PublishAt    string
-	CTFEventID   string
-	CreatedAt    string
-	UpdatedAt    string
-	CategoryID   string
-	OtherAuthors string
+	ID          string
+	Slug        string
+	Title       string
+	Description string
+	Score       string
+	PublishAt   string
+	CTFEventID  string
+	CategoryID  string
+	CreatedAt   string
+	UpdatedAt   string
 }{
-	ID:           "challenges.id",
-	Slug:         "challenges.slug",
-	Title:        "challenges.title",
-	Description:  "challenges.description",
-	Score:        "challenges.score",
-	PublishAt:    "challenges.publish_at",
-	CTFEventID:   "challenges.ctf_event_id",
-	CreatedAt:    "challenges.created_at",
-	UpdatedAt:    "challenges.updated_at",
-	CategoryID:   "challenges.category_id",
-	OtherAuthors: "challenges.other_authors",
+	ID:          "challenges.id",
+	Slug:        "challenges.slug",
+	Title:       "challenges.title",
+	Description: "challenges.description",
+	Score:       "challenges.score",
+	PublishAt:   "challenges.publish_at",
+	CTFEventID:  "challenges.ctf_event_id",
+	CategoryID:  "challenges.category_id",
+	CreatedAt:   "challenges.created_at",
+	UpdatedAt:   "challenges.updated_at",
 }
 
 // Generated where
@@ -118,51 +112,28 @@ func (w whereHelperint) NIN(slice []int) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
-type whereHelpertypes_StringArray struct{ field string }
-
-func (w whereHelpertypes_StringArray) EQ(x types.StringArray) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.EQ, x)
-}
-func (w whereHelpertypes_StringArray) NEQ(x types.StringArray) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.NEQ, x)
-}
-func (w whereHelpertypes_StringArray) LT(x types.StringArray) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpertypes_StringArray) LTE(x types.StringArray) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpertypes_StringArray) GT(x types.StringArray) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpertypes_StringArray) GTE(x types.StringArray) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
-
 var ChallengeWhere = struct {
-	ID           whereHelperstring
-	Slug         whereHelperstring
-	Title        whereHelperstring
-	Description  whereHelperstring
-	Score        whereHelperint
-	PublishAt    whereHelpernull_Time
-	CTFEventID   whereHelpernull_String
-	CreatedAt    whereHelpertime_Time
-	UpdatedAt    whereHelpernull_Time
-	CategoryID   whereHelperstring
-	OtherAuthors whereHelpertypes_StringArray
+	ID          whereHelperstring
+	Slug        whereHelperstring
+	Title       whereHelperstring
+	Description whereHelperstring
+	Score       whereHelperint
+	PublishAt   whereHelpernull_Time
+	CTFEventID  whereHelpernull_String
+	CategoryID  whereHelperstring
+	CreatedAt   whereHelpertime_Time
+	UpdatedAt   whereHelpernull_Time
 }{
-	ID:           whereHelperstring{field: "\"challenges\".\"id\""},
-	Slug:         whereHelperstring{field: "\"challenges\".\"slug\""},
-	Title:        whereHelperstring{field: "\"challenges\".\"title\""},
-	Description:  whereHelperstring{field: "\"challenges\".\"description\""},
-	Score:        whereHelperint{field: "\"challenges\".\"score\""},
-	PublishAt:    whereHelpernull_Time{field: "\"challenges\".\"publish_at\""},
-	CTFEventID:   whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
-	CreatedAt:    whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
-	UpdatedAt:    whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
-	CategoryID:   whereHelperstring{field: "\"challenges\".\"category_id\""},
-	OtherAuthors: whereHelpertypes_StringArray{field: "\"challenges\".\"other_authors\""},
+	ID:          whereHelperstring{field: "\"challenges\".\"id\""},
+	Slug:        whereHelperstring{field: "\"challenges\".\"slug\""},
+	Title:       whereHelperstring{field: "\"challenges\".\"title\""},
+	Description: whereHelperstring{field: "\"challenges\".\"description\""},
+	Score:       whereHelperint{field: "\"challenges\".\"score\""},
+	PublishAt:   whereHelpernull_Time{field: "\"challenges\".\"publish_at\""},
+	CTFEventID:  whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
+	CategoryID:  whereHelperstring{field: "\"challenges\".\"category_id\""},
+	CreatedAt:   whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
+	UpdatedAt:   whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
 }
 
 // ChallengeRels is where relationship names are stored.
@@ -170,7 +141,7 @@ var ChallengeRels = struct {
 	Category          string
 	CTFEvent          string
 	MonthlyChallenge  string
-	Users             string
+	Authors           string
 	ChallengeFiles    string
 	ChallengeServices string
 	Flags             string
@@ -180,7 +151,7 @@ var ChallengeRels = struct {
 	Category:          "Category",
 	CTFEvent:          "CTFEvent",
 	MonthlyChallenge:  "MonthlyChallenge",
-	Users:             "Users",
+	Authors:           "Authors",
 	ChallengeFiles:    "ChallengeFiles",
 	ChallengeServices: "ChallengeServices",
 	Flags:             "Flags",
@@ -193,7 +164,7 @@ type challengeR struct {
 	Category          *Category             `boil:"Category" json:"Category" toml:"Category" yaml:"Category"`
 	CTFEvent          *CTFEvent             `boil:"CTFEvent" json:"CTFEvent" toml:"CTFEvent" yaml:"CTFEvent"`
 	MonthlyChallenge  *MonthlyChallenge     `boil:"MonthlyChallenge" json:"MonthlyChallenge" toml:"MonthlyChallenge" yaml:"MonthlyChallenge"`
-	Users             UserSlice             `boil:"Users" json:"Users" toml:"Users" yaml:"Users"`
+	Authors           AuthorSlice           `boil:"Authors" json:"Authors" toml:"Authors" yaml:"Authors"`
 	ChallengeFiles    ChallengeFileSlice    `boil:"ChallengeFiles" json:"ChallengeFiles" toml:"ChallengeFiles" yaml:"ChallengeFiles"`
 	ChallengeServices ChallengeServiceSlice `boil:"ChallengeServices" json:"ChallengeServices" toml:"ChallengeServices" yaml:"ChallengeServices"`
 	Flags             FlagSlice             `boil:"Flags" json:"Flags" toml:"Flags" yaml:"Flags"`
@@ -227,11 +198,11 @@ func (r *challengeR) GetMonthlyChallenge() *MonthlyChallenge {
 	return r.MonthlyChallenge
 }
 
-func (r *challengeR) GetUsers() UserSlice {
+func (r *challengeR) GetAuthors() AuthorSlice {
 	if r == nil {
 		return nil
 	}
-	return r.Users
+	return r.Authors
 }
 
 func (r *challengeR) GetChallengeFiles() ChallengeFileSlice {
@@ -273,9 +244,9 @@ func (r *challengeR) GetUserSolves() UserSolfSlice {
 type challengeL struct{}
 
 var (
-	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "publish_at", "ctf_event_id", "created_at", "updated_at", "category_id", "other_authors"}
+	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "publish_at", "ctf_event_id", "category_id", "created_at", "updated_at"}
 	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "score", "category_id"}
-	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at", "other_authors"}
+	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at"}
 	challengePrimaryKeyColumns     = []string{"id"}
 	challengeGeneratedColumns      = []string{}
 )
@@ -591,19 +562,19 @@ func (o *Challenge) MonthlyChallenge(mods ...qm.QueryMod) monthlyChallengeQuery 
 	return MonthlyChallenges(queryMods...)
 }
 
-// Users retrieves all the user's Users with an executor.
-func (o *Challenge) Users(mods ...qm.QueryMod) userQuery {
+// Authors retrieves all the author's Authors with an executor.
+func (o *Challenge) Authors(mods ...qm.QueryMod) authorQuery {
 	var queryMods []qm.QueryMod
 	if len(mods) != 0 {
 		queryMods = append(queryMods, mods...)
 	}
 
 	queryMods = append(queryMods,
-		qm.InnerJoin("\"challenge_authors\" on \"users\".\"id\" = \"challenge_authors\".\"user_id\""),
+		qm.InnerJoin("\"challenge_authors\" on \"authors\".\"id\" = \"challenge_authors\".\"author_id\""),
 		qm.Where("\"challenge_authors\".\"challenge_id\"=?", o.ID),
 	)
 
-	return Users(queryMods...)
+	return Authors(queryMods...)
 }
 
 // ChallengeFiles retrieves all the challenge_file's ChallengeFiles with an executor.
@@ -1037,9 +1008,9 @@ func (challengeL) LoadMonthlyChallenge(ctx context.Context, e boil.ContextExecut
 	return nil
 }
 
-// LoadUsers allows an eager lookup of values, cached into the
+// LoadAuthors allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
+func (challengeL) LoadAuthors(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
 	var slice []*Challenge
 	var object *Challenge
 
@@ -1093,9 +1064,9 @@ func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singula
 	}
 
 	query := NewQuery(
-		qm.Select("\"users\".\"id\", \"users\".\"discord_id\", \"users\".\"email\", \"users\".\"role\", \"users\".\"school_id\", \"users\".\"created_at\", \"users\".\"updated_at\", \"users\".\"full_name\", \"a\".\"challenge_id\""),
-		qm.From("\"users\""),
-		qm.InnerJoin("\"challenge_authors\" as \"a\" on \"users\".\"id\" = \"a\".\"user_id\""),
+		qm.Select("\"authors\".\"id\", \"authors\".\"slug\", \"authors\".\"full_name\", \"authors\".\"sponsor\", \"authors\".\"description\", \"authors\".\"image_url\", \"authors\".\"publish\", \"authors\".\"created_at\", \"authors\".\"updated_at\", \"a\".\"challenge_id\""),
+		qm.From("\"authors\""),
+		qm.InnerJoin("\"challenge_authors\" as \"a\" on \"authors\".\"id\" = \"a\".\"author_id\""),
 		qm.WhereIn("\"a\".\"challenge_id\" in ?", args...),
 	)
 	if mods != nil {
@@ -1104,22 +1075,22 @@ func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singula
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load users")
+		return errors.Wrap(err, "failed to eager load authors")
 	}
 
-	var resultSlice []*User
+	var resultSlice []*Author
 
 	var localJoinCols []string
 	for results.Next() {
-		one := new(User)
+		one := new(Author)
 		var localJoinCol string
 
-		err = results.Scan(&one.ID, &one.DiscordID, &one.Email, &one.Role, &one.SchoolID, &one.CreatedAt, &one.UpdatedAt, &one.FullName, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Slug, &one.FullName, &one.Sponsor, &one.Description, &one.ImageURL, &one.Publish, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
 		if err != nil {
-			return errors.Wrap(err, "failed to scan eager loaded results for users")
+			return errors.Wrap(err, "failed to scan eager loaded results for authors")
 		}
 		if err = results.Err(); err != nil {
-			return errors.Wrap(err, "failed to plebian-bind eager loaded slice users")
+			return errors.Wrap(err, "failed to plebian-bind eager loaded slice authors")
 		}
 
 		resultSlice = append(resultSlice, one)
@@ -1127,13 +1098,13 @@ func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singula
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on users")
+		return errors.Wrap(err, "failed to close results in eager load on authors")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for users")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for authors")
 	}
 
-	if len(userAfterSelectHooks) != 0 {
+	if len(authorAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
 			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
 				return err
@@ -1141,10 +1112,10 @@ func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singula
 		}
 	}
 	if singular {
-		object.R.Users = resultSlice
+		object.R.Authors = resultSlice
 		for _, foreign := range resultSlice {
 			if foreign.R == nil {
-				foreign.R = &userR{}
+				foreign.R = &authorR{}
 			}
 			foreign.R.Challenges = append(foreign.R.Challenges, object)
 		}
@@ -1155,9 +1126,9 @@ func (challengeL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singula
 		localJoinCol := localJoinCols[i]
 		for _, local := range slice {
 			if local.ID == localJoinCol {
-				local.R.Users = append(local.R.Users, foreign)
+				local.R.Authors = append(local.R.Authors, foreign)
 				if foreign.R == nil {
-					foreign.R = &userR{}
+					foreign.R = &authorR{}
 				}
 				foreign.R.Challenges = append(foreign.R.Challenges, local)
 				break
@@ -1915,11 +1886,11 @@ func (o *Challenge) SetMonthlyChallenge(ctx context.Context, exec boil.ContextEx
 	return nil
 }
 
-// AddUsers adds the given related objects to the existing relationships
+// AddAuthors adds the given related objects to the existing relationships
 // of the challenge, optionally inserting them as new records.
-// Appends related to o.R.Users.
+// Appends related to o.R.Authors.
 // Sets related.R.Challenges appropriately.
-func (o *Challenge) AddUsers(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*User) error {
+func (o *Challenge) AddAuthors(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Author) error {
 	var err error
 	for _, rel := range related {
 		if insert {
@@ -1930,7 +1901,7 @@ func (o *Challenge) AddUsers(ctx context.Context, exec boil.ContextExecutor, ins
 	}
 
 	for _, rel := range related {
-		query := "insert into \"challenge_authors\" (\"challenge_id\", \"user_id\") values ($1, $2)"
+		query := "insert into \"challenge_authors\" (\"challenge_id\", \"author_id\") values ($1, $2)"
 		values := []interface{}{o.ID, rel.ID}
 
 		if boil.IsDebug(ctx) {
@@ -1945,15 +1916,15 @@ func (o *Challenge) AddUsers(ctx context.Context, exec boil.ContextExecutor, ins
 	}
 	if o.R == nil {
 		o.R = &challengeR{
-			Users: related,
+			Authors: related,
 		}
 	} else {
-		o.R.Users = append(o.R.Users, related...)
+		o.R.Authors = append(o.R.Authors, related...)
 	}
 
 	for _, rel := range related {
 		if rel.R == nil {
-			rel.R = &userR{
+			rel.R = &authorR{
 				Challenges: ChallengeSlice{o},
 			}
 		} else {
@@ -1963,13 +1934,13 @@ func (o *Challenge) AddUsers(ctx context.Context, exec boil.ContextExecutor, ins
 	return nil
 }
 
-// SetUsers removes all previously related items of the
+// SetAuthors removes all previously related items of the
 // challenge replacing them completely with the passed
 // in related items, optionally inserting them as new records.
-// Sets o.R.Challenges's Users accordingly.
-// Replaces o.R.Users with related.
-// Sets related.R.Challenges's Users accordingly.
-func (o *Challenge) SetUsers(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*User) error {
+// Sets o.R.Challenges's Authors accordingly.
+// Replaces o.R.Authors with related.
+// Sets related.R.Challenges's Authors accordingly.
+func (o *Challenge) SetAuthors(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*Author) error {
 	query := "delete from \"challenge_authors\" where \"challenge_id\" = $1"
 	values := []interface{}{o.ID}
 	if boil.IsDebug(ctx) {
@@ -1982,25 +1953,25 @@ func (o *Challenge) SetUsers(ctx context.Context, exec boil.ContextExecutor, ins
 		return errors.Wrap(err, "failed to remove relationships before set")
 	}
 
-	removeUsersFromChallengesSlice(o, related)
+	removeAuthorsFromChallengesSlice(o, related)
 	if o.R != nil {
-		o.R.Users = nil
+		o.R.Authors = nil
 	}
 
-	return o.AddUsers(ctx, exec, insert, related...)
+	return o.AddAuthors(ctx, exec, insert, related...)
 }
 
-// RemoveUsers relationships from objects passed in.
-// Removes related items from R.Users (uses pointer comparison, removal does not keep order)
+// RemoveAuthors relationships from objects passed in.
+// Removes related items from R.Authors (uses pointer comparison, removal does not keep order)
 // Sets related.R.Challenges.
-func (o *Challenge) RemoveUsers(ctx context.Context, exec boil.ContextExecutor, related ...*User) error {
+func (o *Challenge) RemoveAuthors(ctx context.Context, exec boil.ContextExecutor, related ...*Author) error {
 	if len(related) == 0 {
 		return nil
 	}
 
 	var err error
 	query := fmt.Sprintf(
-		"delete from \"challenge_authors\" where \"challenge_id\" = $1 and \"user_id\" in (%s)",
+		"delete from \"challenge_authors\" where \"challenge_id\" = $1 and \"author_id\" in (%s)",
 		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
 	)
 	values := []interface{}{o.ID}
@@ -2017,22 +1988,22 @@ func (o *Challenge) RemoveUsers(ctx context.Context, exec boil.ContextExecutor, 
 	if err != nil {
 		return errors.Wrap(err, "failed to remove relationships before set")
 	}
-	removeUsersFromChallengesSlice(o, related)
+	removeAuthorsFromChallengesSlice(o, related)
 	if o.R == nil {
 		return nil
 	}
 
 	for _, rel := range related {
-		for i, ri := range o.R.Users {
+		for i, ri := range o.R.Authors {
 			if rel != ri {
 				continue
 			}
 
-			ln := len(o.R.Users)
+			ln := len(o.R.Authors)
 			if ln > 1 && i < ln-1 {
-				o.R.Users[i] = o.R.Users[ln-1]
+				o.R.Authors[i] = o.R.Authors[ln-1]
 			}
-			o.R.Users = o.R.Users[:ln-1]
+			o.R.Authors = o.R.Authors[:ln-1]
 			break
 		}
 	}
@@ -2040,7 +2011,7 @@ func (o *Challenge) RemoveUsers(ctx context.Context, exec boil.ContextExecutor, 
 	return nil
 }
 
-func removeUsersFromChallengesSlice(o *Challenge, related []*User) {
+func removeAuthorsFromChallengesSlice(o *Challenge, related []*Author) {
 	for _, rel := range related {
 		if rel.R == nil {
 			continue

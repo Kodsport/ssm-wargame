@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/hex"
-	"regexp"
+	"fmt"
 	"strings"
 	"time"
 
@@ -12,14 +12,13 @@ import (
 	"github.com/lib/pq"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
+	"github.com/sakerhetsm/ssm-wargame/internal/utils"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
-
-var slugRegex = regexp.MustCompile(`[^a-zA-Z\-0-9]`)
 
 func (s *service) authImport(ctx context.Context, token string) (*models.ChalltoolsImportToken, error) {
 
@@ -50,6 +49,8 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 
 	token, err := s.authImport(ctx, req.ImportToken)
 	if err != nil {
+		fmt.Println(err.Error())
+
 		return err
 	}
 
@@ -80,8 +81,7 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 				Name: req.Categories[0],
 			}
 			err = cat.Insert(ctx, tx, boil.Infer())
-		}
-		if err != nil {
+		} else if err != nil {
 			s.log.Error("could not something", zap.Error(err))
 			return err
 		}
@@ -94,11 +94,9 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		score = *req.Score
 	}
 
-	slug := strings.NewReplacer(" ", "_", "ö", "o", "å", "a", "ä", "a").Replace(req.Title)
-	slug = slugRegex.ReplaceAllString(slug, "")
 	chall := models.Challenge{
 		ID:          req.ChallengeID,
-		Slug:        strings.ToLower(slug),
+		Slug:        utils.Slugify(req.Title),
 		Title:       req.Title,
 		Description: req.Description,
 		Score:       score,
@@ -176,33 +174,34 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 			return err
 		}
 
-		otherAuthors := []string{}
 		for _, v := range req.Authors {
-			user, err := models.Users(
+			author, err := models.Authors(
 				qm.Where("full_name ILIKE ?", "%"+v+"%"),
 			).One(ctx, tx)
-			if err != nil {
-				otherAuthors = append(otherAuthors, v)
-				continue
+
+			if err == sql.ErrNoRows {
+				author = &models.Author{
+					ID:       uuid.NewString(),
+					Slug:     utils.Slugify(v),
+					FullName: v,
+					Sponsor:  false,
+					Publish:  false,
+				}
+
+				err = author.Insert(ctx, tx, boil.Infer())
 			}
-			_, err = tx.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, user_id) VALUES ($1, $2)", req.ChallengeID, user.ID)
+
+			if err != nil {
+				return err
+			}
+
+			_, err = tx.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, author_id) VALUES ($1, $2)", req.ChallengeID, author.ID)
 			if err != nil {
 				s.log.Error("could not insert chall author", zap.Error(err))
 				return err
 			}
 		}
 
-		if len(otherAuthors) != 0 {
-			_, err = models.Challenges(
-				qm.Where("id = ?", req.ChallengeID),
-			).UpdateAll(ctx, tx, models.M{
-				models.ChallengeColumns.OtherAuthors: pq.Array(otherAuthors),
-			})
-			if err != nil {
-				s.log.Error("could not add other authors", zap.Error(err))
-				return err
-			}
-		}
 	}
 
 	// services

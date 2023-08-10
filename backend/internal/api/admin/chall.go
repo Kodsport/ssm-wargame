@@ -18,7 +18,6 @@ import (
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
-	"github.com/volatiletech/sqlboiler/v4/types"
 	"go.uber.org/zap"
 
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
@@ -33,7 +32,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.From("challenges c"),
 		qm.Load(models.ChallengeRels.Flags),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
-		qm.Load(models.ChallengeRels.Users),
+		qm.Load(models.ChallengeRels.Authors),
 	).Bind(ctx, s.db, &challs)
 	if err != nil {
 		s.log.Warn("could not list challs", zap.Error(err), utils.C(ctx))
@@ -44,16 +43,15 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 	for i, chall := range challs {
 		res[i] = &spec.SsmAdminChallenge{
-			ID:           chall.ID,
-			Slug:         chall.Slug,
-			Title:        chall.Title,
-			Description:  chall.Description,
-			Score:        chall.Score,
-			Solves:       chall.NumSolves,
-			PublishAt:    utils.NullTimeToUnix(chall.PublishAt),
-			CategoryID:   chall.CategoryID,
-			CtfEventID:   chall.CTFEventID.Ptr(),
-			OtherAuthors: chall.OtherAuthors,
+			ID:          chall.ID,
+			Slug:        chall.Slug,
+			Title:       chall.Title,
+			Description: chall.Description,
+			Score:       chall.Score,
+			Solves:      chall.NumSolves,
+			PublishAt:   utils.NullTimeToUnix(chall.PublishAt),
+			CategoryID:  chall.CategoryID,
+			CtfEventID:  chall.CTFEventID.Ptr(),
 		}
 
 		res[i].Flags = make([]*spec.AdminChallengeFlag, len(chall.R.Flags))
@@ -73,8 +71,8 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 		}
 
-		res[i].Authors = make([]string, len(chall.R.Users))
-		for i2, v := range chall.R.Users {
+		res[i].Authors = make([]string, len(chall.R.Authors))
+		for i2, v := range chall.R.Authors {
 			res[i].Authors[i2] = v.ID
 		}
 	}
@@ -90,15 +88,14 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 	}
 
 	chall := models.Challenge{
-		ID:           uuid.New().String(),
-		Title:        req.Title,
-		Slug:         req.Slug,
-		Description:  req.Description,
-		Score:        int(req.Score),
-		PublishAt:    pubAt,
-		CTFEventID:   null.StringFromPtr(req.CtfEventID),
-		CategoryID:   req.CategoryID,
-		OtherAuthors: req.OtherAuthors,
+		ID:          uuid.New().String(),
+		Title:       req.Title,
+		Slug:        req.Slug,
+		Description: req.Description,
+		Score:       int(req.Score),
+		PublishAt:   pubAt,
+		CTFEventID:  null.StringFromPtr(req.CtfEventID),
+		CategoryID:  req.CategoryID,
 	}
 
 	err := chall.Insert(ctx, s.db, boil.Infer())
@@ -133,14 +130,13 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 	n, err := models.Challenges(
 		models.ChallengeWhere.ID.EQ(req.ChallengeID),
 	).UpdateAll(ctx, tx, models.M{
-		models.ChallengeColumns.Title:        req.Title,
-		models.ChallengeColumns.Score:        req.Score,
-		models.ChallengeColumns.Slug:         req.Slug,
-		models.ChallengeColumns.Description:  req.Description,
-		models.ChallengeColumns.PublishAt:    pubAt,
-		models.ChallengeColumns.CTFEventID:   null.StringFromPtr(req.CtfEventID),
-		models.ChallengeColumns.CategoryID:   req.CategoryID,
-		models.ChallengeColumns.OtherAuthors: types.StringArray(req.OtherAuthors),
+		models.ChallengeColumns.Title:       req.Title,
+		models.ChallengeColumns.Score:       req.Score,
+		models.ChallengeColumns.Slug:        req.Slug,
+		models.ChallengeColumns.Description: req.Description,
+		models.ChallengeColumns.PublishAt:   pubAt,
+		models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID),
+		models.ChallengeColumns.CategoryID:  req.CategoryID,
 	})
 	if err != nil {
 		s.log.Error("could not update chall", zap.Error(err))
@@ -157,7 +153,7 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 		return err
 	}
 	for _, v := range req.Authors {
-		_, err = tx.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, user_id) VALUES ($1,$2)", req.ChallengeID, v)
+		_, err = tx.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, author_id) VALUES ($1,$2)", req.ChallengeID, v)
 		if err != nil {
 			s.log.Error("could not insert new author", zap.Error(err))
 			return err

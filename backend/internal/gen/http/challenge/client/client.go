@@ -45,6 +45,10 @@ type Client struct {
 	// UserScoreboard endpoint.
 	UserScoreboardDoer goahttp.Doer
 
+	// ListAuthors Doer is the HTTP client used to make requests to the ListAuthors
+	// endpoint.
+	ListAuthorsDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -72,6 +76,7 @@ func NewClient(
 		SubmitFlagDoer:                 doer,
 		SchoolScoreboardDoer:           doer,
 		UserScoreboardDoer:             doer,
+		ListAuthorsDoer:                doer,
 		RestoreResponseBody:            restoreBody,
 		scheme:                         scheme,
 		host:                           host,
@@ -243,6 +248,30 @@ func (c *Client) UserScoreboard() goa.Endpoint {
 		resp, err := c.UserScoreboardDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("challenge", "UserScoreboard", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// ListAuthors returns an endpoint that makes HTTP requests to the challenge
+// service ListAuthors server.
+func (c *Client) ListAuthors() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeListAuthorsRequest(c.encoder)
+		decodeResponse = DecodeListAuthorsResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildListAuthorsRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ListAuthorsDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "ListAuthors", err)
 		}
 		return decodeResponse(resp)
 	}

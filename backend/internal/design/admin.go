@@ -145,6 +145,26 @@ var _ = Service("admin", func() {
 		})
 	})
 
+	Method("ListAuthors", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+		})
+		Result(ArrayOf(Author))
+		HTTP(func() {
+			GET("/authors")
+		})
+	})
+
+	Method("UpdateAuthor", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(Author)
+		})
+		HTTP(func() {
+			PUT("/authors/{id}")
+		})
+	})
+
 	Method("AddFlag", func() {
 		Payload(func() {
 			Extend(TokenPayload)

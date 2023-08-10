@@ -18,7 +18,19 @@ import (
 
 // BuildListChallengesPayload builds the payload for the challenge
 // ListChallenges endpoint from CLI flags.
-func BuildListChallengesPayload(challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
+func BuildListChallengesPayload(challengeListChallengesSlug string, challengeListChallengesAuthorSlug string, challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
+	var slug *string
+	{
+		if challengeListChallengesSlug != "" {
+			slug = &challengeListChallengesSlug
+		}
+	}
+	var authorSlug *string
+	{
+		if challengeListChallengesAuthorSlug != "" {
+			authorSlug = &challengeListChallengesAuthorSlug
+		}
+	}
 	var token *string
 	{
 		if challengeListChallengesToken != "" {
@@ -26,6 +38,8 @@ func BuildListChallengesPayload(challengeListChallengesToken string) (*challenge
 		}
 	}
 	v := &challenge.ListChallengesPayload{}
+	v.Slug = slug
+	v.AuthorSlug = authorSlug
 	v.Token = token
 
 	return v, nil
@@ -140,6 +154,21 @@ func BuildUserScoreboardPayload(challengeUserScoreboardToken string) (*challenge
 		}
 	}
 	v := &challenge.UserScoreboardPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListAuthorsPayload builds the payload for the challenge ListAuthors
+// endpoint from CLI flags.
+func BuildListAuthorsPayload(challengeListAuthorsToken string) (*challenge.ListAuthorsPayload, error) {
+	var token *string
+	{
+		if challengeListAuthorsToken != "" {
+			token = &challengeListAuthorsToken
+		}
+	}
+	v := &challenge.ListAuthorsPayload{}
 	v.Token = token
 
 	return v, nil

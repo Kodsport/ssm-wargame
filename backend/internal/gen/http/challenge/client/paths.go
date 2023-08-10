@@ -45,3 +45,8 @@ func SchoolScoreboardChallengePath() string {
 func UserScoreboardChallengePath() string {
 	return "/user_scoreboard"
 }
+
+// ListAuthorsChallengePath returns the URL path to the challenge service ListAuthors HTTP endpoint.
+func ListAuthorsChallengePath() string {
+	return "/authors"
+}

@@ -9,5 +9,5 @@ port   = 5432
 user   = "postgres"
 pass   = ""
 schema = "public"
-blacklist = ["migrations", "other"]
+blacklist = ["schema_migrations"]
 sslmode = "disable"

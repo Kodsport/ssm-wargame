@@ -7,6 +7,7 @@ export const useChallengeStore = defineStore('challenges', {
         challenges: [],
         monthlies: [],
         events: [],
+        authors: [],
         challFilter: {
             eventFilter: {},
             categoryFilter: ''
@@ -23,6 +24,10 @@ export const useChallengeStore = defineStore('challenges', {
         },
         async getEvents() {
             const cats = await http('/events')
+            this.events = cats
+        },
+        async getAuthors() {
+            const cats = await http('/authors')
             this.events = cats
         }
     },

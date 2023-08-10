@@ -19,7 +19,7 @@ func (s *service) monthlyQuery(ctx context.Context) *queries.Query {
 		qm.From("monthly_challenges"),
 		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.ChallengeFiles)),
 		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.Category)),
-		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.Users)),
+		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.Authors)),
 		models.MonthlyChallengeWhere.StartDate.LT(time.Now()),
 	)
 
@@ -57,11 +57,16 @@ func convertMonthly(chall *custommodels.UserMonthlyChall) *spec.SsmUserMonthlyCh
 		}
 	}
 
-	res.Challenge.Authors = make([]*spec.SsmUser, len(chall.R.Challenge.R.Users))
-	for i, v := range chall.R.Challenge.R.Users {
-		res.Challenge.Authors[i] = &spec.SsmUser{
-			ID:       v.ID,
-			FullName: v.FullName,
+	res.Challenge.Authors = make([]*spec.SsmAuthor, len(chall.R.Challenge.R.Authors))
+	for i, v := range chall.R.Challenge.R.Authors {
+		res.Challenge.Authors[i] = &spec.SsmAuthor{
+			ID:          v.ID,
+			FullName:    v.FullName,
+			Description: v.Description,
+			Sponsor:     v.Sponsor,
+			Slug:        v.Slug,
+			ImageURL:    v.ImageURL.Ptr(),
+			Publish:     v.Publish,
 		}
 	}
 	return res

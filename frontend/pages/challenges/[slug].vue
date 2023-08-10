@@ -32,16 +32,18 @@
                     <div class="row">
                         <div class="col-12 col-lg-6 order-2 order-lg-1" v-html="renderMarkdown(chall.description)"></div>
                         <div class="col-12 col-lg-6 order-1 order-lg-2 mb-3 mb-lg-0">
-                            <div v-if="chall?.authors?.length || chall.other_authors?.length">
+                            <div v-if="chall?.authors?.length">
                                 <span class="material-symbols-outlined pe-1">group</span>
                                 <span class="material-symbols-outlined pe-1">edit</span>
                                 <span>
-                                    <nuxt-link class="author" v-for="a in chall.authors" :to="`/author/${a.id}`">
-                                        {{ a.full_name }}
-                                    </nuxt-link>
-                                    <span class="author" v-for="a in chall.other_authors">
-                                        {{ a }}
-                                    </span>
+                                    <template v-for="a in chall.authors">
+                                        <nuxt-link v-if="a.publish" class="author" :to="`/author/${a.slug}`">
+                                            {{ a.full_name }}
+                                        </nuxt-link>
+                                        <span v-else class="author">
+                                            {{ a.full_name }}
+                                        </span>
+                                    </template>
                                 </span>
                             </div>
                             <div class="d-flex" v-for="service in chall.services">

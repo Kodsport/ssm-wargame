@@ -4,6 +4,7 @@
 package models
 
 var TableNames = struct {
+	Authors               string
 	Categories            string
 	ChallengeAuthors      string
 	ChallengeFiles        string
@@ -13,12 +14,12 @@ var TableNames = struct {
 	CTFEvents             string
 	Flags                 string
 	MonthlyChallenges     string
-	SchemaMigrations      string
 	Schools               string
 	Submissions           string
 	UserSolves            string
 	Users                 string
 }{
+	Authors:               "authors",
 	Categories:            "categories",
 	ChallengeAuthors:      "challenge_authors",
 	ChallengeFiles:        "challenge_files",
@@ -28,7 +29,6 @@ var TableNames = struct {
 	CTFEvents:             "ctf_events",
 	Flags:                 "flags",
 	MonthlyChallenges:     "monthly_challenges",
-	SchemaMigrations:      "schema_migrations",
 	Schools:               "schools",
 	Submissions:           "submissions",
 	UserSolves:            "user_solves",

@@ -52,6 +52,14 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 				req.Header.Set("Authorization", head)
 			}
 		}
+		values := req.URL.Query()
+		if p.Slug != nil {
+			values.Add("slug", *p.Slug)
+		}
+		if p.AuthorSlug != nil {
+			values.Add("author_slug", *p.AuthorSlug)
+		}
+		req.URL.RawQuery = values.Encode()
 		return nil
 	}
 }
@@ -614,6 +622,83 @@ func DecodeUserScoreboardResponse(decoder func(*http.Response) goahttp.Decoder, 
 	}
 }
 
+// BuildListAuthorsRequest instantiates a HTTP request object with method and
+// path set to call the "challenge" service "ListAuthors" endpoint
+func (c *Client) BuildListAuthorsRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListAuthorsChallengePath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "ListAuthors", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListAuthorsRequest returns an encoder for requests sent to the
+// challenge ListAuthors server.
+func EncodeListAuthorsRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.ListAuthorsPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "ListAuthors", "*challenge.ListAuthorsPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListAuthorsResponse returns a decoder for responses returned by the
+// challenge ListAuthors endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+func DecodeListAuthorsResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListAuthorsResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "ListAuthors", err)
+			}
+			p := NewListAuthorsSsmAuthorCollectionOK(body)
+			view := "default"
+			vres := challengeviews.SsmAuthorCollection{Projected: p, View: view}
+			if err = challengeviews.ValidateSsmAuthorCollection(vres); err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "ListAuthors", err)
+			}
+			res := challenge.NewSsmAuthorCollection(vres)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "ListAuthors", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView builds a value
 // of type *challengeviews.SsmChallengeView from a value of type
 // *SsmChallengeResponse.
@@ -641,16 +726,10 @@ func unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v *SsmChallen
 			res.Files[i] = unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(val)
 		}
 	}
-	if v.OtherAuthors != nil {
-		res.OtherAuthors = make([]string, len(v.OtherAuthors))
-		for i, val := range v.OtherAuthors {
-			res.OtherAuthors[i] = val
-		}
-	}
 	if v.Authors != nil {
-		res.Authors = make([]*challengeviews.SsmUserView, len(v.Authors))
+		res.Authors = make([]*challengeviews.SsmAuthorView, len(v.Authors))
 		for i, val := range v.Authors {
-			res.Authors[i] = unmarshalSsmUserResponseToChallengeviewsSsmUserView(val)
+			res.Authors[i] = unmarshalSsmAuthorResponseToChallengeviewsSsmAuthorView(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -693,18 +772,20 @@ func unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(v *Challe
 	return res
 }
 
-// unmarshalSsmUserResponseToChallengeviewsSsmUserView builds a value of type
-// *challengeviews.SsmUserView from a value of type *SsmUserResponse.
-func unmarshalSsmUserResponseToChallengeviewsSsmUserView(v *SsmUserResponse) *challengeviews.SsmUserView {
+// unmarshalSsmAuthorResponseToChallengeviewsSsmAuthorView builds a value of
+// type *challengeviews.SsmAuthorView from a value of type *SsmAuthorResponse.
+func unmarshalSsmAuthorResponseToChallengeviewsSsmAuthorView(v *SsmAuthorResponse) *challengeviews.SsmAuthorView {
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.SsmUserView{
-		ID:       v.ID,
-		Email:    v.Email,
-		FullName: v.FullName,
-		Role:     v.Role,
-		SchoolID: v.SchoolID,
+	res := &challengeviews.SsmAuthorView{
+		ID:          v.ID,
+		FullName:    v.FullName,
+		Description: v.Description,
+		Sponsor:     v.Sponsor,
+		Slug:        v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     v.Publish,
 	}
 
 	return res
@@ -763,16 +844,10 @@ func unmarshalSsmChallengeResponseBodyToChallengeviewsSsmChallengeView(v *SsmCha
 			res.Files[i] = unmarshalChallengeFilesResponseBodyToChallengeviewsChallengeFilesView(val)
 		}
 	}
-	if v.OtherAuthors != nil {
-		res.OtherAuthors = make([]string, len(v.OtherAuthors))
-		for i, val := range v.OtherAuthors {
-			res.OtherAuthors[i] = val
-		}
-	}
 	if v.Authors != nil {
-		res.Authors = make([]*challengeviews.SsmUserView, len(v.Authors))
+		res.Authors = make([]*challengeviews.SsmAuthorView, len(v.Authors))
 		for i, val := range v.Authors {
-			res.Authors[i] = unmarshalSsmUserResponseBodyToChallengeviewsSsmUserView(val)
+			res.Authors[i] = unmarshalSsmAuthorResponseBodyToChallengeviewsSsmAuthorView(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -815,18 +890,21 @@ func unmarshalChallengeFilesResponseBodyToChallengeviewsChallengeFilesView(v *Ch
 	return res
 }
 
-// unmarshalSsmUserResponseBodyToChallengeviewsSsmUserView builds a value of
-// type *challengeviews.SsmUserView from a value of type *SsmUserResponseBody.
-func unmarshalSsmUserResponseBodyToChallengeviewsSsmUserView(v *SsmUserResponseBody) *challengeviews.SsmUserView {
+// unmarshalSsmAuthorResponseBodyToChallengeviewsSsmAuthorView builds a value
+// of type *challengeviews.SsmAuthorView from a value of type
+// *SsmAuthorResponseBody.
+func unmarshalSsmAuthorResponseBodyToChallengeviewsSsmAuthorView(v *SsmAuthorResponseBody) *challengeviews.SsmAuthorView {
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.SsmUserView{
-		ID:       v.ID,
-		Email:    v.Email,
-		FullName: v.FullName,
-		Role:     v.Role,
-		SchoolID: v.SchoolID,
+	res := &challengeviews.SsmAuthorView{
+		ID:          v.ID,
+		FullName:    v.FullName,
+		Description: v.Description,
+		Sponsor:     v.Sponsor,
+		Slug:        v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     v.Publish,
 	}
 
 	return res
