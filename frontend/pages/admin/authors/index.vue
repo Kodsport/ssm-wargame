@@ -16,16 +16,16 @@
                 <textarea class="form-control" type="text" v-model="form.description"></textarea>
             </div>
             <div class="form-group">
-                <label>Image URL</label>
-                <input class="form-control" type="text" v-model="form.image_url">
+                <label for="imageUrl">Image URL</label>
+                <input class="form-control" type="text" v-model="form.image_url" id="imageUrl">
             </div>
             <div class="form-group">
-                <input class="form-check-input" type="checkbox" v-model="form.sponsor">
-                <label class="ps-2">Sponsor</label>
+                <input class="form-check-input" type="checkbox" v-model="form.sponsor" id="isSponsor">
+                <label class="ps-2" for="isSponsor">Sponsor</label>
             </div>
             <div class="form-group">
-                <input class="form-check-input" type="checkbox" v-model="form.publish">
-                <label class="ps-2">Publish</label>
+                <input class="form-check-input" type="checkbox" v-model="form.publish" id="publish">
+                <label class="ps-2" for="publish">Publish</label>
             </div>
             <button class="btn btn-primary mt-3" @click="create">
                 Create

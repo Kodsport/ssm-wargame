@@ -21,7 +21,10 @@ export default defineNuxtConfig({
         {
           name: 'description', content: 'Säkerhets-SM är en tävling inom cybersäkerhet för grundskolan och gymnasiet'
         }
-      ]
+      ],
+      htmlAttrs: {
+        lang: 'se'
+      }
     }
   },
   runtimeConfig: {

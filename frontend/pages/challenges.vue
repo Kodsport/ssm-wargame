@@ -63,6 +63,10 @@ useHead({
     title: 'SSM - Utmaningar'
 })
 
+useServerSeoMeta({
+    title: 'SSM - Utmaningar'
+})
+
 const challs = useChallengeStore()
 const router = useRouter()
 

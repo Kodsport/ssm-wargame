@@ -11,4 +11,18 @@ const store = useChallengeStore()
 
 const chall = computed(() => store.getBySlug(route.params.slug))
 
+const title = `SSM - ${chall.value.title}`
+
+useHead({
+    title,
+})
+
+
+useServerSeoMeta({
+    ogTitle: title,
+    title: title,
+    description: chall.value.description,
+    ogDescription: chall.value.description,
+})
+
 </script>
