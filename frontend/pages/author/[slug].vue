@@ -1,7 +1,15 @@
 <template>
     <div class="container">
-        <h1>{{ author.full_name }}</h1>
-        <div v-html="renderMarkdown(author.description)"></div>
+        <div class="row">
+            <h1>{{ author.full_name }}</h1>
+            <div v-html="renderMarkdown(author.description)"></div>
+        </div>
+        <div class="row row-cols-3 row-cols-xl-5 g-4 mt-0 mb-2">
+            <div class="col" v-for="chall in authorsChalls">
+                <ChallengePreview @click="showChall = chall" :chall="chall" />
+            </div>
+        </div>
+        <ChallengeModal v-if="showChall" :chall="showChall" @back="showChall = null" />
     </div>
 </template>
 
@@ -13,8 +21,11 @@ const route = useRoute()
 const http = useHttp()
 const challs = useChallengeStore()
 
+var showChall = ref(null)
+
 const authors = await useAsyncData('authors', () => http('/authors'))
 const author = computed(() => authors.data.value.find(a => a.slug == route.params.slug))
+const authorsChalls = computed(() => challs.challenges.filter(c => c.authors.map(a => a.slug).includes(route.params.slug)))
 
 onMounted(() => {
     challs.getChallenges()
