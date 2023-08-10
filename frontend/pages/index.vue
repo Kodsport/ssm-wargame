@@ -61,6 +61,25 @@
                 <h1 class="text-primary">Månadens utmaning - {{ monthly.data.value.display_month }}</h1>
                 <MonthlyChallenge :chall="monthly.data.value.challenge" />
             </div>
+            <div v-else-if="userScoreboard" class="col pt-4 pt-md-0 text-primary">
+                <h1>Poängtavla</h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Namn</th>
+                            <th>Poäng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="score, i in userScoreboard.data.value.scores.slice(0, 10)" :key="score.user_id">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ score.name }}</td>
+                            <td>{{ score.score }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -79,6 +98,11 @@ useHead({
 const challs = useChallengeStore()
 
 const monthly = await useAsyncData('monthly', () => http('/current_monthly_challenge'))
+var userScoreboard;
+if (monthly.error.value) {
+    userScoreboard = await useAsyncData('userScoreboard', () => http('/user_scoreboard'))
+}
+
 
 onMounted(() => {
     challs.getChallenges()
