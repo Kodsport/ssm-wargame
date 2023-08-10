@@ -46,6 +46,7 @@
                         <td>
                             {{ a.full_name }}
                             <span v-if="!a.publish" class="material-symbols-outlined">visibility_off</span>
+                            <span v-if="a.sponsor" class="material-symbols-outlined">monetization_on</span>
                         </td>
                         <td>
                             <nuxt-link class="btn btn-secondary" :to="`/admin/authors/${a.slug}/edit`">Edit</nuxt-link>
