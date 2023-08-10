@@ -38,7 +38,6 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Published</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -46,7 +45,7 @@
                     <tr v-for="a in store.authors">
                         <td>
                             {{ a.full_name }}
-                            <span class="material-symbols-outlined">{{ a.publish ? 'visibility' : 'visibility_off' }}</span>
+                            <span v-if="!a.publish" class="material-symbols-outlined">visibility_off</span>
                         </td>
                         <td>
                             <nuxt-link class="btn btn-secondary" :to="`/admin/authors/${a.slug}/edit`">Edit</nuxt-link>
