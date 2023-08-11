@@ -26,7 +26,7 @@
                         v-model="form.end_date" />
                 </div>
                 <div class="pt-3">
-                    <button class="btn btn-primary" @click="createMontly">Create</button>
+                    <button class="btn btn-primary" @click="createMonthly">Create</button>
                 </div>
             </form>
 
@@ -51,7 +51,7 @@
         monthly.display_month }})
                     </td>
                     <td>
-                        <button class="btn btn-danger" @click="deleteMontly(c.id)">Delete</button>
+                        <button class="btn btn-danger" @click="deleteMonthly(c.id)">Delete</button>
                     </td>
                 </tr>
             </tbody>
@@ -79,7 +79,7 @@ onMounted(() => {
     chall.getChallenges()
 })
 
-async function createMontly() {
+async function createMonthly() {
     await http('/admin/monthly_challenges', {
         method: 'POST',
         body: {
@@ -92,7 +92,7 @@ async function createMontly() {
     chall.getMonthlies()
 }
 
-async function deleteMontly(id: string) {
+async function deleteMonthly(id: string) {
     await http('/admin/monthly_challenges/' + id, {
         method: 'DELETE'
     })
