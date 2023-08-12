@@ -38,7 +38,7 @@ CREATE TABLE users (
     role TEXT NOT NULL,
     school_id UUID REFERENCES schools(id) ON DELETE SET NULL,
     author_id UUID UNIQUE REFERENCES authors(id) ON DELETE SET NULL,
-    onboarding_done BOOLEAN NOT NULL,
+    onboarding_done BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
