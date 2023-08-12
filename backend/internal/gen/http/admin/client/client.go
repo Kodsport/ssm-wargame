@@ -65,6 +65,14 @@ type Client struct {
 	// UpdateAuthor endpoint.
 	UpdateAuthorDoer goahttp.Doer
 
+	// CreateAuthor Doer is the HTTP client used to make requests to the
+	// CreateAuthor endpoint.
+	CreateAuthorDoer goahttp.Doer
+
+	// DeleteAuthor Doer is the HTTP client used to make requests to the
+	// DeleteAuthor endpoint.
+	DeleteAuthorDoer goahttp.Doer
+
 	// AddFlag Doer is the HTTP client used to make requests to the AddFlag
 	// endpoint.
 	AddFlagDoer goahttp.Doer
@@ -129,6 +137,8 @@ func NewClient(
 		ListUsersDoer:                 doer,
 		ListAuthorsDoer:               doer,
 		UpdateAuthorDoer:              doer,
+		CreateAuthorDoer:              doer,
+		DeleteAuthorDoer:              doer,
 		AddFlagDoer:                   doer,
 		DeleteFlagDoer:                doer,
 		ListCategoriesDoer:            doer,
@@ -428,6 +438,54 @@ func (c *Client) UpdateAuthor() goa.Endpoint {
 		resp, err := c.UpdateAuthorDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "UpdateAuthor", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CreateAuthor returns an endpoint that makes HTTP requests to the admin
+// service CreateAuthor server.
+func (c *Client) CreateAuthor() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeCreateAuthorRequest(c.encoder)
+		decodeResponse = DecodeCreateAuthorResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCreateAuthorRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CreateAuthorDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "CreateAuthor", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// DeleteAuthor returns an endpoint that makes HTTP requests to the admin
+// service DeleteAuthor server.
+func (c *Client) DeleteAuthor() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeDeleteAuthorRequest(c.encoder)
+		decodeResponse = DecodeDeleteAuthorResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildDeleteAuthorRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.DeleteAuthorDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "DeleteAuthor", err)
 		}
 		return decodeResponse(resp)
 	}

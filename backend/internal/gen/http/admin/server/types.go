@@ -84,6 +84,17 @@ type UpdateAuthorRequestBody struct {
 	Publish     *bool   `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
 }
 
+// CreateAuthorRequestBody is the type of the "admin" service "CreateAuthor"
+// endpoint HTTP request body.
+type CreateAuthorRequestBody struct {
+	FullName    *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	Sponsor     *bool   `form:"sponsor,omitempty" json:"sponsor,omitempty" xml:"sponsor,omitempty"`
+	Slug        *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	ImageURL    *string `form:"image_url,omitempty" json:"image_url,omitempty" xml:"image_url,omitempty"`
+	Publish     *bool   `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
+}
+
 // AddFlagRequestBody is the type of the "admin" service "AddFlag" endpoint
 // HTTP request body.
 type AddFlagRequestBody struct {
@@ -147,7 +158,7 @@ type ListUsersResponseBody []*SsmUserResponse
 
 // ListAuthorsResponseBody is the type of the "admin" service "ListAuthors"
 // endpoint HTTP response body.
-type ListAuthorsResponseBody []*SsmAuthorResponse
+type ListAuthorsResponseBody []*AuthorResponse
 
 // ListCategoriesResponseBody is the type of the "admin" service
 // "ListCategories" endpoint HTTP response body.
@@ -823,6 +834,114 @@ type UpdateAuthorBadRequestResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// CreateAuthorUnauthorizedResponseBody is the type of the "admin" service
+// "CreateAuthor" endpoint HTTP response body for the "unauthorized" error.
+type CreateAuthorUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateAuthorNotFoundResponseBody is the type of the "admin" service
+// "CreateAuthor" endpoint HTTP response body for the "not_found" error.
+type CreateAuthorNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateAuthorBadRequestResponseBody is the type of the "admin" service
+// "CreateAuthor" endpoint HTTP response body for the "bad_request" error.
+type CreateAuthorBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteAuthorUnauthorizedResponseBody is the type of the "admin" service
+// "DeleteAuthor" endpoint HTTP response body for the "unauthorized" error.
+type DeleteAuthorUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteAuthorNotFoundResponseBody is the type of the "admin" service
+// "DeleteAuthor" endpoint HTTP response body for the "not_found" error.
+type DeleteAuthorNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteAuthorBadRequestResponseBody is the type of the "admin" service
+// "DeleteAuthor" endpoint HTTP response body for the "bad_request" error.
+type DeleteAuthorBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // AddFlagUnauthorizedResponseBody is the type of the "admin" service "AddFlag"
 // endpoint HTTP response body for the "unauthorized" error.
 type AddFlagUnauthorizedResponseBody struct {
@@ -1337,8 +1456,8 @@ type SsmUserResponse struct {
 	SchoolID *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
-// SsmAuthorResponse is used to define fields on response body types.
-type SsmAuthorResponse struct {
+// AuthorResponse is used to define fields on response body types.
+type AuthorResponse struct {
 	ID          string  `form:"id" json:"id" xml:"id"`
 	FullName    string  `form:"full_name" json:"full_name" xml:"full_name"`
 	Description string  `form:"description" json:"description" xml:"description"`
@@ -1432,10 +1551,10 @@ func NewListUsersResponseBody(res []*admin.SsmUser) ListUsersResponseBody {
 
 // NewListAuthorsResponseBody builds the HTTP response body from the result of
 // the "ListAuthors" endpoint of the "admin" service.
-func NewListAuthorsResponseBody(res []*admin.SsmAuthor) ListAuthorsResponseBody {
-	body := make([]*SsmAuthorResponse, len(res))
+func NewListAuthorsResponseBody(res []*admin.Author) ListAuthorsResponseBody {
+	body := make([]*AuthorResponse, len(res))
 	for i, val := range res {
-		body[i] = marshalAdminSsmAuthorToSsmAuthorResponse(val)
+		body[i] = marshalAdminAuthorToAuthorResponse(val)
 	}
 	return body
 }
@@ -1986,6 +2105,90 @@ func NewUpdateAuthorBadRequestResponseBody(res *goa.ServiceError) *UpdateAuthorB
 	return body
 }
 
+// NewCreateAuthorUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "CreateAuthor" endpoint of the "admin" service.
+func NewCreateAuthorUnauthorizedResponseBody(res *goa.ServiceError) *CreateAuthorUnauthorizedResponseBody {
+	body := &CreateAuthorUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateAuthorNotFoundResponseBody builds the HTTP response body from the
+// result of the "CreateAuthor" endpoint of the "admin" service.
+func NewCreateAuthorNotFoundResponseBody(res *goa.ServiceError) *CreateAuthorNotFoundResponseBody {
+	body := &CreateAuthorNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateAuthorBadRequestResponseBody builds the HTTP response body from the
+// result of the "CreateAuthor" endpoint of the "admin" service.
+func NewCreateAuthorBadRequestResponseBody(res *goa.ServiceError) *CreateAuthorBadRequestResponseBody {
+	body := &CreateAuthorBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteAuthorUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "DeleteAuthor" endpoint of the "admin" service.
+func NewDeleteAuthorUnauthorizedResponseBody(res *goa.ServiceError) *DeleteAuthorUnauthorizedResponseBody {
+	body := &DeleteAuthorUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteAuthorNotFoundResponseBody builds the HTTP response body from the
+// result of the "DeleteAuthor" endpoint of the "admin" service.
+func NewDeleteAuthorNotFoundResponseBody(res *goa.ServiceError) *DeleteAuthorNotFoundResponseBody {
+	body := &DeleteAuthorNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteAuthorBadRequestResponseBody builds the HTTP response body from the
+// result of the "DeleteAuthor" endpoint of the "admin" service.
+func NewDeleteAuthorBadRequestResponseBody(res *goa.ServiceError) *DeleteAuthorBadRequestResponseBody {
+	body := &DeleteAuthorBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewAddFlagUnauthorizedResponseBody builds the HTTP response body from the
 // result of the "AddFlag" endpoint of the "admin" service.
 func NewAddFlagUnauthorizedResponseBody(res *goa.ServiceError) *AddFlagUnauthorizedResponseBody {
@@ -2479,6 +2682,30 @@ func NewUpdateAuthorPayload(body *UpdateAuthorRequestBody, id string, token stri
 	return v
 }
 
+// NewCreateAuthorPayload builds a admin service CreateAuthor endpoint payload.
+func NewCreateAuthorPayload(body *CreateAuthorRequestBody, token string) *admin.CreateAuthorPayload {
+	v := &admin.CreateAuthorPayload{
+		FullName:    *body.FullName,
+		Description: *body.Description,
+		Sponsor:     *body.Sponsor,
+		Slug:        *body.Slug,
+		ImageURL:    body.ImageURL,
+		Publish:     *body.Publish,
+	}
+	v.Token = token
+
+	return v
+}
+
+// NewDeleteAuthorPayload builds a admin service DeleteAuthor endpoint payload.
+func NewDeleteAuthorPayload(id string, token string) *admin.DeleteAuthorPayload {
+	v := &admin.DeleteAuthorPayload{}
+	v.ID = id
+	v.Token = token
+
+	return v
+}
+
 // NewAddFlagPayload builds a admin service AddFlag endpoint payload.
 func NewAddFlagPayload(body *AddFlagRequestBody, challengeID string, token string) *admin.AddFlagPayload {
 	v := &admin.AddFlagPayload{
@@ -2690,6 +2917,27 @@ func ValidateCreateMonthlyChallengeRequestBody(body *CreateMonthlyChallengeReque
 // ValidateUpdateAuthorRequestBody runs the validations defined on
 // UpdateAuthorRequestBody
 func ValidateUpdateAuthorRequestBody(body *UpdateAuthorRequestBody) (err error) {
+	if body.Sponsor == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("sponsor", "body"))
+	}
+	if body.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.Publish == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "body"))
+	}
+	return
+}
+
+// ValidateCreateAuthorRequestBody runs the validations defined on
+// CreateAuthorRequestBody
+func ValidateCreateAuthorRequestBody(body *CreateAuthorRequestBody) (err error) {
 	if body.Sponsor == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("sponsor", "body"))
 	}

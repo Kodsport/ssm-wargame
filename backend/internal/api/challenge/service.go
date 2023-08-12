@@ -126,9 +126,9 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 		}
 
-		res[i].Authors = make([]*spec.SsmAuthor, len(chall.R.Authors))
+		res[i].Authors = make([]*spec.Author, len(chall.R.Authors))
 		for i2, v := range chall.R.Authors {
-			res[i].Authors[i2] = &spec.SsmAuthor{
+			res[i].Authors[i2] = &spec.Author{
 				ID:          v.ID,
 				FullName:    v.FullName,
 				Description: v.Description,
@@ -160,7 +160,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	return res, nil
 }
 
-func (s *service) ListAuthors(ctx context.Context, req *spec.ListAuthorsPayload) (spec.SsmAuthorCollection, error) {
+func (s *service) ListAuthors(ctx context.Context, req *spec.ListAuthorsPayload) ([]*spec.Author, error) {
 	authors, err := models.Authors(
 		models.AuthorWhere.Publish.EQ(true),
 	).All(ctx, s.db)
@@ -168,9 +168,9 @@ func (s *service) ListAuthors(ctx context.Context, req *spec.ListAuthorsPayload)
 		return nil, err
 	}
 
-	res := make(spec.SsmAuthorCollection, len(authors))
+	res := make([]*spec.Author, len(authors))
 	for i, v := range authors {
-		res[i] = &spec.SsmAuthor{
+		res[i] = &spec.Author{
 			ID:          v.ID,
 			FullName:    v.FullName,
 			Description: v.Description,

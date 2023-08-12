@@ -23,34 +23,6 @@ var User = ResultType("application/vnd.ssm.user", func() {
 	Required("id", "email", "full_name", "role")
 })
 
-var Author = ResultType("application/vnd.ssm.author", func() {
-	Attribute("id", String, func() {
-		Example("uuid todo")
-	})
-	Attribute("full_name", String, func() {
-		Example("Movitz Sunar")
-	})
-	Attribute("description", String, func() {
-		Example("Movitz gör saker")
-	})
-	Attribute("sponsor", Boolean, func() {
-		Example(true)
-	})
-	Attribute("slug", String, func() {
-		Example("movitz")
-	})
-	Attribute("image_url", String, func() {
-		Example("movitz")
-	})
-
-	Attribute("publish", Boolean, func() {
-		Example(true)
-	})
-
-	Required("id", "sponsor", "full_name", "description", "slug", "publish")
-
-})
-
 var Solver = ResultType("application/vnd.ssm.solver", func() {
 	Reference(User)
 

@@ -58,7 +58,7 @@ type UserScoreboardResponseBody struct {
 
 // ListAuthorsResponseBody is the type of the "challenge" service "ListAuthors"
 // endpoint HTTP response body.
-type ListAuthorsResponseBody []*SsmAuthorResponse
+type ListAuthorsResponseBody []*AuthorResponse
 
 // GetCurrentMonthlyChallengeNotFoundResponseBody is the type of the
 // "challenge" service "GetCurrentMonthlyChallenge" endpoint HTTP response body
@@ -135,7 +135,7 @@ type SsmChallengeResponse struct {
 	// whether the user has solved the challenge or not
 	Solved   *bool                `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
 	Category *string              `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
-	Authors  []*SsmAuthorResponse `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Authors  []*AuthorResponse    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 	Solvers  []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
@@ -151,8 +151,8 @@ type ChallengeFilesResponse struct {
 	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
 }
 
-// SsmAuthorResponse is used to define fields on response body types.
-type SsmAuthorResponse struct {
+// AuthorResponse is used to define fields on response body types.
+type AuthorResponse struct {
 	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	FullName    *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
@@ -195,7 +195,7 @@ type SsmChallengeResponseBody struct {
 	// whether the user has solved the challenge or not
 	Solved   *bool                    `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
 	Category *string                  `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
-	Authors  []*SsmAuthorResponseBody `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Authors  []*AuthorResponseBody    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 	Solvers  []*SsmSolverResponseBody `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
@@ -211,8 +211,8 @@ type ChallengeFilesResponseBody struct {
 	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
 }
 
-// SsmAuthorResponseBody is used to define fields on response body types.
-type SsmAuthorResponseBody struct {
+// AuthorResponseBody is used to define fields on response body types.
+type AuthorResponseBody struct {
 	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	FullName    *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
@@ -385,12 +385,12 @@ func NewUserScoreboardSsmUserScoreboardOK(body *UserScoreboardResponseBody) *cha
 	return v
 }
 
-// NewListAuthorsSsmAuthorCollectionOK builds a "challenge" service
-// "ListAuthors" endpoint result from a HTTP "OK" response.
-func NewListAuthorsSsmAuthorCollectionOK(body ListAuthorsResponseBody) challengeviews.SsmAuthorCollectionView {
-	v := make([]*challengeviews.SsmAuthorView, len(body))
+// NewListAuthorsAuthorOK builds a "challenge" service "ListAuthors" endpoint
+// result from a HTTP "OK" response.
+func NewListAuthorsAuthorOK(body []*AuthorResponse) []*challenge.Author {
+	v := make([]*challenge.Author, len(body))
 	for i, val := range body {
-		v[i] = unmarshalSsmAuthorResponseToChallengeviewsSsmAuthorView(val)
+		v[i] = unmarshalAuthorResponseToChallengeAuthor(val)
 	}
 
 	return v
@@ -517,7 +517,7 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	for _, e := range body.Authors {
 		if e != nil {
-			if err2 := ValidateSsmAuthorResponse(e); err2 != nil {
+			if err2 := ValidateAuthorResponse(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
@@ -556,8 +556,8 @@ func ValidateChallengeFilesResponse(body *ChallengeFilesResponse) (err error) {
 	return
 }
 
-// ValidateSsmAuthorResponse runs the validations defined on SsmAuthorResponse
-func ValidateSsmAuthorResponse(body *SsmAuthorResponse) (err error) {
+// ValidateAuthorResponse runs the validations defined on AuthorResponse
+func ValidateAuthorResponse(body *AuthorResponse) (err error) {
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
@@ -653,7 +653,7 @@ func ValidateSsmChallengeResponseBody(body *SsmChallengeResponseBody) (err error
 	}
 	for _, e := range body.Authors {
 		if e != nil {
-			if err2 := ValidateSsmAuthorResponseBody(e); err2 != nil {
+			if err2 := ValidateAuthorResponseBody(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)
 			}
 		}
@@ -692,9 +692,8 @@ func ValidateChallengeFilesResponseBody(body *ChallengeFilesResponseBody) (err e
 	return
 }
 
-// ValidateSsmAuthorResponseBody runs the validations defined on
-// SsmAuthorResponseBody
-func ValidateSsmAuthorResponseBody(body *SsmAuthorResponseBody) (err error) {
+// ValidateAuthorResponseBody runs the validations defined on AuthorResponseBody
+func ValidateAuthorResponseBody(body *AuthorResponseBody) (err error) {
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}

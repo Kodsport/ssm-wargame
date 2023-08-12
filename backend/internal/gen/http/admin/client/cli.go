@@ -334,6 +334,52 @@ func BuildUpdateAuthorPayload(adminUpdateAuthorBody string, adminUpdateAuthorID 
 	return v, nil
 }
 
+// BuildCreateAuthorPayload builds the payload for the admin CreateAuthor
+// endpoint from CLI flags.
+func BuildCreateAuthorPayload(adminCreateAuthorBody string, adminCreateAuthorToken string) (*admin.CreateAuthorPayload, error) {
+	var err error
+	var body CreateAuthorRequestBody
+	{
+		err = json.Unmarshal([]byte(adminCreateAuthorBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"Movitz gör saker\",\n      \"full_name\": \"Movitz Sunar\",\n      \"image_url\": \"movitz\",\n      \"publish\": true,\n      \"slug\": \"movitz\",\n      \"sponsor\": true\n   }'")
+		}
+	}
+	var token string
+	{
+		token = adminCreateAuthorToken
+	}
+	v := &admin.CreateAuthorPayload{
+		FullName:    body.FullName,
+		Description: body.Description,
+		Sponsor:     body.Sponsor,
+		Slug:        body.Slug,
+		ImageURL:    body.ImageURL,
+		Publish:     body.Publish,
+	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteAuthorPayload builds the payload for the admin DeleteAuthor
+// endpoint from CLI flags.
+func BuildDeleteAuthorPayload(adminDeleteAuthorID string, adminDeleteAuthorToken string) (*admin.DeleteAuthorPayload, error) {
+	var id string
+	{
+		id = adminDeleteAuthorID
+	}
+	var token string
+	{
+		token = adminDeleteAuthorToken
+	}
+	v := &admin.DeleteAuthorPayload{}
+	v.ID = id
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildAddFlagPayload builds the payload for the admin AddFlag endpoint from
 // CLI flags.
 func BuildAddFlagPayload(adminAddFlagBody string, adminAddFlagChallengeID string, adminAddFlagToken string) (*admin.AddFlagPayload, error) {
@@ -422,7 +468,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 	{
 		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 

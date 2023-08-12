@@ -118,11 +118,11 @@ func (c *Client) UserScoreboard(ctx context.Context, p *UserScoreboardPayload) (
 }
 
 // ListAuthors calls the "ListAuthors" endpoint of the "challenge" service.
-func (c *Client) ListAuthors(ctx context.Context, p *ListAuthorsPayload) (res SsmAuthorCollection, err error) {
+func (c *Client) ListAuthors(ctx context.Context, p *ListAuthorsPayload) (res []*Author, err error) {
 	var ires interface{}
 	ires, err = c.ListAuthorsEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(SsmAuthorCollection), nil
+	return ires.([]*Author), nil
 }

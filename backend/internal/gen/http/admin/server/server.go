@@ -31,6 +31,8 @@ type Server struct {
 	ListUsers                 http.Handler
 	ListAuthors               http.Handler
 	UpdateAuthor              http.Handler
+	CreateAuthor              http.Handler
+	DeleteAuthor              http.Handler
 	AddFlag                   http.Handler
 	DeleteFlag                http.Handler
 	ListCategories            http.Handler
@@ -86,6 +88,8 @@ func New(
 			{"ListUsers", "GET", "/admin/users"},
 			{"ListAuthors", "GET", "/admin/authors"},
 			{"UpdateAuthor", "PUT", "/admin/authors/{id}"},
+			{"CreateAuthor", "POST", "/admin/authors"},
+			{"DeleteAuthor", "DELETE", "/admin/authors/{id}"},
 			{"AddFlag", "POST", "/admin/challenges/{challengeID}/flags"},
 			{"DeleteFlag", "DELETE", "/admin/challenges/{challengeID}/flags/{flagID}"},
 			{"ListCategories", "GET", "/admin/categories"},
@@ -107,6 +111,8 @@ func New(
 		ListUsers:                 NewListUsersHandler(e.ListUsers, mux, decoder, encoder, errhandler, formatter),
 		ListAuthors:               NewListAuthorsHandler(e.ListAuthors, mux, decoder, encoder, errhandler, formatter),
 		UpdateAuthor:              NewUpdateAuthorHandler(e.UpdateAuthor, mux, decoder, encoder, errhandler, formatter),
+		CreateAuthor:              NewCreateAuthorHandler(e.CreateAuthor, mux, decoder, encoder, errhandler, formatter),
+		DeleteAuthor:              NewDeleteAuthorHandler(e.DeleteAuthor, mux, decoder, encoder, errhandler, formatter),
 		AddFlag:                   NewAddFlagHandler(e.AddFlag, mux, decoder, encoder, errhandler, formatter),
 		DeleteFlag:                NewDeleteFlagHandler(e.DeleteFlag, mux, decoder, encoder, errhandler, formatter),
 		ListCategories:            NewListCategoriesHandler(e.ListCategories, mux, decoder, encoder, errhandler, formatter),
@@ -135,6 +141,8 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListUsers = m(s.ListUsers)
 	s.ListAuthors = m(s.ListAuthors)
 	s.UpdateAuthor = m(s.UpdateAuthor)
+	s.CreateAuthor = m(s.CreateAuthor)
+	s.DeleteAuthor = m(s.DeleteAuthor)
 	s.AddFlag = m(s.AddFlag)
 	s.DeleteFlag = m(s.DeleteFlag)
 	s.ListCategories = m(s.ListCategories)
@@ -159,6 +167,8 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountListUsersHandler(mux, h.ListUsers)
 	MountListAuthorsHandler(mux, h.ListAuthors)
 	MountUpdateAuthorHandler(mux, h.UpdateAuthor)
+	MountCreateAuthorHandler(mux, h.CreateAuthor)
+	MountDeleteAuthorHandler(mux, h.DeleteAuthor)
 	MountAddFlagHandler(mux, h.AddFlag)
 	MountDeleteFlagHandler(mux, h.DeleteFlag)
 	MountListCategoriesHandler(mux, h.ListCategories)
@@ -760,6 +770,108 @@ func NewUpdateAuthorHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateAuthor")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateAuthorHandler configures the mux to serve the "admin" service
+// "CreateAuthor" endpoint.
+func MountCreateAuthorHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/authors", f)
+}
+
+// NewCreateAuthorHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "CreateAuthor" endpoint.
+func NewCreateAuthorHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateAuthorRequest(mux, decoder)
+		encodeResponse = EncodeCreateAuthorResponse(encoder)
+		encodeError    = EncodeCreateAuthorError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateAuthor")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteAuthorHandler configures the mux to serve the "admin" service
+// "DeleteAuthor" endpoint.
+func MountDeleteAuthorHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/admin/authors/{id}", f)
+}
+
+// NewDeleteAuthorHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "DeleteAuthor" endpoint.
+func NewDeleteAuthorHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteAuthorRequest(mux, decoder)
+		encodeResponse = EncodeDeleteAuthorResponse(encoder)
+		encodeError    = EncodeDeleteAuthorError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteAuthor")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

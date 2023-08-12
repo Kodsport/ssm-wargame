@@ -255,11 +255,6 @@ func NewListAuthorsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpo
 		if err != nil {
 			return nil, err
 		}
-		res, err := s.ListAuthors(ctx, p)
-		if err != nil {
-			return nil, err
-		}
-		vres := NewViewedSsmAuthorCollection(res, "default")
-		return vres, nil
+		return s.ListAuthors(ctx, p)
 	}
 }

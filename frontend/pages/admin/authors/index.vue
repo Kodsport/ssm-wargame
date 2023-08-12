@@ -49,7 +49,8 @@
                             <span v-if="a.sponsor" class="material-symbols-outlined">monetization_on</span>
                         </td>
                         <td>
-                            <nuxt-link class="btn btn-secondary" :to="`/admin/authors/${a.slug}/edit`">Edit</nuxt-link>
+                            <nuxt-link class="btn btn-secondary me-2" :to="`/admin/authors/${a.slug}/edit`">Edit</nuxt-link>
+                            <button class="btn btn-danger" @click="deleteAuthor(a.id)">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -82,10 +83,19 @@ onMounted(() => {
 })
 
 async function create() {
-    http('/admin/author', {
+    await http('/admin/authors', {
         method: 'POST',
         body: form.value
     })
+    store.getAuthors()
+}
+
+async function deleteAuthor(id) {
+    await http('/admin/authors/' + id, {
+        method: 'DELETE',
+    })
+    store.getAuthors()
+
 }
 
 </script>

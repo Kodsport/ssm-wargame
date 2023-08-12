@@ -684,13 +684,17 @@ func DecodeListAuthorsResponse(decoder func(*http.Response) goahttp.Decoder, res
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("challenge", "ListAuthors", err)
 			}
-			p := NewListAuthorsSsmAuthorCollectionOK(body)
-			view := "default"
-			vres := challengeviews.SsmAuthorCollection{Projected: p, View: view}
-			if err = challengeviews.ValidateSsmAuthorCollection(vres); err != nil {
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateAuthorResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
 				return nil, goahttp.ErrValidationError("challenge", "ListAuthors", err)
 			}
-			res := challenge.NewSsmAuthorCollection(vres)
+			res := NewListAuthorsAuthorOK(body)
 			return res, nil
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
@@ -727,9 +731,9 @@ func unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v *SsmChallen
 		}
 	}
 	if v.Authors != nil {
-		res.Authors = make([]*challengeviews.SsmAuthorView, len(v.Authors))
+		res.Authors = make([]*challengeviews.AuthorView, len(v.Authors))
 		for i, val := range v.Authors {
-			res.Authors[i] = unmarshalSsmAuthorResponseToChallengeviewsSsmAuthorView(val)
+			res.Authors[i] = unmarshalAuthorResponseToChallengeviewsAuthorView(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -772,13 +776,13 @@ func unmarshalChallengeFilesResponseToChallengeviewsChallengeFilesView(v *Challe
 	return res
 }
 
-// unmarshalSsmAuthorResponseToChallengeviewsSsmAuthorView builds a value of
-// type *challengeviews.SsmAuthorView from a value of type *SsmAuthorResponse.
-func unmarshalSsmAuthorResponseToChallengeviewsSsmAuthorView(v *SsmAuthorResponse) *challengeviews.SsmAuthorView {
+// unmarshalAuthorResponseToChallengeviewsAuthorView builds a value of type
+// *challengeviews.AuthorView from a value of type *AuthorResponse.
+func unmarshalAuthorResponseToChallengeviewsAuthorView(v *AuthorResponse) *challengeviews.AuthorView {
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.SsmAuthorView{
+	res := &challengeviews.AuthorView{
 		ID:          v.ID,
 		FullName:    v.FullName,
 		Description: v.Description,
@@ -845,9 +849,9 @@ func unmarshalSsmChallengeResponseBodyToChallengeviewsSsmChallengeView(v *SsmCha
 		}
 	}
 	if v.Authors != nil {
-		res.Authors = make([]*challengeviews.SsmAuthorView, len(v.Authors))
+		res.Authors = make([]*challengeviews.AuthorView, len(v.Authors))
 		for i, val := range v.Authors {
-			res.Authors[i] = unmarshalSsmAuthorResponseBodyToChallengeviewsSsmAuthorView(val)
+			res.Authors[i] = unmarshalAuthorResponseBodyToChallengeviewsAuthorView(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -890,14 +894,13 @@ func unmarshalChallengeFilesResponseBodyToChallengeviewsChallengeFilesView(v *Ch
 	return res
 }
 
-// unmarshalSsmAuthorResponseBodyToChallengeviewsSsmAuthorView builds a value
-// of type *challengeviews.SsmAuthorView from a value of type
-// *SsmAuthorResponseBody.
-func unmarshalSsmAuthorResponseBodyToChallengeviewsSsmAuthorView(v *SsmAuthorResponseBody) *challengeviews.SsmAuthorView {
+// unmarshalAuthorResponseBodyToChallengeviewsAuthorView builds a value of type
+// *challengeviews.AuthorView from a value of type *AuthorResponseBody.
+func unmarshalAuthorResponseBodyToChallengeviewsAuthorView(v *AuthorResponseBody) *challengeviews.AuthorView {
 	if v == nil {
 		return nil
 	}
-	res := &challengeviews.SsmAuthorView{
+	res := &challengeviews.AuthorView{
 		ID:          v.ID,
 		FullName:    v.FullName,
 		Description: v.Description,
@@ -962,6 +965,22 @@ func unmarshalUserScoreboardScoreResponseBodyToChallengeviewsUserScoreboardScore
 		Name:       v.Name,
 		SchoolName: v.SchoolName,
 		Score:      v.Score,
+	}
+
+	return res
+}
+
+// unmarshalAuthorResponseToChallengeAuthor builds a value of type
+// *challenge.Author from a value of type *AuthorResponse.
+func unmarshalAuthorResponseToChallengeAuthor(v *AuthorResponse) *challenge.Author {
+	res := &challenge.Author{
+		ID:          *v.ID,
+		FullName:    *v.FullName,
+		Description: *v.Description,
+		Sponsor:     *v.Sponsor,
+		Slug:        *v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     *v.Publish,
 	}
 
 	return res

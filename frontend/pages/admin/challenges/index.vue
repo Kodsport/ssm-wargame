@@ -27,17 +27,20 @@
                         <option v-for="cat in store.categories" :value="cat.id">{{ cat.name }}</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group pt-2">
                     <label>Authors</label>
                     <ul>
-                        <li v-for="(author, i) in form.authors">{{ users.byId(author).full_name }} ({{
-                            users.byId(author).email }}) <span @click="form.authors = form.authors.splice(i, i)">[x]</span>
+                        <li v-for="(author, i) in store.authors.filter(a => form.authors.indexOf(a.id) != -1)">
+                            {{ author.full_name
+                            }}
+                            <span @click="form.authors.splice(i, 1)">[x]</span>
                         </li>
                     </ul>
                     <select ref="authSelect" class="form-control" @change="pushAuthor">
                         <option value="" disabled selected>Choose Authors</option>
-                        <option v-for="user in users.users.filter(u => form.authors.indexOf(u.id) == -1)" :value="user.id">
-                            {{ user.email }}</option>
+                        <option v-for="author in store.authors.filter(u => form.authors.indexOf(u.id) == -1)"
+                            :value="author.id">
+                            {{ author.full_name }}</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -95,6 +98,8 @@ const http = useHttp()
 
 const store = useChallengeStore()
 const users = useUserStore()
+
+const authSelect = ref(null)
 
 onMounted(() => {
     store.getChallenges()

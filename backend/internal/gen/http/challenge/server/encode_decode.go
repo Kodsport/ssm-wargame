@@ -373,9 +373,9 @@ func DecodeUserScoreboardRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 // challenge ListAuthors endpoint.
 func EncodeListAuthorsResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(challengeviews.SsmAuthorCollection)
+		res, _ := v.([]*challenge.Author)
 		enc := encoder(ctx, w)
-		body := NewSsmAuthorResponseCollection(res.Projected)
+		body := NewListAuthorsResponseBody(res)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
@@ -433,9 +433,9 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse(v *challengevie
 		}
 	}
 	if v.Authors != nil {
-		res.Authors = make([]*SsmAuthorResponse, len(v.Authors))
+		res.Authors = make([]*AuthorResponse, len(v.Authors))
 		for i, val := range v.Authors {
-			res.Authors[i] = marshalChallengeviewsSsmAuthorViewToSsmAuthorResponse(val)
+			res.Authors[i] = marshalChallengeviewsAuthorViewToAuthorResponse(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -478,13 +478,13 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponse(v *challeng
 	return res
 }
 
-// marshalChallengeviewsSsmAuthorViewToSsmAuthorResponse builds a value of type
-// *SsmAuthorResponse from a value of type *challengeviews.SsmAuthorView.
-func marshalChallengeviewsSsmAuthorViewToSsmAuthorResponse(v *challengeviews.SsmAuthorView) *SsmAuthorResponse {
+// marshalChallengeviewsAuthorViewToAuthorResponse builds a value of type
+// *AuthorResponse from a value of type *challengeviews.AuthorView.
+func marshalChallengeviewsAuthorViewToAuthorResponse(v *challengeviews.AuthorView) *AuthorResponse {
 	if v == nil {
 		return nil
 	}
-	res := &SsmAuthorResponse{
+	res := &AuthorResponse{
 		ID:          *v.ID,
 		FullName:    *v.FullName,
 		Description: *v.Description,
@@ -551,9 +551,9 @@ func marshalChallengeviewsSsmChallengeViewToSsmChallengeResponseBody(v *challeng
 		}
 	}
 	if v.Authors != nil {
-		res.Authors = make([]*SsmAuthorResponseBody, len(v.Authors))
+		res.Authors = make([]*AuthorResponseBody, len(v.Authors))
 		for i, val := range v.Authors {
-			res.Authors[i] = marshalChallengeviewsSsmAuthorViewToSsmAuthorResponseBody(val)
+			res.Authors[i] = marshalChallengeviewsAuthorViewToAuthorResponseBody(val)
 		}
 	}
 	if v.Solvers != nil {
@@ -596,14 +596,13 @@ func marshalChallengeviewsChallengeFilesViewToChallengeFilesResponseBody(v *chal
 	return res
 }
 
-// marshalChallengeviewsSsmAuthorViewToSsmAuthorResponseBody builds a value of
-// type *SsmAuthorResponseBody from a value of type
-// *challengeviews.SsmAuthorView.
-func marshalChallengeviewsSsmAuthorViewToSsmAuthorResponseBody(v *challengeviews.SsmAuthorView) *SsmAuthorResponseBody {
+// marshalChallengeviewsAuthorViewToAuthorResponseBody builds a value of type
+// *AuthorResponseBody from a value of type *challengeviews.AuthorView.
+func marshalChallengeviewsAuthorViewToAuthorResponseBody(v *challengeviews.AuthorView) *AuthorResponseBody {
 	if v == nil {
 		return nil
 	}
-	res := &SsmAuthorResponseBody{
+	res := &AuthorResponseBody{
 		ID:          *v.ID,
 		FullName:    *v.FullName,
 		Description: *v.Description,
@@ -670,6 +669,22 @@ func marshalChallengeviewsUserScoreboardScoreViewToUserScoreboardScoreResponseBo
 		Name:       *v.Name,
 		SchoolName: *v.SchoolName,
 		Score:      *v.Score,
+	}
+
+	return res
+}
+
+// marshalChallengeAuthorToAuthorResponse builds a value of type
+// *AuthorResponse from a value of type *challenge.Author.
+func marshalChallengeAuthorToAuthorResponse(v *challenge.Author) *AuthorResponse {
+	res := &AuthorResponse{
+		ID:          v.ID,
+		FullName:    v.FullName,
+		Description: v.Description,
+		Sponsor:     v.Sponsor,
+		Slug:        v.Slug,
+		ImageURL:    v.ImageURL,
+		Publish:     v.Publish,
 	}
 
 	return res

@@ -58,9 +58,9 @@ type UserScoreboardResponseBody struct {
 	Scores []*UserScoreboardScoreResponseBody `form:"scores" json:"scores" xml:"scores"`
 }
 
-// SsmAuthorResponseCollection is the type of the "challenge" service
-// "ListAuthors" endpoint HTTP response body.
-type SsmAuthorResponseCollection []*SsmAuthorResponse
+// ListAuthorsResponseBody is the type of the "challenge" service "ListAuthors"
+// endpoint HTTP response body.
+type ListAuthorsResponseBody []*AuthorResponse
 
 // GetCurrentMonthlyChallengeNotFoundResponseBody is the type of the
 // "challenge" service "GetCurrentMonthlyChallenge" endpoint HTTP response body
@@ -137,7 +137,7 @@ type SsmChallengeResponse struct {
 	// whether the user has solved the challenge or not
 	Solved   bool                 `form:"solved" json:"solved" xml:"solved"`
 	Category string               `form:"category" json:"category" xml:"category"`
-	Authors  []*SsmAuthorResponse `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Authors  []*AuthorResponse    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 	Solvers  []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
@@ -153,8 +153,8 @@ type ChallengeFilesResponse struct {
 	URL      string `form:"url" json:"url" xml:"url"`
 }
 
-// SsmAuthorResponse is used to define fields on response body types.
-type SsmAuthorResponse struct {
+// AuthorResponse is used to define fields on response body types.
+type AuthorResponse struct {
 	ID          string  `form:"id" json:"id" xml:"id"`
 	FullName    string  `form:"full_name" json:"full_name" xml:"full_name"`
 	Description string  `form:"description" json:"description" xml:"description"`
@@ -197,7 +197,7 @@ type SsmChallengeResponseBody struct {
 	// whether the user has solved the challenge or not
 	Solved   bool                     `form:"solved" json:"solved" xml:"solved"`
 	Category string                   `form:"category" json:"category" xml:"category"`
-	Authors  []*SsmAuthorResponseBody `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Authors  []*AuthorResponseBody    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 	Solvers  []*SsmSolverResponseBody `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
 }
 
@@ -213,8 +213,8 @@ type ChallengeFilesResponseBody struct {
 	URL      string `form:"url" json:"url" xml:"url"`
 }
 
-// SsmAuthorResponseBody is used to define fields on response body types.
-type SsmAuthorResponseBody struct {
+// AuthorResponseBody is used to define fields on response body types.
+type AuthorResponseBody struct {
 	ID          string  `form:"id" json:"id" xml:"id"`
 	FullName    string  `form:"full_name" json:"full_name" xml:"full_name"`
 	Description string  `form:"description" json:"description" xml:"description"`
@@ -333,12 +333,12 @@ func NewUserScoreboardResponseBody(res *challengeviews.SsmUserScoreboardView) *U
 	return body
 }
 
-// NewSsmAuthorResponseCollection builds the HTTP response body from the result
-// of the "ListAuthors" endpoint of the "challenge" service.
-func NewSsmAuthorResponseCollection(res challengeviews.SsmAuthorCollectionView) SsmAuthorResponseCollection {
-	body := make([]*SsmAuthorResponse, len(res))
+// NewListAuthorsResponseBody builds the HTTP response body from the result of
+// the "ListAuthors" endpoint of the "challenge" service.
+func NewListAuthorsResponseBody(res []*challenge.Author) ListAuthorsResponseBody {
+	body := make([]*AuthorResponse, len(res))
 	for i, val := range res {
-		body[i] = marshalChallengeviewsSsmAuthorViewToSsmAuthorResponse(val)
+		body[i] = marshalChallengeAuthorToAuthorResponse(val)
 	}
 	return body
 }

@@ -187,3 +187,31 @@ var ChallengeSubmission = Type("ChallengeSubmission", func() {
 
 	Required("id", "user_id", "input", "successful", "submitted_at")
 })
+
+var Author = Type("Author", func() {
+	Attribute("id", String, func() {
+		Example("uuid todo")
+	})
+	Attribute("full_name", String, func() {
+		Example("Movitz Sunar")
+	})
+	Attribute("description", String, func() {
+		Example("Movitz gör saker")
+	})
+	Attribute("sponsor", Boolean, func() {
+		Example(true)
+	})
+	Attribute("slug", String, func() {
+		Example("movitz")
+	})
+	Attribute("image_url", String, func() {
+		Example("movitz")
+	})
+
+	Attribute("publish", Boolean, func() {
+		Example(true)
+	})
+
+	Required("id", "sponsor", "full_name", "description", "slug", "publish")
+
+})

@@ -27,6 +27,8 @@ type Client struct {
 	ListUsersEndpoint                 goa.Endpoint
 	ListAuthorsEndpoint               goa.Endpoint
 	UpdateAuthorEndpoint              goa.Endpoint
+	CreateAuthorEndpoint              goa.Endpoint
+	DeleteAuthorEndpoint              goa.Endpoint
 	AddFlagEndpoint                   goa.Endpoint
 	DeleteFlagEndpoint                goa.Endpoint
 	ListCategoriesEndpoint            goa.Endpoint
@@ -38,7 +40,7 @@ type Client struct {
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:            listChallenges,
 		GetChallengeMetaEndpoint:          getChallengeMeta,
@@ -52,6 +54,8 @@ func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChalleng
 		ListUsersEndpoint:                 listUsers,
 		ListAuthorsEndpoint:               listAuthors,
 		UpdateAuthorEndpoint:              updateAuthor,
+		CreateAuthorEndpoint:              createAuthor,
+		DeleteAuthorEndpoint:              deleteAuthor,
 		AddFlagEndpoint:                   addFlag,
 		DeleteFlagEndpoint:                deleteFlag,
 		ListCategoriesEndpoint:            listCategories,
@@ -149,18 +153,30 @@ func (c *Client) ListUsers(ctx context.Context, p *ListUsersPayload) (res []*Ssm
 }
 
 // ListAuthors calls the "ListAuthors" endpoint of the "admin" service.
-func (c *Client) ListAuthors(ctx context.Context, p *ListAuthorsPayload) (res []*SsmAuthor, err error) {
+func (c *Client) ListAuthors(ctx context.Context, p *ListAuthorsPayload) (res []*Author, err error) {
 	var ires interface{}
 	ires, err = c.ListAuthorsEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.([]*SsmAuthor), nil
+	return ires.([]*Author), nil
 }
 
 // UpdateAuthor calls the "UpdateAuthor" endpoint of the "admin" service.
 func (c *Client) UpdateAuthor(ctx context.Context, p *UpdateAuthorPayload) (err error) {
 	_, err = c.UpdateAuthorEndpoint(ctx, p)
+	return
+}
+
+// CreateAuthor calls the "CreateAuthor" endpoint of the "admin" service.
+func (c *Client) CreateAuthor(ctx context.Context, p *CreateAuthorPayload) (err error) {
+	_, err = c.CreateAuthorEndpoint(ctx, p)
+	return
+}
+
+// DeleteAuthor calls the "DeleteAuthor" endpoint of the "admin" service.
+func (c *Client) DeleteAuthor(ctx context.Context, p *DeleteAuthorPayload) (err error) {
+	_, err = c.DeleteAuthorEndpoint(ctx, p)
 	return
 }
 

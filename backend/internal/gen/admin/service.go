@@ -38,9 +38,13 @@ type Service interface {
 	// ListUsers implements ListUsers.
 	ListUsers(context.Context, *ListUsersPayload) (res []*SsmUser, err error)
 	// ListAuthors implements ListAuthors.
-	ListAuthors(context.Context, *ListAuthorsPayload) (res []*SsmAuthor, err error)
+	ListAuthors(context.Context, *ListAuthorsPayload) (res []*Author, err error)
 	// UpdateAuthor implements UpdateAuthor.
 	UpdateAuthor(context.Context, *UpdateAuthorPayload) (err error)
+	// CreateAuthor implements CreateAuthor.
+	CreateAuthor(context.Context, *CreateAuthorPayload) (err error)
+	// DeleteAuthor implements DeleteAuthor.
+	DeleteAuthor(context.Context, *DeleteAuthorPayload) (err error)
 	// AddFlag implements AddFlag.
 	AddFlag(context.Context, *AddFlagPayload) (err error)
 	// DeleteFlag implements DeleteFlag.
@@ -73,7 +77,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [20]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken"}
+var MethodNames = [22]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -220,6 +224,25 @@ type UpdateAuthorPayload struct {
 	Publish     bool
 }
 
+// CreateAuthorPayload is the payload type of the admin service CreateAuthor
+// method.
+type CreateAuthorPayload struct {
+	Token       string
+	FullName    string
+	Description string
+	Sponsor     bool
+	Slug        string
+	ImageURL    *string
+	Publish     bool
+}
+
+// DeleteAuthorPayload is the payload type of the admin service DeleteAuthor
+// method.
+type DeleteAuthorPayload struct {
+	ID    string
+	Token string
+}
+
 // AddFlagPayload is the payload type of the admin service AddFlag method.
 type AddFlagPayload struct {
 	Flag  string
@@ -364,7 +387,7 @@ type SsmUser struct {
 	SchoolID *string
 }
 
-type SsmAuthor struct {
+type Author struct {
 	ID          string
 	FullName    string
 	Description string

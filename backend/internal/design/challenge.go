@@ -106,7 +106,7 @@ var _ = Service("challenge", func() {
 		})
 	})
 	Method("ListAuthors", func() {
-		Result(CollectionOf(Author))
+		Result(ArrayOf(Author))
 		Payload(func() {
 			Extend(OptionalTokenPayload)
 		})

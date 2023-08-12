@@ -57,9 +57,9 @@ func convertMonthly(chall *custommodels.UserMonthlyChall) *spec.SsmUserMonthlyCh
 		}
 	}
 
-	res.Challenge.Authors = make([]*spec.SsmAuthor, len(chall.R.Challenge.R.Authors))
+	res.Challenge.Authors = make([]*spec.Author, len(chall.R.Challenge.R.Authors))
 	for i, v := range chall.R.Challenge.R.Authors {
-		res.Challenge.Authors[i] = &spec.SsmAuthor{
+		res.Challenge.Authors[i] = &spec.Author{
 			ID:          v.ID,
 			FullName:    v.FullName,
 			Description: v.Description,

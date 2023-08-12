@@ -164,6 +164,28 @@ var _ = Service("admin", func() {
 			PUT("/authors/{id}")
 		})
 	})
+	Method("CreateAuthor", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(CreateAuthorPayload)
+		})
+		HTTP(func() {
+			POST("/authors")
+		})
+	})
+
+	Method("DeleteAuthor", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("id", String, func() {
+				Example("8b141111-84d6-4c82-936e-86b45e52d456")
+			})
+			Required("id")
+		})
+		HTTP(func() {
+			DELETE("/authors/{id}")
+		})
+	})
 
 	Method("AddFlag", func() {
 		Payload(func() {

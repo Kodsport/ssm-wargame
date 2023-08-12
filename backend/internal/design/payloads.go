@@ -92,3 +92,14 @@ var ChallImport = Type("ChallImport", func() {
 
 	Required("title", "description", "challenge_id")
 })
+
+var CreateAuthorPayload = Type("CreateAuthorPayload", func() {
+	Reference(Author)
+	Attribute("full_name")
+	Attribute("description")
+	Attribute("sponsor")
+	Attribute("slug")
+	Attribute("image_url")
+	Attribute("publish")
+
+})
