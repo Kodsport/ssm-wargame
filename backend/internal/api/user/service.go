@@ -37,7 +37,7 @@ func (s *service) GetSelf(ctx context.Context, req *spec.GetSelfPayload) (*spec.
 		FullName:       user.FullName,
 		Role:           user.Role,
 		SchoolID:       user.SchoolID.Ptr(),
-		OnboardingDone: user.OnboardingComplete,
+		OnboardingDone: user.OnboardingDone,
 	}
 
 	if user.SchoolID.Valid {
@@ -55,13 +55,13 @@ func (s *service) GetSelf(ctx context.Context, req *spec.GetSelfPayload) (*spec.
 func (s *service) CompleteOnboarding(ctx context.Context, req *spec.CompleteOnboardingPayload) error {
 	user := auth.GetUser(ctx)
 
-	if user.OnboardingComplete {
+	if user.OnboardingDone {
 		return errors.New("already done")
 	}
 
-	user.OnboardingComplete = true
+	user.OnboardingDone = true
 
-	_, err := user.Update(ctx, s.db, boil.Whitelist(models.UserColumns.OnboardingComplete))
+	_, err := user.Update(ctx, s.db, boil.Whitelist(models.UserColumns.OnboardingDone))
 	if err != nil {
 		s.log.Error("could not update user", zap.Error(err), utils.C(ctx))
 		return err
