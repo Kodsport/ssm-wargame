@@ -2,7 +2,7 @@ BEGIN;
 
 CREATE TABLE schools (
     id UUID PRIMARY KEY,
-    name TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL,
     geographical_area_code TEXT NOT NULL,
     municipality_name TEXT NOT NULL,
     skolverket_id INT UNIQUE,
