@@ -73,8 +73,8 @@ const form = ref({
     slug: '',
     description: '',
     image_url: '',
-    sponsor: '',
-    publish: '',
+    sponsor: false,
+    publish: false,
 })
 
 
