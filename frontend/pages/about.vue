@@ -3,15 +3,14 @@
         <div>
             <h2 class="text-primary d-flex justify-content-center">SSM Projektledning</h2>
 
-            <div class="row justify-content-center">
-                <div class="col-3 bg-dark rounded p-3 m-2" v-for="x in [0, 0, 0, 0, 0, 0]">
-                    <div class="d-flex justify-content-center flex-column">
+            <div class="row">
+                <div class="col-3" v-for="person in people">
+                    <div class="h-100 bg-dark d-flex justify-content-center flex-column p-3 rounded">
 
-                        <img class="rounded"
-                            src="https://upload.wikimedia.org/wikipedia/commons/3/34/Terry_A._Davis_2017.jpg" alt="">
-                        <h5 class="pt-3">Terry Davis</h5>
-                        <i>Eventkoordinator</i>
-                        <nuxt-link to="/challenges/terry">Se Terry's utmaningar</nuxt-link>
+                        <img class="rounded img-fluidx" :src="person.url" alt="">
+                        <h5 class="pt-3">{{ person.name }}</h5>
+                        <i>{{ person.role }}</i>
+                        <nuxt-link v-if="false" to="/challenges/terry">Se Terry's utmaningar</nuxt-link>
 
 
                         <span class="text-primary pt-2">
@@ -25,7 +24,7 @@
 
         <div class="row pt-3">
             <div class="col d-flex flex-row justify-content-center">
-                <img src="~/assets/kodsport.png" alt="Kodsport Logga">
+                <img class="img-fluid" src="~/assets/kodsport.png" alt="Kodsport Logga">
             </div>
             <div class="col">
                 <h1 class="text-primary">Föreningen</h1>
@@ -40,13 +39,31 @@
     </div>
 </template>
 
-<style scoped>
-img {
-    height: 10vw;
-}
-</style>
-
 <script setup lang="ts">
+
+const people = [
+    {
+        name: "Aron Bergman",
+        role: "Projektledning",
+        url: "/aron.png"
+    },
+    {
+        name: "Xenia Lööv",
+        role: "Projektledning",
+        url: "/xenia.png"
+    },
+    {
+        name: "Oskar Tornevall",
+        role: "Projektledning",
+        url: "/oskar.png"
+    },
+    {
+        name: "Mateusz Drwal",
+        role: "Infra",
+        url: "/mateusz.png"
+    }
+];
+
 useHead({
     title: 'SSM - Om oss'
 })
