@@ -17,8 +17,8 @@ var User = ResultType("application/vnd.ssm.user", func() {
 	Attribute("role", String, func() {
 		Example("admin")
 	})
-	Attribute("school_id", Int, func() {
-		Example(78433202)
+	Attribute("school_id", String, func() {
+		Example("a0b05541-9211-4faf-82cc-d3bd64370bf4")
 	})
 	Required("id", "email", "full_name", "role")
 })

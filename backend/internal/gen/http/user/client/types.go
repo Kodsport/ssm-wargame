@@ -15,18 +15,19 @@ import (
 // JoinSchoolRequestBody is the type of the "user" service "JoinSchool"
 // endpoint HTTP request body.
 type JoinSchoolRequestBody struct {
-	SchoolID int `form:"school_id" json:"school_id" xml:"school_id"`
+	SchoolID string `form:"school_id" json:"school_id" xml:"school_id"`
 }
 
 // GetSelfResponseBody is the type of the "user" service "GetSelf" endpoint
 // HTTP response body.
 type GetSelfResponseBody struct {
-	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
-	ID         *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Email      *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-	FullName   *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
-	Role       *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
-	SchoolID   *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	SchoolName     *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
+	OnboardingDone *bool   `form:"onboarding_done,omitempty" json:"onboarding_done,omitempty" xml:"onboarding_done,omitempty"`
+	ID             *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Email          *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	FullName       *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	Role           *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
+	SchoolID       *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
 // SearchSchoolsResponseBody is the type of the "user" service "SearchSchools"
@@ -35,9 +36,10 @@ type SearchSchoolsResponseBody []*SchoolResponse
 
 // SchoolResponse is used to define fields on response body types.
 type SchoolResponse struct {
-	ID               *int    `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	ID               *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Name             *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	MunicipalityName *string `form:"municipality_name,omitempty" json:"municipality_name,omitempty" xml:"municipality_name,omitempty"`
+	IsUniversity     *bool   `form:"is_university,omitempty" json:"is_university,omitempty" xml:"is_university,omitempty"`
 }
 
 // NewJoinSchoolRequestBody builds the HTTP request body from the payload of
@@ -53,12 +55,13 @@ func NewJoinSchoolRequestBody(p *user.JoinSchoolPayload) *JoinSchoolRequestBody 
 // HTTP "OK" response.
 func NewGetSelfResultOK(body *GetSelfResponseBody) *user.GetSelfResult {
 	v := &user.GetSelfResult{
-		SchoolName: body.SchoolName,
-		ID:         *body.ID,
-		Email:      *body.Email,
-		FullName:   *body.FullName,
-		Role:       *body.Role,
-		SchoolID:   body.SchoolID,
+		SchoolName:     body.SchoolName,
+		OnboardingDone: *body.OnboardingDone,
+		ID:             *body.ID,
+		Email:          *body.Email,
+		FullName:       *body.FullName,
+		Role:           *body.Role,
+		SchoolID:       body.SchoolID,
 	}
 
 	return v
@@ -78,6 +81,9 @@ func NewSearchSchoolsSchoolOK(body []*SchoolResponse) []*user.School {
 // ValidateGetSelfResponseBody runs the validations defined on
 // GetSelfResponseBody
 func ValidateGetSelfResponseBody(body *GetSelfResponseBody) (err error) {
+	if body.OnboardingDone == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("onboarding_done", "body"))
+	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
@@ -103,6 +109,12 @@ func ValidateSchoolResponse(body *SchoolResponse) (err error) {
 	}
 	if body.MunicipalityName == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("municipality_name", "body"))
+	}
+	if body.IsUniversity == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("is_university", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }

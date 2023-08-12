@@ -11,6 +11,7 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 
 	user "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
@@ -46,6 +47,41 @@ func DecodeGetSelfRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp
 			return nil, err
 		}
 		payload := NewGetSelfPayload(token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeCompleteOnboardingResponse returns an encoder for responses returned
+// by the user CompleteOnboarding endpoint.
+func EncodeCompleteOnboardingResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeCompleteOnboardingRequest returns a decoder for requests sent to the
+// user CompleteOnboarding endpoint.
+func DecodeCompleteOnboardingRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token string
+			err   error
+		)
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewCompleteOnboardingPayload(token)
 		if strings.Contains(payload.Token, " ") {
 			// Remove authorization scheme prefix (e.g. "Bearer")
 			cred := strings.SplitN(payload.Token, " ", 2)[1]
@@ -158,13 +194,24 @@ func EncodeSearchSchoolsResponse(encoder func(context.Context, http.ResponseWrit
 func DecodeSearchSchoolsRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			q     string
-			token string
-			err   error
+			q          string
+			university *bool
+			token      string
+			err        error
 		)
 		q = r.URL.Query().Get("q")
 		if q == "" {
 			err = goa.MergeErrors(err, goa.MissingFieldError("q", "query string"))
+		}
+		{
+			universityRaw := r.URL.Query().Get("university")
+			if universityRaw != "" {
+				v, err2 := strconv.ParseBool(universityRaw)
+				if err2 != nil {
+					err = goa.MergeErrors(err, goa.InvalidFieldTypeError("university", universityRaw, "boolean"))
+				}
+				university = &v
+			}
 		}
 		token = r.Header.Get("Authorization")
 		if token == "" {
@@ -173,7 +220,7 @@ func DecodeSearchSchoolsRequest(mux goahttp.Muxer, decoder func(*http.Request) g
 		if err != nil {
 			return nil, err
 		}
-		payload := NewSearchSchoolsPayload(q, token)
+		payload := NewSearchSchoolsPayload(q, university, token)
 		if strings.Contains(payload.Token, " ") {
 			// Remove authorization scheme prefix (e.g. "Bearer")
 			cred := strings.SplitN(payload.Token, " ", 2)[1]
@@ -191,6 +238,7 @@ func marshalUserSchoolToSchoolResponse(v *user.School) *SchoolResponse {
 		ID:               v.ID,
 		Name:             v.Name,
 		MunicipalityName: v.MunicipalityName,
+		IsUniversity:     v.IsUniversity,
 	}
 
 	return res

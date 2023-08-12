@@ -999,6 +999,24 @@ paths:
       - http
       security:
       - jwt_header_Authorization: []
+  /user/complete_onboarding:
+    post:
+      tags:
+      - user
+      summary: CompleteOnboarding user
+      operationId: user#CompleteOnboarding
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK response.
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
   /user/join_school:
     post:
       tags:
@@ -1053,6 +1071,10 @@ paths:
         in: query
         required: true
         type: string
+      - name: university
+        in: query
+        required: false
+        type: boolean
       - name: Authorization
         in: header
         required: true
@@ -1085,6 +1107,7 @@ paths:
           schema:
             $ref: '#/definitions/UserGetSelfResponseBody'
             required:
+            - onboarding_done
             - id
             - email
             - full_name
@@ -5411,9 +5434,12 @@ definitions:
     type: object
     properties:
       id:
-        type: integer
-        example: 78433202
-        format: int64
+        type: string
+        example: ed832486-a529-43ff-930a-ab583bd52d01
+        format: uuid
+      is_university:
+        type: boolean
+        example: true
       municipality_name:
         type: string
         example: Örebro
@@ -5421,13 +5447,15 @@ definitions:
         type: string
         example: Engelbrektsskolan
     example:
-      id: 78433202
+      id: ed832486-a529-43ff-930a-ab583bd52d01
+      is_university: true
       municipality_name: Örebro
       name: Engelbrektsskolan
     required:
     - id
     - name
     - municipality_name
+    - is_university
   SchoolScoreboardScoreResponseBody:
     title: SchoolScoreboardScoreResponseBody
     type: object
@@ -6175,16 +6203,15 @@ definitions:
         type: string
         example: admin
       school_id:
-        type: integer
-        example: 78433202
-        format: int64
+        type: string
+        example: a0b05541-9211-4faf-82cc-d3bd64370bf4
     description: SsmUserResponse result type (default view)
     example:
       email: movitz.sunar@ssm.example
       full_name: Movitz Sunar
       id: uuid todo
       role: admin
-      school_id: 78433202
+      school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
     required:
     - id
     - email
@@ -6203,13 +6230,15 @@ definitions:
       id:
         type: string
         example: uuid todo
+      onboarding_done:
+        type: boolean
+        example: true
       role:
         type: string
         example: admin
       school_id:
-        type: integer
-        example: 78433202
-        format: int64
+        type: string
+        example: a0b05541-9211-4faf-82cc-d3bd64370bf4
       school_name:
         type: string
         example: Voluptate omnis.
@@ -6217,10 +6246,12 @@ definitions:
       email: movitz.sunar@ssm.example
       full_name: Movitz Sunar
       id: uuid todo
+      onboarding_done: true
       role: admin
-      school_id: 78433202
+      school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
       school_name: Neque qui consectetur explicabo autem totam.
     required:
+    - onboarding_done
     - id
     - email
     - full_name
@@ -6230,11 +6261,10 @@ definitions:
     type: object
     properties:
       school_id:
-        type: integer
-        example: 78433202
-        format: int64
+        type: string
+        example: b6d5e5eb-3272-4795-ba1c-73a8efc1cf19
     example:
-      school_id: 78433202
+      school_id: b6d5e5eb-3272-4795-ba1c-73a8efc1cf19
     required:
     - school_id
   UserScoreboardScoreResponseBody:

@@ -3,25 +3,24 @@
         <div v-if="auth.user.id">
             <h1>{{ auth.user.full_name }}</h1>
 
-            <p>Mail: {{ auth.user.email }}</p>
-            <p>Roll: {{ auth.user.role }}</p>
-
             <div>
-                <h2>Skola</h2>
+                <h3>Skola</h3>
                 <p>
-                    Går du i grundskolan eller gymnasiet? Representera din skola på poängtavlan!
+                    Pluggar du? Representera din skola på poängtavlan!
                 </p>
                 <div v-if="auth.user.school_name">
-                    Representerar <b class="pe-3"> {{ auth.user.school_name }}</b>
+                    Du representerar <b class="pe-3"> {{ auth.user.school_name }}</b>
                     <button class="btn btn-danger" @click="leaveSchool">Lämna</button>
                 </div>
                 <div v-else>
                     <input class="form-control" type="text" v-model="schoolQuery" @input="searchSchools"
                         placeholder="Sök skola">
                     <ul>
-                        <li v-for="school in schools" :key="school.id">{{ school.name }} ({{ school.municipality_name
-                        }})
-                            <button class="btn btn-primary btn-xs" @click="joinSchool(school.id)">Gå med</button>
+                        <li v-for="school in schools" :key="school.id">{{ school.name }} <span
+                                v-if="!school.is_university">({{ school.municipality_name
+                                }})</span>
+                            <button class="btn btn-primary btn-xs mt-1 ms-2"
+                                @click="joinSchool(school.id)">Representera</button>
                         </li>
                     </ul>
                 </div>

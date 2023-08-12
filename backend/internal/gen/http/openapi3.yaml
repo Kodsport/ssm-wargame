@@ -1270,33 +1270,33 @@ paths:
                   full_name: Movitz Sunar
                   id: uuid todo
                   role: admin
-                  school_id: 78433202
+                  school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
                 - email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
                   id: uuid todo
                   role: admin
-                  school_id: 78433202
+                  school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
                 - email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
                   id: uuid todo
                   role: admin
-                  school_id: 78433202
+                  school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
                 - email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
                   id: uuid todo
                   role: admin
-                  school_id: 78433202
+                  school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               example:
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: uuid todo
                 role: admin
-                school_id: 78433202
+                school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: uuid todo
                 role: admin
-                school_id: 78433202
+                school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
         "400":
           description: Resource not found
           content:
@@ -1889,6 +1889,17 @@ paths:
                   score: 1337
       security:
       - jwt_header_Authorization: []
+  /user/complete_onboarding:
+    post:
+      tags:
+      - user
+      summary: CompleteOnboarding user
+      operationId: user#CompleteOnboarding
+      responses:
+        "200":
+          description: OK response.
+      security:
+      - jwt_header_Authorization: []
   /user/join_school:
     post:
       tags:
@@ -1902,7 +1913,7 @@ paths:
             schema:
               $ref: '#/components/schemas/JoinSchoolRequestBody'
             example:
-              school_id: 78433202
+              school_id: b6d5e5eb-3272-4795-ba1c-73a8efc1cf19
       responses:
         "200":
           description: OK response.
@@ -1934,6 +1945,13 @@ paths:
           type: string
           example: engelbrektssko
         example: engelbrektssko
+      - name: university
+        in: query
+        allowEmptyValue: true
+        schema:
+          type: boolean
+          example: true
+        example: true
       responses:
         "200":
           description: OK response.
@@ -1944,20 +1962,25 @@ paths:
                 items:
                   $ref: '#/components/schemas/School'
                 example:
-                - id: 78433202
+                - id: ed832486-a529-43ff-930a-ab583bd52d01
+                  is_university: true
                   municipality_name: Örebro
                   name: Engelbrektsskolan
-                - id: 78433202
+                - id: ed832486-a529-43ff-930a-ab583bd52d01
+                  is_university: true
                   municipality_name: Örebro
                   name: Engelbrektsskolan
               example:
-              - id: 78433202
+              - id: ed832486-a529-43ff-930a-ab583bd52d01
+                is_university: true
                 municipality_name: Örebro
                 name: Engelbrektsskolan
-              - id: 78433202
+              - id: ed832486-a529-43ff-930a-ab583bd52d01
+                is_university: true
                 municipality_name: Örebro
                 name: Engelbrektsskolan
-              - id: 78433202
+              - id: ed832486-a529-43ff-930a-ab583bd52d01
+                is_university: true
                 municipality_name: Örebro
                 name: Engelbrektsskolan
       security:
@@ -1979,8 +2002,9 @@ paths:
                 email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: uuid todo
+                onboarding_done: true
                 role: admin
-                school_id: 78433202
+                school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
                 school_name: Alias voluptas eum sit.
       security:
       - jwt_header_Authorization: []
@@ -2480,13 +2504,15 @@ components:
         id:
           type: string
           example: uuid todo
+        onboarding_done:
+          type: boolean
+          example: true
         role:
           type: string
           example: admin
         school_id:
-          type: integer
-          example: 78433202
-          format: int64
+          type: string
+          example: a0b05541-9211-4faf-82cc-d3bd64370bf4
         school_name:
           type: string
           example: Earum non cumque.
@@ -2494,10 +2520,12 @@ components:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: uuid todo
+        onboarding_done: true
         role: admin
-        school_id: 78433202
+        school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
         school_name: Qui nisi.
       required:
+      - onboarding_done
       - id
       - email
       - full_name
@@ -2521,11 +2549,10 @@ components:
       type: object
       properties:
         school_id:
-          type: integer
-          example: 78433202
-          format: int64
+          type: string
+          example: b6d5e5eb-3272-4795-ba1c-73a8efc1cf19
       example:
-        school_id: 78433202
+        school_id: b6d5e5eb-3272-4795-ba1c-73a8efc1cf19
       required:
       - school_id
     MonthlyChallenge:
@@ -2586,9 +2613,12 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 78433202
-          format: int64
+          type: string
+          example: ed832486-a529-43ff-930a-ab583bd52d01
+          format: uuid
+        is_university:
+          type: boolean
+          example: true
         municipality_name:
           type: string
           example: Örebro
@@ -2596,13 +2626,15 @@ components:
           type: string
           example: Engelbrektsskolan
       example:
-        id: 78433202
+        id: ed832486-a529-43ff-930a-ab583bd52d01
+        is_university: true
         municipality_name: Örebro
         name: Engelbrektsskolan
       required:
       - id
       - name
       - municipality_name
+      - is_university
     SchoolScoreboardScore:
       type: object
       properties:
@@ -3348,15 +3380,14 @@ components:
           type: string
           example: admin
         school_id:
-          type: integer
-          example: 78433202
-          format: int64
+          type: string
+          example: a0b05541-9211-4faf-82cc-d3bd64370bf4
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: uuid todo
         role: admin
-        school_id: 78433202
+        school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
       required:
       - id
       - email

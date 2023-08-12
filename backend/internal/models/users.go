@@ -24,124 +24,93 @@ import (
 
 // User is an object representing the database table.
 type User struct {
-	ID        string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	DiscordID null.String `boil:"discord_id" json:"discord_id,omitempty" toml:"discord_id" yaml:"discord_id,omitempty"`
-	FullName  string      `boil:"full_name" json:"full_name" toml:"full_name" yaml:"full_name"`
-	Email     string      `boil:"email" json:"email" toml:"email" yaml:"email"`
-	Role      string      `boil:"role" json:"role" toml:"role" yaml:"role"`
-	SchoolID  null.Int    `boil:"school_id" json:"school_id,omitempty" toml:"school_id" yaml:"school_id,omitempty"`
-	AuthorID  null.String `boil:"author_id" json:"author_id,omitempty" toml:"author_id" yaml:"author_id,omitempty"`
-	CreatedAt time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	ID                 string      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	DiscordID          null.String `boil:"discord_id" json:"discord_id,omitempty" toml:"discord_id" yaml:"discord_id,omitempty"`
+	FullName           string      `boil:"full_name" json:"full_name" toml:"full_name" yaml:"full_name"`
+	Email              string      `boil:"email" json:"email" toml:"email" yaml:"email"`
+	Role               string      `boil:"role" json:"role" toml:"role" yaml:"role"`
+	AuthorID           null.String `boil:"author_id" json:"author_id,omitempty" toml:"author_id" yaml:"author_id,omitempty"`
+	CreatedAt          time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt          null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	SchoolID           null.String `boil:"school_id" json:"school_id,omitempty" toml:"school_id" yaml:"school_id,omitempty"`
+	OnboardingComplete bool        `boil:"onboarding_complete" json:"onboarding_complete" toml:"onboarding_complete" yaml:"onboarding_complete"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var UserColumns = struct {
-	ID        string
-	DiscordID string
-	FullName  string
-	Email     string
-	Role      string
-	SchoolID  string
-	AuthorID  string
-	CreatedAt string
-	UpdatedAt string
+	ID                 string
+	DiscordID          string
+	FullName           string
+	Email              string
+	Role               string
+	AuthorID           string
+	CreatedAt          string
+	UpdatedAt          string
+	SchoolID           string
+	OnboardingComplete string
 }{
-	ID:        "id",
-	DiscordID: "discord_id",
-	FullName:  "full_name",
-	Email:     "email",
-	Role:      "role",
-	SchoolID:  "school_id",
-	AuthorID:  "author_id",
-	CreatedAt: "created_at",
-	UpdatedAt: "updated_at",
+	ID:                 "id",
+	DiscordID:          "discord_id",
+	FullName:           "full_name",
+	Email:              "email",
+	Role:               "role",
+	AuthorID:           "author_id",
+	CreatedAt:          "created_at",
+	UpdatedAt:          "updated_at",
+	SchoolID:           "school_id",
+	OnboardingComplete: "onboarding_complete",
 }
 
 var UserTableColumns = struct {
-	ID        string
-	DiscordID string
-	FullName  string
-	Email     string
-	Role      string
-	SchoolID  string
-	AuthorID  string
-	CreatedAt string
-	UpdatedAt string
+	ID                 string
+	DiscordID          string
+	FullName           string
+	Email              string
+	Role               string
+	AuthorID           string
+	CreatedAt          string
+	UpdatedAt          string
+	SchoolID           string
+	OnboardingComplete string
 }{
-	ID:        "users.id",
-	DiscordID: "users.discord_id",
-	FullName:  "users.full_name",
-	Email:     "users.email",
-	Role:      "users.role",
-	SchoolID:  "users.school_id",
-	AuthorID:  "users.author_id",
-	CreatedAt: "users.created_at",
-	UpdatedAt: "users.updated_at",
+	ID:                 "users.id",
+	DiscordID:          "users.discord_id",
+	FullName:           "users.full_name",
+	Email:              "users.email",
+	Role:               "users.role",
+	AuthorID:           "users.author_id",
+	CreatedAt:          "users.created_at",
+	UpdatedAt:          "users.updated_at",
+	SchoolID:           "users.school_id",
+	OnboardingComplete: "users.onboarding_complete",
 }
 
 // Generated where
 
-type whereHelpernull_Int struct{ field string }
-
-func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, false, x)
-}
-func (w whereHelpernull_Int) NEQ(x null.Int) qm.QueryMod {
-	return qmhelper.WhereNullEQ(w.field, true, x)
-}
-func (w whereHelpernull_Int) LT(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpernull_Int) LTE(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpernull_Int) GT(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
-func (w whereHelpernull_Int) IN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
-}
-func (w whereHelpernull_Int) NIN(slice []int) qm.QueryMod {
-	values := make([]interface{}, 0, len(slice))
-	for _, value := range slice {
-		values = append(values, value)
-	}
-	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
-}
-
-func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
-func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
-
 var UserWhere = struct {
-	ID        whereHelperstring
-	DiscordID whereHelpernull_String
-	FullName  whereHelperstring
-	Email     whereHelperstring
-	Role      whereHelperstring
-	SchoolID  whereHelpernull_Int
-	AuthorID  whereHelpernull_String
-	CreatedAt whereHelpertime_Time
-	UpdatedAt whereHelpernull_Time
+	ID                 whereHelperstring
+	DiscordID          whereHelpernull_String
+	FullName           whereHelperstring
+	Email              whereHelperstring
+	Role               whereHelperstring
+	AuthorID           whereHelpernull_String
+	CreatedAt          whereHelpertime_Time
+	UpdatedAt          whereHelpernull_Time
+	SchoolID           whereHelpernull_String
+	OnboardingComplete whereHelperbool
 }{
-	ID:        whereHelperstring{field: "\"users\".\"id\""},
-	DiscordID: whereHelpernull_String{field: "\"users\".\"discord_id\""},
-	FullName:  whereHelperstring{field: "\"users\".\"full_name\""},
-	Email:     whereHelperstring{field: "\"users\".\"email\""},
-	Role:      whereHelperstring{field: "\"users\".\"role\""},
-	SchoolID:  whereHelpernull_Int{field: "\"users\".\"school_id\""},
-	AuthorID:  whereHelpernull_String{field: "\"users\".\"author_id\""},
-	CreatedAt: whereHelpertime_Time{field: "\"users\".\"created_at\""},
-	UpdatedAt: whereHelpernull_Time{field: "\"users\".\"updated_at\""},
+	ID:                 whereHelperstring{field: "\"users\".\"id\""},
+	DiscordID:          whereHelpernull_String{field: "\"users\".\"discord_id\""},
+	FullName:           whereHelperstring{field: "\"users\".\"full_name\""},
+	Email:              whereHelperstring{field: "\"users\".\"email\""},
+	Role:               whereHelperstring{field: "\"users\".\"role\""},
+	AuthorID:           whereHelpernull_String{field: "\"users\".\"author_id\""},
+	CreatedAt:          whereHelpertime_Time{field: "\"users\".\"created_at\""},
+	UpdatedAt:          whereHelpernull_Time{field: "\"users\".\"updated_at\""},
+	SchoolID:           whereHelpernull_String{field: "\"users\".\"school_id\""},
+	OnboardingComplete: whereHelperbool{field: "\"users\".\"onboarding_complete\""},
 }
 
 // UserRels is where relationship names are stored.
@@ -202,9 +171,9 @@ func (r *userR) GetUserSolves() UserSolfSlice {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "discord_id", "full_name", "email", "role", "school_id", "author_id", "created_at", "updated_at"}
+	userAllColumns            = []string{"id", "discord_id", "full_name", "email", "role", "author_id", "created_at", "updated_at", "school_id", "onboarding_complete"}
 	userColumnsWithoutDefault = []string{"id", "full_name", "email", "role"}
-	userColumnsWithDefault    = []string{"discord_id", "school_id", "author_id", "created_at", "updated_at"}
+	userColumnsWithDefault    = []string{"discord_id", "author_id", "created_at", "updated_at", "school_id", "onboarding_complete"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )

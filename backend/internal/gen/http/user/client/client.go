@@ -21,6 +21,10 @@ type Client struct {
 	// endpoint.
 	GetSelfDoer goahttp.Doer
 
+	// CompleteOnboarding Doer is the HTTP client used to make requests to the
+	// CompleteOnboarding endpoint.
+	CompleteOnboardingDoer goahttp.Doer
+
 	// JoinSchool Doer is the HTTP client used to make requests to the JoinSchool
 	// endpoint.
 	JoinSchoolDoer goahttp.Doer
@@ -53,15 +57,16 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		GetSelfDoer:         doer,
-		JoinSchoolDoer:      doer,
-		LeaveSchoolDoer:     doer,
-		SearchSchoolsDoer:   doer,
-		RestoreResponseBody: restoreBody,
-		scheme:              scheme,
-		host:                host,
-		decoder:             dec,
-		encoder:             enc,
+		GetSelfDoer:            doer,
+		CompleteOnboardingDoer: doer,
+		JoinSchoolDoer:         doer,
+		LeaveSchoolDoer:        doer,
+		SearchSchoolsDoer:      doer,
+		RestoreResponseBody:    restoreBody,
+		scheme:                 scheme,
+		host:                   host,
+		decoder:                dec,
+		encoder:                enc,
 	}
 }
 
@@ -84,6 +89,30 @@ func (c *Client) GetSelf() goa.Endpoint {
 		resp, err := c.GetSelfDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("user", "GetSelf", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CompleteOnboarding returns an endpoint that makes HTTP requests to the user
+// service CompleteOnboarding server.
+func (c *Client) CompleteOnboarding() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeCompleteOnboardingRequest(c.encoder)
+		decodeResponse = DecodeCompleteOnboardingResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCompleteOnboardingRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CompleteOnboardingDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("user", "CompleteOnboarding", err)
 		}
 		return decodeResponse(resp)
 	}

@@ -19,22 +19,22 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"github.com/volatiletech/sqlboiler/v4/queries/qmhelper"
-	"github.com/volatiletech/sqlboiler/v4/types"
 	"github.com/volatiletech/strmangle"
 )
 
 // School is an object representing the database table.
 type School struct {
-	ID                   int          `boil:"id" json:"id" toml:"id" yaml:"id"`
+	ID                   string       `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Name                 string       `boil:"name" json:"name" toml:"name" yaml:"name"`
 	GeographicalAreaCode string       `boil:"geographical_area_code" json:"geographical_area_code" toml:"geographical_area_code" yaml:"geographical_area_code"`
 	MunicipalityName     string       `boil:"municipality_name" json:"municipality_name" toml:"municipality_name" yaml:"municipality_name"`
-	RawSkolverketData    types.JSON   `boil:"raw_skolverket_data" json:"raw_skolverket_data" toml:"raw_skolverket_data" yaml:"raw_skolverket_data"`
+	SkolverketID         null.Int     `boil:"skolverket_id" json:"skolverket_id,omitempty" toml:"skolverket_id" yaml:"skolverket_id,omitempty"`
+	RawSkolverketData    null.JSON    `boil:"raw_skolverket_data" json:"raw_skolverket_data,omitempty" toml:"raw_skolverket_data" yaml:"raw_skolverket_data,omitempty"`
 	IsHighSchool         bool         `boil:"is_high_school" json:"is_high_school" toml:"is_high_school" yaml:"is_high_school"`
 	IsElementarySchool   bool         `boil:"is_elementary_school" json:"is_elementary_school" toml:"is_elementary_school" yaml:"is_elementary_school"`
+	IsUniversity         bool         `boil:"is_university" json:"is_university" toml:"is_university" yaml:"is_university"`
 	Latitude             null.Float64 `boil:"latitude" json:"latitude,omitempty" toml:"latitude" yaml:"latitude,omitempty"`
 	Longitude            null.Float64 `boil:"longitude" json:"longitude,omitempty" toml:"longitude" yaml:"longitude,omitempty"`
-	Status               string       `boil:"status" json:"status" toml:"status" yaml:"status"`
 	CreatedAt            time.Time    `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt            null.Time    `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
@@ -47,12 +47,13 @@ var SchoolColumns = struct {
 	Name                 string
 	GeographicalAreaCode string
 	MunicipalityName     string
+	SkolverketID         string
 	RawSkolverketData    string
 	IsHighSchool         string
 	IsElementarySchool   string
+	IsUniversity         string
 	Latitude             string
 	Longitude            string
-	Status               string
 	CreatedAt            string
 	UpdatedAt            string
 }{
@@ -60,12 +61,13 @@ var SchoolColumns = struct {
 	Name:                 "name",
 	GeographicalAreaCode: "geographical_area_code",
 	MunicipalityName:     "municipality_name",
+	SkolverketID:         "skolverket_id",
 	RawSkolverketData:    "raw_skolverket_data",
 	IsHighSchool:         "is_high_school",
 	IsElementarySchool:   "is_elementary_school",
+	IsUniversity:         "is_university",
 	Latitude:             "latitude",
 	Longitude:            "longitude",
-	Status:               "status",
 	CreatedAt:            "created_at",
 	UpdatedAt:            "updated_at",
 }
@@ -75,12 +77,13 @@ var SchoolTableColumns = struct {
 	Name                 string
 	GeographicalAreaCode string
 	MunicipalityName     string
+	SkolverketID         string
 	RawSkolverketData    string
 	IsHighSchool         string
 	IsElementarySchool   string
+	IsUniversity         string
 	Latitude             string
 	Longitude            string
-	Status               string
 	CreatedAt            string
 	UpdatedAt            string
 }{
@@ -88,38 +91,80 @@ var SchoolTableColumns = struct {
 	Name:                 "schools.name",
 	GeographicalAreaCode: "schools.geographical_area_code",
 	MunicipalityName:     "schools.municipality_name",
+	SkolverketID:         "schools.skolverket_id",
 	RawSkolverketData:    "schools.raw_skolverket_data",
 	IsHighSchool:         "schools.is_high_school",
 	IsElementarySchool:   "schools.is_elementary_school",
+	IsUniversity:         "schools.is_university",
 	Latitude:             "schools.latitude",
 	Longitude:            "schools.longitude",
-	Status:               "schools.status",
 	CreatedAt:            "schools.created_at",
 	UpdatedAt:            "schools.updated_at",
 }
 
 // Generated where
 
-type whereHelpertypes_JSON struct{ field string }
+type whereHelpernull_Int struct{ field string }
 
-func (w whereHelpertypes_JSON) EQ(x types.JSON) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.EQ, x)
+func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
 }
-func (w whereHelpertypes_JSON) NEQ(x types.JSON) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.NEQ, x)
+func (w whereHelpernull_Int) NEQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
 }
-func (w whereHelpertypes_JSON) LT(x types.JSON) qm.QueryMod {
+func (w whereHelpernull_Int) LT(x null.Int) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LT, x)
 }
-func (w whereHelpertypes_JSON) LTE(x types.JSON) qm.QueryMod {
+func (w whereHelpernull_Int) LTE(x null.Int) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.LTE, x)
 }
-func (w whereHelpertypes_JSON) GT(x types.JSON) qm.QueryMod {
+func (w whereHelpernull_Int) GT(x null.Int) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GT, x)
 }
-func (w whereHelpertypes_JSON) GTE(x types.JSON) qm.QueryMod {
+func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
 	return qmhelper.Where(w.field, qmhelper.GTE, x)
 }
+func (w whereHelpernull_Int) IN(slice []int) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
+}
+func (w whereHelpernull_Int) NIN(slice []int) qm.QueryMod {
+	values := make([]interface{}, 0, len(slice))
+	for _, value := range slice {
+		values = append(values, value)
+	}
+	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
+}
+
+func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
+type whereHelpernull_JSON struct{ field string }
+
+func (w whereHelpernull_JSON) EQ(x null.JSON) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_JSON) NEQ(x null.JSON) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_JSON) LT(x null.JSON) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_JSON) LTE(x null.JSON) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_JSON) GT(x null.JSON) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_JSON) GTE(x null.JSON) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
+func (w whereHelpernull_JSON) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_JSON) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 type whereHelpernull_Float64 struct{ field string }
 
@@ -160,29 +205,31 @@ func (w whereHelpernull_Float64) IsNull() qm.QueryMod    { return qmhelper.Where
 func (w whereHelpernull_Float64) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
 var SchoolWhere = struct {
-	ID                   whereHelperint
+	ID                   whereHelperstring
 	Name                 whereHelperstring
 	GeographicalAreaCode whereHelperstring
 	MunicipalityName     whereHelperstring
-	RawSkolverketData    whereHelpertypes_JSON
+	SkolverketID         whereHelpernull_Int
+	RawSkolverketData    whereHelpernull_JSON
 	IsHighSchool         whereHelperbool
 	IsElementarySchool   whereHelperbool
+	IsUniversity         whereHelperbool
 	Latitude             whereHelpernull_Float64
 	Longitude            whereHelpernull_Float64
-	Status               whereHelperstring
 	CreatedAt            whereHelpertime_Time
 	UpdatedAt            whereHelpernull_Time
 }{
-	ID:                   whereHelperint{field: "\"schools\".\"id\""},
+	ID:                   whereHelperstring{field: "\"schools\".\"id\""},
 	Name:                 whereHelperstring{field: "\"schools\".\"name\""},
 	GeographicalAreaCode: whereHelperstring{field: "\"schools\".\"geographical_area_code\""},
 	MunicipalityName:     whereHelperstring{field: "\"schools\".\"municipality_name\""},
-	RawSkolverketData:    whereHelpertypes_JSON{field: "\"schools\".\"raw_skolverket_data\""},
+	SkolverketID:         whereHelpernull_Int{field: "\"schools\".\"skolverket_id\""},
+	RawSkolverketData:    whereHelpernull_JSON{field: "\"schools\".\"raw_skolverket_data\""},
 	IsHighSchool:         whereHelperbool{field: "\"schools\".\"is_high_school\""},
 	IsElementarySchool:   whereHelperbool{field: "\"schools\".\"is_elementary_school\""},
+	IsUniversity:         whereHelperbool{field: "\"schools\".\"is_university\""},
 	Latitude:             whereHelpernull_Float64{field: "\"schools\".\"latitude\""},
 	Longitude:            whereHelpernull_Float64{field: "\"schools\".\"longitude\""},
-	Status:               whereHelperstring{field: "\"schools\".\"status\""},
 	CreatedAt:            whereHelpertime_Time{field: "\"schools\".\"created_at\""},
 	UpdatedAt:            whereHelpernull_Time{field: "\"schools\".\"updated_at\""},
 }
@@ -215,9 +262,9 @@ func (r *schoolR) GetUsers() UserSlice {
 type schoolL struct{}
 
 var (
-	schoolAllColumns            = []string{"id", "name", "geographical_area_code", "municipality_name", "raw_skolverket_data", "is_high_school", "is_elementary_school", "latitude", "longitude", "status", "created_at", "updated_at"}
-	schoolColumnsWithoutDefault = []string{"id", "name", "geographical_area_code", "municipality_name", "raw_skolverket_data", "is_high_school", "is_elementary_school", "status"}
-	schoolColumnsWithDefault    = []string{"latitude", "longitude", "created_at", "updated_at"}
+	schoolAllColumns            = []string{"id", "name", "geographical_area_code", "municipality_name", "skolverket_id", "raw_skolverket_data", "is_high_school", "is_elementary_school", "is_university", "latitude", "longitude", "created_at", "updated_at"}
+	schoolColumnsWithoutDefault = []string{"id", "name", "geographical_area_code", "municipality_name", "is_high_school", "is_elementary_school", "is_university"}
+	schoolColumnsWithDefault    = []string{"skolverket_id", "raw_skolverket_data", "latitude", "longitude", "created_at", "updated_at"}
 	schoolPrimaryKeyColumns     = []string{"id"}
 	schoolGeneratedColumns      = []string{}
 )
@@ -768,7 +815,7 @@ func Schools(mods ...qm.QueryMod) schoolQuery {
 
 // FindSchool retrieves a single record by ID with an executor.
 // If selectCols is empty Find will return all columns.
-func FindSchool(ctx context.Context, exec boil.ContextExecutor, iD int, selectCols ...string) (*School, error) {
+func FindSchool(ctx context.Context, exec boil.ContextExecutor, iD string, selectCols ...string) (*School, error) {
 	schoolObj := &School{}
 
 	sel := "*"
@@ -1291,7 +1338,7 @@ func (o *SchoolSlice) ReloadAll(ctx context.Context, exec boil.ContextExecutor) 
 }
 
 // SchoolExists checks if the School row exists.
-func SchoolExists(ctx context.Context, exec boil.ContextExecutor, iD int) (bool, error) {
+func SchoolExists(ctx context.Context, exec boil.ContextExecutor, iD string) (bool, error) {
 	var exists bool
 	sql := "select exists(select 1 from \"schools\" where \"id\"=$1 limit 1)"
 

@@ -16,10 +16,11 @@ import (
 
 // Endpoints wraps the "user" service endpoints.
 type Endpoints struct {
-	GetSelf       goa.Endpoint
-	JoinSchool    goa.Endpoint
-	LeaveSchool   goa.Endpoint
-	SearchSchools goa.Endpoint
+	GetSelf            goa.Endpoint
+	CompleteOnboarding goa.Endpoint
+	JoinSchool         goa.Endpoint
+	LeaveSchool        goa.Endpoint
+	SearchSchools      goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "user" service with endpoints.
@@ -27,16 +28,18 @@ func NewEndpoints(s Service) *Endpoints {
 	// Casting service to Auther interface
 	a := s.(Auther)
 	return &Endpoints{
-		GetSelf:       NewGetSelfEndpoint(s, a.JWTAuth),
-		JoinSchool:    NewJoinSchoolEndpoint(s, a.JWTAuth),
-		LeaveSchool:   NewLeaveSchoolEndpoint(s, a.JWTAuth),
-		SearchSchools: NewSearchSchoolsEndpoint(s, a.JWTAuth),
+		GetSelf:            NewGetSelfEndpoint(s, a.JWTAuth),
+		CompleteOnboarding: NewCompleteOnboardingEndpoint(s, a.JWTAuth),
+		JoinSchool:         NewJoinSchoolEndpoint(s, a.JWTAuth),
+		LeaveSchool:        NewLeaveSchoolEndpoint(s, a.JWTAuth),
+		SearchSchools:      NewSearchSchoolsEndpoint(s, a.JWTAuth),
 	}
 }
 
 // Use applies the given middleware to all the "user" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetSelf = m(e.GetSelf)
+	e.CompleteOnboarding = m(e.CompleteOnboarding)
 	e.JoinSchool = m(e.JoinSchool)
 	e.LeaveSchool = m(e.LeaveSchool)
 	e.SearchSchools = m(e.SearchSchools)
@@ -58,6 +61,25 @@ func NewGetSelfEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint 
 			return nil, err
 		}
 		return s.GetSelf(ctx, p)
+	}
+}
+
+// NewCompleteOnboardingEndpoint returns an endpoint function that calls the
+// method "CompleteOnboarding" of service "user".
+func NewCompleteOnboardingEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CompleteOnboardingPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.CompleteOnboarding(ctx, p)
 	}
 }
 

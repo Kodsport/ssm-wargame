@@ -10,6 +10,7 @@ package client
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -91,6 +92,68 @@ func DecodeGetSelfResponse(decoder func(*http.Response) goahttp.Decoder, restore
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("user", "GetSelf", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildCompleteOnboardingRequest instantiates a HTTP request object with
+// method and path set to call the "user" service "CompleteOnboarding" endpoint
+func (c *Client) BuildCompleteOnboardingRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CompleteOnboardingUserPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("user", "CompleteOnboarding", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeCompleteOnboardingRequest returns an encoder for requests sent to the
+// user CompleteOnboarding server.
+func EncodeCompleteOnboardingRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*user.CompleteOnboardingPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("user", "CompleteOnboarding", "*user.CompleteOnboardingPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeCompleteOnboardingResponse returns a decoder for responses returned by
+// the user CompleteOnboarding endpoint. restoreBody controls whether the
+// response body should be restored after having been read.
+func DecodeCompleteOnboardingResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("user", "CompleteOnboarding", resp.StatusCode, string(body))
 		}
 	}
 }
@@ -256,6 +319,9 @@ func EncodeSearchSchoolsRequest(encoder func(*http.Request) goahttp.Encoder) fun
 		}
 		values := req.URL.Query()
 		values.Add("q", p.Q)
+		if p.University != nil {
+			values.Add("university", fmt.Sprintf("%v", *p.University))
+		}
 		req.URL.RawQuery = values.Encode()
 		return nil
 	}
@@ -314,6 +380,7 @@ func unmarshalSchoolResponseToUserSchool(v *SchoolResponse) *user.School {
 		ID:               *v.ID,
 		Name:             *v.Name,
 		MunicipalityName: *v.MunicipalityName,
+		IsUniversity:     *v.IsUniversity,
 	}
 
 	return res

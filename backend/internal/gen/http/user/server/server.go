@@ -18,11 +18,12 @@ import (
 
 // Server lists the user service endpoint HTTP handlers.
 type Server struct {
-	Mounts        []*MountPoint
-	GetSelf       http.Handler
-	JoinSchool    http.Handler
-	LeaveSchool   http.Handler
-	SearchSchools http.Handler
+	Mounts             []*MountPoint
+	GetSelf            http.Handler
+	CompleteOnboarding http.Handler
+	JoinSchool         http.Handler
+	LeaveSchool        http.Handler
+	SearchSchools      http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -59,14 +60,16 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"GetSelf", "GET", "/user/self"},
+			{"CompleteOnboarding", "POST", "/user/complete_onboarding"},
 			{"JoinSchool", "POST", "/user/join_school"},
 			{"LeaveSchool", "POST", "/user/leave_school"},
 			{"SearchSchools", "GET", "/user/schools"},
 		},
-		GetSelf:       NewGetSelfHandler(e.GetSelf, mux, decoder, encoder, errhandler, formatter),
-		JoinSchool:    NewJoinSchoolHandler(e.JoinSchool, mux, decoder, encoder, errhandler, formatter),
-		LeaveSchool:   NewLeaveSchoolHandler(e.LeaveSchool, mux, decoder, encoder, errhandler, formatter),
-		SearchSchools: NewSearchSchoolsHandler(e.SearchSchools, mux, decoder, encoder, errhandler, formatter),
+		GetSelf:            NewGetSelfHandler(e.GetSelf, mux, decoder, encoder, errhandler, formatter),
+		CompleteOnboarding: NewCompleteOnboardingHandler(e.CompleteOnboarding, mux, decoder, encoder, errhandler, formatter),
+		JoinSchool:         NewJoinSchoolHandler(e.JoinSchool, mux, decoder, encoder, errhandler, formatter),
+		LeaveSchool:        NewLeaveSchoolHandler(e.LeaveSchool, mux, decoder, encoder, errhandler, formatter),
+		SearchSchools:      NewSearchSchoolsHandler(e.SearchSchools, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -76,6 +79,7 @@ func (s *Server) Service() string { return "user" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetSelf = m(s.GetSelf)
+	s.CompleteOnboarding = m(s.CompleteOnboarding)
 	s.JoinSchool = m(s.JoinSchool)
 	s.LeaveSchool = m(s.LeaveSchool)
 	s.SearchSchools = m(s.SearchSchools)
@@ -84,6 +88,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 // Mount configures the mux to serve the user endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetSelfHandler(mux, h.GetSelf)
+	MountCompleteOnboardingHandler(mux, h.CompleteOnboarding)
 	MountJoinSchoolHandler(mux, h.JoinSchool)
 	MountLeaveSchoolHandler(mux, h.LeaveSchool)
 	MountSearchSchoolsHandler(mux, h.SearchSchools)
@@ -119,6 +124,57 @@ func NewGetSelfHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "GetSelf")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCompleteOnboardingHandler configures the mux to serve the "user"
+// service "CompleteOnboarding" endpoint.
+func MountCompleteOnboardingHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/user/complete_onboarding", f)
+}
+
+// NewCompleteOnboardingHandler creates a HTTP handler which loads the HTTP
+// request and calls the "user" service "CompleteOnboarding" endpoint.
+func NewCompleteOnboardingHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCompleteOnboardingRequest(mux, decoder)
+		encodeResponse = EncodeCompleteOnboardingResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CompleteOnboarding")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
 		payload, err := decodeRequest(r)
 		if err != nil {

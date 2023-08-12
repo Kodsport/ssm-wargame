@@ -3,10 +3,13 @@ package user
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
+	"github.com/sakerhetsm/ssm-wargame/internal/utils"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
 )
@@ -29,11 +32,12 @@ func (s *service) GetSelf(ctx context.Context, req *spec.GetSelfPayload) (*spec.
 	user := auth.GetUser(ctx)
 
 	res := &spec.GetSelfResult{
-		ID:       user.ID,
-		Email:    user.Email,
-		FullName: user.FullName,
-		Role:     user.Role,
-		SchoolID: user.SchoolID.Ptr(),
+		ID:             user.ID,
+		Email:          user.Email,
+		FullName:       user.FullName,
+		Role:           user.Role,
+		SchoolID:       user.SchoolID.Ptr(),
+		OnboardingDone: user.OnboardingComplete,
 	}
 
 	if user.SchoolID.Valid {
@@ -46,4 +50,22 @@ func (s *service) GetSelf(ctx context.Context, req *spec.GetSelfPayload) (*spec.
 	}
 
 	return res, nil
+}
+
+func (s *service) CompleteOnboarding(ctx context.Context, req *spec.CompleteOnboardingPayload) error {
+	user := auth.GetUser(ctx)
+
+	if user.OnboardingComplete {
+		return errors.New("already done")
+	}
+
+	user.OnboardingComplete = true
+
+	_, err := user.Update(ctx, s.db, boil.Whitelist(models.UserColumns.OnboardingComplete))
+	if err != nil {
+		s.log.Error("could not update user", zap.Error(err), utils.C(ctx))
+		return err
+	}
+
+	return nil
 }

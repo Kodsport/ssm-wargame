@@ -1,16 +1,17 @@
 BEGIN;
 
 CREATE TABLE schools (
-    id INT PRIMARY KEY,
-    name TEXT NOT NULL,
+    id UUID PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
     geographical_area_code TEXT NOT NULL,
     municipality_name TEXT NOT NULL,
-    raw_skolverket_data JSONB NOT NULL,
+    skolverket_id INT UNIQUE,
+    raw_skolverket_data JSONB,
     is_high_school BOOLEAN NOT NULL,
     is_elementary_school BOOLEAN NOT NULL,
+    is_university BOOLEAN NOT NULL,
     latitude FLOAT,
     longitude FLOAT,
-    status TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );
@@ -35,8 +36,9 @@ CREATE TABLE users (
     full_name TEXT NOT NULL,
     email TEXT NOT NULL,
     role TEXT NOT NULL,
-    school_id INT REFERENCES schools(id) ON DELETE SET NULL,
+    school_id UUID REFERENCES schools(id) ON DELETE SET NULL,
     author_id UUID UNIQUE REFERENCES authors(id) ON DELETE SET NULL,
+    onboarding_done BOOLEAN NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ
 );

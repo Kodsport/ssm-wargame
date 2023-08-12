@@ -14,17 +14,30 @@ var _ = Service("user", func() {
 		Result(func() {
 			Extend(User)
 			Attribute("school_name", String)
+			Attribute("onboarding_done", Boolean, func() {
+				Example(true)
+			})
+			Required("onboarding_done")
 		})
 		HTTP(func() {
 			GET("/self")
 			Response(StatusOK)
 		})
 	})
+	Method("CompleteOnboarding", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+		})
+		HTTP(func() {
+			POST("/complete_onboarding")
+			Response(StatusOK)
+		})
+	})
 	Method("JoinSchool", func() {
 		Payload(func() {
 			Extend(TokenPayload)
-			Attribute("school_id", Int, func() {
-				Example(78433202)
+			Attribute("school_id", String, func() {
+				Example("b6d5e5eb-3272-4795-ba1c-73a8efc1cf19")
 			})
 			Required("school_id")
 		})
@@ -48,6 +61,9 @@ var _ = Service("user", func() {
 			Attribute("q", String, func() {
 				Example("engelbrektssko")
 			})
+			Attribute("university", Boolean, func() {
+				Example(true)
+			})
 			Required("q")
 		})
 		Result(ArrayOf(School))
@@ -55,6 +71,8 @@ var _ = Service("user", func() {
 			GET("/schools")
 			Response(StatusOK)
 			Param("q")
+			Param("university")
 		})
 	})
+
 })

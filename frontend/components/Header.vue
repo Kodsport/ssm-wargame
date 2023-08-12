@@ -83,6 +83,9 @@
           </template>
         </client-only>
       </div>
+      <client-only>
+        <onboarding-modal v-if="showOnboarding" />
+      </client-only>
     </div>
   </nav>
 </template>
@@ -96,6 +99,7 @@ const router = useRouter()
 var isAuthenticated = computed(() => auth.token != "");
 
 var toggleCollapse = ref(false)
+var showOnboarding = computed(() => auth.user.id && !auth.user.onboarding_done)
 
 // temporary hacky solution...
 setInterval(() => {
@@ -118,6 +122,7 @@ onMounted(() => {
     auth.setToken(jwt)
   }
 })
+
 
 function logout() {
   auth.setToken('')
@@ -155,8 +160,8 @@ async function login() {
       });
 
       auth.setToken(resp.jwt)
-      auth.getUser()
       localStorage.setItem('ssm-token', resp.jwt)
+
     } catch (error) {
       // DOMException is thrown when w is on other domain
     }

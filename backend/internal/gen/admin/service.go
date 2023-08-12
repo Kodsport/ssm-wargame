@@ -361,7 +361,7 @@ type SsmUser struct {
 	Email    string
 	FullName string
 	Role     string
-	SchoolID *int
+	SchoolID *string
 }
 
 type SsmAuthor struct {

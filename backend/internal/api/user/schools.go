@@ -12,10 +12,16 @@ import (
 )
 
 func (s *service) SearchSchools(ctx context.Context, req *spec.SearchSchoolsPayload) ([]*spec.School, error) {
-	schools, err := models.Schools(
-		qm.Where("name ILIKE $1", "%"+req.Q+"%"),
-		qm.Limit(20),
-	).All(ctx, s.db)
+	q := models.Schools(
+		qm.Where("name ILIKE ?", "%"+req.Q+"%"),
+		qm.Limit(10),
+	)
+
+	if req.University != nil {
+		qm.Where("is_university = ?", req.University).Apply(q.Query)
+	}
+
+	schools, err := q.All(ctx, s.db)
 
 	if err != nil {
 		s.log.Error("could not search schools", zap.Error(err), zap.String("q", req.Q))
@@ -28,6 +34,7 @@ func (s *service) SearchSchools(ctx context.Context, req *spec.SearchSchoolsPayl
 			ID:               v.ID,
 			Name:             v.Name,
 			MunicipalityName: v.MunicipalityName,
+			IsUniversity:     v.IsUniversity,
 		}
 	}
 

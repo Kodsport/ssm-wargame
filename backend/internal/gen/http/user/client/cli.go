@@ -10,6 +10,7 @@ package client
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	user "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
 )
@@ -27,6 +28,19 @@ func BuildGetSelfPayload(userGetSelfToken string) (*user.GetSelfPayload, error) 
 	return v, nil
 }
 
+// BuildCompleteOnboardingPayload builds the payload for the user
+// CompleteOnboarding endpoint from CLI flags.
+func BuildCompleteOnboardingPayload(userCompleteOnboardingToken string) (*user.CompleteOnboardingPayload, error) {
+	var token string
+	{
+		token = userCompleteOnboardingToken
+	}
+	v := &user.CompleteOnboardingPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildJoinSchoolPayload builds the payload for the user JoinSchool endpoint
 // from CLI flags.
 func BuildJoinSchoolPayload(userJoinSchoolBody string, userJoinSchoolToken string) (*user.JoinSchoolPayload, error) {
@@ -35,7 +49,7 @@ func BuildJoinSchoolPayload(userJoinSchoolBody string, userJoinSchoolToken strin
 	{
 		err = json.Unmarshal([]byte(userJoinSchoolBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"school_id\": 78433202\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"school_id\": \"b6d5e5eb-3272-4795-ba1c-73a8efc1cf19\"\n   }'")
 		}
 	}
 	var token string
@@ -65,10 +79,22 @@ func BuildLeaveSchoolPayload(userLeaveSchoolToken string) (*user.LeaveSchoolPayl
 
 // BuildSearchSchoolsPayload builds the payload for the user SearchSchools
 // endpoint from CLI flags.
-func BuildSearchSchoolsPayload(userSearchSchoolsQ string, userSearchSchoolsToken string) (*user.SearchSchoolsPayload, error) {
+func BuildSearchSchoolsPayload(userSearchSchoolsQ string, userSearchSchoolsUniversity string, userSearchSchoolsToken string) (*user.SearchSchoolsPayload, error) {
+	var err error
 	var q string
 	{
 		q = userSearchSchoolsQ
+	}
+	var university *bool
+	{
+		if userSearchSchoolsUniversity != "" {
+			var val bool
+			val, err = strconv.ParseBool(userSearchSchoolsUniversity)
+			university = &val
+			if err != nil {
+				return nil, fmt.Errorf("invalid value for university, must be BOOL")
+			}
+		}
 	}
 	var token string
 	{
@@ -76,6 +102,7 @@ func BuildSearchSchoolsPayload(userSearchSchoolsQ string, userSearchSchoolsToken
 	}
 	v := &user.SearchSchoolsPayload{}
 	v.Q = q
+	v.University = university
 	v.Token = token
 
 	return v, nil

@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
@@ -84,6 +85,10 @@ func (i *Importer) Import() error {
 			continue
 		}
 
+		if unit.SkolenhetInfo.Status != "Aktiv" {
+			continue
+		}
+
 		/*
 			school types
 
@@ -114,19 +119,20 @@ func (i *Importer) Import() error {
 		}
 
 		school := models.School{
-			ID:                   id,
+			ID:                   uuid.NewString(),
+			SkolverketID:         null.IntFrom(id),
 			Name:                 unit.SkolenhetInfo.Namn,
 			GeographicalAreaCode: unit.SkolenhetInfo.Besoksadress.Postnr,
 			MunicipalityName:     unit.SkolenhetInfo.Kommun.Namn,
-			Status:               unit.SkolenhetInfo.Status,
 			IsHighSchool:         isHighSchool,
 			IsElementarySchool:   isElementarySchool,
-			RawSkolverketData:    data,
+			IsUniversity:         false,
+			RawSkolverketData:    null.JSONFrom(data),
 			Latitude:             null.Float64FromPtr(unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lng),
 			Longitude:            null.Float64FromPtr(unit.SkolenhetInfo.Besoksadress.GeoData.KoordinatWGS84Lat),
 		}
 
-		err = school.Upsert(context.Background(), i.db, true, []string{"id"}, boil.Infer(), boil.Infer())
+		err = school.Upsert(context.Background(), i.db, true, []string{models.SchoolColumns.SkolverketID}, boil.Infer(), boil.Infer())
 		if err != nil {
 			l.Error("could not upsert school", zap.Error(err), zap.Any("school", school))
 			continue

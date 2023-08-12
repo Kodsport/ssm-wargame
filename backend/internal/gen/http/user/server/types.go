@@ -15,18 +15,19 @@ import (
 // JoinSchoolRequestBody is the type of the "user" service "JoinSchool"
 // endpoint HTTP request body.
 type JoinSchoolRequestBody struct {
-	SchoolID *int `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	SchoolID *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
 // GetSelfResponseBody is the type of the "user" service "GetSelf" endpoint
 // HTTP response body.
 type GetSelfResponseBody struct {
-	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
-	ID         string  `form:"id" json:"id" xml:"id"`
-	Email      string  `form:"email" json:"email" xml:"email"`
-	FullName   string  `form:"full_name" json:"full_name" xml:"full_name"`
-	Role       string  `form:"role" json:"role" xml:"role"`
-	SchoolID   *int    `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	SchoolName     *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
+	OnboardingDone bool    `form:"onboarding_done" json:"onboarding_done" xml:"onboarding_done"`
+	ID             string  `form:"id" json:"id" xml:"id"`
+	Email          string  `form:"email" json:"email" xml:"email"`
+	FullName       string  `form:"full_name" json:"full_name" xml:"full_name"`
+	Role           string  `form:"role" json:"role" xml:"role"`
+	SchoolID       *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
 // SearchSchoolsResponseBody is the type of the "user" service "SearchSchools"
@@ -35,21 +36,23 @@ type SearchSchoolsResponseBody []*SchoolResponse
 
 // SchoolResponse is used to define fields on response body types.
 type SchoolResponse struct {
-	ID               int    `form:"id" json:"id" xml:"id"`
+	ID               string `form:"id" json:"id" xml:"id"`
 	Name             string `form:"name" json:"name" xml:"name"`
 	MunicipalityName string `form:"municipality_name" json:"municipality_name" xml:"municipality_name"`
+	IsUniversity     bool   `form:"is_university" json:"is_university" xml:"is_university"`
 }
 
 // NewGetSelfResponseBody builds the HTTP response body from the result of the
 // "GetSelf" endpoint of the "user" service.
 func NewGetSelfResponseBody(res *user.GetSelfResult) *GetSelfResponseBody {
 	body := &GetSelfResponseBody{
-		SchoolName: res.SchoolName,
-		ID:         res.ID,
-		Email:      res.Email,
-		FullName:   res.FullName,
-		Role:       res.Role,
-		SchoolID:   res.SchoolID,
+		SchoolName:     res.SchoolName,
+		OnboardingDone: res.OnboardingDone,
+		ID:             res.ID,
+		Email:          res.Email,
+		FullName:       res.FullName,
+		Role:           res.Role,
+		SchoolID:       res.SchoolID,
 	}
 	return body
 }
@@ -67,6 +70,15 @@ func NewSearchSchoolsResponseBody(res []*user.School) SearchSchoolsResponseBody 
 // NewGetSelfPayload builds a user service GetSelf endpoint payload.
 func NewGetSelfPayload(token string) *user.GetSelfPayload {
 	v := &user.GetSelfPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewCompleteOnboardingPayload builds a user service CompleteOnboarding
+// endpoint payload.
+func NewCompleteOnboardingPayload(token string) *user.CompleteOnboardingPayload {
+	v := &user.CompleteOnboardingPayload{}
 	v.Token = token
 
 	return v
@@ -91,9 +103,10 @@ func NewLeaveSchoolPayload(token string) *user.LeaveSchoolPayload {
 }
 
 // NewSearchSchoolsPayload builds a user service SearchSchools endpoint payload.
-func NewSearchSchoolsPayload(q string, token string) *user.SearchSchoolsPayload {
+func NewSearchSchoolsPayload(q string, university *bool, token string) *user.SearchSchoolsPayload {
 	v := &user.SearchSchoolsPayload{}
 	v.Q = q
+	v.University = university
 	v.Token = token
 
 	return v

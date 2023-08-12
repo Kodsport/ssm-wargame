@@ -67,8 +67,9 @@ var ChallengeService = Type("ChallengeService", func() {
 })
 
 var School = Type("School", func() {
-	Attribute("id", Int, func() {
-		Example(78433202)
+	Attribute("id", String, func() {
+		Example("ed832486-a529-43ff-930a-ab583bd52d01")
+		Format(FormatUUID)
 	})
 	Attribute("name", String, func() {
 		Example("Engelbrektsskolan")
@@ -76,7 +77,10 @@ var School = Type("School", func() {
 	Attribute("municipality_name", String, func() {
 		Example("Örebro")
 	})
-	Required("id", "name", "municipality_name")
+	Attribute("is_university", Boolean, func() {
+		Example(true)
+	})
+	Required("id", "name", "municipality_name", "is_university")
 })
 
 var AdminChallengeFlag = Type("AdminChallengeFlag", func() {

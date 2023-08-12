@@ -4,7 +4,7 @@
             <h1>{{ author.full_name }}</h1>
             <div v-html="renderMarkdown(author.description)"></div>
         </div>
-        <h5 class="pt-5">Utmaningar av {{ author.full_name }}</h5>
+        <h5 class="pt-5">Utmaningar av {{ author.full_name.split(' ')[0] }}</h5>
         <div class="row row-cols-3 row-cols-xl-5 g-4 mt-0 mb-2">
             <div class="col" v-for="chall in authorsChalls">
                 <ChallengePreview @click="showChall = chall" :chall="chall" />
@@ -27,6 +27,20 @@ var showChall = ref(null)
 const authors = await useAsyncData('authors', () => http('/authors'))
 const author = computed(() => authors.data.value.find(a => a.slug == route.params.slug))
 const authorsChalls = computed(() => challs.challenges.filter(c => c.authors.map(a => a.slug).includes(route.params.slug)))
+
+
+const title = `SSM - ${author.value.full_name}`
+
+useHead({
+    title,
+})
+
+useServerSeoMeta({
+    ogTitle: title,
+    title: title,
+    description: author.value.description,
+    ogDescription: author.value.description,
+})
 
 onMounted(() => {
     challs.getChallenges()

@@ -1330,11 +1330,11 @@ type MonthlyChallengeResponse struct {
 
 // SsmUserResponse is used to define fields on response body types.
 type SsmUserResponse struct {
-	ID       string `form:"id" json:"id" xml:"id"`
-	Email    string `form:"email" json:"email" xml:"email"`
-	FullName string `form:"full_name" json:"full_name" xml:"full_name"`
-	Role     string `form:"role" json:"role" xml:"role"`
-	SchoolID *int   `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	ID       string  `form:"id" json:"id" xml:"id"`
+	Email    string  `form:"email" json:"email" xml:"email"`
+	FullName string  `form:"full_name" json:"full_name" xml:"full_name"`
+	Role     string  `form:"role" json:"role" xml:"role"`
+	SchoolID *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
 }
 
 // SsmAuthorResponse is used to define fields on response body types.

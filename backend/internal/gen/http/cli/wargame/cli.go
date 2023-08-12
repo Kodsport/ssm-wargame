@@ -28,7 +28,7 @@ func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors)
 admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token)
-user (get-self|join-school|leave-school|search-schools)
+user (get-self|complete-onboarding|join-school|leave-school|search-schools)
 `
 }
 
@@ -174,6 +174,9 @@ func ParseEndpoint(
 		userGetSelfFlags     = flag.NewFlagSet("get-self", flag.ExitOnError)
 		userGetSelfTokenFlag = userGetSelfFlags.String("token", "REQUIRED", "")
 
+		userCompleteOnboardingFlags     = flag.NewFlagSet("complete-onboarding", flag.ExitOnError)
+		userCompleteOnboardingTokenFlag = userCompleteOnboardingFlags.String("token", "REQUIRED", "")
+
 		userJoinSchoolFlags     = flag.NewFlagSet("join-school", flag.ExitOnError)
 		userJoinSchoolBodyFlag  = userJoinSchoolFlags.String("body", "REQUIRED", "")
 		userJoinSchoolTokenFlag = userJoinSchoolFlags.String("token", "REQUIRED", "")
@@ -181,9 +184,10 @@ func ParseEndpoint(
 		userLeaveSchoolFlags     = flag.NewFlagSet("leave-school", flag.ExitOnError)
 		userLeaveSchoolTokenFlag = userLeaveSchoolFlags.String("token", "REQUIRED", "")
 
-		userSearchSchoolsFlags     = flag.NewFlagSet("search-schools", flag.ExitOnError)
-		userSearchSchoolsQFlag     = userSearchSchoolsFlags.String("q", "REQUIRED", "")
-		userSearchSchoolsTokenFlag = userSearchSchoolsFlags.String("token", "REQUIRED", "")
+		userSearchSchoolsFlags          = flag.NewFlagSet("search-schools", flag.ExitOnError)
+		userSearchSchoolsQFlag          = userSearchSchoolsFlags.String("q", "REQUIRED", "")
+		userSearchSchoolsUniversityFlag = userSearchSchoolsFlags.String("university", "", "")
+		userSearchSchoolsTokenFlag      = userSearchSchoolsFlags.String("token", "REQUIRED", "")
 	)
 	authFlags.Usage = authUsage
 	authGenerateDiscordAuthURLFlags.Usage = authGenerateDiscordAuthURLUsage
@@ -223,6 +227,7 @@ func ParseEndpoint(
 
 	userFlags.Usage = userUsage
 	userGetSelfFlags.Usage = userGetSelfUsage
+	userCompleteOnboardingFlags.Usage = userCompleteOnboardingUsage
 	userJoinSchoolFlags.Usage = userJoinSchoolUsage
 	userLeaveSchoolFlags.Usage = userLeaveSchoolUsage
 	userSearchSchoolsFlags.Usage = userSearchSchoolsUsage
@@ -372,6 +377,9 @@ func ParseEndpoint(
 			case "get-self":
 				epf = userGetSelfFlags
 
+			case "complete-onboarding":
+				epf = userCompleteOnboardingFlags
+
 			case "join-school":
 				epf = userJoinSchoolFlags
 
@@ -511,6 +519,9 @@ func ParseEndpoint(
 			case "get-self":
 				endpoint = c.GetSelf()
 				data, err = userc.BuildGetSelfPayload(*userGetSelfTokenFlag)
+			case "complete-onboarding":
+				endpoint = c.CompleteOnboarding()
+				data, err = userc.BuildCompleteOnboardingPayload(*userCompleteOnboardingTokenFlag)
 			case "join-school":
 				endpoint = c.JoinSchool()
 				data, err = userc.BuildJoinSchoolPayload(*userJoinSchoolBodyFlag, *userJoinSchoolTokenFlag)
@@ -519,7 +530,7 @@ func ParseEndpoint(
 				data, err = userc.BuildLeaveSchoolPayload(*userLeaveSchoolTokenFlag)
 			case "search-schools":
 				endpoint = c.SearchSchools()
-				data, err = userc.BuildSearchSchoolsPayload(*userSearchSchoolsQFlag, *userSearchSchoolsTokenFlag)
+				data, err = userc.BuildSearchSchoolsPayload(*userSearchSchoolsQFlag, *userSearchSchoolsUniversityFlag, *userSearchSchoolsTokenFlag)
 			}
 		}
 	}
@@ -1051,6 +1062,7 @@ Usage:
 
 COMMAND:
     get-self: GetSelf implements GetSelf.
+    complete-onboarding: CompleteOnboarding implements CompleteOnboarding.
     join-school: JoinSchool implements JoinSchool.
     leave-school: LeaveSchool implements LeaveSchool.
     search-schools: SearchSchools implements SearchSchools.
@@ -1070,6 +1082,17 @@ Example:
 `, os.Args[0])
 }
 
+func userCompleteOnboardingUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] user complete-onboarding -token STRING
+
+CompleteOnboarding implements CompleteOnboarding.
+    -token STRING: 
+
+Example:
+    %[1]s user complete-onboarding --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
 func userJoinSchoolUsage() {
 	fmt.Fprintf(os.Stderr, `%[1]s [flags] user join-school -body JSON -token STRING
 
@@ -1079,7 +1102,7 @@ JoinSchool implements JoinSchool.
 
 Example:
     %[1]s user join-school --body '{
-      "school_id": 78433202
+      "school_id": "b6d5e5eb-3272-4795-ba1c-73a8efc1cf19"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1096,13 +1119,14 @@ Example:
 }
 
 func userSearchSchoolsUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] user search-schools -q STRING -token STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] user search-schools -q STRING -university BOOL -token STRING
 
 SearchSchools implements SearchSchools.
     -q STRING: 
+    -university BOOL: 
     -token STRING: 
 
 Example:
-    %[1]s user search-schools --q "engelbrektssko" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s user search-schools --q "engelbrektssko" --university true --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }

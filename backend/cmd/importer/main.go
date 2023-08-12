@@ -2,6 +2,8 @@ package main
 
 import (
 	"database/sql"
+	"errors"
+	"flag"
 	"fmt"
 	"os"
 
@@ -26,6 +28,7 @@ func realMain() error {
 	if err != nil {
 		return err
 	}
+	flag.Parse()
 
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=%s", cfg.DB.Username, cfg.DB.Password, cfg.DB.Address, cfg.DB.Port, cfg.DB.DBName, cfg.DB.SSLMode)
 	db, err := sql.Open("postgres", connStr)
@@ -41,6 +44,13 @@ func realMain() error {
 
 	i := skolverket.New(db, log)
 
-	return i.Import()
+	if flag.Arg(0) == "skolverk" {
+
+		return i.Import()
+	} else if flag.Arg(0) == "uni" {
+		return i.ImportUnis()
+	} else {
+		return errors.New("bad option (skolverk/uni)")
+	}
 
 }
