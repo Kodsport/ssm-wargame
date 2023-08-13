@@ -9,6 +9,8 @@ import (
 	"go.uber.org/zap"
 )
 
+var maxScores = 10
+
 func (s *service) SchoolScoreboard(ctx context.Context, req *spec.SchoolScoreboardPayload) (*spec.SsmSchoolScoreboard, error) {
 
 	type SchoolScoreboardScore struct {
@@ -16,7 +18,7 @@ func (s *service) SchoolScoreboard(ctx context.Context, req *spec.SchoolScoreboa
 		SchoolName string `boil:"name"`
 	}
 
-	scores := make([]*SchoolScoreboardScore, 0, 50)
+	scores := make([]*SchoolScoreboardScore, 0, maxScores)
 	err := models.NewQuery(
 		qm.Select("s.name name, SUM(score) score"),
 		qm.From("user_solves us"),
@@ -25,7 +27,7 @@ func (s *service) SchoolScoreboard(ctx context.Context, req *spec.SchoolScoreboa
 		qm.InnerJoin("schools s ON s.id = u.school_id"),
 		qm.GroupBy("s.name"),
 		qm.OrderBy("score DESC"),
-		qm.Limit(10),
+		qm.Limit(maxScores),
 	).Bind(ctx, s.db, &scores)
 
 	if err != nil {
@@ -54,7 +56,7 @@ func (s *service) UserScoreboard(ctx context.Context, req *spec.UserScoreboardPa
 		Name   string `boil:"name"`
 	}
 
-	scores := make([]*SchoolScoreboardScore, 0, 50)
+	scores := make([]*SchoolScoreboardScore, 0, maxScores)
 	err := models.NewQuery(
 		qm.Select("users.id AS user_id, users.full_name AS name, SUM(score) AS score"),
 		qm.From("user_solves"),
@@ -62,7 +64,7 @@ func (s *service) UserScoreboard(ctx context.Context, req *spec.UserScoreboardPa
 		qm.InnerJoin("challenges ON challenges.id = challenge_id"),
 		qm.GroupBy("users.id"),
 		qm.OrderBy("score DESC"),
-		qm.Limit(10),
+		qm.Limit(maxScores),
 	).Bind(ctx, s.db, &scores)
 
 	if err != nil {
