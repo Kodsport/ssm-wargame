@@ -16,16 +16,11 @@ var _ = Service("challenge", func() {
 				Example("brumm")
 				Description("Filter by slug")
 			})
-			Attribute("author_slug", String, func() {
-				Example("movitz_sunar")
-				Description("Filter by author")
-			})
 		})
 		HTTP(func() {
 			GET("/challenges")
 			Response(StatusOK)
 			Param("slug")
-			Param("author_slug")
 		})
 	})
 	Method("ListEvents", func() {

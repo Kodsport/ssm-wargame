@@ -93,10 +93,6 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.Where("slug = ?", req.Slug).Apply(q)
 	}
 
-	if req.AuthorSlug != nil {
-		// qm.Where("author_id = ?", req.AuthorSlug).Apply(q)
-	}
-
 	err := q.Bind(ctx, s.db, &challs)
 
 	if err != nil {
