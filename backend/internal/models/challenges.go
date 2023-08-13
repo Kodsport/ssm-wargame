@@ -28,12 +28,12 @@ type Challenge struct {
 	Slug        string      `boil:"slug" json:"slug" toml:"slug" yaml:"slug"`
 	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
 	Description string      `boil:"description" json:"description" toml:"description" yaml:"description"`
-	Score       int         `boil:"score" json:"score" toml:"score" yaml:"score"`
 	PublishAt   null.Time   `boil:"publish_at" json:"publish_at,omitempty" toml:"publish_at" yaml:"publish_at,omitempty"`
 	CTFEventID  null.String `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
 	CategoryID  string      `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
 	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	StaticScore null.Int    `boil:"static_score" json:"static_score,omitempty" toml:"static_score" yaml:"static_score,omitempty"`
 
 	R *challengeR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L challengeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -44,23 +44,23 @@ var ChallengeColumns = struct {
 	Slug        string
 	Title       string
 	Description string
-	Score       string
 	PublishAt   string
 	CTFEventID  string
 	CategoryID  string
 	CreatedAt   string
 	UpdatedAt   string
+	StaticScore string
 }{
 	ID:          "id",
 	Slug:        "slug",
 	Title:       "title",
 	Description: "description",
-	Score:       "score",
 	PublishAt:   "publish_at",
 	CTFEventID:  "ctf_event_id",
 	CategoryID:  "category_id",
 	CreatedAt:   "created_at",
 	UpdatedAt:   "updated_at",
+	StaticScore: "static_score",
 }
 
 var ChallengeTableColumns = struct {
@@ -68,43 +68,55 @@ var ChallengeTableColumns = struct {
 	Slug        string
 	Title       string
 	Description string
-	Score       string
 	PublishAt   string
 	CTFEventID  string
 	CategoryID  string
 	CreatedAt   string
 	UpdatedAt   string
+	StaticScore string
 }{
 	ID:          "challenges.id",
 	Slug:        "challenges.slug",
 	Title:       "challenges.title",
 	Description: "challenges.description",
-	Score:       "challenges.score",
 	PublishAt:   "challenges.publish_at",
 	CTFEventID:  "challenges.ctf_event_id",
 	CategoryID:  "challenges.category_id",
 	CreatedAt:   "challenges.created_at",
 	UpdatedAt:   "challenges.updated_at",
+	StaticScore: "challenges.static_score",
 }
 
 // Generated where
 
-type whereHelperint struct{ field string }
+type whereHelpernull_Int struct{ field string }
 
-func (w whereHelperint) EQ(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.EQ, x) }
-func (w whereHelperint) NEQ(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.NEQ, x) }
-func (w whereHelperint) LT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.LT, x) }
-func (w whereHelperint) LTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.LTE, x) }
-func (w whereHelperint) GT(x int) qm.QueryMod  { return qmhelper.Where(w.field, qmhelper.GT, x) }
-func (w whereHelperint) GTE(x int) qm.QueryMod { return qmhelper.Where(w.field, qmhelper.GTE, x) }
-func (w whereHelperint) IN(slice []int) qm.QueryMod {
+func (w whereHelpernull_Int) EQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_Int) NEQ(x null.Int) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_Int) LT(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_Int) LTE(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_Int) GT(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_Int) GTE(x null.Int) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+func (w whereHelpernull_Int) IN(slice []int) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
 	}
 	return qm.WhereIn(fmt.Sprintf("%s IN ?", w.field), values...)
 }
-func (w whereHelperint) NIN(slice []int) qm.QueryMod {
+func (w whereHelpernull_Int) NIN(slice []int) qm.QueryMod {
 	values := make([]interface{}, 0, len(slice))
 	for _, value := range slice {
 		values = append(values, value)
@@ -112,28 +124,31 @@ func (w whereHelperint) NIN(slice []int) qm.QueryMod {
 	return qm.WhereNotIn(fmt.Sprintf("%s NOT IN ?", w.field), values...)
 }
 
+func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
 var ChallengeWhere = struct {
 	ID          whereHelperstring
 	Slug        whereHelperstring
 	Title       whereHelperstring
 	Description whereHelperstring
-	Score       whereHelperint
 	PublishAt   whereHelpernull_Time
 	CTFEventID  whereHelpernull_String
 	CategoryID  whereHelperstring
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpernull_Time
+	StaticScore whereHelpernull_Int
 }{
 	ID:          whereHelperstring{field: "\"challenges\".\"id\""},
 	Slug:        whereHelperstring{field: "\"challenges\".\"slug\""},
 	Title:       whereHelperstring{field: "\"challenges\".\"title\""},
 	Description: whereHelperstring{field: "\"challenges\".\"description\""},
-	Score:       whereHelperint{field: "\"challenges\".\"score\""},
 	PublishAt:   whereHelpernull_Time{field: "\"challenges\".\"publish_at\""},
 	CTFEventID:  whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
 	CategoryID:  whereHelperstring{field: "\"challenges\".\"category_id\""},
 	CreatedAt:   whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
 	UpdatedAt:   whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
+	StaticScore: whereHelpernull_Int{field: "\"challenges\".\"static_score\""},
 }
 
 // ChallengeRels is where relationship names are stored.
@@ -244,9 +259,9 @@ func (r *challengeR) GetUserSolves() UserSolfSlice {
 type challengeL struct{}
 
 var (
-	challengeAllColumns            = []string{"id", "slug", "title", "description", "score", "publish_at", "ctf_event_id", "category_id", "created_at", "updated_at"}
-	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "score", "category_id"}
-	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at"}
+	challengeAllColumns            = []string{"id", "slug", "title", "description", "publish_at", "ctf_event_id", "category_id", "created_at", "updated_at", "static_score"}
+	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "category_id"}
+	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at", "static_score"}
 	challengePrimaryKeyColumns     = []string{"id"}
 	challengeGeneratedColumns      = []string{}
 )

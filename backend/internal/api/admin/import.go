@@ -89,17 +89,12 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		categoryID = cat.ID
 	}
 
-	score := 0
-	if req.Score != nil {
-		score = *req.Score
-	}
-
 	chall := models.Challenge{
 		ID:          req.ChallengeID,
 		Slug:        utils.Slugify(req.Title),
 		Title:       req.Title,
 		Description: req.Description,
-		Score:       score,
+		StaticScore: null.IntFromPtr(req.Score),
 		CategoryID:  categoryID,
 		CTFEventID:  token.CTFEventID,
 	}

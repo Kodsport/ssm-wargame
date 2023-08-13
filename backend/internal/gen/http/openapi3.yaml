@@ -367,7 +367,6 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 publish_at: 1638384718
-                score: 50
                 services:
                 - hyperlink: true
                   user_display: nc 0.0.0.0 1234
@@ -375,6 +374,7 @@ paths:
                   user_display: nc 0.0.0.0 1234
                 slug: pwnme
                 solves: 3
+                static_score: 50
                 title: pwnme
               - authors:
                 - dfaa1a6a-9051-4c52-9441-5d664536cf24
@@ -398,7 +398,6 @@ paths:
                   id: 71333e34-4c6b-483e-b3c7-c77d73008cca
                 id: e721a338-44de-4de8-a562-43d2db5f4115
                 publish_at: 1638384718
-                score: 50
                 services:
                 - hyperlink: true
                   user_display: nc 0.0.0.0 1234
@@ -406,6 +405,7 @@ paths:
                   user_display: nc 0.0.0.0 1234
                 slug: pwnme
                 solves: 3
+                static_score: 50
                 title: pwnme
         "400":
           description: Resource not found
@@ -457,8 +457,8 @@ paths:
               ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
               description: A heap overflow challenge
               publish_at: 1638384718
-              score: 50
               slug: pwnme
+              static_score: 50
               title: pwnme
       responses:
         "201":
@@ -604,8 +604,8 @@ paths:
               ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
               description: A heap overflow challenge
               publish_at: 1638384718
-              score: 50
               slug: pwnme
+              static_score: 50
               title: pwnme
       responses:
         "201":
@@ -1549,15 +1549,6 @@ paths:
           description: Filter by slug
           example: brumm
         example: brumm
-      - name: author_slug
-        in: query
-        description: Filter by author
-        allowEmptyValue: true
-        schema:
-          type: string
-          description: Filter by author
-          example: movitz_sunar
-        example: movitz_sunar
       responses:
         "200":
           description: OK response.
@@ -2629,15 +2620,14 @@ components:
           description: unix timestamp
           example: 1638384718
           format: int64
-        score:
-          type: integer
-          description: The number of points given to the solver
-          example: 50
-          format: int64
         slug:
           type: string
           description: A unique string that can be used in URLs
           example: pwnme
+        static_score:
+          type: integer
+          example: 50
+          format: int64
         title:
           type: string
           description: Title displayed to user
@@ -2649,8 +2639,8 @@ components:
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         publish_at: 1638384718
-        score: 50
         slug: pwnme
+        static_score: 50
         title: pwnme
       required:
       - category_id
@@ -2954,11 +2944,6 @@ components:
           description: unix timestamp
           example: 1638384718
           format: int64
-        score:
-          type: integer
-          description: The number of points given to the solver
-          example: 50
-          format: int64
         services:
           type: array
           items:
@@ -2976,6 +2961,10 @@ components:
           type: integer
           description: The numer of people who solved the challenge
           example: 3
+          format: int64
+        static_score:
+          type: integer
+          example: 50
           format: int64
         title:
           type: string
@@ -3005,7 +2994,6 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
         publish_at: 1638384718
-        score: 50
         services:
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
@@ -3015,6 +3003,7 @@ components:
           user_display: nc 0.0.0.0 1234
         slug: pwnme
         solves: 3
+        static_score: 50
         title: pwnme
       required:
       - files
@@ -3053,7 +3042,6 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
         publish_at: 1638384718
-        score: 50
         services:
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
@@ -3061,6 +3049,7 @@ components:
           user_display: nc 0.0.0.0 1234
         slug: pwnme
         solves: 3
+        static_score: 50
         title: pwnme
       - authors:
         - dfaa1a6a-9051-4c52-9441-5d664536cf24
@@ -3084,7 +3073,6 @@ components:
           id: 71333e34-4c6b-483e-b3c7-c77d73008cca
         id: e721a338-44de-4de8-a562-43d2db5f4115
         publish_at: 1638384718
-        score: 50
         services:
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
@@ -3092,6 +3080,7 @@ components:
           user_display: nc 0.0.0.0 1234
         slug: pwnme
         solves: 3
+        static_score: 50
         title: pwnme
     SsmChallenge:
       type: object

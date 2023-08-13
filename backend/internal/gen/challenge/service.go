@@ -55,10 +55,8 @@ var MethodNames = [8]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyCh
 // ListChallenges method.
 type ListChallengesPayload struct {
 	// Filter by slug
-	Slug *string
-	// Filter by author
-	AuthorSlug *string
-	Token      *string
+	Slug  *string
+	Token *string
 }
 
 // SsmChallengeCollection is the result type of the challenge service

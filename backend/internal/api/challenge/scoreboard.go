@@ -20,7 +20,7 @@ func (s *service) SchoolScoreboard(ctx context.Context, req *spec.SchoolScoreboa
 
 	scores := make([]*SchoolScoreboardScore, 0, maxScores)
 	err := models.NewQuery(
-		qm.Select("s.name name, SUM(score) score"),
+		qm.Select("s.name name, SUM(COALESCE(static_score,0)) score"),
 		qm.From("user_solves us"),
 		qm.InnerJoin("users u ON u.id = us.user_id AND u.school_id IS NOT NULL"),
 		qm.InnerJoin("challenges c ON c.id = us.challenge_id"),
@@ -58,7 +58,7 @@ func (s *service) UserScoreboard(ctx context.Context, req *spec.UserScoreboardPa
 
 	scores := make([]*SchoolScoreboardScore, 0, maxScores)
 	err := models.NewQuery(
-		qm.Select("users.id AS user_id, users.full_name AS name, SUM(score) AS score"),
+		qm.Select("users.id AS user_id, users.full_name AS name, SUM(COALESCE(static_score,0)) AS score"),
 		qm.From("user_solves"),
 		qm.LeftOuterJoin("users ON users.id = user_id"),
 		qm.InnerJoin("challenges ON challenges.id = challenge_id"),

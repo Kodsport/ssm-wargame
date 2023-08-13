@@ -388,10 +388,9 @@ func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIn
 
 // NewListChallengesPayload builds a challenge service ListChallenges endpoint
 // payload.
-func NewListChallengesPayload(slug *string, authorSlug *string, token *string) *challenge.ListChallengesPayload {
+func NewListChallengesPayload(slug *string, token *string) *challenge.ListChallengesPayload {
 	v := &challenge.ListChallengesPayload{}
 	v.Slug = slug
-	v.AuthorSlug = authorSlug
 	v.Token = token
 
 	return v

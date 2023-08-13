@@ -56,9 +56,6 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 		if p.Slug != nil {
 			values.Add("slug", *p.Slug)
 		}
-		if p.AuthorSlug != nil {
-			values.Add("author_slug", *p.AuthorSlug)
-		}
 		req.URL.RawQuery = values.Encode()
 		return nil
 	}

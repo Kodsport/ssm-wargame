@@ -102,12 +102,17 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	res := make(spec.SsmChallengeCollection, len(challs))
 
 	for i, chall := range challs {
+		score := chall.StaticScore.Int
+		if !chall.StaticScore.Valid {
+			score = dynamicScore(500, 100, chall.NumSolves, 25)
+		}
+
 		res[i] = &spec.SsmChallenge{
 			ID:          chall.ID,
 			Slug:        chall.Slug,
 			Title:       chall.Title,
 			Description: chall.Description,
-			Score:       chall.Score,
+			Score:       score,
 			Solves:      chall.NumSolves,
 			Solved:      chall.Solved,
 			Category:    chall.Category,
@@ -178,4 +183,8 @@ func (s *service) ListAuthors(ctx context.Context, req *spec.ListAuthorsPayload)
 	}
 
 	return res, nil
+}
+
+func dynamicScore(init, min, solvers, decay int) int {
+	return init + ((min-init)/(decay*decay))*solvers*solvers
 }

@@ -12,9 +12,13 @@
                     <input class="form-control" type="text" placeholder="Enter slug" v-model="form.slug" />
                 </div>
                 <div class="form-group">
-                    <label>Score</label>
-                    <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.score"
-                        step="50" min="0" />
+                    <label>Dynamic scoring</label>
+                    <input class="" type="checkbox" v-model="dynamicScoring">
+                </div>
+                <div v-if="!dynamicScoring" class="form-group">
+                    <label>Static score</label>
+                    <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.static_score"
+                        step="50" min="0" max="1500" />
                 </div>
                 <div class="form-group">
                     <label>Description</label>
@@ -150,7 +154,7 @@ var hasFile = ref(false);
 var form = ref({
     title: "",
     description: "",
-    score: "",
+    static_score: 0,
     slug: "",
     categoryId: "",
     publishAt: null,
@@ -162,6 +166,7 @@ const fileInput = ref(null)
 var chall = computed(() => challs.getBySlug(route.params.slug))
 var newFlag = ref("")
 const publishImm = ref(false)
+const dynamicScoring = ref(true)
 
 const meta = ref(null)
 
@@ -178,7 +183,7 @@ onMounted(async () => {
     form.value = {
         title: chall.value.title,
         description: chall.value.description,
-        score: chall.value.score,
+        static_score: chall.value.static_score,
         slug: chall.value.slug,
         categoryId: chall.value.category_id,
         publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16), // hacky af,pls fix
@@ -186,6 +191,7 @@ onMounted(async () => {
 
     };
     publishImm.value = chall.value.publish_at == null
+    dynamicScoring.value = chall.value.static_score == null
 
     meta.value = await http(`/admin/challenges/${chall.value.id}`)
 
@@ -229,7 +235,7 @@ async function updateChall() {
         body: {
             title: form.value.title,
             description: form.value.description,
-            score: form.value.score,
+            static_score: dynamicScoring.value ? null : form.value.static_score,
             slug: form.value.slug,
             category_id: form.value.categoryId,
             publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,

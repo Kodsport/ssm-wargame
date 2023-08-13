@@ -18,17 +18,11 @@ import (
 
 // BuildListChallengesPayload builds the payload for the challenge
 // ListChallenges endpoint from CLI flags.
-func BuildListChallengesPayload(challengeListChallengesSlug string, challengeListChallengesAuthorSlug string, challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
+func BuildListChallengesPayload(challengeListChallengesSlug string, challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
 	var slug *string
 	{
 		if challengeListChallengesSlug != "" {
 			slug = &challengeListChallengesSlug
-		}
-	}
-	var authorSlug *string
-	{
-		if challengeListChallengesAuthorSlug != "" {
-			authorSlug = &challengeListChallengesAuthorSlug
 		}
 	}
 	var token *string
@@ -39,7 +33,6 @@ func BuildListChallengesPayload(challengeListChallengesSlug string, challengeLis
 	}
 	v := &challenge.ListChallengesPayload{}
 	v.Slug = slug
-	v.AuthorSlug = authorSlug
 	v.Token = token
 
 	return v, nil

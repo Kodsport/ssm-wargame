@@ -22,14 +22,13 @@ type CreateChallengeRequestBody struct {
 	Title string `form:"title" json:"title" xml:"title"`
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
-	// The number of points given to the solver
-	Score int `form:"score" json:"score" xml:"score"`
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	CategoryID string   `form:"category_id" json:"category_id" xml:"category_id"`
-	Authors    []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	CtfEventID  *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	StaticScore *int     `form:"static_score,omitempty" json:"static_score,omitempty" xml:"static_score,omitempty"`
+	CategoryID  string   `form:"category_id" json:"category_id" xml:"category_id"`
+	Authors     []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // UpdateChallengeRequestBody is the type of the "admin" service
@@ -41,14 +40,13 @@ type UpdateChallengeRequestBody struct {
 	Title string `form:"title" json:"title" xml:"title"`
 	// A short text describing the challenge
 	Description string `form:"description" json:"description" xml:"description"`
-	// The number of points given to the solver
-	Score int `form:"score" json:"score" xml:"score"`
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	CategoryID string   `form:"category_id" json:"category_id" xml:"category_id"`
-	Authors    []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	CtfEventID  *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	StaticScore *int     `form:"static_score,omitempty" json:"static_score,omitempty" xml:"static_score,omitempty"`
+	CategoryID  string   `form:"category_id" json:"category_id" xml:"category_id"`
+	Authors     []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -1385,20 +1383,19 @@ type SsmAdminChallengeResponse struct {
 	// Title displayed to user
 	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
 	// A short text describing the challenge
-	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	// The number of points given to the solver
-	Score    *int                           `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-	Services []*ChallengeServiceResponse    `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
-	Files    []*AdminChallengeFilesResponse `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
+	Description *string                        `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	Services    []*ChallengeServiceResponse    `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Files       []*AdminChallengeFilesResponse `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The numer of people who solved the challenge
 	Solves *int `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string                       `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	Flags      []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
-	CategoryID *string                       `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
-	Authors    []string                      `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	CtfEventID  *string                       `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	Flags       []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
+	StaticScore *int                          `form:"static_score,omitempty" json:"static_score,omitempty" xml:"static_score,omitempty"`
+	CategoryID  *string                       `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
+	Authors     []string                      `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -1498,9 +1495,9 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 		Slug:        p.Slug,
 		Title:       p.Title,
 		Description: p.Description,
-		Score:       p.Score,
 		PublishAt:   p.PublishAt,
 		CtfEventID:  p.CtfEventID,
+		StaticScore: p.StaticScore,
 		CategoryID:  p.CategoryID,
 	}
 	if p.Authors != nil {
@@ -1519,9 +1516,9 @@ func NewUpdateChallengeRequestBody(p *admin.UpdateChallengePayload) *UpdateChall
 		Slug:        p.Slug,
 		Title:       p.Title,
 		Description: p.Description,
-		Score:       p.Score,
 		PublishAt:   p.PublishAt,
 		CtfEventID:  p.CtfEventID,
+		StaticScore: p.StaticScore,
 		CategoryID:  p.CategoryID,
 	}
 	if p.Authors != nil {
@@ -4393,9 +4390,6 @@ func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err err
 	}
 	if body.Description == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
-	}
-	if body.Score == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
 	}
 	if body.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))

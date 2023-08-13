@@ -10,9 +10,12 @@ var CreateChallengePayload = Type("CreateChallengePayload", func() {
 	Attribute("slug")
 	Attribute("title")
 	Attribute("description")
-	Attribute("score")
 	Attribute("publish_at")
 	Attribute("ctf_event_id")
+
+	Attribute("static_score", Int, func() {
+		Example(50)
+	})
 
 	Attribute("category_id", String, func() {
 		Example("1b678292-6737-4cc7-8eae-aa821100293f")

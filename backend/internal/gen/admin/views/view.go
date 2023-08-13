@@ -33,19 +33,18 @@ type SsmAdminChallengeView struct {
 	Title *string
 	// A short text describing the challenge
 	Description *string
-	// The number of points given to the solver
-	Score    *int
-	Services []*ChallengeServiceView
-	Files    []*AdminChallengeFilesView
+	Services    []*ChallengeServiceView
+	Files       []*AdminChallengeFilesView
 	// unix timestamp
 	PublishAt *int64
 	// The numer of people who solved the challenge
 	Solves *int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
-	Flags      []*AdminChallengeFlagView
-	CategoryID *string
-	Authors    []string
+	CtfEventID  *string
+	Flags       []*AdminChallengeFlagView
+	StaticScore *int
+	CategoryID  *string
+	Authors     []string
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -76,13 +75,13 @@ var (
 			"slug",
 			"title",
 			"description",
-			"score",
 			"services",
 			"files",
 			"publish_at",
 			"solves",
 			"ctf_event_id",
 			"flags",
+			"static_score",
 			"category_id",
 			"authors",
 		},
@@ -95,13 +94,13 @@ var (
 			"slug",
 			"title",
 			"description",
-			"score",
 			"services",
 			"files",
 			"publish_at",
 			"solves",
 			"ctf_event_id",
 			"flags",
+			"static_score",
 			"category_id",
 			"authors",
 		},
@@ -148,9 +147,6 @@ func ValidateSsmAdminChallengeView(result *SsmAdminChallengeView) (err error) {
 	}
 	if result.Description == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("description", "result"))
-	}
-	if result.Score == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
 	}
 	if result.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "result"))

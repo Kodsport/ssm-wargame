@@ -36,23 +36,18 @@ func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWri
 func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			slug       *string
-			authorSlug *string
-			token      *string
+			slug  *string
+			token *string
 		)
 		slugRaw := r.URL.Query().Get("slug")
 		if slugRaw != "" {
 			slug = &slugRaw
 		}
-		authorSlugRaw := r.URL.Query().Get("author_slug")
-		if authorSlugRaw != "" {
-			authorSlug = &authorSlugRaw
-		}
 		tokenRaw := r.Header.Get("Authorization")
 		if tokenRaw != "" {
 			token = &tokenRaw
 		}
-		payload := NewListChallengesPayload(slug, authorSlug, token)
+		payload := NewListChallengesPayload(slug, token)
 		if payload.Token != nil {
 			if strings.Contains(*payload.Token, " ") {
 				// Remove authorization scheme prefix (e.g. "Bearer")

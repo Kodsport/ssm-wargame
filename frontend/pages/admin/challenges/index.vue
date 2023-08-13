@@ -12,8 +12,12 @@
                     <input class="form-control" type="text" placeholder="Enter slug" v-model="form.slug" />
                 </div>
                 <div class="form-group">
-                    <label>Score</label>
-                    <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.score"
+                    <label class="me-2">Dynamic scoring</label>
+                    <input class="" type="checkbox" v-model="dynamicScoring">
+                </div>
+                <div v-if="!dynamicScoring" class="form-group">
+                    <label>Static score</label>
+                    <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.static_score"
                         step="50" min="0" max="1500" />
                 </div>
                 <div class="form-group">
@@ -44,7 +48,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Publish immediately</label>
+                    <label class="me-2">Publish immediately</label>
                     <input class="" type="checkbox" v-model="publishImm">
                 </div>
                 <div class="form-group" v-if="!publishImm">
@@ -64,6 +68,7 @@
                         <th>Title</th>
                         <th>Solvers</th>
                         <th>Category</th>
+                        <th>Score</th>
                         <th />
                     </tr>
                 </thead>
@@ -77,6 +82,7 @@
                         </td>
                         <td>{{ chall.solves }}</td>
                         <td>{{ getCategoryName(chall.category_id) }}</td>
+                        <td>{{ chall.static_score || 'Dynamic' }}</td>
                         <td class="text-right">
                             <NuxtLink class="btn btn-primary" :to="`/admin/challenges/${chall.slug}/edit`">
                                 Edit
@@ -108,12 +114,13 @@ onMounted(() => {
 })
 
 const challenges = computed(() => store.challenges)
+const dynamicScoring = ref(true)
 
 const publishImm = ref(false)
 const form = ref({
     title: "",
     slug: "",
-    score: 0,
+    static_score: 250,
     description: "",
     publishAt: "",
     category_id: "",
@@ -126,7 +133,7 @@ async function createChall() {
         body: {
             title: form.value.title,
             slug: form.value.slug,
-            score: form.value.score,
+            static_score: dynamicScoring.value ? null : form.value.static_score,
             description: form.value.description,
             category_id: form.value.category_id,
             publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,

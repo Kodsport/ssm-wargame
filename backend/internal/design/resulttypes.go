@@ -44,7 +44,6 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("slug")
 	Attribute("title")
 	Attribute("description")
-	Attribute("score")
 	Attribute("services")
 	Attribute("files")
 	Attribute("publish_at")
@@ -53,6 +52,10 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 
 	Attribute("files", ArrayOf(AdminChallengeFile))
 	Attribute("flags", ArrayOf(AdminChallengeFlag))
+
+	Attribute("static_score", Int, func() {
+		Example(50)
+	})
 
 	Attribute("category_id", String, func() {
 		Example("12b8dc3a-10ae-49ed-9d69-5208ccd92ed1")

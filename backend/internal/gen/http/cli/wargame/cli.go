@@ -36,7 +36,7 @@ user (get-self|complete-onboarding|join-school|leave-school|search-schools)
 func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
 		os.Args[0] + ` admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
-		os.Args[0] + ` challenge list-challenges --slug "brumm" --author-slug "movitz_sunar" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
+		os.Args[0] + ` challenge list-challenges --slug "brumm" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		""
 }
@@ -149,10 +149,9 @@ func ParseEndpoint(
 
 		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
 
-		challengeListChallengesFlags          = flag.NewFlagSet("list-challenges", flag.ExitOnError)
-		challengeListChallengesSlugFlag       = challengeListChallengesFlags.String("slug", "", "")
-		challengeListChallengesAuthorSlugFlag = challengeListChallengesFlags.String("author-slug", "", "")
-		challengeListChallengesTokenFlag      = challengeListChallengesFlags.String("token", "", "")
+		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+		challengeListChallengesSlugFlag  = challengeListChallengesFlags.String("slug", "", "")
+		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
 
 		challengeListEventsFlags     = flag.NewFlagSet("list-events", flag.ExitOnError)
 		challengeListEventsTokenFlag = challengeListEventsFlags.String("token", "", "")
@@ -512,7 +511,7 @@ func ParseEndpoint(
 			switch epn {
 			case "list-challenges":
 				endpoint = c.ListChallenges()
-				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesSlugFlag, *challengeListChallengesAuthorSlugFlag, *challengeListChallengesTokenFlag)
+				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesSlugFlag, *challengeListChallengesTokenFlag)
 			case "list-events":
 				endpoint = c.ListEvents()
 				data, err = challengec.BuildListEventsPayload(*challengeListEventsTokenFlag)
@@ -674,8 +673,8 @@ Example:
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
       "publish_at": 1638384718,
-      "score": 50,
       "slug": "pwnme",
+      "static_score": 50,
       "title": "pwnme"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
@@ -698,8 +697,8 @@ Example:
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
       "publish_at": 1638384718,
-      "score": 50,
       "slug": "pwnme",
+      "static_score": 50,
       "title": "pwnme"
    }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
@@ -1020,15 +1019,14 @@ Additional help:
 `, os.Args[0])
 }
 func challengeListChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -slug STRING -author-slug STRING -token STRING
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -slug STRING -token STRING
 
 ListChallenges implements ListChallenges.
     -slug STRING: 
-    -author-slug STRING: 
     -token STRING: 
 
 Example:
-    %[1]s challenge list-challenges --slug "brumm" --author-slug "movitz_sunar" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s challenge list-challenges --slug "brumm" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

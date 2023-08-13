@@ -2172,10 +2172,10 @@ func marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(v *adminv
 		Slug:        *v.Slug,
 		Title:       *v.Title,
 		Description: *v.Description,
-		Score:       *v.Score,
 		PublishAt:   v.PublishAt,
 		Solves:      *v.Solves,
 		CtfEventID:  v.CtfEventID,
+		StaticScore: v.StaticScore,
 		CategoryID:  *v.CategoryID,
 	}
 	if v.Services != nil {

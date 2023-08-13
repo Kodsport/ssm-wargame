@@ -113,15 +113,14 @@ type CreateChallengePayload struct {
 	Title string
 	// A short text describing the challenge
 	Description string
-	// The number of points given to the solver
-	Score int
 	// unix timestamp
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
-	CategoryID string
-	Authors    []string
-	Token      string
+	CtfEventID  *string
+	StaticScore *int
+	CategoryID  string
+	Authors     []string
+	Token       string
 }
 
 // UpdateChallengePayload is the payload type of the admin service
@@ -133,15 +132,14 @@ type UpdateChallengePayload struct {
 	Title string
 	// A short text describing the challenge
 	Description string
-	// The number of points given to the solver
-	Score int
 	// unix timestamp
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
-	CategoryID string
-	Authors    []string
-	Token      string
+	CtfEventID  *string
+	StaticScore *int
+	CategoryID  string
+	Authors     []string
+	Token       string
 	// ID of a challenge
 	ChallengeID string
 }
@@ -325,19 +323,18 @@ type SsmAdminChallenge struct {
 	Title string
 	// A short text describing the challenge
 	Description string
-	// The number of points given to the solver
-	Score    int
-	Services []*ChallengeService
-	Files    []*AdminChallengeFiles
+	Services    []*ChallengeService
+	Files       []*AdminChallengeFiles
 	// unix timestamp
 	PublishAt *int64
 	// The numer of people who solved the challenge
 	Solves int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
-	Flags      []*AdminChallengeFlag
-	CategoryID string
-	Authors    []string
+	CtfEventID  *string
+	Flags       []*AdminChallengeFlag
+	StaticScore *int
+	CategoryID  string
+	Authors     []string
 }
 
 type ChallengeService struct {
@@ -484,8 +481,9 @@ func newSsmAdminChallengeCollectionView(res SsmAdminChallengeCollection) adminvi
 // type SsmAdminChallenge.
 func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChallenge {
 	res := &SsmAdminChallenge{
-		PublishAt:  vres.PublishAt,
-		CtfEventID: vres.CtfEventID,
+		PublishAt:   vres.PublishAt,
+		CtfEventID:  vres.CtfEventID,
+		StaticScore: vres.StaticScore,
 	}
 	if vres.ID != nil {
 		res.ID = *vres.ID
@@ -498,9 +496,6 @@ func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChall
 	}
 	if vres.Description != nil {
 		res.Description = *vres.Description
-	}
-	if vres.Score != nil {
-		res.Score = *vres.Score
 	}
 	if vres.Solves != nil {
 		res.Solves = *vres.Solves
@@ -543,10 +538,10 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 		Slug:        &res.Slug,
 		Title:       &res.Title,
 		Description: &res.Description,
-		Score:       &res.Score,
 		PublishAt:   res.PublishAt,
 		Solves:      &res.Solves,
 		CtfEventID:  res.CtfEventID,
+		StaticScore: res.StaticScore,
 		CategoryID:  &res.CategoryID,
 	}
 	if res.Services != nil {
