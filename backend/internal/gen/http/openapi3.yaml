@@ -2022,11 +2022,14 @@ paths:
                 $ref: '#/components/schemas/SsmSchoolScoreboard'
               example:
                 scores:
-                - school_name: Stockholm Science and Innovation School
+                - is_university: true
+                  school_name: Stockholm Science and Innovation School
                   score: 1337
-                - school_name: Stockholm Science and Innovation School
+                - is_university: true
+                  school_name: Stockholm Science and Innovation School
                   score: 1337
-                - school_name: Stockholm Science and Innovation School
+                - is_university: true
+                  school_name: Stockholm Science and Innovation School
                   score: 1337
       security:
       - jwt_header_Authorization: []
@@ -2873,6 +2876,9 @@ components:
     SchoolScoreboardScore:
       type: object
       properties:
+        is_university:
+          type: boolean
+          example: true
         school_name:
           type: string
           example: Stockholm Science and Innovation School
@@ -2881,11 +2887,13 @@ components:
           example: 1337
           format: int64
       example:
+        is_university: true
         school_name: Stockholm Science and Innovation School
         score: 1337
       required:
       - school_name
       - score
+      - is_university
     SsmAdminChallenge:
       type: object
       properties:
@@ -3374,17 +3382,22 @@ components:
           items:
             $ref: '#/components/schemas/SchoolScoreboardScore'
           example:
-          - school_name: Stockholm Science and Innovation School
+          - is_university: true
+            school_name: Stockholm Science and Innovation School
             score: 1337
-          - school_name: Stockholm Science and Innovation School
+          - is_university: true
+            school_name: Stockholm Science and Innovation School
             score: 1337
-          - school_name: Stockholm Science and Innovation School
+          - is_university: true
+            school_name: Stockholm Science and Innovation School
             score: 1337
       example:
         scores:
-        - school_name: Stockholm Science and Innovation School
+        - is_university: true
+          school_name: Stockholm Science and Innovation School
           score: 1337
-        - school_name: Stockholm Science and Innovation School
+        - is_university: true
+          school_name: Stockholm Science and Innovation School
           score: 1337
       required:
       - scores

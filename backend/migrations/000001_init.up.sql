@@ -142,6 +142,16 @@ CREATE TABLE challenge_authors (
     PRIMARY KEY (challenge_id, author_id)
 );
 
+CREATE TABLE school_solves (
+    school_id UUID NOT NULL REFERENCES schools(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (school_id, challenge_id, user_id),
+    UNIQUE (challenge_id, user_id)
+);
+
 CREATE TABLE user_solves (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     challenge_id UUID REFERENCES challenges(id) ON DELETE CASCADE,

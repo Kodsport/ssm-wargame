@@ -92,6 +92,18 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 		if err != nil {
 			return err
 		}
+
+		if user.SchoolID.Valid {
+			schoolSolve := models.SchoolSolf{
+				SchoolID:    user.SchoolID.String,
+				UserID:      user.ID,
+				ChallengeID: challID.String(),
+			}
+			schoolSolve.Insert(ctx, tx, boil.Infer())
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	err = tx.Commit()

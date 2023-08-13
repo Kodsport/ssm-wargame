@@ -245,8 +245,9 @@ type SsmUserMonthlyChallengeResponse struct {
 // SchoolScoreboardScoreResponseBody is used to define fields on response body
 // types.
 type SchoolScoreboardScoreResponseBody struct {
-	Score      *int    `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
+	Score        *int    `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	SchoolName   *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
+	IsUniversity *bool   `form:"is_university,omitempty" json:"is_university,omitempty" xml:"is_university,omitempty"`
 }
 
 // UserScoreboardScoreResponseBody is used to define fields on response body
@@ -767,6 +768,9 @@ func ValidateSchoolScoreboardScoreResponseBody(body *SchoolScoreboardScoreRespon
 	}
 	if body.Score == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	if body.IsUniversity == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("is_university", "body"))
 	}
 	return
 }

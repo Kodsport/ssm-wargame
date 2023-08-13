@@ -193,8 +193,9 @@ type CTFEvent struct {
 }
 
 type SchoolScoreboardScore struct {
-	Score      int
-	SchoolName string
+	Score        int
+	SchoolName   string
+	IsUniversity bool
 }
 
 type UserScoreboardScore struct {
@@ -690,8 +691,9 @@ func transformChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScore(v *
 		return nil
 	}
 	res := &SchoolScoreboardScore{
-		Score:      *v.Score,
-		SchoolName: *v.SchoolName,
+		Score:        *v.Score,
+		SchoolName:   *v.SchoolName,
+		IsUniversity: *v.IsUniversity,
 	}
 
 	return res
@@ -702,8 +704,9 @@ func transformChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScore(v *
 // value of type *SchoolScoreboardScore.
 func transformSchoolScoreboardScoreToChallengeviewsSchoolScoreboardScoreView(v *SchoolScoreboardScore) *challengeviews.SchoolScoreboardScoreView {
 	res := &challengeviews.SchoolScoreboardScoreView{
-		Score:      &v.Score,
-		SchoolName: &v.SchoolName,
+		Score:        &v.Score,
+		SchoolName:   &v.SchoolName,
+		IsUniversity: &v.IsUniversity,
 	}
 
 	return res

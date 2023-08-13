@@ -247,8 +247,9 @@ type SsmUserMonthlyChallengeResponse struct {
 // SchoolScoreboardScoreResponseBody is used to define fields on response body
 // types.
 type SchoolScoreboardScoreResponseBody struct {
-	Score      int    `form:"score" json:"score" xml:"score"`
-	SchoolName string `form:"school_name" json:"school_name" xml:"school_name"`
+	Score        int    `form:"score" json:"score" xml:"score"`
+	SchoolName   string `form:"school_name" json:"school_name" xml:"school_name"`
+	IsUniversity bool   `form:"is_university" json:"is_university" xml:"is_university"`
 }
 
 // UserScoreboardScoreResponseBody is used to define fields on response body

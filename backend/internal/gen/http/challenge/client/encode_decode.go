@@ -946,8 +946,9 @@ func unmarshalSsmUserMonthlyChallengeResponseToChallengeviewsSsmUserMonthlyChall
 // value of type *SchoolScoreboardScoreResponseBody.
 func unmarshalSchoolScoreboardScoreResponseBodyToChallengeviewsSchoolScoreboardScoreView(v *SchoolScoreboardScoreResponseBody) *challengeviews.SchoolScoreboardScoreView {
 	res := &challengeviews.SchoolScoreboardScoreView{
-		Score:      v.Score,
-		SchoolName: v.SchoolName,
+		Score:        v.Score,
+		SchoolName:   v.SchoolName,
+		IsUniversity: v.IsUniversity,
 	}
 
 	return res

@@ -139,8 +139,9 @@ type SsmSchoolScoreboardView struct {
 // SchoolScoreboardScoreView is a type that runs validations on a projected
 // type.
 type SchoolScoreboardScoreView struct {
-	Score      *int
-	SchoolName *string
+	Score        *int
+	SchoolName   *string
+	IsUniversity *bool
 }
 
 // SsmUserScoreboardView is a type that runs validations on a projected type.
@@ -499,6 +500,9 @@ func ValidateSchoolScoreboardScoreView(result *SchoolScoreboardScoreView) (err e
 	}
 	if result.Score == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("score", "result"))
+	}
+	if result.IsUniversity == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("is_university", "result"))
 	}
 	return
 }

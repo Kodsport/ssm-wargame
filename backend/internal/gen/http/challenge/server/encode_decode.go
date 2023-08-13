@@ -648,8 +648,9 @@ func marshalChallengeviewsSsmUserMonthlyChallengeViewToSsmUserMonthlyChallengeRe
 // type *challengeviews.SchoolScoreboardScoreView.
 func marshalChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScoreResponseBody(v *challengeviews.SchoolScoreboardScoreView) *SchoolScoreboardScoreResponseBody {
 	res := &SchoolScoreboardScoreResponseBody{
-		Score:      *v.Score,
-		SchoolName: *v.SchoolName,
+		Score:        *v.Score,
+		SchoolName:   *v.SchoolName,
+		IsUniversity: *v.IsUniversity,
 	}
 
 	return res

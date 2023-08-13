@@ -198,19 +198,29 @@ var SchoolWhere = struct {
 
 // SchoolRels is where relationship names are stored.
 var SchoolRels = struct {
-	Users string
+	SchoolSolves string
+	Users        string
 }{
-	Users: "Users",
+	SchoolSolves: "SchoolSolves",
+	Users:        "Users",
 }
 
 // schoolR is where relationships are stored.
 type schoolR struct {
-	Users UserSlice `boil:"Users" json:"Users" toml:"Users" yaml:"Users"`
+	SchoolSolves SchoolSolfSlice `boil:"SchoolSolves" json:"SchoolSolves" toml:"SchoolSolves" yaml:"SchoolSolves"`
+	Users        UserSlice       `boil:"Users" json:"Users" toml:"Users" yaml:"Users"`
 }
 
 // NewStruct creates a new relationship struct
 func (*schoolR) NewStruct() *schoolR {
 	return &schoolR{}
+}
+
+func (r *schoolR) GetSchoolSolves() SchoolSolfSlice {
+	if r == nil {
+		return nil
+	}
+	return r.SchoolSolves
 }
 
 func (r *schoolR) GetUsers() UserSlice {
@@ -509,6 +519,20 @@ func (q schoolQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (boo
 	return count > 0, nil
 }
 
+// SchoolSolves retrieves all the school_solf's SchoolSolves with an executor.
+func (o *School) SchoolSolves(mods ...qm.QueryMod) schoolSolfQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"school_solves\".\"school_id\"=?", o.ID),
+	)
+
+	return SchoolSolves(queryMods...)
+}
+
 // Users retrieves all the user's Users with an executor.
 func (o *School) Users(mods ...qm.QueryMod) userQuery {
 	var queryMods []qm.QueryMod
@@ -521,6 +545,120 @@ func (o *School) Users(mods ...qm.QueryMod) userQuery {
 	)
 
 	return Users(queryMods...)
+}
+
+// LoadSchoolSolves allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (schoolL) LoadSchoolSolves(ctx context.Context, e boil.ContextExecutor, singular bool, maybeSchool interface{}, mods queries.Applicator) error {
+	var slice []*School
+	var object *School
+
+	if singular {
+		var ok bool
+		object, ok = maybeSchool.(*School)
+		if !ok {
+			object = new(School)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeSchool)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeSchool))
+			}
+		}
+	} else {
+		s, ok := maybeSchool.(*[]*School)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeSchool)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeSchool))
+			}
+		}
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &schoolR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &schoolR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(
+		qm.From(`school_solves`),
+		qm.WhereIn(`school_solves.school_id in ?`, args...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load school_solves")
+	}
+
+	var resultSlice []*SchoolSolf
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice school_solves")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on school_solves")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for school_solves")
+	}
+
+	if len(schoolSolfAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.SchoolSolves = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &schoolSolfR{}
+			}
+			foreign.R.School = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.SchoolID {
+				local.R.SchoolSolves = append(local.R.SchoolSolves, foreign)
+				if foreign.R == nil {
+					foreign.R = &schoolSolfR{}
+				}
+				foreign.R.School = local
+				break
+			}
+		}
+	}
+
+	return nil
 }
 
 // LoadUsers allows an eager lookup of values, cached into the
@@ -634,6 +772,59 @@ func (schoolL) LoadUsers(ctx context.Context, e boil.ContextExecutor, singular b
 		}
 	}
 
+	return nil
+}
+
+// AddSchoolSolves adds the given related objects to the existing relationships
+// of the school, optionally inserting them as new records.
+// Appends related to o.R.SchoolSolves.
+// Sets related.R.School appropriately.
+func (o *School) AddSchoolSolves(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*SchoolSolf) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.SchoolID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"school_solves\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"school_id"}),
+				strmangle.WhereClause("\"", "\"", 2, schoolSolfPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.SchoolID, rel.ChallengeID, rel.UserID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.SchoolID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &schoolR{
+			SchoolSolves: related,
+		}
+	} else {
+		o.R.SchoolSolves = append(o.R.SchoolSolves, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &schoolSolfR{
+				School: o,
+			}
+		} else {
+			rel.R.School = o
+		}
+	}
 	return nil
 }
 

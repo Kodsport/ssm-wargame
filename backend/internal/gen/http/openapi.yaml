@@ -5135,22 +5135,29 @@ definitions:
         items:
           $ref: '#/definitions/SchoolScoreboardScoreResponseBody'
         example:
-        - school_name: Stockholm Science and Innovation School
+        - is_university: true
+          school_name: Stockholm Science and Innovation School
           score: 1337
-        - school_name: Stockholm Science and Innovation School
+        - is_university: true
+          school_name: Stockholm Science and Innovation School
           score: 1337
-        - school_name: Stockholm Science and Innovation School
+        - is_university: true
+          school_name: Stockholm Science and Innovation School
           score: 1337
-        - school_name: Stockholm Science and Innovation School
+        - is_university: true
+          school_name: Stockholm Science and Innovation School
           score: 1337
     description: SchoolScoreboardResponseBody result type (default view)
     example:
       scores:
-      - school_name: Stockholm Science and Innovation School
+      - is_university: true
+        school_name: Stockholm Science and Innovation School
         score: 1337
-      - school_name: Stockholm Science and Innovation School
+      - is_university: true
+        school_name: Stockholm Science and Innovation School
         score: 1337
-      - school_name: Stockholm Science and Innovation School
+      - is_university: true
+        school_name: Stockholm Science and Innovation School
         score: 1337
     required:
     - scores
@@ -5896,6 +5903,9 @@ definitions:
     title: SchoolScoreboardScoreResponseBody
     type: object
     properties:
+      is_university:
+        type: boolean
+        example: true
       school_name:
         type: string
         example: Stockholm Science and Innovation School
@@ -5904,11 +5914,13 @@ definitions:
         example: 1337
         format: int64
     example:
+      is_university: true
       school_name: Stockholm Science and Innovation School
       score: 1337
     required:
     - school_name
     - score
+    - is_university
   SsmAdminChallengeResponse:
     title: 'Mediatype identifier: application/vnd.ssm.admin.challenge; view=default'
     type: object

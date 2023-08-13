@@ -2,6 +2,7 @@ BEGIN;
 
 DROP TABLE challtools_import_token;
 DROP TABLE user_solves;
+DROP TABLE school_solves;
 DROP TABLE challenge_authors;
 DROP TABLE submissions;
 DROP TABLE monthly_challenges;

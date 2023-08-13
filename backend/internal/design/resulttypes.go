@@ -118,7 +118,10 @@ var SchoolScoreboardScore = Type("SchoolScoreboardScore", func() {
 	Attribute("school_name", String, func() {
 		Example("Stockholm Science and Innovation School")
 	})
-	Required("school_name", "score")
+	Attribute("is_university", Boolean, func() {
+		Example(true)
+	})
+	Required("school_name", "score", "is_university")
 })
 
 var UserScoreboardScore = Type("UserScoreboardScore", func() {
