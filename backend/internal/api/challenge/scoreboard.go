@@ -58,7 +58,7 @@ func (s *service) SchoolScoreboard(ctx context.Context, req *spec.SchoolScoreboa
 
 	schoolSolveCount := []*SchoolSolve{}
 	err = models.NewQuery(
-		qm.SQL("SELECT challenge_id, schools.id, count(1) as solves, name, is_university FROM school_solves INNER JOIN schools ON id = school_id GROUP BY schools.id, challenge_id"),
+		qm.SQL("SELECT challenge_id, schools.id AS school_id, count(1) as solves, name, is_university FROM school_solves INNER JOIN schools ON id = school_id GROUP BY schools.id, challenge_id"),
 	).Bind(ctx, s.db, &schoolSolveCount)
 	if err != nil {
 		return nil, err
