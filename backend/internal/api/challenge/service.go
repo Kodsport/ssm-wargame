@@ -104,7 +104,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	for i, chall := range challs {
 		score := chall.StaticScore.Int
 		if !chall.StaticScore.Valid {
-			score = dynamicScore(500, 100, chall.NumSolves, 25)
+			score = dynamicScore(500, 100, float32(chall.NumSolves), 25)
 		}
 
 		res[i] = &spec.SsmChallenge{
@@ -185,6 +185,6 @@ func (s *service) ListAuthors(ctx context.Context, req *spec.ListAuthorsPayload)
 	return res, nil
 }
 
-func dynamicScore(init, min, solvers, decay int) int {
-	return init + ((min-init)/(decay*decay))*solvers*solvers
+func dynamicScore(init, min, solvers, decay float32) int {
+	return int(init + ((min-init)/(decay*decay))*solvers*solvers)
 }
