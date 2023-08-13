@@ -61,7 +61,7 @@
                 <h1 class="text-primary">Månadens utmaning - {{ monthly.data.value.display_month }}</h1>
                 <MonthlyChallenge :chall="monthly.data.value.challenge" />
             </div>
-            <div v-else-if="userScoreboard" class="col pt-4 pt-md-0 text-primary">
+            <div v-else-if="scoreboard.uniScores" class="col pt-4 pt-md-0 text-primary">
                 <h1>Poängtavla</h1>
                 <table class="table">
                     <thead>
@@ -72,9 +72,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="score, i in userScoreboard.data.value.scores.slice(0, 10)" :key="score.user_id">
+                        <tr v-for="score, i in scoreboard.uniScores.slice(0, 10)">
                             <td>{{ i + 1 }}</td>
-                            <td>{{ score.name }}</td>
+                            <td>{{ score.school_name }}</td>
                             <td>{{ score.score }}</td>
                         </tr>
                     </tbody>
@@ -86,8 +86,12 @@
 
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges'
+import { useScoreboardStore } from '../store/scoreboard'
 
 const http = useHttp()
+const scoreboard = useScoreboardStore()
+const challs = useChallengeStore()
+
 const discordUrl = 'https://discord.gg/edKFKKU'
 const mailFormId = 'f6b65d3d-5ba1-4da9-8c42-4e3be8b6277f';
 
@@ -95,12 +99,9 @@ useHead({
     title: 'Säkerhets-SM'
 })
 
-const challs = useChallengeStore()
-
 const monthly = await useAsyncData('monthly', () => http('/current_monthly_challenge'))
-var userScoreboard;
 if (monthly.error.value) {
-    userScoreboard = await useAsyncData('userScoreboard', () => http('/user_scoreboard'))
+    await useAsyncData('scoreboard', scoreboard.getSchoolScoreboards)
 }
 
 

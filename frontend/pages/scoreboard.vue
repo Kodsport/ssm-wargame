@@ -1,7 +1,7 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <h1>Personer</h1>
                 <table class="table">
                     <thead>
@@ -12,7 +12,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="score, i in userScoreboard.data.value.scores" :key="score.user_id">
+                        <tr v-for="score, i in scoreboard.userScores.slice(0, 10)" :key="score.user_id">
                             <td>{{ i + 1 }}</td>
                             <td>{{ score.name }}</td>
                             <td>{{ score.score }}</td>
@@ -21,7 +21,7 @@
                 </table>
 
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <h1>Skolor</h1>
                 <table class="table">
                     <thead>
@@ -32,7 +32,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="score, i in schoolScoreboard.data.value.scores" :key="score.school_name">
+                        <tr v-for="score, i in scoreboard.nonUniScores.slice(0, 10)" :key="score.school_name">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ score.school_name }}</td>
+                            <td>{{ score.score }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <h1>Universitet</h1>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Rang</th>
+                            <th>Skola</th>
+                            <th>Poäng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="score, i in scoreboard.uniScores.slice(0, 10)" :key="score.school_name">
                             <td>{{ i + 1 }}</td>
                             <td>{{ score.school_name }}</td>
                             <td>{{ score.score }}</td>
@@ -46,11 +66,12 @@
 </template>
 
 <script setup lang="ts">
+import { useScoreboardStore } from '../store/scoreboard'
 
-const http = useHttp()
+const scoreboard = useScoreboardStore()
 
-const userScoreboard = await useAsyncData('userScoreboard', () => http('/user_scoreboard'))
-const schoolScoreboard = await useAsyncData('schoolScoreboard', () => http('/scoreboard'))
+await useAsyncData('userScoreboard', scoreboard.getUserScoreboards)
+await useAsyncData('scoreboard', scoreboard.getSchoolScoreboards)
 
 useHead({
     title: 'SSM - Poängtavla'
