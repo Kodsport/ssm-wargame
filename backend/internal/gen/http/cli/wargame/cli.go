@@ -26,8 +26,8 @@ import (
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
-admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token)
-challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors)
+challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors|list-courses|enroll-course|complete-course)
+admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course)
 user (get-self|complete-onboarding|join-school|leave-school|search-schools)
 `
 }
@@ -35,8 +35,8 @@ user (get-self|complete-onboarding|join-school|leave-school|search-schools)
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
+		os.Args[0] + ` challenge list-challenges --slug "brumm" --ids [] --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
-		os.Args[0] + ` challenge list-challenges --slug "brumm" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		""
 }
@@ -57,6 +57,47 @@ func ParseEndpoint(
 
 		authExchangeDiscordFlags    = flag.NewFlagSet("exchange-discord", flag.ExitOnError)
 		authExchangeDiscordBodyFlag = authExchangeDiscordFlags.String("body", "REQUIRED", "")
+
+		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
+
+		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
+		challengeListChallengesSlugFlag  = challengeListChallengesFlags.String("slug", "", "")
+		challengeListChallengesIdsFlag   = challengeListChallengesFlags.String("ids", "", "")
+		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
+
+		challengeListEventsFlags     = flag.NewFlagSet("list-events", flag.ExitOnError)
+		challengeListEventsTokenFlag = challengeListEventsFlags.String("token", "", "")
+
+		challengeGetCurrentMonthlyChallengeFlags     = flag.NewFlagSet("get-current-monthly-challenge", flag.ExitOnError)
+		challengeGetCurrentMonthlyChallengeTokenFlag = challengeGetCurrentMonthlyChallengeFlags.String("token", "", "")
+
+		challengeListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
+		challengeListMonthlyChallengesTokenFlag = challengeListMonthlyChallengesFlags.String("token", "", "")
+
+		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
+		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
+		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
+		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "REQUIRED", "")
+
+		challengeSchoolScoreboardFlags     = flag.NewFlagSet("school-scoreboard", flag.ExitOnError)
+		challengeSchoolScoreboardTokenFlag = challengeSchoolScoreboardFlags.String("token", "", "")
+
+		challengeUserScoreboardFlags     = flag.NewFlagSet("user-scoreboard", flag.ExitOnError)
+		challengeUserScoreboardTokenFlag = challengeUserScoreboardFlags.String("token", "", "")
+
+		challengeListAuthorsFlags     = flag.NewFlagSet("list-authors", flag.ExitOnError)
+		challengeListAuthorsTokenFlag = challengeListAuthorsFlags.String("token", "", "")
+
+		challengeListCoursesFlags     = flag.NewFlagSet("list-courses", flag.ExitOnError)
+		challengeListCoursesTokenFlag = challengeListCoursesFlags.String("token", "", "")
+
+		challengeEnrollCourseFlags     = flag.NewFlagSet("enroll-course", flag.ExitOnError)
+		challengeEnrollCourseIDFlag    = challengeEnrollCourseFlags.String("id", "REQUIRED", "ID of a file")
+		challengeEnrollCourseTokenFlag = challengeEnrollCourseFlags.String("token", "", "")
+
+		challengeCompleteCourseFlags     = flag.NewFlagSet("complete-course", flag.ExitOnError)
+		challengeCompleteCourseIDFlag    = challengeCompleteCourseFlags.String("id", "REQUIRED", "ID of a file")
+		challengeCompleteCourseTokenFlag = challengeCompleteCourseFlags.String("token", "", "")
 
 		adminFlags = flag.NewFlagSet("admin", flag.ContinueOnError)
 
@@ -104,7 +145,7 @@ func ParseEndpoint(
 
 		adminUpdateAuthorFlags     = flag.NewFlagSet("update-author", flag.ExitOnError)
 		adminUpdateAuthorBodyFlag  = adminUpdateAuthorFlags.String("body", "REQUIRED", "")
-		adminUpdateAuthorIDFlag    = adminUpdateAuthorFlags.String("id", "REQUIRED", "")
+		adminUpdateAuthorIDFlag    = adminUpdateAuthorFlags.String("id", "REQUIRED", "ID of a file")
 		adminUpdateAuthorTokenFlag = adminUpdateAuthorFlags.String("token", "REQUIRED", "")
 
 		adminCreateAuthorFlags     = flag.NewFlagSet("create-author", flag.ExitOnError)
@@ -140,41 +181,24 @@ func ParseEndpoint(
 		adminCreateCTFEventTokenFlag = adminCreateCTFEventFlags.String("token", "REQUIRED", "")
 
 		adminDeleteCTFEventFlags     = flag.NewFlagSet("delete-ctf-event", flag.ExitOnError)
-		adminDeleteCTFEventIDFlag    = adminDeleteCTFEventFlags.String("id", "REQUIRED", "")
+		adminDeleteCTFEventIDFlag    = adminDeleteCTFEventFlags.String("id", "REQUIRED", "ID of a file")
 		adminDeleteCTFEventTokenFlag = adminDeleteCTFEventFlags.String("token", "REQUIRED", "")
 
 		adminCreateCTFEventImportTokenFlags     = flag.NewFlagSet("create-ctf-event-import-token", flag.ExitOnError)
 		adminCreateCTFEventImportTokenBodyFlag  = adminCreateCTFEventImportTokenFlags.String("body", "REQUIRED", "")
 		adminCreateCTFEventImportTokenTokenFlag = adminCreateCTFEventImportTokenFlags.String("token", "REQUIRED", "")
 
-		challengeFlags = flag.NewFlagSet("challenge", flag.ContinueOnError)
+		adminListCoursesFlags     = flag.NewFlagSet("list-courses", flag.ExitOnError)
+		adminListCoursesTokenFlag = adminListCoursesFlags.String("token", "REQUIRED", "")
 
-		challengeListChallengesFlags     = flag.NewFlagSet("list-challenges", flag.ExitOnError)
-		challengeListChallengesSlugFlag  = challengeListChallengesFlags.String("slug", "", "")
-		challengeListChallengesTokenFlag = challengeListChallengesFlags.String("token", "", "")
+		adminCreateCourseFlags     = flag.NewFlagSet("create-course", flag.ExitOnError)
+		adminCreateCourseBodyFlag  = adminCreateCourseFlags.String("body", "REQUIRED", "")
+		adminCreateCourseTokenFlag = adminCreateCourseFlags.String("token", "REQUIRED", "")
 
-		challengeListEventsFlags     = flag.NewFlagSet("list-events", flag.ExitOnError)
-		challengeListEventsTokenFlag = challengeListEventsFlags.String("token", "", "")
-
-		challengeGetCurrentMonthlyChallengeFlags     = flag.NewFlagSet("get-current-monthly-challenge", flag.ExitOnError)
-		challengeGetCurrentMonthlyChallengeTokenFlag = challengeGetCurrentMonthlyChallengeFlags.String("token", "", "")
-
-		challengeListMonthlyChallengesFlags     = flag.NewFlagSet("list-monthly-challenges", flag.ExitOnError)
-		challengeListMonthlyChallengesTokenFlag = challengeListMonthlyChallengesFlags.String("token", "", "")
-
-		challengeSubmitFlagFlags           = flag.NewFlagSet("submit-flag", flag.ExitOnError)
-		challengeSubmitFlagBodyFlag        = challengeSubmitFlagFlags.String("body", "REQUIRED", "")
-		challengeSubmitFlagChallengeIDFlag = challengeSubmitFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
-		challengeSubmitFlagTokenFlag       = challengeSubmitFlagFlags.String("token", "REQUIRED", "")
-
-		challengeSchoolScoreboardFlags     = flag.NewFlagSet("school-scoreboard", flag.ExitOnError)
-		challengeSchoolScoreboardTokenFlag = challengeSchoolScoreboardFlags.String("token", "", "")
-
-		challengeUserScoreboardFlags     = flag.NewFlagSet("user-scoreboard", flag.ExitOnError)
-		challengeUserScoreboardTokenFlag = challengeUserScoreboardFlags.String("token", "", "")
-
-		challengeListAuthorsFlags     = flag.NewFlagSet("list-authors", flag.ExitOnError)
-		challengeListAuthorsTokenFlag = challengeListAuthorsFlags.String("token", "", "")
+		adminUpdateCourseFlags     = flag.NewFlagSet("update-course", flag.ExitOnError)
+		adminUpdateCourseBodyFlag  = adminUpdateCourseFlags.String("body", "REQUIRED", "")
+		adminUpdateCourseIDFlag    = adminUpdateCourseFlags.String("id", "REQUIRED", "ID of a file")
+		adminUpdateCourseTokenFlag = adminUpdateCourseFlags.String("token", "REQUIRED", "")
 
 		userFlags = flag.NewFlagSet("user", flag.ContinueOnError)
 
@@ -200,6 +224,19 @@ func ParseEndpoint(
 	authGenerateDiscordAuthURLFlags.Usage = authGenerateDiscordAuthURLUsage
 	authExchangeDiscordFlags.Usage = authExchangeDiscordUsage
 
+	challengeFlags.Usage = challengeUsage
+	challengeListChallengesFlags.Usage = challengeListChallengesUsage
+	challengeListEventsFlags.Usage = challengeListEventsUsage
+	challengeGetCurrentMonthlyChallengeFlags.Usage = challengeGetCurrentMonthlyChallengeUsage
+	challengeListMonthlyChallengesFlags.Usage = challengeListMonthlyChallengesUsage
+	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
+	challengeSchoolScoreboardFlags.Usage = challengeSchoolScoreboardUsage
+	challengeUserScoreboardFlags.Usage = challengeUserScoreboardUsage
+	challengeListAuthorsFlags.Usage = challengeListAuthorsUsage
+	challengeListCoursesFlags.Usage = challengeListCoursesUsage
+	challengeEnrollCourseFlags.Usage = challengeEnrollCourseUsage
+	challengeCompleteCourseFlags.Usage = challengeCompleteCourseUsage
+
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
 	adminGetChallengeMetaFlags.Usage = adminGetChallengeMetaUsage
@@ -223,16 +260,9 @@ func ParseEndpoint(
 	adminCreateCTFEventFlags.Usage = adminCreateCTFEventUsage
 	adminDeleteCTFEventFlags.Usage = adminDeleteCTFEventUsage
 	adminCreateCTFEventImportTokenFlags.Usage = adminCreateCTFEventImportTokenUsage
-
-	challengeFlags.Usage = challengeUsage
-	challengeListChallengesFlags.Usage = challengeListChallengesUsage
-	challengeListEventsFlags.Usage = challengeListEventsUsage
-	challengeGetCurrentMonthlyChallengeFlags.Usage = challengeGetCurrentMonthlyChallengeUsage
-	challengeListMonthlyChallengesFlags.Usage = challengeListMonthlyChallengesUsage
-	challengeSubmitFlagFlags.Usage = challengeSubmitFlagUsage
-	challengeSchoolScoreboardFlags.Usage = challengeSchoolScoreboardUsage
-	challengeUserScoreboardFlags.Usage = challengeUserScoreboardUsage
-	challengeListAuthorsFlags.Usage = challengeListAuthorsUsage
+	adminListCoursesFlags.Usage = adminListCoursesUsage
+	adminCreateCourseFlags.Usage = adminCreateCourseUsage
+	adminUpdateCourseFlags.Usage = adminUpdateCourseUsage
 
 	userFlags.Usage = userUsage
 	userGetSelfFlags.Usage = userGetSelfUsage
@@ -258,10 +288,10 @@ func ParseEndpoint(
 		switch svcn {
 		case "auth":
 			svcf = authFlags
-		case "admin":
-			svcf = adminFlags
 		case "challenge":
 			svcf = challengeFlags
+		case "admin":
+			svcf = adminFlags
 		case "user":
 			svcf = userFlags
 		default:
@@ -286,6 +316,43 @@ func ParseEndpoint(
 
 			case "exchange-discord":
 				epf = authExchangeDiscordFlags
+
+			}
+
+		case "challenge":
+			switch epn {
+			case "list-challenges":
+				epf = challengeListChallengesFlags
+
+			case "list-events":
+				epf = challengeListEventsFlags
+
+			case "get-current-monthly-challenge":
+				epf = challengeGetCurrentMonthlyChallengeFlags
+
+			case "list-monthly-challenges":
+				epf = challengeListMonthlyChallengesFlags
+
+			case "submit-flag":
+				epf = challengeSubmitFlagFlags
+
+			case "school-scoreboard":
+				epf = challengeSchoolScoreboardFlags
+
+			case "user-scoreboard":
+				epf = challengeUserScoreboardFlags
+
+			case "list-authors":
+				epf = challengeListAuthorsFlags
+
+			case "list-courses":
+				epf = challengeListCoursesFlags
+
+			case "enroll-course":
+				epf = challengeEnrollCourseFlags
+
+			case "complete-course":
+				epf = challengeCompleteCourseFlags
 
 			}
 
@@ -357,33 +424,14 @@ func ParseEndpoint(
 			case "create-ctf-event-import-token":
 				epf = adminCreateCTFEventImportTokenFlags
 
-			}
+			case "list-courses":
+				epf = adminListCoursesFlags
 
-		case "challenge":
-			switch epn {
-			case "list-challenges":
-				epf = challengeListChallengesFlags
+			case "create-course":
+				epf = adminCreateCourseFlags
 
-			case "list-events":
-				epf = challengeListEventsFlags
-
-			case "get-current-monthly-challenge":
-				epf = challengeGetCurrentMonthlyChallengeFlags
-
-			case "list-monthly-challenges":
-				epf = challengeListMonthlyChallengesFlags
-
-			case "submit-flag":
-				epf = challengeSubmitFlagFlags
-
-			case "school-scoreboard":
-				epf = challengeSchoolScoreboardFlags
-
-			case "user-scoreboard":
-				epf = challengeUserScoreboardFlags
-
-			case "list-authors":
-				epf = challengeListAuthorsFlags
+			case "update-course":
+				epf = adminUpdateCourseFlags
 
 			}
 
@@ -435,6 +483,43 @@ func ParseEndpoint(
 			case "exchange-discord":
 				endpoint = c.ExchangeDiscord()
 				data, err = authc.BuildExchangeDiscordPayload(*authExchangeDiscordBodyFlag)
+			}
+		case "challenge":
+			c := challengec.NewClient(scheme, host, doer, enc, dec, restore)
+			switch epn {
+			case "list-challenges":
+				endpoint = c.ListChallenges()
+				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesSlugFlag, *challengeListChallengesIdsFlag, *challengeListChallengesTokenFlag)
+			case "list-events":
+				endpoint = c.ListEvents()
+				data, err = challengec.BuildListEventsPayload(*challengeListEventsTokenFlag)
+			case "get-current-monthly-challenge":
+				endpoint = c.GetCurrentMonthlyChallenge()
+				data, err = challengec.BuildGetCurrentMonthlyChallengePayload(*challengeGetCurrentMonthlyChallengeTokenFlag)
+			case "list-monthly-challenges":
+				endpoint = c.ListMonthlyChallenges()
+				data, err = challengec.BuildListMonthlyChallengesPayload(*challengeListMonthlyChallengesTokenFlag)
+			case "submit-flag":
+				endpoint = c.SubmitFlag()
+				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag, *challengeSubmitFlagTokenFlag)
+			case "school-scoreboard":
+				endpoint = c.SchoolScoreboard()
+				data, err = challengec.BuildSchoolScoreboardPayload(*challengeSchoolScoreboardTokenFlag)
+			case "user-scoreboard":
+				endpoint = c.UserScoreboard()
+				data, err = challengec.BuildUserScoreboardPayload(*challengeUserScoreboardTokenFlag)
+			case "list-authors":
+				endpoint = c.ListAuthors()
+				data, err = challengec.BuildListAuthorsPayload(*challengeListAuthorsTokenFlag)
+			case "list-courses":
+				endpoint = c.ListCourses()
+				data, err = challengec.BuildListCoursesPayload(*challengeListCoursesTokenFlag)
+			case "enroll-course":
+				endpoint = c.EnrollCourse()
+				data, err = challengec.BuildEnrollCoursePayload(*challengeEnrollCourseIDFlag, *challengeEnrollCourseTokenFlag)
+			case "complete-course":
+				endpoint = c.CompleteCourse()
+				data, err = challengec.BuildCompleteCoursePayload(*challengeCompleteCourseIDFlag, *challengeCompleteCourseTokenFlag)
 			}
 		case "admin":
 			c := adminc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -505,34 +590,15 @@ func ParseEndpoint(
 			case "create-ctf-event-import-token":
 				endpoint = c.CreateCTFEventImportToken()
 				data, err = adminc.BuildCreateCTFEventImportTokenPayload(*adminCreateCTFEventImportTokenBodyFlag, *adminCreateCTFEventImportTokenTokenFlag)
-			}
-		case "challenge":
-			c := challengec.NewClient(scheme, host, doer, enc, dec, restore)
-			switch epn {
-			case "list-challenges":
-				endpoint = c.ListChallenges()
-				data, err = challengec.BuildListChallengesPayload(*challengeListChallengesSlugFlag, *challengeListChallengesTokenFlag)
-			case "list-events":
-				endpoint = c.ListEvents()
-				data, err = challengec.BuildListEventsPayload(*challengeListEventsTokenFlag)
-			case "get-current-monthly-challenge":
-				endpoint = c.GetCurrentMonthlyChallenge()
-				data, err = challengec.BuildGetCurrentMonthlyChallengePayload(*challengeGetCurrentMonthlyChallengeTokenFlag)
-			case "list-monthly-challenges":
-				endpoint = c.ListMonthlyChallenges()
-				data, err = challengec.BuildListMonthlyChallengesPayload(*challengeListMonthlyChallengesTokenFlag)
-			case "submit-flag":
-				endpoint = c.SubmitFlag()
-				data, err = challengec.BuildSubmitFlagPayload(*challengeSubmitFlagBodyFlag, *challengeSubmitFlagChallengeIDFlag, *challengeSubmitFlagTokenFlag)
-			case "school-scoreboard":
-				endpoint = c.SchoolScoreboard()
-				data, err = challengec.BuildSchoolScoreboardPayload(*challengeSchoolScoreboardTokenFlag)
-			case "user-scoreboard":
-				endpoint = c.UserScoreboard()
-				data, err = challengec.BuildUserScoreboardPayload(*challengeUserScoreboardTokenFlag)
-			case "list-authors":
-				endpoint = c.ListAuthors()
-				data, err = challengec.BuildListAuthorsPayload(*challengeListAuthorsTokenFlag)
+			case "list-courses":
+				endpoint = c.ListCourses()
+				data, err = adminc.BuildListCoursesPayload(*adminListCoursesTokenFlag)
+			case "create-course":
+				endpoint = c.CreateCourse()
+				data, err = adminc.BuildCreateCoursePayload(*adminCreateCourseBodyFlag, *adminCreateCourseTokenFlag)
+			case "update-course":
+				endpoint = c.UpdateCourse()
+				data, err = adminc.BuildUpdateCoursePayload(*adminUpdateCourseBodyFlag, *adminUpdateCourseIDFlag, *adminUpdateCourseTokenFlag)
 			}
 		case "user":
 			c := userc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -600,6 +666,159 @@ Example:
 `, os.Args[0])
 }
 
+// challengeUsage displays the usage of the challenge command and its
+// subcommands.
+func challengeUsage() {
+	fmt.Fprintf(os.Stderr, `Service is the challenge service interface.
+Usage:
+    %[1]s [globalflags] challenge COMMAND [flags]
+
+COMMAND:
+    list-challenges: ListChallenges implements ListChallenges.
+    list-events: ListEvents implements ListEvents.
+    get-current-monthly-challenge: GetCurrentMonthlyChallenge implements GetCurrentMonthlyChallenge.
+    list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
+    submit-flag: SubmitFlag implements SubmitFlag.
+    school-scoreboard: SchoolScoreboard implements SchoolScoreboard.
+    user-scoreboard: UserScoreboard implements UserScoreboard.
+    list-authors: ListAuthors implements ListAuthors.
+    list-courses: ListCourses implements ListCourses.
+    enroll-course: EnrollCourse implements EnrollCourse.
+    complete-course: CompleteCourse implements CompleteCourse.
+
+Additional help:
+    %[1]s challenge COMMAND --help
+`, os.Args[0])
+}
+func challengeListChallengesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -slug STRING -ids JSON -token STRING
+
+ListChallenges implements ListChallenges.
+    -slug STRING: 
+    -ids JSON: 
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-challenges --slug "brumm" --ids [] --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeListEventsUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-events -token STRING
+
+ListEvents implements ListEvents.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-events --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeGetCurrentMonthlyChallengeUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge get-current-monthly-challenge -token STRING
+
+GetCurrentMonthlyChallenge implements GetCurrentMonthlyChallenge.
+    -token STRING: 
+
+Example:
+    %[1]s challenge get-current-monthly-challenge --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeListMonthlyChallengesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-monthly-challenges -token STRING
+
+ListMonthlyChallenges implements ListMonthlyChallenges.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-monthly-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeSubmitFlagUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge submit-flag -body JSON -challenge-id STRING -token STRING
+
+SubmitFlag implements SubmitFlag.
+    -body JSON: 
+    -challenge-id STRING: ID of a challenge
+    -token STRING: 
+
+Example:
+    %[1]s challenge submit-flag --body '{
+      "flag": "SSM{flag}"
+   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeSchoolScoreboardUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge school-scoreboard -token STRING
+
+SchoolScoreboard implements SchoolScoreboard.
+    -token STRING: 
+
+Example:
+    %[1]s challenge school-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeUserScoreboardUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge user-scoreboard -token STRING
+
+UserScoreboard implements UserScoreboard.
+    -token STRING: 
+
+Example:
+    %[1]s challenge user-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeListAuthorsUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-authors -token STRING
+
+ListAuthors implements ListAuthors.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-authors --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeListCoursesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-courses -token STRING
+
+ListCourses implements ListCourses.
+    -token STRING: 
+
+Example:
+    %[1]s challenge list-courses --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeEnrollCourseUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge enroll-course -id STRING -token STRING
+
+EnrollCourse implements EnrollCourse.
+    -id STRING: ID of a file
+    -token STRING: 
+
+Example:
+    %[1]s challenge enroll-course --id "020817da-8b5c-42c4-9e52-0f3a6628c1f8" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeCompleteCourseUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge complete-course -id STRING -token STRING
+
+CompleteCourse implements CompleteCourse.
+    -id STRING: ID of a file
+    -token STRING: 
+
+Example:
+    %[1]s challenge complete-course --id "020817da-8b5c-42c4-9e52-0f3a6628c1f8" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
 // adminUsage displays the usage of the admin command and its subcommands.
 func adminUsage() {
 	fmt.Fprintf(os.Stderr, `Service is the admin service interface.
@@ -629,6 +848,9 @@ COMMAND:
     create-ctf-event: CreateCTFEvent implements CreateCTFEvent.
     delete-ctf-event: DeleteCTFEvent implements DeleteCTFEvent.
     create-ctf-event-import-token: CreateCTFEventImportToken implements CreateCTFEventImportToken.
+    list-courses: ListCourses implements ListCourses.
+    create-course: CreateCourse implements CreateCourse.
+    update-course: UpdateCourse implements UpdateCourse.
 
 Additional help:
     %[1]s admin COMMAND --help
@@ -672,6 +894,7 @@ Example:
       "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
+      "hide": false,
       "publish_at": 1638384718,
       "slug": "pwnme",
       "static_score": 50,
@@ -696,6 +919,7 @@ Example:
       "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
       "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
       "description": "A heap overflow challenge",
+      "hide": false,
       "publish_at": 1638384718,
       "slug": "pwnme",
       "static_score": 50,
@@ -800,7 +1024,7 @@ func adminUpdateAuthorUsage() {
 
 UpdateAuthor implements UpdateAuthor.
     -body JSON: 
-    -id STRING: 
+    -id STRING: ID of a file
     -token STRING: 
 
 Example:
@@ -811,7 +1035,7 @@ Example:
       "publish": true,
       "slug": "movitz",
       "sponsor": true
-   }' --id "uuid todo" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+   }' --id "020817da-8b5c-42c4-9e52-0f3a6628c1f8" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -935,10 +1159,6 @@ Example:
          {
             "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"
-         },
-         {
-            "hyperlink": true,
-            "user_display": "nc 0.0.0.0 1234"
          }
       ],
       "title": "DNS 101"
@@ -975,11 +1195,11 @@ func adminDeleteCTFEventUsage() {
 	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin delete-ctf-event -id STRING -token STRING
 
 DeleteCTFEvent implements DeleteCTFEvent.
-    -id STRING: 
+    -id STRING: ID of a file
     -token STRING: 
 
 Example:
-    %[1]s admin delete-ctf-event --id "71333e34-4c6b-483e-b3c7-c77d73008cca" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s admin delete-ctf-event --id "020817da-8b5c-42c4-9e52-0f3a6628c1f8" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -997,117 +1217,59 @@ Example:
 `, os.Args[0])
 }
 
-// challengeUsage displays the usage of the challenge command and its
-// subcommands.
-func challengeUsage() {
-	fmt.Fprintf(os.Stderr, `Service is the challenge service interface.
-Usage:
-    %[1]s [globalflags] challenge COMMAND [flags]
+func adminListCoursesUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin list-courses -token STRING
 
-COMMAND:
-    list-challenges: ListChallenges implements ListChallenges.
-    list-events: ListEvents implements ListEvents.
-    get-current-monthly-challenge: GetCurrentMonthlyChallenge implements GetCurrentMonthlyChallenge.
-    list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
-    submit-flag: SubmitFlag implements SubmitFlag.
-    school-scoreboard: SchoolScoreboard implements SchoolScoreboard.
-    user-scoreboard: UserScoreboard implements UserScoreboard.
-    list-authors: ListAuthors implements ListAuthors.
-
-Additional help:
-    %[1]s challenge COMMAND --help
-`, os.Args[0])
-}
-func challengeListChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-challenges -slug STRING -token STRING
-
-ListChallenges implements ListChallenges.
-    -slug STRING: 
+ListCourses implements ListCourses.
     -token STRING: 
 
 Example:
-    %[1]s challenge list-challenges --slug "brumm" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s admin list-courses --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
-func challengeListEventsUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-events -token STRING
+func adminCreateCourseUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin create-course -body JSON -token STRING
 
-ListEvents implements ListEvents.
-    -token STRING: 
-
-Example:
-    %[1]s challenge list-events --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func challengeGetCurrentMonthlyChallengeUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge get-current-monthly-challenge -token STRING
-
-GetCurrentMonthlyChallenge implements GetCurrentMonthlyChallenge.
-    -token STRING: 
-
-Example:
-    %[1]s challenge get-current-monthly-challenge --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func challengeListMonthlyChallengesUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-monthly-challenges -token STRING
-
-ListMonthlyChallenges implements ListMonthlyChallenges.
-    -token STRING: 
-
-Example:
-    %[1]s challenge list-monthly-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func challengeSubmitFlagUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge submit-flag -body JSON -challenge-id STRING -token STRING
-
-SubmitFlag implements SubmitFlag.
+CreateCourse implements CreateCourse.
     -body JSON: 
-    -challenge-id STRING: ID of a challenge
     -token STRING: 
 
 Example:
-    %[1]s challenge submit-flag --body '{
-      "flag": "SSM{flag}"
-   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s admin create-course --body '{
+      "author_ids": [
+         "b29869ec-6eef-451c-a389-249a6d6ac47b"
+      ],
+      "category": "web",
+      "description": "markdown text",
+      "difficulty": "advanced",
+      "publish": true,
+      "slug": "sqli",
+      "title": "SQL-Injektioner"
+   }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
-func challengeSchoolScoreboardUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge school-scoreboard -token STRING
+func adminUpdateCourseUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin update-course -body JSON -id STRING -token STRING
 
-SchoolScoreboard implements SchoolScoreboard.
+UpdateCourse implements UpdateCourse.
+    -body JSON: 
+    -id STRING: ID of a file
     -token STRING: 
 
 Example:
-    %[1]s challenge school-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func challengeUserScoreboardUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge user-scoreboard -token STRING
-
-UserScoreboard implements UserScoreboard.
-    -token STRING: 
-
-Example:
-    %[1]s challenge user-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func challengeListAuthorsUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge list-authors -token STRING
-
-ListAuthors implements ListAuthors.
-    -token STRING: 
-
-Example:
-    %[1]s challenge list-authors --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s admin update-course --body '{
+      "author_ids": [
+         "b29869ec-6eef-451c-a389-249a6d6ac47b"
+      ],
+      "category": "web",
+      "description": "markdown text",
+      "difficulty": "advanced",
+      "publish": true,
+      "slug": "sqli",
+      "title": "SQL-Injektioner"
+   }' --id "020817da-8b5c-42c4-9e52-0f3a6628c1f8" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

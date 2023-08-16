@@ -50,3 +50,18 @@ func UserScoreboardChallengePath() string {
 func ListAuthorsChallengePath() string {
 	return "/authors"
 }
+
+// ListCoursesChallengePath returns the URL path to the challenge service ListCourses HTTP endpoint.
+func ListCoursesChallengePath() string {
+	return "/courses"
+}
+
+// EnrollCourseChallengePath returns the URL path to the challenge service EnrollCourse HTTP endpoint.
+func EnrollCourseChallengePath(id string) string {
+	return fmt.Sprintf("/courses/%v/enroll", id)
+}
+
+// CompleteCourseChallengePath returns the URL path to the challenge service CompleteCourse HTTP endpoint.
+func CompleteCourseChallengePath(id string) string {
+	return fmt.Sprintf("/courses/%v/complete", id)
+}

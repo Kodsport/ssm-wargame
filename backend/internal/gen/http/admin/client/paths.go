@@ -120,3 +120,18 @@ func DeleteCTFEventAdminPath(id string) string {
 func CreateCTFEventImportTokenAdminPath() string {
 	return "/admin/import_token"
 }
+
+// ListCoursesAdminPath returns the URL path to the admin service ListCourses HTTP endpoint.
+func ListCoursesAdminPath() string {
+	return "/admin/courses"
+}
+
+// CreateCourseAdminPath returns the URL path to the admin service CreateCourse HTTP endpoint.
+func CreateCourseAdminPath() string {
+	return "/admin/courses"
+}
+
+// UpdateCourseAdminPath returns the URL path to the admin service UpdateCourse HTTP endpoint.
+func UpdateCourseAdminPath(id string) string {
+	return fmt.Sprintf("/admin/courses/%v", id)
+}

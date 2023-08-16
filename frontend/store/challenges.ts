@@ -11,7 +11,9 @@ export const useChallengeStore = defineStore('challenges', {
         challFilter: {
             eventFilter: {},
             categoryFilter: ''
-        }
+        },
+        courses: [],
+        courseChalls: {}
     }),
     actions: {
         async getChallenges() {
@@ -27,8 +29,21 @@ export const useChallengeStore = defineStore('challenges', {
             this.events = cats
         },
         async getAuthors() {
-            const cats = await http('/authors')
-            this.events = cats
+            const authors = await http('/authors')
+            this.authors = authors
+        },
+        async getCourses() {
+            const courses = await http('/courses')
+            this.courses = courses
+        },
+        async getCourseChalls(id: string) {
+
+            const ids = this.courses.find(c => c.id == id).course_items.sort((a, b) => a.position > b.position).map(c => c.challenge_id)
+
+            let q = ids.join('&ids=')
+            const x = await http(`/challenges?ids=${q}`)
+
+            this.courseChalls[id] = ids.map(id => x.find(c => c.id == id))
         }
     },
     getters: {

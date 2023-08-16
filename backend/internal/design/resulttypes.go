@@ -48,6 +48,7 @@ var ResultAdminChallenge = ResultType("application/vnd.ssm.admin.challenge", fun
 	Attribute("files")
 	Attribute("publish_at")
 	Attribute("solves")
+	Attribute("hide")
 	Attribute("ctf_event_id")
 
 	Attribute("files", ArrayOf(AdminChallengeFile))
@@ -151,4 +152,20 @@ var UserMonthlyChallenge = ResultType("application/vnd.ssm.user.monthly.challeng
 
 	Attribute("challenge", ResultChallenge)
 	Required("challenge")
+})
+
+var AdminCourse = ResultType("application/vnd.ssm.admin.course", func() {
+	Reference(Course)
+
+	Attribute("id")
+	Attribute("title")
+	Attribute("slug")
+	Attribute("category")
+	Attribute("difficulty")
+	Attribute("description")
+	Attribute("publish")
+
+	Attribute("author_ids", ArrayOf(String), func() {
+		Example([]string{"46e0996b-3bee-4836-b5f8-afc2a62fc71b"})
+	})
 })

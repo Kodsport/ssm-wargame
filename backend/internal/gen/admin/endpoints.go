@@ -38,6 +38,9 @@ type Endpoints struct {
 	CreateCTFEvent            goa.Endpoint
 	DeleteCTFEvent            goa.Endpoint
 	CreateCTFEventImportToken goa.Endpoint
+	ListCourses               goa.Endpoint
+	CreateCourse              goa.Endpoint
+	UpdateCourse              goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "admin" service with endpoints.
@@ -67,6 +70,9 @@ func NewEndpoints(s Service) *Endpoints {
 		CreateCTFEvent:            NewCreateCTFEventEndpoint(s, a.JWTAuth),
 		DeleteCTFEvent:            NewDeleteCTFEventEndpoint(s, a.JWTAuth),
 		CreateCTFEventImportToken: NewCreateCTFEventImportTokenEndpoint(s, a.JWTAuth),
+		ListCourses:               NewListCoursesEndpoint(s, a.JWTAuth),
+		CreateCourse:              NewCreateCourseEndpoint(s, a.JWTAuth),
+		UpdateCourse:              NewUpdateCourseEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -94,6 +100,9 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.CreateCTFEvent = m(e.CreateCTFEvent)
 	e.DeleteCTFEvent = m(e.DeleteCTFEvent)
 	e.CreateCTFEventImportToken = m(e.CreateCTFEventImportToken)
+	e.ListCourses = m(e.ListCourses)
+	e.CreateCourse = m(e.CreateCourse)
+	e.UpdateCourse = m(e.UpdateCourse)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -506,5 +515,67 @@ func NewCreateCTFEventImportTokenEndpoint(s Service, authJWTFn security.AuthJWTF
 			return nil, err
 		}
 		return s.CreateCTFEventImportToken(ctx, p)
+	}
+}
+
+// NewListCoursesEndpoint returns an endpoint function that calls the method
+// "ListCourses" of service "admin".
+func NewListCoursesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListCoursesPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		res, err := s.ListCourses(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedSsmAdminCourseCollection(res, "default")
+		return vres, nil
+	}
+}
+
+// NewCreateCourseEndpoint returns an endpoint function that calls the method
+// "CreateCourse" of service "admin".
+func NewCreateCourseEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CreateCoursePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.CreateCourse(ctx, p)
+	}
+}
+
+// NewUpdateCourseEndpoint returns an endpoint function that calls the method
+// "UpdateCourse" of service "admin".
+func NewUpdateCourseEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*UpdateCoursePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.UpdateCourse(ctx, p)
 	}
 }

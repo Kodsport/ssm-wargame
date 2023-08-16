@@ -60,7 +60,7 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 	{
 		err = json.Unmarshal([]byte(adminCreateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"slug\": \"pwnme\",\n      \"static_score\": 50,\n      \"title\": \"pwnme\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"hide\": false,\n      \"publish_at\": 1638384718,\n      \"slug\": \"pwnme\",\n      \"static_score\": 50,\n      \"title\": \"pwnme\"\n   }'")
 		}
 		if body.CtfEventID != nil {
 			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
@@ -81,6 +81,7 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 		Description: body.Description,
 		PublishAt:   body.PublishAt,
 		CtfEventID:  body.CtfEventID,
+		Hide:        body.Hide,
 		StaticScore: body.StaticScore,
 		CategoryID:  body.CategoryID,
 	}
@@ -103,7 +104,7 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 	{
 		err = json.Unmarshal([]byte(adminUpdateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"publish_at\": 1638384718,\n      \"slug\": \"pwnme\",\n      \"static_score\": 50,\n      \"title\": \"pwnme\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"hide\": false,\n      \"publish_at\": 1638384718,\n      \"slug\": \"pwnme\",\n      \"static_score\": 50,\n      \"title\": \"pwnme\"\n   }'")
 		}
 		if body.CtfEventID != nil {
 			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
@@ -133,6 +134,7 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 		Description: body.Description,
 		PublishAt:   body.PublishAt,
 		CtfEventID:  body.CtfEventID,
+		Hide:        body.Hide,
 		StaticScore: body.StaticScore,
 		CategoryID:  body.CategoryID,
 	}
@@ -315,6 +317,11 @@ func BuildUpdateAuthorPayload(adminUpdateAuthorBody string, adminUpdateAuthorID 
 	var id string
 	{
 		id = adminUpdateAuthorID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
 	}
 	var token string
 	{
@@ -468,7 +475,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 	{
 		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 
@@ -563,9 +570,15 @@ func BuildCreateCTFEventPayload(adminCreateCTFEventBody string, adminCreateCTFEv
 // BuildDeleteCTFEventPayload builds the payload for the admin DeleteCTFEvent
 // endpoint from CLI flags.
 func BuildDeleteCTFEventPayload(adminDeleteCTFEventID string, adminDeleteCTFEventToken string) (*admin.DeleteCTFEventPayload, error) {
+	var err error
 	var id string
 	{
 		id = adminDeleteCTFEventID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
 	}
 	var token string
 	{
@@ -602,6 +615,97 @@ func BuildCreateCTFEventImportTokenPayload(adminCreateCTFEventImportTokenBody st
 	v := &admin.CreateCTFEventImportTokenPayload{
 		EventID: body.EventID,
 	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListCoursesPayload builds the payload for the admin ListCourses
+// endpoint from CLI flags.
+func BuildListCoursesPayload(adminListCoursesToken string) (*admin.ListCoursesPayload, error) {
+	var token string
+	{
+		token = adminListCoursesToken
+	}
+	v := &admin.ListCoursesPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildCreateCoursePayload builds the payload for the admin CreateCourse
+// endpoint from CLI flags.
+func BuildCreateCoursePayload(adminCreateCourseBody string, adminCreateCourseToken string) (*admin.CreateCoursePayload, error) {
+	var err error
+	var body CreateCourseRequestBody
+	{
+		err = json.Unmarshal([]byte(adminCreateCourseBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author_ids\": [\n         \"b29869ec-6eef-451c-a389-249a6d6ac47b\"\n      ],\n      \"category\": \"web\",\n      \"description\": \"markdown text\",\n      \"difficulty\": \"advanced\",\n      \"publish\": true,\n      \"slug\": \"sqli\",\n      \"title\": \"SQL-Injektioner\"\n   }'")
+		}
+	}
+	var token string
+	{
+		token = adminCreateCourseToken
+	}
+	v := &admin.CreateCoursePayload{
+		Title:       body.Title,
+		Slug:        body.Slug,
+		Category:    body.Category,
+		Difficulty:  body.Difficulty,
+		Description: body.Description,
+		Publish:     body.Publish,
+	}
+	if body.AuthorIds != nil {
+		v.AuthorIds = make([]string, len(body.AuthorIds))
+		for i, val := range body.AuthorIds {
+			v.AuthorIds[i] = val
+		}
+	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildUpdateCoursePayload builds the payload for the admin UpdateCourse
+// endpoint from CLI flags.
+func BuildUpdateCoursePayload(adminUpdateCourseBody string, adminUpdateCourseID string, adminUpdateCourseToken string) (*admin.UpdateCoursePayload, error) {
+	var err error
+	var body UpdateCourseRequestBody
+	{
+		err = json.Unmarshal([]byte(adminUpdateCourseBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"author_ids\": [\n         \"b29869ec-6eef-451c-a389-249a6d6ac47b\"\n      ],\n      \"category\": \"web\",\n      \"description\": \"markdown text\",\n      \"difficulty\": \"advanced\",\n      \"publish\": true,\n      \"slug\": \"sqli\",\n      \"title\": \"SQL-Injektioner\"\n   }'")
+		}
+	}
+	var id string
+	{
+		id = adminUpdateCourseID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminUpdateCourseToken
+	}
+	v := &admin.UpdateCoursePayload{
+		Title:       body.Title,
+		Slug:        body.Slug,
+		Category:    body.Category,
+		Difficulty:  body.Difficulty,
+		Description: body.Description,
+		Publish:     body.Publish,
+	}
+	if body.AuthorIds != nil {
+		v.AuthorIds = make([]string, len(body.AuthorIds))
+		for i, val := range body.AuthorIds {
+			v.AuthorIds[i] = val
+		}
+	}
+	v.ID = id
 	v.Token = token
 
 	return v, nil

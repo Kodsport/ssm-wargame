@@ -86,8 +86,9 @@ type SearchSchoolsPayload struct {
 }
 
 type School struct {
-	ID               string
 	Name             string
 	MunicipalityName string
 	IsUniversity     bool
+	// ID of a file
+	ID string
 }

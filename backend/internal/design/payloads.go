@@ -12,6 +12,7 @@ var CreateChallengePayload = Type("CreateChallengePayload", func() {
 	Attribute("description")
 	Attribute("publish_at")
 	Attribute("ctf_event_id")
+	Attribute("hide")
 
 	Attribute("static_score", Int, func() {
 		Example(50)
@@ -104,5 +105,21 @@ var CreateAuthorPayload = Type("CreateAuthorPayload", func() {
 	Attribute("slug")
 	Attribute("image_url")
 	Attribute("publish")
+
+})
+
+var CreateCoursePayload = Type("CreateCoursePayload", func() {
+	Reference(Course)
+
+	Attribute("title")
+	Attribute("slug")
+	Attribute("category")
+	Attribute("difficulty")
+	Attribute("description")
+	Attribute("publish")
+
+	Attribute("author_ids", ArrayOf(String), func() {
+		Example([]string{"b29869ec-6eef-451c-a389-249a6d6ac47b"})
+	})
 
 })

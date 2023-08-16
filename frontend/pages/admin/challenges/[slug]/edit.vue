@@ -31,6 +31,10 @@
                     </select>
                 </div>
                 <div class="form-group pt-2">
+                    <label>Hide</label>
+                    <input class="" type="checkbox" v-model="form.hide">
+                </div>
+                <div class="form-group pt-2">
                     <label>Publish immediately</label>
                     <input class="" type="checkbox" v-model="publishImm">
                 </div>
@@ -67,14 +71,12 @@
                     <thead>
                         <tr>
                             <th>Flag</th>
-                            <th>Solves</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="flag in chall.flags" :key="flag.id">
                             <td>{{ flag.flag }}</td>
-                            <td>TODO</td>
                             <td>
                                 <button class="btn btn-danger" @click="deleteFlag(flag.id)">
                                     Delete
@@ -158,6 +160,7 @@ var form = ref({
     slug: "",
     categoryId: "",
     publishAt: null,
+    hide: true,
     authors: []
 })
 
@@ -187,6 +190,7 @@ onMounted(async () => {
         slug: chall.value.slug,
         categoryId: chall.value.category_id,
         publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16), // hacky af,pls fix
+        hide: chall.value.hide,
         authors: chall.value.authors || [],
 
     };
@@ -240,6 +244,7 @@ async function updateChall() {
             category_id: form.value.categoryId,
             publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,
             authors: form.value.authors,
+            hide: form.value.hide,
         }
     });
 

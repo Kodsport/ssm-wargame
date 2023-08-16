@@ -39,7 +39,7 @@ var _ = Service("admin", func() {
 		})
 		Result(ChallengeMeta)
 		HTTP(func() {
-			GET("/challenges/{challengeID}")
+			GET("/challenges/{challenge_id}")
 			Response(StatusOK)
 		})
 	})
@@ -62,7 +62,7 @@ var _ = Service("admin", func() {
 			Extend(ChallengeIDArtifact)
 		})
 		HTTP(func() {
-			PUT("/challenges/{challengeID}")
+			PUT("/challenges/{challenge_id}")
 			Response(StatusCreated)
 		})
 	})
@@ -90,7 +90,7 @@ var _ = Service("admin", func() {
 			Required("url")
 		})
 		HTTP(func() {
-			POST("/challenges/{challengeID}/file_url")
+			POST("/challenges/{challenge_id}/file_url")
 			Response(StatusOK)
 		})
 	})
@@ -111,7 +111,7 @@ var _ = Service("admin", func() {
 			Extend(ChallengeIDArtifact)
 		})
 		HTTP(func() {
-			DELETE("/monthly_challenges/{challengeID}")
+			DELETE("/monthly_challenges/{challenge_id}")
 		})
 	})
 
@@ -198,7 +198,7 @@ var _ = Service("admin", func() {
 		})
 
 		HTTP(func() {
-			POST("/challenges/{challengeID}/flags")
+			POST("/challenges/{challenge_id}/flags")
 		})
 	})
 
@@ -214,7 +214,7 @@ var _ = Service("admin", func() {
 		})
 
 		HTTP(func() {
-			DELETE("/challenges/{challengeID}/flags/{flagID}")
+			DELETE("/challenges/{challenge_id}/flags/{flagID}")
 		})
 	})
 
@@ -292,4 +292,37 @@ var _ = Service("admin", func() {
 			POST("/import_token")
 		})
 	})
+
+	Method("ListCourses", func() {
+		Result(CollectionOf(AdminCourse))
+		Payload(func() {
+			Extend(TokenPayload)
+		})
+		HTTP(func() {
+			GET("/courses")
+			Response(StatusOK)
+		})
+	})
+	Method("CreateCourse", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(CreateCoursePayload)
+		})
+		HTTP(func() {
+			POST("/courses")
+			Response(StatusOK)
+		})
+	})
+	Method("UpdateCourse", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(CreateCoursePayload)
+			Extend(IDArtifact)
+		})
+		HTTP(func() {
+			PUT("/courses/{id}")
+			Response(StatusOK)
+		})
+	})
+
 })

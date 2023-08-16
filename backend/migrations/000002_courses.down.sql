@@ -1,0 +1,3 @@
+BEGIN;
+-- SQL here
+END;

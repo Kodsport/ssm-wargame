@@ -97,6 +97,7 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		StaticScore: null.IntFromPtr(req.Score),
 		CategoryID:  categoryID,
 		CTFEventID:  token.CTFEventID,
+		Hide:        true,
 	}
 
 	err = chall.Upsert(ctx, tx, true, []string{}, boil.Infer(), boil.Infer())

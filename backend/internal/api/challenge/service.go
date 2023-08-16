@@ -73,20 +73,26 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 	challs := make([]*custommodels.UserChall, 0)
 	q := models.NewQuery(
-		qm.Select("c.*, categories.name as category"),
-		qm.Select("(SELECT COUNT(1) FROM user_solves WHERE challenge_id = c.id) num_solves"),
-		qm.From("challenges c"),
-		qm.InnerJoin("categories ON categories.id = c.category_id"),
-		qm.Where("publish_at IS NULL OR publish_at < NOW()"),
+		qm.Select("challenges.*, categories.name as category"),
+		qm.Select("(SELECT COUNT(1) FROM user_solves WHERE challenge_id = challenges.id) num_solves"),
+		qm.From(models.TableNames.Challenges),
+		qm.InnerJoin("categories ON categories.id = challenges.category_id"),
 		qm.Load(models.ChallengeRels.ChallengeFiles),
 		qm.Load(models.ChallengeRels.ChallengeServices),
 		qm.Load(models.ChallengeRels.Authors),
 		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User), qm.Limit(5), qm.OrderBy(models.UserSolfColumns.CreatedAt)),
 	)
 
+	if len(req.Ids) != 0 {
+		models.ChallengeWhere.ID.IN(req.Ids).Apply(q)
+	} else {
+		qm.Where("publish_at IS NULL OR publish_at < NOW()").Apply(q)
+		models.ChallengeWhere.Hide.EQ(false).Apply(q)
+	}
+
 	if auth.IsAuthed(ctx) {
 		qm.Select(
-			"EXISTS(SELECT 1 FROM user_solves us2 WHERE us2.challenge_id = c.id AND us2.user_id = '" + auth.GetUser(ctx).ID + "') AS solved",
+			"EXISTS(SELECT 1 FROM user_solves us2 WHERE us2.challenge_id = challenges.id AND us2.user_id = '" + auth.GetUser(ctx).ID + "') AS solved",
 		).Apply(q)
 	}
 

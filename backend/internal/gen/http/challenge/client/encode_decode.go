@@ -56,6 +56,9 @@ func EncodeListChallengesRequest(encoder func(*http.Request) goahttp.Encoder) fu
 		if p.Slug != nil {
 			values.Add("slug", *p.Slug)
 		}
+		for _, value := range p.Ids {
+			values.Add("ids", value)
+		}
 		req.URL.RawQuery = values.Encode()
 		return nil
 	}
@@ -700,6 +703,231 @@ func DecodeListAuthorsResponse(decoder func(*http.Response) goahttp.Decoder, res
 	}
 }
 
+// BuildListCoursesRequest instantiates a HTTP request object with method and
+// path set to call the "challenge" service "ListCourses" endpoint
+func (c *Client) BuildListCoursesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListCoursesChallengePath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "ListCourses", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListCoursesRequest returns an encoder for requests sent to the
+// challenge ListCourses server.
+func EncodeListCoursesRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.ListCoursesPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "ListCourses", "*challenge.ListCoursesPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListCoursesResponse returns a decoder for responses returned by the
+// challenge ListCourses endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+func DecodeListCoursesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListCoursesResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "ListCourses", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateCourseResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "ListCourses", err)
+			}
+			res := NewListCoursesCourseOK(body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "ListCourses", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildEnrollCourseRequest instantiates a HTTP request object with method and
+// path set to call the "challenge" service "EnrollCourse" endpoint
+func (c *Client) BuildEnrollCourseRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id string
+	)
+	{
+		p, ok := v.(*challenge.EnrollCoursePayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("challenge", "EnrollCourse", "*challenge.EnrollCoursePayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: EnrollCourseChallengePath(id)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "EnrollCourse", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeEnrollCourseRequest returns an encoder for requests sent to the
+// challenge EnrollCourse server.
+func EncodeEnrollCourseRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.EnrollCoursePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "EnrollCourse", "*challenge.EnrollCoursePayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeEnrollCourseResponse returns a decoder for responses returned by the
+// challenge EnrollCourse endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+func DecodeEnrollCourseResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "EnrollCourse", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildCompleteCourseRequest instantiates a HTTP request object with method
+// and path set to call the "challenge" service "CompleteCourse" endpoint
+func (c *Client) BuildCompleteCourseRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id string
+	)
+	{
+		p, ok := v.(*challenge.CompleteCoursePayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("challenge", "CompleteCourse", "*challenge.CompleteCoursePayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CompleteCourseChallengePath(id)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "CompleteCourse", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeCompleteCourseRequest returns an encoder for requests sent to the
+// challenge CompleteCourse server.
+func EncodeCompleteCourseRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.CompleteCoursePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "CompleteCourse", "*challenge.CompleteCoursePayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeCompleteCourseResponse returns a decoder for responses returned by the
+// challenge CompleteCourse endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+func DecodeCompleteCourseResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "CompleteCourse", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView builds a value
 // of type *challengeviews.SsmChallengeView from a value of type
 // *SsmChallengeResponse.
@@ -780,13 +1008,13 @@ func unmarshalAuthorResponseToChallengeviewsAuthorView(v *AuthorResponse) *chall
 		return nil
 	}
 	res := &challengeviews.AuthorView{
-		ID:          v.ID,
 		FullName:    v.FullName,
 		Description: v.Description,
 		Sponsor:     v.Sponsor,
 		Slug:        v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     v.Publish,
+		ID:          v.ID,
 	}
 
 	return res
@@ -811,8 +1039,8 @@ func unmarshalSsmSolverResponseToChallengeviewsSsmSolverView(v *SsmSolverRespons
 // *challenge.CTFEvent from a value of type *CTFEventResponse.
 func unmarshalCTFEventResponseToChallengeCTFEvent(v *CTFEventResponse) *challenge.CTFEvent {
 	res := &challenge.CTFEvent{
-		ID:   *v.ID,
 		Name: *v.Name,
+		ID:   *v.ID,
 	}
 
 	return res
@@ -898,13 +1126,13 @@ func unmarshalAuthorResponseBodyToChallengeviewsAuthorView(v *AuthorResponseBody
 		return nil
 	}
 	res := &challengeviews.AuthorView{
-		ID:          v.ID,
 		FullName:    v.FullName,
 		Description: v.Description,
 		Sponsor:     v.Sponsor,
 		Slug:        v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     v.Publish,
+		ID:          v.ID,
 	}
 
 	return res
@@ -972,13 +1200,58 @@ func unmarshalUserScoreboardScoreResponseBodyToChallengeviewsUserScoreboardScore
 // *challenge.Author from a value of type *AuthorResponse.
 func unmarshalAuthorResponseToChallengeAuthor(v *AuthorResponse) *challenge.Author {
 	res := &challenge.Author{
-		ID:          *v.ID,
 		FullName:    *v.FullName,
 		Description: *v.Description,
 		Sponsor:     *v.Sponsor,
 		Slug:        *v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     *v.Publish,
+		ID:          *v.ID,
+	}
+
+	return res
+}
+
+// unmarshalCourseResponseToChallengeCourse builds a value of type
+// *challenge.Course from a value of type *CourseResponse.
+func unmarshalCourseResponseToChallengeCourse(v *CourseResponse) *challenge.Course {
+	res := &challenge.Course{
+		Title:       *v.Title,
+		Slug:        *v.Slug,
+		Category:    *v.Category,
+		Difficulty:  *v.Difficulty,
+		Description: *v.Description,
+		Enrolled:    *v.Enrolled,
+		Publish:     *v.Publish,
+		Completed:   *v.Completed,
+		ID:          *v.ID,
+	}
+	if v.Authors != nil {
+		res.Authors = make([]*challenge.Author, len(v.Authors))
+		for i, val := range v.Authors {
+			res.Authors[i] = unmarshalAuthorResponseToChallengeAuthor(val)
+		}
+	}
+	if v.CourseItems != nil {
+		res.CourseItems = make([]*challenge.CourseItem, len(v.CourseItems))
+		for i, val := range v.CourseItems {
+			res.CourseItems[i] = unmarshalCourseItemResponseToChallengeCourseItem(val)
+		}
+	}
+
+	return res
+}
+
+// unmarshalCourseItemResponseToChallengeCourseItem builds a value of type
+// *challenge.CourseItem from a value of type *CourseItemResponse.
+func unmarshalCourseItemResponseToChallengeCourseItem(v *CourseItemResponse) *challenge.CourseItem {
+	if v == nil {
+		return nil
+	}
+	res := &challenge.CourseItem{
+		Position:    *v.Position,
+		ID:          *v.ID,
+		ChallengeID: *v.ChallengeID,
 	}
 
 	return res

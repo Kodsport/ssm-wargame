@@ -60,6 +60,10 @@ type UserScoreboardResponseBody struct {
 // endpoint HTTP response body.
 type ListAuthorsResponseBody []*AuthorResponse
 
+// ListCoursesResponseBody is the type of the "challenge" service "ListCourses"
+// endpoint HTTP response body.
+type ListCoursesResponseBody []*CourseResponse
+
 // GetCurrentMonthlyChallengeNotFoundResponseBody is the type of the
 // "challenge" service "GetCurrentMonthlyChallenge" endpoint HTTP response body
 // for the "not_found" error.
@@ -117,6 +121,7 @@ type SubmitFlagIncorrectFlagResponseBody struct {
 
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
+	// ID of a file
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// A unique string that can be used in URLs
 	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
@@ -153,13 +158,14 @@ type ChallengeFilesResponse struct {
 
 // AuthorResponse is used to define fields on response body types.
 type AuthorResponse struct {
-	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	FullName    *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	Sponsor     *bool   `form:"sponsor,omitempty" json:"sponsor,omitempty" xml:"sponsor,omitempty"`
 	Slug        *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
 	ImageURL    *string `form:"image_url,omitempty" json:"image_url,omitempty" xml:"image_url,omitempty"`
 	Publish     *bool   `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // SsmSolverResponse is used to define fields on response body types.
@@ -171,12 +177,14 @@ type SsmSolverResponse struct {
 
 // CTFEventResponse is used to define fields on response body types.
 type CTFEventResponse struct {
-	ID   *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // SsmChallengeResponseBody is used to define fields on response body types.
 type SsmChallengeResponseBody struct {
+	// ID of a file
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// A unique string that can be used in URLs
 	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
@@ -213,13 +221,14 @@ type ChallengeFilesResponseBody struct {
 
 // AuthorResponseBody is used to define fields on response body types.
 type AuthorResponseBody struct {
-	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	FullName    *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	Sponsor     *bool   `form:"sponsor,omitempty" json:"sponsor,omitempty" xml:"sponsor,omitempty"`
 	Slug        *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
 	ImageURL    *string `form:"image_url,omitempty" json:"image_url,omitempty" xml:"image_url,omitempty"`
 	Publish     *bool   `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // SsmSolverResponseBody is used to define fields on response body types.
@@ -257,6 +266,32 @@ type UserScoreboardScoreResponseBody struct {
 	Name       *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	SchoolName *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
 	Score      *int    `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+}
+
+// CourseResponse is used to define fields on response body types.
+type CourseResponse struct {
+	Title       *string               `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	Slug        *string               `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	Category    *string               `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	Difficulty  *string               `form:"difficulty,omitempty" json:"difficulty,omitempty" xml:"difficulty,omitempty"`
+	Description *string               `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	Enrolled    *bool                 `form:"enrolled,omitempty" json:"enrolled,omitempty" xml:"enrolled,omitempty"`
+	Publish     *bool                 `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
+	Completed   *bool                 `form:"completed,omitempty" json:"completed,omitempty" xml:"completed,omitempty"`
+	Authors     []*AuthorResponse     `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	CourseItems []*CourseItemResponse `form:"course_items,omitempty" json:"course_items,omitempty" xml:"course_items,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+}
+
+// CourseItemResponse is used to define fields on response body types.
+type CourseItemResponse struct {
+	// to sort after
+	Position *int `form:"position,omitempty" json:"position,omitempty" xml:"position,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// ID of a challenge
+	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
 }
 
 // NewSubmitFlagRequestBody builds the HTTP request body from the payload of
@@ -397,6 +432,17 @@ func NewListAuthorsAuthorOK(body []*AuthorResponse) []*challenge.Author {
 	return v
 }
 
+// NewListCoursesCourseOK builds a "challenge" service "ListCourses" endpoint
+// result from a HTTP "OK" response.
+func NewListCoursesCourseOK(body []*CourseResponse) []*challenge.Course {
+	v := make([]*challenge.Course, len(body))
+	for i, val := range body {
+		v[i] = unmarshalCourseResponseToChallengeCourse(val)
+	}
+
+	return v
+}
+
 // ValidateGetCurrentMonthlyChallengeNotFoundResponseBody runs the validations
 // defined on GetCurrentMonthlyChallenge_not_found_Response_Body
 func ValidateGetCurrentMonthlyChallengeNotFoundResponseBody(body *GetCurrentMonthlyChallengeNotFoundResponseBody) (err error) {
@@ -478,9 +524,6 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	if body.Category == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("category", "body"))
 	}
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
-	}
 	if body.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
 	}
@@ -495,6 +538,9 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
@@ -559,9 +605,6 @@ func ValidateChallengeFilesResponse(body *ChallengeFilesResponse) (err error) {
 
 // ValidateAuthorResponse runs the validations defined on AuthorResponse
 func ValidateAuthorResponse(body *AuthorResponse) (err error) {
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
-	}
 	if body.Sponsor == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("sponsor", "body"))
 	}
@@ -576,6 +619,12 @@ func ValidateAuthorResponse(body *AuthorResponse) (err error) {
 	}
 	if body.Publish == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }
@@ -596,11 +645,14 @@ func ValidateSsmSolverResponse(body *SsmSolverResponse) (err error) {
 
 // ValidateCTFEventResponse runs the validations defined on CTFEventResponse
 func ValidateCTFEventResponse(body *CTFEventResponse) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
-	if body.Name == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }
@@ -613,9 +665,6 @@ func ValidateSsmChallengeResponseBody(body *SsmChallengeResponseBody) (err error
 	}
 	if body.Category == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("category", "body"))
-	}
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
@@ -631,6 +680,9 @@ func ValidateSsmChallengeResponseBody(body *SsmChallengeResponseBody) (err error
 	}
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
@@ -695,9 +747,6 @@ func ValidateChallengeFilesResponseBody(body *ChallengeFilesResponseBody) (err e
 
 // ValidateAuthorResponseBody runs the validations defined on AuthorResponseBody
 func ValidateAuthorResponseBody(body *AuthorResponseBody) (err error) {
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
-	}
 	if body.Sponsor == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("sponsor", "body"))
 	}
@@ -712,6 +761,12 @@ func ValidateAuthorResponseBody(body *AuthorResponseBody) (err error) {
 	}
 	if body.Publish == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }
@@ -789,6 +844,75 @@ func ValidateUserScoreboardScoreResponseBody(body *UserScoreboardScoreResponseBo
 	}
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	return
+}
+
+// ValidateCourseResponse runs the validations defined on CourseResponse
+func ValidateCourseResponse(body *CourseResponse) (err error) {
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Category == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("category", "body"))
+	}
+	if body.Difficulty == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("difficulty", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Publish == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.Enrolled == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("enrolled", "body"))
+	}
+	if body.Completed == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("completed", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	for _, e := range body.Authors {
+		if e != nil {
+			if err2 := ValidateAuthorResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range body.CourseItems {
+		if e != nil {
+			if err2 := ValidateCourseItemResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateCourseItemResponse runs the validations defined on CourseItemResponse
+func ValidateCourseItemResponse(body *CourseItemResponse) (err error) {
+	if body.Position == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("position", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.ChallengeID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	}
+	if body.ChallengeID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))
 	}
 	return
 }

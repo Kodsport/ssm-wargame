@@ -36,10 +36,11 @@ type SearchSchoolsResponseBody []*SchoolResponse
 
 // SchoolResponse is used to define fields on response body types.
 type SchoolResponse struct {
-	ID               string `form:"id" json:"id" xml:"id"`
 	Name             string `form:"name" json:"name" xml:"name"`
 	MunicipalityName string `form:"municipality_name" json:"municipality_name" xml:"municipality_name"`
 	IsUniversity     bool   `form:"is_university" json:"is_university" xml:"is_university"`
+	// ID of a file
+	ID string `form:"id" json:"id" xml:"id"`
 }
 
 // NewGetSelfResponseBody builds the HTTP response body from the result of the

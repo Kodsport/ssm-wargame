@@ -18,11 +18,21 @@ import (
 
 // BuildListChallengesPayload builds the payload for the challenge
 // ListChallenges endpoint from CLI flags.
-func BuildListChallengesPayload(challengeListChallengesSlug string, challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
+func BuildListChallengesPayload(challengeListChallengesSlug string, challengeListChallengesIds string, challengeListChallengesToken string) (*challenge.ListChallengesPayload, error) {
+	var err error
 	var slug *string
 	{
 		if challengeListChallengesSlug != "" {
 			slug = &challengeListChallengesSlug
+		}
+	}
+	var ids []string
+	{
+		if challengeListChallengesIds != "" {
+			err = json.Unmarshal([]byte(challengeListChallengesIds), &ids)
+			if err != nil {
+				return nil, fmt.Errorf("invalid JSON for ids, \nerror: %s, \nexample of valid JSON:\n%s", err, "[]")
+			}
 		}
 	}
 	var token *string
@@ -33,6 +43,7 @@ func BuildListChallengesPayload(challengeListChallengesSlug string, challengeLis
 	}
 	v := &challenge.ListChallengesPayload{}
 	v.Slug = slug
+	v.Ids = ids
 	v.Token = token
 
 	return v, nil
@@ -162,6 +173,73 @@ func BuildListAuthorsPayload(challengeListAuthorsToken string) (*challenge.ListA
 		}
 	}
 	v := &challenge.ListAuthorsPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListCoursesPayload builds the payload for the challenge ListCourses
+// endpoint from CLI flags.
+func BuildListCoursesPayload(challengeListCoursesToken string) (*challenge.ListCoursesPayload, error) {
+	var token *string
+	{
+		if challengeListCoursesToken != "" {
+			token = &challengeListCoursesToken
+		}
+	}
+	v := &challenge.ListCoursesPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildEnrollCoursePayload builds the payload for the challenge EnrollCourse
+// endpoint from CLI flags.
+func BuildEnrollCoursePayload(challengeEnrollCourseID string, challengeEnrollCourseToken string) (*challenge.EnrollCoursePayload, error) {
+	var err error
+	var id string
+	{
+		id = challengeEnrollCourseID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token *string
+	{
+		if challengeEnrollCourseToken != "" {
+			token = &challengeEnrollCourseToken
+		}
+	}
+	v := &challenge.EnrollCoursePayload{}
+	v.ID = id
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildCompleteCoursePayload builds the payload for the challenge
+// CompleteCourse endpoint from CLI flags.
+func BuildCompleteCoursePayload(challengeCompleteCourseID string, challengeCompleteCourseToken string) (*challenge.CompleteCoursePayload, error) {
+	var err error
+	var id string
+	{
+		id = challengeCompleteCourseID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token *string
+	{
+		if challengeCompleteCourseToken != "" {
+			token = &challengeCompleteCourseToken
+		}
+	}
+	v := &challenge.CompleteCoursePayload{}
+	v.ID = id
 	v.Token = token
 
 	return v, nil

@@ -26,6 +26,7 @@ type CreateChallengeRequestBody struct {
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
 	CtfEventID  *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	Hide        bool     `form:"hide" json:"hide" xml:"hide"`
 	StaticScore *int     `form:"static_score,omitempty" json:"static_score,omitempty" xml:"static_score,omitempty"`
 	CategoryID  string   `form:"category_id" json:"category_id" xml:"category_id"`
 	Authors     []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
@@ -44,6 +45,7 @@ type UpdateChallengeRequestBody struct {
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The ID of the CTF the challenge was taken from
 	CtfEventID  *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	Hide        bool     `form:"hide" json:"hide" xml:"hide"`
 	StaticScore *int     `form:"static_score,omitempty" json:"static_score,omitempty" xml:"static_score,omitempty"`
 	CategoryID  string   `form:"category_id" json:"category_id" xml:"category_id"`
 	Authors     []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
@@ -128,6 +130,30 @@ type CreateCTFEventImportTokenRequestBody struct {
 	EventID *string `form:"event_id,omitempty" json:"event_id,omitempty" xml:"event_id,omitempty"`
 }
 
+// CreateCourseRequestBody is the type of the "admin" service "CreateCourse"
+// endpoint HTTP request body.
+type CreateCourseRequestBody struct {
+	Title       string   `form:"title" json:"title" xml:"title"`
+	Slug        string   `form:"slug" json:"slug" xml:"slug"`
+	Category    string   `form:"category" json:"category" xml:"category"`
+	Difficulty  string   `form:"difficulty" json:"difficulty" xml:"difficulty"`
+	Description string   `form:"description" json:"description" xml:"description"`
+	Publish     bool     `form:"publish" json:"publish" xml:"publish"`
+	AuthorIds   []string `form:"author_ids,omitempty" json:"author_ids,omitempty" xml:"author_ids,omitempty"`
+}
+
+// UpdateCourseRequestBody is the type of the "admin" service "UpdateCourse"
+// endpoint HTTP request body.
+type UpdateCourseRequestBody struct {
+	Title       string   `form:"title" json:"title" xml:"title"`
+	Slug        string   `form:"slug" json:"slug" xml:"slug"`
+	Category    string   `form:"category" json:"category" xml:"category"`
+	Difficulty  string   `form:"difficulty" json:"difficulty" xml:"difficulty"`
+	Description string   `form:"description" json:"description" xml:"description"`
+	Publish     bool     `form:"publish" json:"publish" xml:"publish"`
+	AuthorIds   []string `form:"author_ids,omitempty" json:"author_ids,omitempty" xml:"author_ids,omitempty"`
+}
+
 // ListChallengesResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmAdminChallengeResponse
@@ -171,6 +197,10 @@ type ListCTFEventsResponseBody []*CTFEventResponse
 type CreateCTFEventImportTokenResponseBody struct {
 	Token *string `form:"token,omitempty" json:"token,omitempty" xml:"token,omitempty"`
 }
+
+// ListCoursesResponseBody is the type of the "admin" service "ListCourses"
+// endpoint HTTP response body.
+type ListCoursesResponseBody []*SsmAdminCourseResponse
 
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "unauthorized" error.
@@ -1375,8 +1405,171 @@ type CreateCTFEventImportTokenBadRequestResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// ListCoursesUnauthorizedResponseBody is the type of the "admin" service
+// "ListCourses" endpoint HTTP response body for the "unauthorized" error.
+type ListCoursesUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCoursesNotFoundResponseBody is the type of the "admin" service
+// "ListCourses" endpoint HTTP response body for the "not_found" error.
+type ListCoursesNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCoursesBadRequestResponseBody is the type of the "admin" service
+// "ListCourses" endpoint HTTP response body for the "bad_request" error.
+type ListCoursesBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCourseUnauthorizedResponseBody is the type of the "admin" service
+// "CreateCourse" endpoint HTTP response body for the "unauthorized" error.
+type CreateCourseUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCourseNotFoundResponseBody is the type of the "admin" service
+// "CreateCourse" endpoint HTTP response body for the "not_found" error.
+type CreateCourseNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCourseBadRequestResponseBody is the type of the "admin" service
+// "CreateCourse" endpoint HTTP response body for the "bad_request" error.
+type CreateCourseBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCourseUnauthorizedResponseBody is the type of the "admin" service
+// "UpdateCourse" endpoint HTTP response body for the "unauthorized" error.
+type UpdateCourseUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCourseNotFoundResponseBody is the type of the "admin" service
+// "UpdateCourse" endpoint HTTP response body for the "not_found" error.
+type UpdateCourseNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCourseBadRequestResponseBody is the type of the "admin" service
+// "UpdateCourse" endpoint HTTP response body for the "bad_request" error.
+type UpdateCourseBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
+	// ID of a file
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// A unique string that can be used in URLs
 	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
@@ -1389,7 +1582,8 @@ type SsmAdminChallengeResponse struct {
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
 	// The numer of people who solved the challenge
-	Solves *int `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+	Solves *int  `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+	Hide   *bool `form:"hide,omitempty" json:"hide,omitempty" xml:"hide,omitempty"`
 	// The ID of the CTF the challenge was taken from
 	CtfEventID  *string                       `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	Flags       []*AdminChallengeFlagResponse `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
@@ -1406,15 +1600,17 @@ type ChallengeServiceResponse struct {
 
 // AdminChallengeFilesResponse is used to define fields on response body types.
 type AdminChallengeFilesResponse struct {
-	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Filename *string `form:"filename,omitempty" json:"filename,omitempty" xml:"filename,omitempty"`
 	URL      *string `form:"url,omitempty" json:"url,omitempty" xml:"url,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // AdminChallengeFlagResponse is used to define fields on response body types.
 type AdminChallengeFlagResponse struct {
-	ID   *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Flag *string `form:"flag,omitempty" json:"flag,omitempty" xml:"flag,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // ChallengeSolverResponseBody is used to define fields on response body types.
@@ -1426,11 +1622,12 @@ type ChallengeSolverResponseBody struct {
 // ChallengeSubmissionResponseBody is used to define fields on response body
 // types.
 type ChallengeSubmissionResponseBody struct {
-	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Input       *string `form:"input,omitempty" json:"input,omitempty" xml:"input,omitempty"`
 	Successful  *bool   `form:"successful,omitempty" json:"successful,omitempty" xml:"successful,omitempty"`
 	UserID      *string `form:"user_id,omitempty" json:"user_id,omitempty" xml:"user_id,omitempty"`
 	SubmittedAt *int64  `form:"submitted_at,omitempty" json:"submitted_at,omitempty" xml:"submitted_at,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // MonthlyChallengeResponse is used to define fields on response body types.
@@ -1455,19 +1652,21 @@ type SsmUserResponse struct {
 
 // AuthorResponse is used to define fields on response body types.
 type AuthorResponse struct {
-	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	FullName    *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
 	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	Sponsor     *bool   `form:"sponsor,omitempty" json:"sponsor,omitempty" xml:"sponsor,omitempty"`
 	Slug        *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
 	ImageURL    *string `form:"image_url,omitempty" json:"image_url,omitempty" xml:"image_url,omitempty"`
 	Publish     *bool   `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // CategoryResponse is used to define fields on response body types.
 type CategoryResponse struct {
-	ID   *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // ImportChallFlagRequestBody is used to define fields on request body types.
@@ -1484,8 +1683,22 @@ type ImportChallServiceRequestBody struct {
 
 // CTFEventResponse is used to define fields on response body types.
 type CTFEventResponse struct {
-	ID   *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+}
+
+// SsmAdminCourseResponse is used to define fields on response body types.
+type SsmAdminCourseResponse struct {
+	// ID of a file
+	ID          *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Title       *string  `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	Slug        *string  `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	Category    *string  `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	Difficulty  *string  `form:"difficulty,omitempty" json:"difficulty,omitempty" xml:"difficulty,omitempty"`
+	Description *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	Publish     *bool    `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
+	AuthorIds   []string `form:"author_ids,omitempty" json:"author_ids,omitempty" xml:"author_ids,omitempty"`
 }
 
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
@@ -1497,6 +1710,7 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 		Description: p.Description,
 		PublishAt:   p.PublishAt,
 		CtfEventID:  p.CtfEventID,
+		Hide:        p.Hide,
 		StaticScore: p.StaticScore,
 		CategoryID:  p.CategoryID,
 	}
@@ -1518,6 +1732,7 @@ func NewUpdateChallengeRequestBody(p *admin.UpdateChallengePayload) *UpdateChall
 		Description: p.Description,
 		PublishAt:   p.PublishAt,
 		CtfEventID:  p.CtfEventID,
+		Hide:        p.Hide,
 		StaticScore: p.StaticScore,
 		CategoryID:  p.CategoryID,
 	}
@@ -1650,6 +1865,46 @@ func NewCreateCTFEventRequestBody(p *admin.CreateCTFEventPayload) *CreateCTFEven
 func NewCreateCTFEventImportTokenRequestBody(p *admin.CreateCTFEventImportTokenPayload) *CreateCTFEventImportTokenRequestBody {
 	body := &CreateCTFEventImportTokenRequestBody{
 		EventID: p.EventID,
+	}
+	return body
+}
+
+// NewCreateCourseRequestBody builds the HTTP request body from the payload of
+// the "CreateCourse" endpoint of the "admin" service.
+func NewCreateCourseRequestBody(p *admin.CreateCoursePayload) *CreateCourseRequestBody {
+	body := &CreateCourseRequestBody{
+		Title:       p.Title,
+		Slug:        p.Slug,
+		Category:    p.Category,
+		Difficulty:  p.Difficulty,
+		Description: p.Description,
+		Publish:     p.Publish,
+	}
+	if p.AuthorIds != nil {
+		body.AuthorIds = make([]string, len(p.AuthorIds))
+		for i, val := range p.AuthorIds {
+			body.AuthorIds[i] = val
+		}
+	}
+	return body
+}
+
+// NewUpdateCourseRequestBody builds the HTTP request body from the payload of
+// the "UpdateCourse" endpoint of the "admin" service.
+func NewUpdateCourseRequestBody(p *admin.UpdateCoursePayload) *UpdateCourseRequestBody {
+	body := &UpdateCourseRequestBody{
+		Title:       p.Title,
+		Slug:        p.Slug,
+		Category:    p.Category,
+		Difficulty:  p.Difficulty,
+		Description: p.Description,
+		Publish:     p.Publish,
+	}
+	if p.AuthorIds != nil {
+		body.AuthorIds = make([]string, len(p.AuthorIds))
+		for i, val := range p.AuthorIds {
+			body.AuthorIds[i] = val
+		}
 	}
 	return body
 }
@@ -2733,6 +2988,152 @@ func NewCreateCTFEventImportTokenNotFound(body *CreateCTFEventImportTokenNotFoun
 // NewCreateCTFEventImportTokenBadRequest builds a admin service
 // CreateCTFEventImportToken endpoint bad_request error.
 func NewCreateCTFEventImportTokenBadRequest(body *CreateCTFEventImportTokenBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCoursesSsmAdminCourseCollectionOK builds a "admin" service
+// "ListCourses" endpoint result from a HTTP "OK" response.
+func NewListCoursesSsmAdminCourseCollectionOK(body ListCoursesResponseBody) adminviews.SsmAdminCourseCollectionView {
+	v := make([]*adminviews.SsmAdminCourseView, len(body))
+	for i, val := range body {
+		v[i] = unmarshalSsmAdminCourseResponseToAdminviewsSsmAdminCourseView(val)
+	}
+
+	return v
+}
+
+// NewListCoursesUnauthorized builds a admin service ListCourses endpoint
+// unauthorized error.
+func NewListCoursesUnauthorized(body *ListCoursesUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCoursesNotFound builds a admin service ListCourses endpoint not_found
+// error.
+func NewListCoursesNotFound(body *ListCoursesNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCoursesBadRequest builds a admin service ListCourses endpoint
+// bad_request error.
+func NewListCoursesBadRequest(body *ListCoursesBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateCourseUnauthorized builds a admin service CreateCourse endpoint
+// unauthorized error.
+func NewCreateCourseUnauthorized(body *CreateCourseUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateCourseNotFound builds a admin service CreateCourse endpoint
+// not_found error.
+func NewCreateCourseNotFound(body *CreateCourseNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateCourseBadRequest builds a admin service CreateCourse endpoint
+// bad_request error.
+func NewCreateCourseBadRequest(body *CreateCourseBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCourseUnauthorized builds a admin service UpdateCourse endpoint
+// unauthorized error.
+func NewUpdateCourseUnauthorized(body *UpdateCourseUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCourseNotFound builds a admin service UpdateCourse endpoint
+// not_found error.
+func NewUpdateCourseNotFound(body *UpdateCourseNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCourseBadRequest builds a admin service UpdateCourse endpoint
+// bad_request error.
+func NewUpdateCourseBadRequest(body *UpdateCourseBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -4373,6 +4774,222 @@ func ValidateCreateCTFEventImportTokenBadRequestResponseBody(body *CreateCTFEven
 	return
 }
 
+// ValidateListCoursesUnauthorizedResponseBody runs the validations defined on
+// ListCourses_unauthorized_Response_Body
+func ValidateListCoursesUnauthorizedResponseBody(body *ListCoursesUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCoursesNotFoundResponseBody runs the validations defined on
+// ListCourses_not_found_Response_Body
+func ValidateListCoursesNotFoundResponseBody(body *ListCoursesNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCoursesBadRequestResponseBody runs the validations defined on
+// ListCourses_bad_request_Response_Body
+func ValidateListCoursesBadRequestResponseBody(body *ListCoursesBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCourseUnauthorizedResponseBody runs the validations defined on
+// CreateCourse_unauthorized_Response_Body
+func ValidateCreateCourseUnauthorizedResponseBody(body *CreateCourseUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCourseNotFoundResponseBody runs the validations defined on
+// CreateCourse_not_found_Response_Body
+func ValidateCreateCourseNotFoundResponseBody(body *CreateCourseNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCourseBadRequestResponseBody runs the validations defined on
+// CreateCourse_bad_request_Response_Body
+func ValidateCreateCourseBadRequestResponseBody(body *CreateCourseBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCourseUnauthorizedResponseBody runs the validations defined on
+// UpdateCourse_unauthorized_Response_Body
+func ValidateUpdateCourseUnauthorizedResponseBody(body *UpdateCourseUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCourseNotFoundResponseBody runs the validations defined on
+// UpdateCourse_not_found_Response_Body
+func ValidateUpdateCourseNotFoundResponseBody(body *UpdateCourseNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCourseBadRequestResponseBody runs the validations defined on
+// UpdateCourse_bad_request_Response_Body
+func ValidateUpdateCourseBadRequestResponseBody(body *UpdateCourseBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateSsmAdminChallengeResponse runs the validations defined on
 // SsmAdminChallengeResponse
 func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err error) {
@@ -4381,9 +4998,6 @@ func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err err
 	}
 	if body.CategoryID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("category_id", "body"))
-	}
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
@@ -4396,6 +5010,12 @@ func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err err
 	}
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	if body.Hide == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("hide", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
@@ -4445,14 +5065,17 @@ func ValidateChallengeServiceResponse(body *ChallengeServiceResponse) (err error
 // ValidateAdminChallengeFilesResponse runs the validations defined on
 // AdminChallengeFilesResponse
 func ValidateAdminChallengeFilesResponse(body *AdminChallengeFilesResponse) (err error) {
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
-	}
 	if body.Filename == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("filename", "body"))
 	}
 	if body.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }
@@ -4460,11 +5083,14 @@ func ValidateAdminChallengeFilesResponse(body *AdminChallengeFilesResponse) (err
 // ValidateAdminChallengeFlagResponse runs the validations defined on
 // AdminChallengeFlagResponse
 func ValidateAdminChallengeFlagResponse(body *AdminChallengeFlagResponse) (err error) {
+	if body.Flag == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "body"))
+	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
-	if body.Flag == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "body"))
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }
@@ -4487,9 +5113,6 @@ func ValidateChallengeSolverResponseBody(body *ChallengeSolverResponseBody) (err
 // ValidateChallengeSubmissionResponseBody runs the validations defined on
 // ChallengeSubmissionResponseBody
 func ValidateChallengeSubmissionResponseBody(body *ChallengeSubmissionResponseBody) (err error) {
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
-	}
 	if body.UserID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("user_id", "body"))
 	}
@@ -4502,11 +5125,14 @@ func ValidateChallengeSubmissionResponseBody(body *ChallengeSubmissionResponseBo
 	if body.SubmittedAt == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("submitted_at", "body"))
 	}
-	if body.ID != nil {
-		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.UserID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.user_id", *body.UserID, goa.FormatUUID))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }
@@ -4551,9 +5177,6 @@ func ValidateSsmUserResponse(body *SsmUserResponse) (err error) {
 
 // ValidateAuthorResponse runs the validations defined on AuthorResponse
 func ValidateAuthorResponse(body *AuthorResponse) (err error) {
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
-	}
 	if body.Sponsor == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("sponsor", "body"))
 	}
@@ -4569,16 +5192,22 @@ func ValidateAuthorResponse(body *AuthorResponse) (err error) {
 	if body.Publish == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "body"))
 	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	}
 	return
 }
 
 // ValidateCategoryResponse runs the validations defined on CategoryResponse
 func ValidateCategoryResponse(body *CategoryResponse) (err error) {
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
-	}
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
@@ -4588,11 +5217,44 @@ func ValidateCategoryResponse(body *CategoryResponse) (err error) {
 
 // ValidateCTFEventResponse runs the validations defined on CTFEventResponse
 func ValidateCTFEventResponse(body *CTFEventResponse) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
-	if body.Name == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateSsmAdminCourseResponse runs the validations defined on
+// SsmAdminCourseResponse
+func ValidateSsmAdminCourseResponse(body *SsmAdminCourseResponse) (err error) {
+	if body.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
+	}
+	if body.Category == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("category", "body"))
+	}
+	if body.Difficulty == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("difficulty", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Publish == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
 	}
 	return
 }

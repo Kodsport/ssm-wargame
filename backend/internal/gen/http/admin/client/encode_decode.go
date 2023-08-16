@@ -2711,6 +2711,366 @@ func DecodeCreateCTFEventImportTokenResponse(decoder func(*http.Response) goahtt
 	}
 }
 
+// BuildListCoursesRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "ListCourses" endpoint
+func (c *Client) BuildListCoursesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListCoursesAdminPath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "ListCourses", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListCoursesRequest returns an encoder for requests sent to the admin
+// ListCourses server.
+func EncodeListCoursesRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.ListCoursesPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "ListCourses", "*admin.ListCoursesPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListCoursesResponse returns a decoder for responses returned by the
+// admin ListCourses endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeListCoursesResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeListCoursesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListCoursesResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCourses", err)
+			}
+			p := NewListCoursesSsmAdminCourseCollectionOK(body)
+			view := "default"
+			vres := adminviews.SsmAdminCourseCollection{Projected: p, View: view}
+			if err = adminviews.ValidateSsmAdminCourseCollection(vres); err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCourses", err)
+			}
+			res := admin.NewSsmAdminCourseCollection(vres)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body ListCoursesUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCourses", err)
+			}
+			err = ValidateListCoursesUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCourses", err)
+			}
+			return nil, NewListCoursesUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ListCoursesNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCourses", err)
+			}
+			err = ValidateListCoursesNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCourses", err)
+			}
+			return nil, NewListCoursesNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ListCoursesBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCourses", err)
+			}
+			err = ValidateListCoursesBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCourses", err)
+			}
+			return nil, NewListCoursesBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "ListCourses", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildCreateCourseRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "CreateCourse" endpoint
+func (c *Client) BuildCreateCourseRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateCourseAdminPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "CreateCourse", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeCreateCourseRequest returns an encoder for requests sent to the admin
+// CreateCourse server.
+func EncodeCreateCourseRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.CreateCoursePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "CreateCourse", "*admin.CreateCoursePayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewCreateCourseRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "CreateCourse", err)
+		}
+		return nil
+	}
+}
+
+// DecodeCreateCourseResponse returns a decoder for responses returned by the
+// admin CreateCourse endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeCreateCourseResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeCreateCourseResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body CreateCourseUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCourse", err)
+			}
+			err = ValidateCreateCourseUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCourse", err)
+			}
+			return nil, NewCreateCourseUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body CreateCourseNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCourse", err)
+			}
+			err = ValidateCreateCourseNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCourse", err)
+			}
+			return nil, NewCreateCourseNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body CreateCourseBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCourse", err)
+			}
+			err = ValidateCreateCourseBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCourse", err)
+			}
+			return nil, NewCreateCourseBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "CreateCourse", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildUpdateCourseRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "UpdateCourse" endpoint
+func (c *Client) BuildUpdateCourseRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		id string
+	)
+	{
+		p, ok := v.(*admin.UpdateCoursePayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "UpdateCourse", "*admin.UpdateCoursePayload", v)
+		}
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateCourseAdminPath(id)}
+	req, err := http.NewRequest("PUT", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "UpdateCourse", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeUpdateCourseRequest returns an encoder for requests sent to the admin
+// UpdateCourse server.
+func EncodeUpdateCourseRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.UpdateCoursePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "UpdateCourse", "*admin.UpdateCoursePayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewUpdateCourseRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "UpdateCourse", err)
+		}
+		return nil
+	}
+}
+
+// DecodeUpdateCourseResponse returns a decoder for responses returned by the
+// admin UpdateCourse endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeUpdateCourseResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeUpdateCourseResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body UpdateCourseUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateCourse", err)
+			}
+			err = ValidateUpdateCourseUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateCourse", err)
+			}
+			return nil, NewUpdateCourseUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body UpdateCourseNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateCourse", err)
+			}
+			err = ValidateUpdateCourseNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateCourse", err)
+			}
+			return nil, NewUpdateCourseNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body UpdateCourseBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateCourse", err)
+			}
+			err = ValidateUpdateCourseBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateCourse", err)
+			}
+			return nil, NewUpdateCourseBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "UpdateCourse", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView builds a
 // value of type *adminviews.SsmAdminChallengeView from a value of type
 // *SsmAdminChallengeResponse.
@@ -2722,6 +3082,7 @@ func unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView(v *SsmA
 		Description: v.Description,
 		PublishAt:   v.PublishAt,
 		Solves:      v.Solves,
+		Hide:        v.Hide,
 		CtfEventID:  v.CtfEventID,
 		StaticScore: v.StaticScore,
 		CategoryID:  v.CategoryID,
@@ -2772,9 +3133,9 @@ func unmarshalChallengeServiceResponseToAdminviewsChallengeServiceView(v *Challe
 // type *AdminChallengeFilesResponse.
 func unmarshalAdminChallengeFilesResponseToAdminviewsAdminChallengeFilesView(v *AdminChallengeFilesResponse) *adminviews.AdminChallengeFilesView {
 	res := &adminviews.AdminChallengeFilesView{
-		ID:       v.ID,
 		Filename: v.Filename,
 		URL:      v.URL,
+		ID:       v.ID,
 	}
 
 	return res
@@ -2788,8 +3149,8 @@ func unmarshalAdminChallengeFlagResponseToAdminviewsAdminChallengeFlagView(v *Ad
 		return nil
 	}
 	res := &adminviews.AdminChallengeFlagView{
-		ID:   v.ID,
 		Flag: v.Flag,
+		ID:   v.ID,
 	}
 
 	return res
@@ -2812,11 +3173,11 @@ func unmarshalChallengeSolverResponseBodyToAdminChallengeSolver(v *ChallengeSolv
 // *ChallengeSubmissionResponseBody.
 func unmarshalChallengeSubmissionResponseBodyToAdminChallengeSubmission(v *ChallengeSubmissionResponseBody) *admin.ChallengeSubmission {
 	res := &admin.ChallengeSubmission{
-		ID:          *v.ID,
 		Input:       *v.Input,
 		Successful:  *v.Successful,
 		UserID:      *v.UserID,
 		SubmittedAt: *v.SubmittedAt,
+		ID:          *v.ID,
 	}
 
 	return res
@@ -2853,13 +3214,13 @@ func unmarshalSsmUserResponseToAdminSsmUser(v *SsmUserResponse) *admin.SsmUser {
 // from a value of type *AuthorResponse.
 func unmarshalAuthorResponseToAdminAuthor(v *AuthorResponse) *admin.Author {
 	res := &admin.Author{
-		ID:          *v.ID,
 		FullName:    *v.FullName,
 		Description: *v.Description,
 		Sponsor:     *v.Sponsor,
 		Slug:        *v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     *v.Publish,
+		ID:          *v.ID,
 	}
 
 	return res
@@ -2869,8 +3230,8 @@ func unmarshalAuthorResponseToAdminAuthor(v *AuthorResponse) *admin.Author {
 // *admin.Category from a value of type *CategoryResponse.
 func unmarshalCategoryResponseToAdminCategory(v *CategoryResponse) *admin.Category {
 	res := &admin.Category{
-		ID:   *v.ID,
 		Name: *v.Name,
+		ID:   *v.ID,
 	}
 
 	return res
@@ -2938,8 +3299,31 @@ func marshalImportChallServiceRequestBodyToAdminImportChallService(v *ImportChal
 // *admin.CTFEvent from a value of type *CTFEventResponse.
 func unmarshalCTFEventResponseToAdminCTFEvent(v *CTFEventResponse) *admin.CTFEvent {
 	res := &admin.CTFEvent{
-		ID:   *v.ID,
 		Name: *v.Name,
+		ID:   *v.ID,
+	}
+
+	return res
+}
+
+// unmarshalSsmAdminCourseResponseToAdminviewsSsmAdminCourseView builds a value
+// of type *adminviews.SsmAdminCourseView from a value of type
+// *SsmAdminCourseResponse.
+func unmarshalSsmAdminCourseResponseToAdminviewsSsmAdminCourseView(v *SsmAdminCourseResponse) *adminviews.SsmAdminCourseView {
+	res := &adminviews.SsmAdminCourseView{
+		ID:          v.ID,
+		Title:       v.Title,
+		Slug:        v.Slug,
+		Category:    v.Category,
+		Difficulty:  v.Difficulty,
+		Description: v.Description,
+		Publish:     v.Publish,
+	}
+	if v.AuthorIds != nil {
+		res.AuthorIds = make([]string, len(v.AuthorIds))
+		for i, val := range v.AuthorIds {
+			res.AuthorIds[i] = val
+		}
 	}
 
 	return res

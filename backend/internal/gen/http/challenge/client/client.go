@@ -49,6 +49,18 @@ type Client struct {
 	// endpoint.
 	ListAuthorsDoer goahttp.Doer
 
+	// ListCourses Doer is the HTTP client used to make requests to the ListCourses
+	// endpoint.
+	ListCoursesDoer goahttp.Doer
+
+	// EnrollCourse Doer is the HTTP client used to make requests to the
+	// EnrollCourse endpoint.
+	EnrollCourseDoer goahttp.Doer
+
+	// CompleteCourse Doer is the HTTP client used to make requests to the
+	// CompleteCourse endpoint.
+	CompleteCourseDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -77,6 +89,9 @@ func NewClient(
 		SchoolScoreboardDoer:           doer,
 		UserScoreboardDoer:             doer,
 		ListAuthorsDoer:                doer,
+		ListCoursesDoer:                doer,
+		EnrollCourseDoer:               doer,
+		CompleteCourseDoer:             doer,
 		RestoreResponseBody:            restoreBody,
 		scheme:                         scheme,
 		host:                           host,
@@ -272,6 +287,78 @@ func (c *Client) ListAuthors() goa.Endpoint {
 		resp, err := c.ListAuthorsDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("challenge", "ListAuthors", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// ListCourses returns an endpoint that makes HTTP requests to the challenge
+// service ListCourses server.
+func (c *Client) ListCourses() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeListCoursesRequest(c.encoder)
+		decodeResponse = DecodeListCoursesResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildListCoursesRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ListCoursesDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "ListCourses", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// EnrollCourse returns an endpoint that makes HTTP requests to the challenge
+// service EnrollCourse server.
+func (c *Client) EnrollCourse() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeEnrollCourseRequest(c.encoder)
+		decodeResponse = DecodeEnrollCourseResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildEnrollCourseRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.EnrollCourseDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "EnrollCourse", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CompleteCourse returns an endpoint that makes HTTP requests to the challenge
+// service CompleteCourse server.
+func (c *Client) CompleteCourse() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeCompleteCourseRequest(c.encoder)
+		decodeResponse = DecodeCompleteCourseResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCompleteCourseRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CompleteCourseDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "CompleteCourse", err)
 		}
 		return decodeResponse(resp)
 	}

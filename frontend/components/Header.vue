@@ -23,6 +23,11 @@
             </nuxt-link>
           </li>
           <li class="nav-item">
+            <nuxt-link active-class="active" class="nav-link" to="/courses">
+              Kurser
+            </nuxt-link>
+          </li>
+          <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/learn">
               Läroresurser
             </nuxt-link>
@@ -52,6 +57,12 @@
                   Monthly
                 </nuxt-link>
               </li>
+              <li class="nav-item">
+                <nuxt-link active-class="active" class="nav-link" to="/admin/courses">
+                  Courses
+                </nuxt-link>
+              </li>
+
               <li class="nav-item">
                 <nuxt-link active-class="active" class="nav-link" to="/admin/events">
                   Events

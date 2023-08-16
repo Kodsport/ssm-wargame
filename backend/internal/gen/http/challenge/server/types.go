@@ -62,6 +62,10 @@ type UserScoreboardResponseBody struct {
 // endpoint HTTP response body.
 type ListAuthorsResponseBody []*AuthorResponse
 
+// ListCoursesResponseBody is the type of the "challenge" service "ListCourses"
+// endpoint HTTP response body.
+type ListCoursesResponseBody []*CourseResponse
+
 // GetCurrentMonthlyChallengeNotFoundResponseBody is the type of the
 // "challenge" service "GetCurrentMonthlyChallenge" endpoint HTTP response body
 // for the "not_found" error.
@@ -119,6 +123,7 @@ type SubmitFlagIncorrectFlagResponseBody struct {
 
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
+	// ID of a file
 	ID string `form:"id" json:"id" xml:"id"`
 	// A unique string that can be used in URLs
 	Slug string `form:"slug" json:"slug" xml:"slug"`
@@ -155,13 +160,14 @@ type ChallengeFilesResponse struct {
 
 // AuthorResponse is used to define fields on response body types.
 type AuthorResponse struct {
-	ID          string  `form:"id" json:"id" xml:"id"`
 	FullName    string  `form:"full_name" json:"full_name" xml:"full_name"`
 	Description string  `form:"description" json:"description" xml:"description"`
 	Sponsor     bool    `form:"sponsor" json:"sponsor" xml:"sponsor"`
 	Slug        string  `form:"slug" json:"slug" xml:"slug"`
 	ImageURL    *string `form:"image_url,omitempty" json:"image_url,omitempty" xml:"image_url,omitempty"`
 	Publish     bool    `form:"publish" json:"publish" xml:"publish"`
+	// ID of a file
+	ID string `form:"id" json:"id" xml:"id"`
 }
 
 // SsmSolverResponse is used to define fields on response body types.
@@ -173,12 +179,14 @@ type SsmSolverResponse struct {
 
 // CTFEventResponse is used to define fields on response body types.
 type CTFEventResponse struct {
-	ID   string `form:"id" json:"id" xml:"id"`
 	Name string `form:"name" json:"name" xml:"name"`
+	// ID of a file
+	ID string `form:"id" json:"id" xml:"id"`
 }
 
 // SsmChallengeResponseBody is used to define fields on response body types.
 type SsmChallengeResponseBody struct {
+	// ID of a file
 	ID string `form:"id" json:"id" xml:"id"`
 	// A unique string that can be used in URLs
 	Slug string `form:"slug" json:"slug" xml:"slug"`
@@ -215,13 +223,14 @@ type ChallengeFilesResponseBody struct {
 
 // AuthorResponseBody is used to define fields on response body types.
 type AuthorResponseBody struct {
-	ID          string  `form:"id" json:"id" xml:"id"`
 	FullName    string  `form:"full_name" json:"full_name" xml:"full_name"`
 	Description string  `form:"description" json:"description" xml:"description"`
 	Sponsor     bool    `form:"sponsor" json:"sponsor" xml:"sponsor"`
 	Slug        string  `form:"slug" json:"slug" xml:"slug"`
 	ImageURL    *string `form:"image_url,omitempty" json:"image_url,omitempty" xml:"image_url,omitempty"`
 	Publish     bool    `form:"publish" json:"publish" xml:"publish"`
+	// ID of a file
+	ID string `form:"id" json:"id" xml:"id"`
 }
 
 // SsmSolverResponseBody is used to define fields on response body types.
@@ -259,6 +268,32 @@ type UserScoreboardScoreResponseBody struct {
 	Name       string `form:"name" json:"name" xml:"name"`
 	SchoolName string `form:"school_name" json:"school_name" xml:"school_name"`
 	Score      int    `form:"score" json:"score" xml:"score"`
+}
+
+// CourseResponse is used to define fields on response body types.
+type CourseResponse struct {
+	Title       string                `form:"title" json:"title" xml:"title"`
+	Slug        string                `form:"slug" json:"slug" xml:"slug"`
+	Category    string                `form:"category" json:"category" xml:"category"`
+	Difficulty  string                `form:"difficulty" json:"difficulty" xml:"difficulty"`
+	Description string                `form:"description" json:"description" xml:"description"`
+	Enrolled    bool                  `form:"enrolled" json:"enrolled" xml:"enrolled"`
+	Publish     bool                  `form:"publish" json:"publish" xml:"publish"`
+	Completed   bool                  `form:"completed" json:"completed" xml:"completed"`
+	Authors     []*AuthorResponse     `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	CourseItems []*CourseItemResponse `form:"course_items,omitempty" json:"course_items,omitempty" xml:"course_items,omitempty"`
+	// ID of a file
+	ID string `form:"id" json:"id" xml:"id"`
+}
+
+// CourseItemResponse is used to define fields on response body types.
+type CourseItemResponse struct {
+	// to sort after
+	Position int `form:"position" json:"position" xml:"position"`
+	// ID of a file
+	ID string `form:"id" json:"id" xml:"id"`
+	// ID of a challenge
+	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
 }
 
 // NewSsmChallengeResponseCollection builds the HTTP response body from the
@@ -344,6 +379,16 @@ func NewListAuthorsResponseBody(res []*challenge.Author) ListAuthorsResponseBody
 	return body
 }
 
+// NewListCoursesResponseBody builds the HTTP response body from the result of
+// the "ListCourses" endpoint of the "challenge" service.
+func NewListCoursesResponseBody(res []*challenge.Course) ListCoursesResponseBody {
+	body := make([]*CourseResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalChallengeCourseToCourseResponse(val)
+	}
+	return body
+}
+
 // NewGetCurrentMonthlyChallengeNotFoundResponseBody builds the HTTP response
 // body from the result of the "GetCurrentMonthlyChallenge" endpoint of the
 // "challenge" service.
@@ -389,9 +434,10 @@ func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIn
 
 // NewListChallengesPayload builds a challenge service ListChallenges endpoint
 // payload.
-func NewListChallengesPayload(slug *string, token *string) *challenge.ListChallengesPayload {
+func NewListChallengesPayload(slug *string, ids []string, token *string) *challenge.ListChallengesPayload {
 	v := &challenge.ListChallengesPayload{}
 	v.Slug = slug
+	v.Ids = ids
 	v.Token = token
 
 	return v
@@ -456,6 +502,35 @@ func NewUserScoreboardPayload(token *string) *challenge.UserScoreboardPayload {
 // payload.
 func NewListAuthorsPayload(token *string) *challenge.ListAuthorsPayload {
 	v := &challenge.ListAuthorsPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewListCoursesPayload builds a challenge service ListCourses endpoint
+// payload.
+func NewListCoursesPayload(token *string) *challenge.ListCoursesPayload {
+	v := &challenge.ListCoursesPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewEnrollCoursePayload builds a challenge service EnrollCourse endpoint
+// payload.
+func NewEnrollCoursePayload(id string, token *string) *challenge.EnrollCoursePayload {
+	v := &challenge.EnrollCoursePayload{}
+	v.ID = id
+	v.Token = token
+
+	return v
+}
+
+// NewCompleteCoursePayload builds a challenge service CompleteCourse endpoint
+// payload.
+func NewCompleteCoursePayload(id string, token *string) *challenge.CompleteCoursePayload {
+	v := &challenge.CompleteCoursePayload{}
+	v.ID = id
 	v.Token = token
 
 	return v

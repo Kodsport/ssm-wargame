@@ -37,10 +37,13 @@ type Client struct {
 	CreateCTFEventEndpoint            goa.Endpoint
 	DeleteCTFEventEndpoint            goa.Endpoint
 	CreateCTFEventImportTokenEndpoint goa.Endpoint
+	ListCoursesEndpoint               goa.Endpoint
+	CreateCourseEndpoint              goa.Endpoint
+	UpdateCourseEndpoint              goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:            listChallenges,
 		GetChallengeMetaEndpoint:          getChallengeMeta,
@@ -64,6 +67,9 @@ func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChalleng
 		CreateCTFEventEndpoint:            createCTFEvent,
 		DeleteCTFEventEndpoint:            deleteCTFEvent,
 		CreateCTFEventImportTokenEndpoint: createCTFEventImportToken,
+		ListCoursesEndpoint:               listCourses,
+		CreateCourseEndpoint:              createCourse,
+		UpdateCourseEndpoint:              updateCourse,
 	}
 }
 
@@ -240,4 +246,26 @@ func (c *Client) CreateCTFEventImportToken(ctx context.Context, p *CreateCTFEven
 		return
 	}
 	return ires.(*CreateCTFEventImportTokenResult), nil
+}
+
+// ListCourses calls the "ListCourses" endpoint of the "admin" service.
+func (c *Client) ListCourses(ctx context.Context, p *ListCoursesPayload) (res SsmAdminCourseCollection, err error) {
+	var ires interface{}
+	ires, err = c.ListCoursesEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(SsmAdminCourseCollection), nil
+}
+
+// CreateCourse calls the "CreateCourse" endpoint of the "admin" service.
+func (c *Client) CreateCourse(ctx context.Context, p *CreateCoursePayload) (err error) {
+	_, err = c.CreateCourseEndpoint(ctx, p)
+	return
+}
+
+// UpdateCourse calls the "UpdateCourse" endpoint of the "admin" service.
+func (c *Client) UpdateCourse(ctx context.Context, p *UpdateCoursePayload) (err error) {
+	_, err = c.UpdateCourseEndpoint(ctx, p)
+	return
 }

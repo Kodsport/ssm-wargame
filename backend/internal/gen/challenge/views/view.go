@@ -62,6 +62,7 @@ type SsmChallengeCollectionView []*SsmChallengeView
 
 // SsmChallengeView is a type that runs validations on a projected type.
 type SsmChallengeView struct {
+	// ID of a file
 	ID *string
 	// A unique string that can be used in URLs
 	Slug *string
@@ -98,13 +99,14 @@ type ChallengeFilesView struct {
 
 // AuthorView is a type that runs validations on a projected type.
 type AuthorView struct {
-	ID          *string
 	FullName    *string
 	Description *string
 	Sponsor     *bool
 	Slug        *string
 	ImageURL    *string
 	Publish     *bool
+	// ID of a file
+	ID *string
 }
 
 // SsmSolverView is a type that runs validations on a projected type.
@@ -322,9 +324,6 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	if result.Category == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("category", "result"))
 	}
-	if result.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
-	}
 	if result.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "result"))
 	}
@@ -339,6 +338,9 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	}
 	if result.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
 	if result.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
@@ -403,9 +405,6 @@ func ValidateChallengeFilesView(result *ChallengeFilesView) (err error) {
 
 // ValidateAuthorView runs the validations defined on AuthorView.
 func ValidateAuthorView(result *AuthorView) (err error) {
-	if result.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
-	}
 	if result.Sponsor == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("sponsor", "result"))
 	}
@@ -420,6 +419,12 @@ func ValidateAuthorView(result *AuthorView) (err error) {
 	}
 	if result.Publish == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
 	}
 	return
 }

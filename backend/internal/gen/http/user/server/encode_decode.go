@@ -235,10 +235,10 @@ func DecodeSearchSchoolsRequest(mux goahttp.Muxer, decoder func(*http.Request) g
 // from a value of type *user.School.
 func marshalUserSchoolToSchoolResponse(v *user.School) *SchoolResponse {
 	res := &SchoolResponse{
-		ID:               v.ID,
 		Name:             v.Name,
 		MunicipalityName: v.MunicipalityName,
 		IsUniversity:     v.IsUniversity,
+		ID:               v.ID,
 	}
 
 	return res

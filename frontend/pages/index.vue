@@ -25,7 +25,7 @@
                             Final i Stockholm (datum saknas)
                         </li>
                         <li>
-                            <span class="material-symbols-outlined">emoji_events</span>
+                            <span class="material-symbols-outlined">azm</span>
                             Bästa lagen går vidare till <a href="https://snht.se/">landslagsuttagningen</a>
                         </li>
                     </ul>

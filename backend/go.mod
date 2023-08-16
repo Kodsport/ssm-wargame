@@ -19,6 +19,7 @@ require (
 	goa.design/goa/v3 v3.5.2
 	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

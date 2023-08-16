@@ -105,6 +105,18 @@ type Client struct {
 	// the CreateCTFEventImportToken endpoint.
 	CreateCTFEventImportTokenDoer goahttp.Doer
 
+	// ListCourses Doer is the HTTP client used to make requests to the ListCourses
+	// endpoint.
+	ListCoursesDoer goahttp.Doer
+
+	// CreateCourse Doer is the HTTP client used to make requests to the
+	// CreateCourse endpoint.
+	CreateCourseDoer goahttp.Doer
+
+	// UpdateCourse Doer is the HTTP client used to make requests to the
+	// UpdateCourse endpoint.
+	UpdateCourseDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -147,6 +159,9 @@ func NewClient(
 		CreateCTFEventDoer:            doer,
 		DeleteCTFEventDoer:            doer,
 		CreateCTFEventImportTokenDoer: doer,
+		ListCoursesDoer:               doer,
+		CreateCourseDoer:              doer,
+		UpdateCourseDoer:              doer,
 		RestoreResponseBody:           restoreBody,
 		scheme:                        scheme,
 		host:                          host,
@@ -678,6 +693,78 @@ func (c *Client) CreateCTFEventImportToken() goa.Endpoint {
 		resp, err := c.CreateCTFEventImportTokenDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "CreateCTFEventImportToken", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// ListCourses returns an endpoint that makes HTTP requests to the admin
+// service ListCourses server.
+func (c *Client) ListCourses() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeListCoursesRequest(c.encoder)
+		decodeResponse = DecodeListCoursesResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildListCoursesRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.ListCoursesDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "ListCourses", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// CreateCourse returns an endpoint that makes HTTP requests to the admin
+// service CreateCourse server.
+func (c *Client) CreateCourse() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeCreateCourseRequest(c.encoder)
+		decodeResponse = DecodeCreateCourseResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildCreateCourseRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.CreateCourseDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "CreateCourse", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// UpdateCourse returns an endpoint that makes HTTP requests to the admin
+// service UpdateCourse server.
+func (c *Client) UpdateCourse() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeUpdateCourseRequest(c.encoder)
+		decodeResponse = DecodeUpdateCourseResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildUpdateCourseRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.UpdateCourseDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "UpdateCourse", err)
 		}
 		return decodeResponse(resp)
 	}

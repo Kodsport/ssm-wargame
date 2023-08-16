@@ -12,6 +12,10 @@
                     <input class="form-control" type="text" placeholder="Enter slug" v-model="form.slug" />
                 </div>
                 <div class="form-group">
+                    <label class="me-2">Hide</label>
+                    <input class="" type="checkbox" v-model="form.hide">
+                </div>
+                <div class="form-group">
                     <label class="me-2">Dynamic scoring</label>
                     <input class="" type="checkbox" v-model="dynamicScoring">
                 </div>
@@ -75,10 +79,13 @@
                 <tbody>
                     <tr v-for="chall in challenges" :key="chall.id">
                         <td>
-                            <NuxtLink :to="`/admin/challenges/${chall.slug}`">
+                            <NuxtLink :to="`/admin/challenges/${chall.slug}`" class="pe-2">
                                 {{ chall.title }}
-                                <span v-if="!chall.flags" title="No flags">⚠️⚠️⚠️</span>
                             </NuxtLink>
+                            <span v-if="!chall.flags" title="No flags">⚠️⚠️⚠️</span>
+                            <span v-if="chall.hide" class="material-symbols-outlined text-primary">
+                                visibility_off
+                            </span>
                         </td>
                         <td>{{ chall.solves }}</td>
                         <td>{{ getCategoryName(chall.category_id) }}</td>
@@ -123,6 +130,7 @@ const form = ref({
     static_score: 250,
     description: "",
     publishAt: "",
+    hide: true,
     category_id: "",
     authors: []
 })
@@ -137,7 +145,8 @@ async function createChall() {
             description: form.value.description,
             category_id: form.value.category_id,
             publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,
-            authors: form.value.authors
+            authors: form.value.authors,
+            hide: form.value.hide,
         }
     });
 

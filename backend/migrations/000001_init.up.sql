@@ -67,6 +67,7 @@ CREATE TABLE challenges (
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     static_score INT,
+    hide BOOLEAN NOT NULL,
     publish_at TIMESTAMPTZ,
     ctf_event_id UUID REFERENCES ctf_events(id) ON DELETE SET NULL,
     category_id UUID NOT NULL REFERENCES categories(id),

@@ -132,7 +132,7 @@ func DecodeGetChallengeMetaRequest(mux goahttp.Muxer, decoder func(*http.Request
 
 			params = mux.Vars(r)
 		)
-		challengeID = params["challengeID"]
+		challengeID = params["challenge_id"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
 		token = r.Header.Get("Authorization")
@@ -342,7 +342,7 @@ func DecodeUpdateChallengeRequest(mux goahttp.Muxer, decoder func(*http.Request)
 
 			params = mux.Vars(r)
 		)
-		challengeID = params["challengeID"]
+		challengeID = params["challenge_id"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
 		token = r.Header.Get("Authorization")
@@ -453,7 +453,7 @@ func DecodePresignChallFileUploadRequest(mux goahttp.Muxer, decoder func(*http.R
 
 			params = mux.Vars(r)
 		)
-		challengeID = params["challengeID"]
+		challengeID = params["challenge_id"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
 		token = r.Header.Get("Authorization")
@@ -636,7 +636,7 @@ func DecodeDeleteMonthlyChallengeRequest(mux goahttp.Muxer, decoder func(*http.R
 
 			params = mux.Vars(r)
 		)
-		challengeID = params["challengeID"]
+		challengeID = params["challenge_id"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
 		token = r.Header.Get("Authorization")
@@ -1120,6 +1120,8 @@ func DecodeUpdateAuthorRequest(mux goahttp.Muxer, decoder func(*http.Request) go
 			params = mux.Vars(r)
 		)
 		id = params["id"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
 		token = r.Header.Get("Authorization")
 		if token == "" {
 			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
@@ -1418,7 +1420,7 @@ func DecodeAddFlagRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp
 
 			params = mux.Vars(r)
 		)
-		challengeID = params["challengeID"]
+		challengeID = params["challenge_id"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
 		token = r.Header.Get("Authorization")
@@ -1512,7 +1514,7 @@ func DecodeDeleteFlagRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 
 			params = mux.Vars(r)
 		)
-		challengeID = params["challengeID"]
+		challengeID = params["challenge_id"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
 		flagID = params["flagID"]
@@ -1988,6 +1990,8 @@ func DecodeDeleteCTFEventRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 			params = mux.Vars(r)
 		)
 		id = params["id"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
 		token = r.Header.Get("Authorization")
 		if token == "" {
 			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
@@ -2163,6 +2167,306 @@ func EncodeCreateCTFEventImportTokenError(encoder func(context.Context, http.Res
 	}
 }
 
+// EncodeListCoursesResponse returns an encoder for responses returned by the
+// admin ListCourses endpoint.
+func EncodeListCoursesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(adminviews.SsmAdminCourseCollection)
+		enc := encoder(ctx, w)
+		body := NewSsmAdminCourseResponseCollection(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListCoursesRequest returns a decoder for requests sent to the admin
+// ListCourses endpoint.
+func DecodeListCoursesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token string
+			err   error
+		)
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewListCoursesPayload(token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeListCoursesError returns an encoder for errors returned by the
+// ListCourses admin endpoint.
+func EncodeListCoursesError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCoursesUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCoursesNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCoursesBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeCreateCourseResponse returns an encoder for responses returned by the
+// admin CreateCourse endpoint.
+func EncodeCreateCourseResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeCreateCourseRequest returns a decoder for requests sent to the admin
+// CreateCourse endpoint.
+func DecodeCreateCourseRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body CreateCourseRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateCreateCourseRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			token string
+		)
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewCreateCoursePayload(&body, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeCreateCourseError returns an encoder for errors returned by the
+// CreateCourse admin endpoint.
+func EncodeCreateCourseError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCreateCourseUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCreateCourseNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCreateCourseBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeUpdateCourseResponse returns an encoder for responses returned by the
+// admin UpdateCourse endpoint.
+func EncodeUpdateCourseResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeUpdateCourseRequest returns a decoder for requests sent to the admin
+// UpdateCourse endpoint.
+func DecodeUpdateCourseRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body UpdateCourseRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateUpdateCourseRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			id    string
+			token string
+
+			params = mux.Vars(r)
+		)
+		id = params["id"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewUpdateCoursePayload(&body, id, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeUpdateCourseError returns an encoder for errors returned by the
+// UpdateCourse admin endpoint.
+func EncodeUpdateCourseError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateCourseUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateCourseNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateCourseBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse builds a
 // value of type *SsmAdminChallengeResponse from a value of type
 // *adminviews.SsmAdminChallengeView.
@@ -2174,6 +2478,7 @@ func marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse(v *adminv
 		Description: *v.Description,
 		PublishAt:   v.PublishAt,
 		Solves:      *v.Solves,
+		Hide:        *v.Hide,
 		CtfEventID:  v.CtfEventID,
 		StaticScore: v.StaticScore,
 		CategoryID:  *v.CategoryID,
@@ -2226,9 +2531,9 @@ func marshalAdminviewsChallengeServiceViewToChallengeServiceResponse(v *adminvie
 // *adminviews.AdminChallengeFilesView.
 func marshalAdminviewsAdminChallengeFilesViewToAdminChallengeFilesResponse(v *adminviews.AdminChallengeFilesView) *AdminChallengeFilesResponse {
 	res := &AdminChallengeFilesResponse{
-		ID:       *v.ID,
 		Filename: *v.Filename,
 		URL:      *v.URL,
+		ID:       *v.ID,
 	}
 
 	return res
@@ -2242,8 +2547,8 @@ func marshalAdminviewsAdminChallengeFlagViewToAdminChallengeFlagResponse(v *admi
 		return nil
 	}
 	res := &AdminChallengeFlagResponse{
-		ID:   *v.ID,
 		Flag: *v.Flag,
+		ID:   *v.ID,
 	}
 
 	return res
@@ -2266,11 +2571,11 @@ func marshalAdminChallengeSolverToChallengeSolverResponseBody(v *admin.Challenge
 // *admin.ChallengeSubmission.
 func marshalAdminChallengeSubmissionToChallengeSubmissionResponseBody(v *admin.ChallengeSubmission) *ChallengeSubmissionResponseBody {
 	res := &ChallengeSubmissionResponseBody{
-		ID:          v.ID,
 		Input:       v.Input,
 		Successful:  v.Successful,
 		UserID:      v.UserID,
 		SubmittedAt: v.SubmittedAt,
+		ID:          v.ID,
 	}
 
 	return res
@@ -2307,13 +2612,13 @@ func marshalAdminSsmUserToSsmUserResponse(v *admin.SsmUser) *SsmUserResponse {
 // from a value of type *admin.Author.
 func marshalAdminAuthorToAuthorResponse(v *admin.Author) *AuthorResponse {
 	res := &AuthorResponse{
-		ID:          v.ID,
 		FullName:    v.FullName,
 		Description: v.Description,
 		Sponsor:     v.Sponsor,
 		Slug:        v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     v.Publish,
+		ID:          v.ID,
 	}
 
 	return res
@@ -2323,8 +2628,8 @@ func marshalAdminAuthorToAuthorResponse(v *admin.Author) *AuthorResponse {
 // *CategoryResponse from a value of type *admin.Category.
 func marshalAdminCategoryToCategoryResponse(v *admin.Category) *CategoryResponse {
 	res := &CategoryResponse{
-		ID:   v.ID,
 		Name: v.Name,
+		ID:   v.ID,
 	}
 
 	return res
@@ -2363,8 +2668,31 @@ func unmarshalImportChallServiceRequestBodyToAdminImportChallService(v *ImportCh
 // *CTFEventResponse from a value of type *admin.CTFEvent.
 func marshalAdminCTFEventToCTFEventResponse(v *admin.CTFEvent) *CTFEventResponse {
 	res := &CTFEventResponse{
-		ID:   v.ID,
 		Name: v.Name,
+		ID:   v.ID,
+	}
+
+	return res
+}
+
+// marshalAdminviewsSsmAdminCourseViewToSsmAdminCourseResponse builds a value
+// of type *SsmAdminCourseResponse from a value of type
+// *adminviews.SsmAdminCourseView.
+func marshalAdminviewsSsmAdminCourseViewToSsmAdminCourseResponse(v *adminviews.SsmAdminCourseView) *SsmAdminCourseResponse {
+	res := &SsmAdminCourseResponse{
+		ID:          *v.ID,
+		Title:       *v.Title,
+		Slug:        *v.Slug,
+		Category:    *v.Category,
+		Difficulty:  *v.Difficulty,
+		Description: *v.Description,
+		Publish:     *v.Publish,
+	}
+	if v.AuthorIds != nil {
+		res.AuthorIds = make([]string, len(v.AuthorIds))
+		for i, val := range v.AuthorIds {
+			res.AuthorIds[i] = val
+		}
 	}
 
 	return res

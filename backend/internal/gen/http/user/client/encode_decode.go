@@ -377,10 +377,10 @@ func DecodeSearchSchoolsResponse(decoder func(*http.Response) goahttp.Decoder, r
 // a value of type *SchoolResponse.
 func unmarshalSchoolResponseToUserSchool(v *SchoolResponse) *user.School {
 	res := &user.School{
-		ID:               *v.ID,
 		Name:             *v.Name,
 		MunicipalityName: *v.MunicipalityName,
 		IsUniversity:     *v.IsUniversity,
+		ID:               *v.ID,
 	}
 
 	return res

@@ -20,12 +20,22 @@ type SsmAdminChallengeCollection struct {
 	View string
 }
 
+// SsmAdminCourseCollection is the viewed result type that is projected based
+// on a view.
+type SsmAdminCourseCollection struct {
+	// Type to project
+	Projected SsmAdminCourseCollectionView
+	// View to render
+	View string
+}
+
 // SsmAdminChallengeCollectionView is a type that runs validations on a
 // projected type.
 type SsmAdminChallengeCollectionView []*SsmAdminChallengeView
 
 // SsmAdminChallengeView is a type that runs validations on a projected type.
 type SsmAdminChallengeView struct {
+	// ID of a file
 	ID *string
 	// A unique string that can be used in URLs
 	Slug *string
@@ -39,6 +49,7 @@ type SsmAdminChallengeView struct {
 	PublishAt *int64
 	// The numer of people who solved the challenge
 	Solves *int
+	Hide   *bool
 	// The ID of the CTF the challenge was taken from
 	CtfEventID  *string
 	Flags       []*AdminChallengeFlagView
@@ -55,15 +66,34 @@ type ChallengeServiceView struct {
 
 // AdminChallengeFilesView is a type that runs validations on a projected type.
 type AdminChallengeFilesView struct {
-	ID       *string
 	Filename *string
 	URL      *string
+	// ID of a file
+	ID *string
 }
 
 // AdminChallengeFlagView is a type that runs validations on a projected type.
 type AdminChallengeFlagView struct {
-	ID   *string
 	Flag *string
+	// ID of a file
+	ID *string
+}
+
+// SsmAdminCourseCollectionView is a type that runs validations on a projected
+// type.
+type SsmAdminCourseCollectionView []*SsmAdminCourseView
+
+// SsmAdminCourseView is a type that runs validations on a projected type.
+type SsmAdminCourseView struct {
+	// ID of a file
+	ID          *string
+	Title       *string
+	Slug        *string
+	Category    *string
+	Difficulty  *string
+	Description *string
+	Publish     *bool
+	AuthorIds   []string
 }
 
 var (
@@ -79,11 +109,26 @@ var (
 			"files",
 			"publish_at",
 			"solves",
+			"hide",
 			"ctf_event_id",
 			"flags",
 			"static_score",
 			"category_id",
 			"authors",
+		},
+	}
+	// SsmAdminCourseCollectionMap is a map indexing the attribute names of
+	// SsmAdminCourseCollection by view name.
+	SsmAdminCourseCollectionMap = map[string][]string{
+		"default": {
+			"id",
+			"title",
+			"slug",
+			"category",
+			"difficulty",
+			"description",
+			"publish",
+			"author_ids",
 		},
 	}
 	// SsmAdminChallengeMap is a map indexing the attribute names of
@@ -98,11 +143,26 @@ var (
 			"files",
 			"publish_at",
 			"solves",
+			"hide",
 			"ctf_event_id",
 			"flags",
 			"static_score",
 			"category_id",
 			"authors",
+		},
+	}
+	// SsmAdminCourseMap is a map indexing the attribute names of SsmAdminCourse by
+	// view name.
+	SsmAdminCourseMap = map[string][]string{
+		"default": {
+			"id",
+			"title",
+			"slug",
+			"category",
+			"difficulty",
+			"description",
+			"publish",
+			"author_ids",
 		},
 	}
 )
@@ -113,6 +173,18 @@ func ValidateSsmAdminChallengeCollection(result SsmAdminChallengeCollection) (er
 	switch result.View {
 	case "default", "":
 		err = ValidateSsmAdminChallengeCollectionView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
+// ValidateSsmAdminCourseCollection runs the validations defined on the viewed
+// result type SsmAdminCourseCollection.
+func ValidateSsmAdminCourseCollection(result SsmAdminCourseCollection) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmAdminCourseCollectionView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
@@ -139,9 +211,6 @@ func ValidateSsmAdminChallengeView(result *SsmAdminChallengeView) (err error) {
 	if result.CategoryID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("category_id", "result"))
 	}
-	if result.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
-	}
 	if result.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "result"))
 	}
@@ -153,6 +222,12 @@ func ValidateSsmAdminChallengeView(result *SsmAdminChallengeView) (err error) {
 	}
 	if result.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
+	}
+	if result.Hide == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("hide", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
 	if result.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
@@ -202,14 +277,17 @@ func ValidateChallengeServiceView(result *ChallengeServiceView) (err error) {
 // ValidateAdminChallengeFilesView runs the validations defined on
 // AdminChallengeFilesView.
 func ValidateAdminChallengeFilesView(result *AdminChallengeFilesView) (err error) {
-	if result.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
-	}
 	if result.Filename == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("filename", "result"))
 	}
 	if result.URL == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("url", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
 	}
 	return
 }
@@ -217,11 +295,55 @@ func ValidateAdminChallengeFilesView(result *AdminChallengeFilesView) (err error
 // ValidateAdminChallengeFlagView runs the validations defined on
 // AdminChallengeFlagView.
 func ValidateAdminChallengeFlagView(result *AdminChallengeFlagView) (err error) {
+	if result.Flag == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "result"))
+	}
 	if result.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
-	if result.Flag == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "result"))
+	if result.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateSsmAdminCourseCollectionView runs the validations defined on
+// SsmAdminCourseCollectionView using the "default" view.
+func ValidateSsmAdminCourseCollectionView(result SsmAdminCourseCollectionView) (err error) {
+	for _, item := range result {
+		if err2 := ValidateSsmAdminCourseView(item); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// ValidateSsmAdminCourseView runs the validations defined on
+// SsmAdminCourseView using the "default" view.
+func ValidateSsmAdminCourseView(result *SsmAdminCourseView) (err error) {
+	if result.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("title", "result"))
+	}
+	if result.Category == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("category", "result"))
+	}
+	if result.Difficulty == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("difficulty", "result"))
+	}
+	if result.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "result"))
+	}
+	if result.Publish == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("publish", "result"))
+	}
+	if result.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
 	}
 	return
 }

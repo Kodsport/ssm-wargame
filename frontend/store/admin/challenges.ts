@@ -9,6 +9,7 @@ export const useChallengeStore = defineStore('admin-challenges', {
         monthlies: [],
         events: [],
         authors: [],
+        courses: [],
     }),
     actions: {
         async getChallenges() {
@@ -30,6 +31,10 @@ export const useChallengeStore = defineStore('admin-challenges', {
         async getAuthors() {
             const authors = await http('/admin/authors')
             this.authors = authors
+        },
+        async getCourses() {
+            const courses = await http('/admin/courses')
+            this.courses = courses
         }
     },
     getters: {

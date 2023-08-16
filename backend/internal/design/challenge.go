@@ -16,11 +16,16 @@ var _ = Service("challenge", func() {
 				Example("brumm")
 				Description("Filter by slug")
 			})
+			Attribute("ids", ArrayOf(String), func() {
+				Example([]string{})
+				Description("Selectivly take out certain challs")
+			})
 		})
 		HTTP(func() {
 			GET("/challenges")
 			Response(StatusOK)
 			Param("slug")
+			Param("ids")
 		})
 	})
 	Method("ListEvents", func() {
@@ -70,7 +75,7 @@ var _ = Service("challenge", func() {
 		Error("already_solved")
 		Error("incorrect_flag")
 		HTTP(func() {
-			POST("/challenges/{challengeID}/attempt")
+			POST("/challenges/{challenge_id}/attempt")
 			Response(StatusOK)
 			Response("already_solved", StatusConflict, func() {
 				Description("If the challenge is already solved")
@@ -107,6 +112,36 @@ var _ = Service("challenge", func() {
 		})
 		HTTP(func() {
 			GET("/authors")
+			Response(StatusOK)
+		})
+	})
+	Method("ListCourses", func() {
+		Result(ArrayOf(Course))
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+		})
+		HTTP(func() {
+			GET("/courses")
+			Response(StatusOK)
+		})
+	})
+	Method("EnrollCourse", func() {
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+			Extend(IDArtifact)
+		})
+		HTTP(func() {
+			POST("/courses/{id}/enroll")
+			Response(StatusOK)
+		})
+	})
+	Method("CompleteCourse", func() {
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+			Extend(IDArtifact)
+		})
+		HTTP(func() {
+			POST("/courses/{id}/complete")
 			Response(StatusOK)
 		})
 	})

@@ -52,6 +52,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			PublishAt:   utils.NullTimeToUnix(chall.PublishAt),
 			CategoryID:  chall.CategoryID,
 			CtfEventID:  chall.CTFEventID.Ptr(),
+			Hide:        chall.Hide,
 		}
 
 		res[i].Flags = make([]*spec.AdminChallengeFlag, len(chall.R.Flags))
@@ -82,6 +83,12 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallengePayload) error {
 
+	tx, err := s.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
 	var pubAt null.Time
 	if req.PublishAt != nil {
 		pubAt = null.TimeFrom(time.Unix(*req.PublishAt, 0))
@@ -96,19 +103,25 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 		PublishAt:   pubAt,
 		CTFEventID:  null.StringFromPtr(req.CtfEventID),
 		CategoryID:  req.CategoryID,
+		Hide:        req.Hide,
 	}
 
-	err := chall.Insert(ctx, s.db, boil.Infer())
+	err = chall.Insert(ctx, tx, boil.Infer())
 	if err != nil {
 		s.log.Error("inserting challenge", zap.Error(err), utils.C(ctx))
 		return err
 	}
 
 	for _, v := range req.Authors {
-		_, err = s.db.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, user_id) VALUES ($1,$2)", chall.ID, v)
+		_, err = tx.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, author_id) VALUES ($1,$2)", chall.ID, v)
 		if err != nil {
 			s.log.Error("could not insert author", zap.Error(err))
 		}
+	}
+
+	err = tx.Commit()
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -137,6 +150,7 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 		models.ChallengeColumns.PublishAt:   pubAt,
 		models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID),
 		models.ChallengeColumns.CategoryID:  req.CategoryID,
+		models.ChallengeColumns.Hide:        req.Hide,
 	})
 	if err != nil {
 		s.log.Error("could not update chall", zap.Error(err))

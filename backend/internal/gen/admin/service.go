@@ -61,6 +61,12 @@ type Service interface {
 	DeleteCTFEvent(context.Context, *DeleteCTFEventPayload) (err error)
 	// CreateCTFEventImportToken implements CreateCTFEventImportToken.
 	CreateCTFEventImportToken(context.Context, *CreateCTFEventImportTokenPayload) (res *CreateCTFEventImportTokenResult, err error)
+	// ListCourses implements ListCourses.
+	ListCourses(context.Context, *ListCoursesPayload) (res SsmAdminCourseCollection, err error)
+	// CreateCourse implements CreateCourse.
+	CreateCourse(context.Context, *CreateCoursePayload) (err error)
+	// UpdateCourse implements UpdateCourse.
+	UpdateCourse(context.Context, *UpdateCoursePayload) (err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -77,7 +83,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [22]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken"}
+var MethodNames = [25]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -117,6 +123,7 @@ type CreateChallengePayload struct {
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
 	CtfEventID  *string
+	Hide        bool
 	StaticScore *int
 	CategoryID  string
 	Authors     []string
@@ -136,6 +143,7 @@ type UpdateChallengePayload struct {
 	PublishAt *int64
 	// The ID of the CTF the challenge was taken from
 	CtfEventID  *string
+	Hide        bool
 	StaticScore *int
 	CategoryID  string
 	Authors     []string
@@ -213,13 +221,14 @@ type ListAuthorsPayload struct {
 // method.
 type UpdateAuthorPayload struct {
 	Token       string
-	ID          string
 	FullName    string
 	Description string
 	Sponsor     bool
 	Slug        string
 	ImageURL    *string
 	Publish     bool
+	// ID of a file
+	ID string
 }
 
 // CreateAuthorPayload is the payload type of the admin service CreateAuthor
@@ -297,6 +306,7 @@ type CreateCTFEventPayload struct {
 // DeleteCTFEventPayload is the payload type of the admin service
 // DeleteCTFEvent method.
 type DeleteCTFEventPayload struct {
+	// ID of a file
 	ID    string
 	Token string
 }
@@ -314,8 +324,47 @@ type CreateCTFEventImportTokenResult struct {
 	Token string
 }
 
+// ListCoursesPayload is the payload type of the admin service ListCourses
+// method.
+type ListCoursesPayload struct {
+	Token string
+}
+
+// SsmAdminCourseCollection is the result type of the admin service ListCourses
+// method.
+type SsmAdminCourseCollection []*SsmAdminCourse
+
+// CreateCoursePayload is the payload type of the admin service CreateCourse
+// method.
+type CreateCoursePayload struct {
+	Token       string
+	Title       string
+	Slug        string
+	Category    string
+	Difficulty  string
+	Description string
+	Publish     bool
+	AuthorIds   []string
+}
+
+// UpdateCoursePayload is the payload type of the admin service UpdateCourse
+// method.
+type UpdateCoursePayload struct {
+	Token       string
+	Title       string
+	Slug        string
+	Category    string
+	Difficulty  string
+	Description string
+	Publish     bool
+	AuthorIds   []string
+	// ID of a file
+	ID string
+}
+
 // A Wargame challenge
 type SsmAdminChallenge struct {
+	// ID of a file
 	ID string
 	// A unique string that can be used in URLs
 	Slug string
@@ -329,6 +378,7 @@ type SsmAdminChallenge struct {
 	PublishAt *int64
 	// The numer of people who solved the challenge
 	Solves int
+	Hide   bool
 	// The ID of the CTF the challenge was taken from
 	CtfEventID  *string
 	Flags       []*AdminChallengeFlag
@@ -343,14 +393,16 @@ type ChallengeService struct {
 }
 
 type AdminChallengeFiles struct {
-	ID       string
 	Filename string
 	URL      string
+	// ID of a file
+	ID string
 }
 
 type AdminChallengeFlag struct {
-	ID   string
 	Flag string
+	// ID of a file
+	ID string
 }
 
 type ChallengeSolver struct {
@@ -359,11 +411,12 @@ type ChallengeSolver struct {
 }
 
 type ChallengeSubmission struct {
-	ID          string
 	Input       string
 	Successful  bool
 	UserID      string
 	SubmittedAt int64
+	// ID of a file
+	ID string
 }
 
 type MonthlyChallenge struct {
@@ -385,18 +438,20 @@ type SsmUser struct {
 }
 
 type Author struct {
-	ID          string
 	FullName    string
 	Description string
 	Sponsor     bool
 	Slug        string
 	ImageURL    *string
 	Publish     bool
+	// ID of a file
+	ID string
 }
 
 type Category struct {
-	ID   string
 	Name string
+	// ID of a file
+	ID string
 }
 
 type ImportChallFlag struct {
@@ -410,8 +465,21 @@ type ImportChallService struct {
 }
 
 type CTFEvent struct {
-	ID   string
 	Name string
+	// ID of a file
+	ID string
+}
+
+type SsmAdminCourse struct {
+	// ID of a file
+	ID          string
+	Title       string
+	Slug        string
+	Category    string
+	Difficulty  string
+	Description string
+	Publish     bool
+	AuthorIds   []string
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.
@@ -454,6 +522,20 @@ func NewSsmAdminChallengeCollection(vres adminviews.SsmAdminChallengeCollection)
 func NewViewedSsmAdminChallengeCollection(res SsmAdminChallengeCollection, view string) adminviews.SsmAdminChallengeCollection {
 	p := newSsmAdminChallengeCollectionView(res)
 	return adminviews.SsmAdminChallengeCollection{Projected: p, View: "default"}
+}
+
+// NewSsmAdminCourseCollection initializes result type SsmAdminCourseCollection
+// from viewed result type SsmAdminCourseCollection.
+func NewSsmAdminCourseCollection(vres adminviews.SsmAdminCourseCollection) SsmAdminCourseCollection {
+	return newSsmAdminCourseCollection(vres.Projected)
+}
+
+// NewViewedSsmAdminCourseCollection initializes viewed result type
+// SsmAdminCourseCollection from result type SsmAdminCourseCollection using the
+// given view.
+func NewViewedSsmAdminCourseCollection(res SsmAdminCourseCollection, view string) adminviews.SsmAdminCourseCollection {
+	p := newSsmAdminCourseCollectionView(res)
+	return adminviews.SsmAdminCourseCollection{Projected: p, View: "default"}
 }
 
 // newSsmAdminChallengeCollection converts projected type
@@ -500,6 +582,9 @@ func newSsmAdminChallenge(vres *adminviews.SsmAdminChallengeView) *SsmAdminChall
 	if vres.Solves != nil {
 		res.Solves = *vres.Solves
 	}
+	if vres.Hide != nil {
+		res.Hide = *vres.Hide
+	}
 	if vres.CategoryID != nil {
 		res.CategoryID = *vres.CategoryID
 	}
@@ -540,6 +625,7 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 		Description: &res.Description,
 		PublishAt:   res.PublishAt,
 		Solves:      &res.Solves,
+		Hide:        &res.Hide,
 		CtfEventID:  res.CtfEventID,
 		StaticScore: res.StaticScore,
 		CategoryID:  &res.CategoryID,
@@ -571,6 +657,82 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 	return vres
 }
 
+// newSsmAdminCourseCollection converts projected type SsmAdminCourseCollection
+// to service type SsmAdminCourseCollection.
+func newSsmAdminCourseCollection(vres adminviews.SsmAdminCourseCollectionView) SsmAdminCourseCollection {
+	res := make(SsmAdminCourseCollection, len(vres))
+	for i, n := range vres {
+		res[i] = newSsmAdminCourse(n)
+	}
+	return res
+}
+
+// newSsmAdminCourseCollectionView projects result type
+// SsmAdminCourseCollection to projected type SsmAdminCourseCollectionView
+// using the "default" view.
+func newSsmAdminCourseCollectionView(res SsmAdminCourseCollection) adminviews.SsmAdminCourseCollectionView {
+	vres := make(adminviews.SsmAdminCourseCollectionView, len(res))
+	for i, n := range res {
+		vres[i] = newSsmAdminCourseView(n)
+	}
+	return vres
+}
+
+// newSsmAdminCourse converts projected type SsmAdminCourse to service type
+// SsmAdminCourse.
+func newSsmAdminCourse(vres *adminviews.SsmAdminCourseView) *SsmAdminCourse {
+	res := &SsmAdminCourse{}
+	if vres.ID != nil {
+		res.ID = *vres.ID
+	}
+	if vres.Title != nil {
+		res.Title = *vres.Title
+	}
+	if vres.Slug != nil {
+		res.Slug = *vres.Slug
+	}
+	if vres.Category != nil {
+		res.Category = *vres.Category
+	}
+	if vres.Difficulty != nil {
+		res.Difficulty = *vres.Difficulty
+	}
+	if vres.Description != nil {
+		res.Description = *vres.Description
+	}
+	if vres.Publish != nil {
+		res.Publish = *vres.Publish
+	}
+	if vres.AuthorIds != nil {
+		res.AuthorIds = make([]string, len(vres.AuthorIds))
+		for i, val := range vres.AuthorIds {
+			res.AuthorIds[i] = val
+		}
+	}
+	return res
+}
+
+// newSsmAdminCourseView projects result type SsmAdminCourse to projected type
+// SsmAdminCourseView using the "default" view.
+func newSsmAdminCourseView(res *SsmAdminCourse) *adminviews.SsmAdminCourseView {
+	vres := &adminviews.SsmAdminCourseView{
+		ID:          &res.ID,
+		Title:       &res.Title,
+		Slug:        &res.Slug,
+		Category:    &res.Category,
+		Difficulty:  &res.Difficulty,
+		Description: &res.Description,
+		Publish:     &res.Publish,
+	}
+	if res.AuthorIds != nil {
+		vres.AuthorIds = make([]string, len(res.AuthorIds))
+		for i, val := range res.AuthorIds {
+			vres.AuthorIds[i] = val
+		}
+	}
+	return vres
+}
+
 // transformAdminviewsChallengeServiceViewToChallengeService builds a value of
 // type *ChallengeService from a value of type *adminviews.ChallengeServiceView.
 func transformAdminviewsChallengeServiceViewToChallengeService(v *adminviews.ChallengeServiceView) *ChallengeService {
@@ -593,9 +755,9 @@ func transformAdminviewsAdminChallengeFilesViewToAdminChallengeFiles(v *adminvie
 		return nil
 	}
 	res := &AdminChallengeFiles{
-		ID:       *v.ID,
 		Filename: *v.Filename,
 		URL:      *v.URL,
+		ID:       *v.ID,
 	}
 
 	return res
@@ -609,8 +771,8 @@ func transformAdminviewsAdminChallengeFlagViewToAdminChallengeFlag(v *adminviews
 		return nil
 	}
 	res := &AdminChallengeFlag{
-		ID:   *v.ID,
 		Flag: *v.Flag,
+		ID:   *v.ID,
 	}
 
 	return res
@@ -635,9 +797,9 @@ func transformChallengeServiceToAdminviewsChallengeServiceView(v *ChallengeServi
 // *AdminChallengeFiles.
 func transformAdminChallengeFilesToAdminviewsAdminChallengeFilesView(v *AdminChallengeFiles) *adminviews.AdminChallengeFilesView {
 	res := &adminviews.AdminChallengeFilesView{
-		ID:       &v.ID,
 		Filename: &v.Filename,
 		URL:      &v.URL,
+		ID:       &v.ID,
 	}
 
 	return res
@@ -651,8 +813,8 @@ func transformAdminChallengeFlagToAdminviewsAdminChallengeFlagView(v *AdminChall
 		return nil
 	}
 	res := &adminviews.AdminChallengeFlagView{
-		ID:   &v.ID,
 		Flag: &v.Flag,
+		ID:   &v.ID,
 	}
 
 	return res

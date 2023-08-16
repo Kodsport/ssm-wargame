@@ -67,19 +67,10 @@
                             </div>
                         </div>
                     </div>
-                    <form @submit.prevent>
-                        <div class="row mt-3">
-                            <div v-if="!props.chall.solved" class="form-group alert"
-                                v-bind:class="{ 'alert-danger': warn }">
-                                <input v-if="!!auth.user.id" type="text" class="form-control" placeholder="SSM{..."
-                                    @keypress.enter="submitFlag" v-model="flag">
-                                <InputReplacer v-else text="Logga in för att skicka in flaggor!" />
-                            </div>
-                            <div v-else>
-                                <InputReplacer text="Löst!" />
-                            </div>
-                        </div>
-                    </form>
+                    <div class="row mt-3">
+                        <FlagInput :class="{ 'alert alert-danger': warn }" v-model="flag" @keypress.enter="submitFlag"
+                            :solved="props.chall.solved" />
+                    </div>
                 </div>
             </div>
         </div>

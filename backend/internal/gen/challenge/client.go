@@ -23,10 +23,13 @@ type Client struct {
 	SchoolScoreboardEndpoint           goa.Endpoint
 	UserScoreboardEndpoint             goa.Endpoint
 	ListAuthorsEndpoint                goa.Endpoint
+	ListCoursesEndpoint                goa.Endpoint
+	EnrollCourseEndpoint               goa.Endpoint
+	CompleteCourseEndpoint             goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard, userScoreboard, listAuthors goa.Endpoint) *Client {
+func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard, userScoreboard, listAuthors, listCourses, enrollCourse, completeCourse goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:             listChallenges,
 		ListEventsEndpoint:                 listEvents,
@@ -36,6 +39,9 @@ func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonth
 		SchoolScoreboardEndpoint:           schoolScoreboard,
 		UserScoreboardEndpoint:             userScoreboard,
 		ListAuthorsEndpoint:                listAuthors,
+		ListCoursesEndpoint:                listCourses,
+		EnrollCourseEndpoint:               enrollCourse,
+		CompleteCourseEndpoint:             completeCourse,
 	}
 }
 
@@ -125,4 +131,27 @@ func (c *Client) ListAuthors(ctx context.Context, p *ListAuthorsPayload) (res []
 		return
 	}
 	return ires.([]*Author), nil
+}
+
+// ListCourses calls the "ListCourses" endpoint of the "challenge" service.
+func (c *Client) ListCourses(ctx context.Context, p *ListCoursesPayload) (res []*Course, err error) {
+	var ires interface{}
+	ires, err = c.ListCoursesEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*Course), nil
+}
+
+// EnrollCourse calls the "EnrollCourse" endpoint of the "challenge" service.
+func (c *Client) EnrollCourse(ctx context.Context, p *EnrollCoursePayload) (err error) {
+	_, err = c.EnrollCourseEndpoint(ctx, p)
+	return
+}
+
+// CompleteCourse calls the "CompleteCourse" endpoint of the "challenge"
+// service.
+func (c *Client) CompleteCourse(ctx context.Context, p *CompleteCoursePayload) (err error) {
+	_, err = c.CompleteCourseEndpoint(ctx, p)
+	return
 }

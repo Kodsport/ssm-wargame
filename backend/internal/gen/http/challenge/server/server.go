@@ -27,6 +27,9 @@ type Server struct {
 	SchoolScoreboard           http.Handler
 	UserScoreboard             http.Handler
 	ListAuthors                http.Handler
+	ListCourses                http.Handler
+	EnrollCourse               http.Handler
+	CompleteCourse             http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -66,10 +69,13 @@ func New(
 			{"ListEvents", "GET", "/events"},
 			{"GetCurrentMonthlyChallenge", "GET", "/current_monthly_challenge"},
 			{"ListMonthlyChallenges", "GET", "/monthly_challenges"},
-			{"SubmitFlag", "POST", "/challenges/{challengeID}/attempt"},
+			{"SubmitFlag", "POST", "/challenges/{challenge_id}/attempt"},
 			{"SchoolScoreboard", "GET", "/scoreboard"},
 			{"UserScoreboard", "GET", "/user_scoreboard"},
 			{"ListAuthors", "GET", "/authors"},
+			{"ListCourses", "GET", "/courses"},
+			{"EnrollCourse", "POST", "/courses/{id}/enroll"},
+			{"CompleteCourse", "POST", "/courses/{id}/complete"},
 		},
 		ListChallenges:             NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		ListEvents:                 NewListEventsHandler(e.ListEvents, mux, decoder, encoder, errhandler, formatter),
@@ -79,6 +85,9 @@ func New(
 		SchoolScoreboard:           NewSchoolScoreboardHandler(e.SchoolScoreboard, mux, decoder, encoder, errhandler, formatter),
 		UserScoreboard:             NewUserScoreboardHandler(e.UserScoreboard, mux, decoder, encoder, errhandler, formatter),
 		ListAuthors:                NewListAuthorsHandler(e.ListAuthors, mux, decoder, encoder, errhandler, formatter),
+		ListCourses:                NewListCoursesHandler(e.ListCourses, mux, decoder, encoder, errhandler, formatter),
+		EnrollCourse:               NewEnrollCourseHandler(e.EnrollCourse, mux, decoder, encoder, errhandler, formatter),
+		CompleteCourse:             NewCompleteCourseHandler(e.CompleteCourse, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -95,6 +104,9 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.SchoolScoreboard = m(s.SchoolScoreboard)
 	s.UserScoreboard = m(s.UserScoreboard)
 	s.ListAuthors = m(s.ListAuthors)
+	s.ListCourses = m(s.ListCourses)
+	s.EnrollCourse = m(s.EnrollCourse)
+	s.CompleteCourse = m(s.CompleteCourse)
 }
 
 // Mount configures the mux to serve the challenge endpoints.
@@ -107,6 +119,9 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountSchoolScoreboardHandler(mux, h.SchoolScoreboard)
 	MountUserScoreboardHandler(mux, h.UserScoreboard)
 	MountListAuthorsHandler(mux, h.ListAuthors)
+	MountListCoursesHandler(mux, h.ListCourses)
+	MountEnrollCourseHandler(mux, h.EnrollCourse)
+	MountCompleteCourseHandler(mux, h.CompleteCourse)
 }
 
 // MountListChallengesHandler configures the mux to serve the "challenge"
@@ -323,7 +338,7 @@ func MountSubmitFlagHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/challenges/{challengeID}/attempt", f)
+	mux.Handle("POST", "/challenges/{challenge_id}/attempt", f)
 }
 
 // NewSubmitFlagHandler creates a HTTP handler which loads the HTTP request and
@@ -497,6 +512,159 @@ func NewListAuthorsHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "ListAuthors")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListCoursesHandler configures the mux to serve the "challenge" service
+// "ListCourses" endpoint.
+func MountListCoursesHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/courses", f)
+}
+
+// NewListCoursesHandler creates a HTTP handler which loads the HTTP request
+// and calls the "challenge" service "ListCourses" endpoint.
+func NewListCoursesHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListCoursesRequest(mux, decoder)
+		encodeResponse = EncodeListCoursesResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListCourses")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountEnrollCourseHandler configures the mux to serve the "challenge" service
+// "EnrollCourse" endpoint.
+func MountEnrollCourseHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/courses/{id}/enroll", f)
+}
+
+// NewEnrollCourseHandler creates a HTTP handler which loads the HTTP request
+// and calls the "challenge" service "EnrollCourse" endpoint.
+func NewEnrollCourseHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeEnrollCourseRequest(mux, decoder)
+		encodeResponse = EncodeEnrollCourseResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "EnrollCourse")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCompleteCourseHandler configures the mux to serve the "challenge"
+// service "CompleteCourse" endpoint.
+func MountCompleteCourseHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/courses/{id}/complete", f)
+}
+
+// NewCompleteCourseHandler creates a HTTP handler which loads the HTTP request
+// and calls the "challenge" service "CompleteCourse" endpoint.
+func NewCompleteCourseHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCompleteCourseRequest(mux, decoder)
+		encodeResponse = EncodeCompleteCourseResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CompleteCourse")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
 		payload, err := decodeRequest(r)
 		if err != nil {

@@ -11,6 +11,10 @@ var TableNames = struct {
 	ChallengeServices     string
 	Challenges            string
 	ChalltoolsImportToken string
+	CourseAuthors         string
+	CourseEnrollments     string
+	CourseItems           string
+	Courses               string
 	CTFEvents             string
 	Flags                 string
 	MonthlyChallenges     string
@@ -27,6 +31,10 @@ var TableNames = struct {
 	ChallengeServices:     "challenge_services",
 	Challenges:            "challenges",
 	ChalltoolsImportToken: "challtools_import_token",
+	CourseAuthors:         "course_authors",
+	CourseEnrollments:     "course_enrollments",
+	CourseItems:           "course_items",
+	Courses:               "courses",
 	CTFEvents:             "ctf_events",
 	Flags:                 "flags",
 	MonthlyChallenges:     "monthly_challenges",

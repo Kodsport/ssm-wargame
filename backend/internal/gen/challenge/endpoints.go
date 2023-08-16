@@ -24,6 +24,9 @@ type Endpoints struct {
 	SchoolScoreboard           goa.Endpoint
 	UserScoreboard             goa.Endpoint
 	ListAuthors                goa.Endpoint
+	ListCourses                goa.Endpoint
+	EnrollCourse               goa.Endpoint
+	CompleteCourse             goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "challenge" service with endpoints.
@@ -39,6 +42,9 @@ func NewEndpoints(s Service) *Endpoints {
 		SchoolScoreboard:           NewSchoolScoreboardEndpoint(s, a.JWTAuth),
 		UserScoreboard:             NewUserScoreboardEndpoint(s, a.JWTAuth),
 		ListAuthors:                NewListAuthorsEndpoint(s, a.JWTAuth),
+		ListCourses:                NewListCoursesEndpoint(s, a.JWTAuth),
+		EnrollCourse:               NewEnrollCourseEndpoint(s, a.JWTAuth),
+		CompleteCourse:             NewCompleteCourseEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -52,6 +58,9 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.SchoolScoreboard = m(e.SchoolScoreboard)
 	e.UserScoreboard = m(e.UserScoreboard)
 	e.ListAuthors = m(e.ListAuthors)
+	e.ListCourses = m(e.ListCourses)
+	e.EnrollCourse = m(e.EnrollCourse)
+	e.CompleteCourse = m(e.CompleteCourse)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -256,5 +265,74 @@ func NewListAuthorsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpo
 			return nil, err
 		}
 		return s.ListAuthors(ctx, p)
+	}
+}
+
+// NewListCoursesEndpoint returns an endpoint function that calls the method
+// "ListCourses" of service "challenge".
+func NewListCoursesEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListCoursesPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.ListCourses(ctx, p)
+	}
+}
+
+// NewEnrollCourseEndpoint returns an endpoint function that calls the method
+// "EnrollCourse" of service "challenge".
+func NewEnrollCourseEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*EnrollCoursePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.EnrollCourse(ctx, p)
+	}
+}
+
+// NewCompleteCourseEndpoint returns an endpoint function that calls the method
+// "CompleteCourse" of service "challenge".
+func NewCompleteCourseEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CompleteCoursePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.CompleteCourse(ctx, p)
 	}
 }

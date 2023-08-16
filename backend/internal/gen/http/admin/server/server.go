@@ -41,6 +41,9 @@ type Server struct {
 	CreateCTFEvent            http.Handler
 	DeleteCTFEvent            http.Handler
 	CreateCTFEventImportToken http.Handler
+	ListCourses               http.Handler
+	CreateCourse              http.Handler
+	UpdateCourse              http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -77,12 +80,12 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"ListChallenges", "GET", "/admin/challenges"},
-			{"GetChallengeMeta", "GET", "/admin/challenges/{challengeID}"},
+			{"GetChallengeMeta", "GET", "/admin/challenges/{challenge_id}"},
 			{"CreateChallenge", "POST", "/admin/challenges"},
-			{"UpdateChallenge", "PUT", "/admin/challenges/{challengeID}"},
-			{"PresignChallFileUpload", "POST", "/admin/challenges/{challengeID}/file_url"},
+			{"UpdateChallenge", "PUT", "/admin/challenges/{challenge_id}"},
+			{"PresignChallFileUpload", "POST", "/admin/challenges/{challenge_id}/file_url"},
 			{"ListMonthlyChallenges", "GET", "/admin/monthly_challenges"},
-			{"DeleteMonthlyChallenge", "DELETE", "/admin/monthly_challenges/{challengeID}"},
+			{"DeleteMonthlyChallenge", "DELETE", "/admin/monthly_challenges/{challenge_id}"},
 			{"DeleteFile", "DELETE", "/admin/files/{fileID}"},
 			{"CreateMonthlyChallenge", "POST", "/admin/monthly_challenges"},
 			{"ListUsers", "GET", "/admin/users"},
@@ -90,14 +93,17 @@ func New(
 			{"UpdateAuthor", "PUT", "/admin/authors/{id}"},
 			{"CreateAuthor", "POST", "/admin/authors"},
 			{"DeleteAuthor", "DELETE", "/admin/authors/{id}"},
-			{"AddFlag", "POST", "/admin/challenges/{challengeID}/flags"},
-			{"DeleteFlag", "DELETE", "/admin/challenges/{challengeID}/flags/{flagID}"},
+			{"AddFlag", "POST", "/admin/challenges/{challenge_id}/flags"},
+			{"DeleteFlag", "DELETE", "/admin/challenges/{challenge_id}/flags/{flagID}"},
 			{"ListCategories", "GET", "/admin/categories"},
 			{"ChalltoolsImport", "POST", "/admin/push_challenge"},
 			{"ListCTFEvents", "GET", "/admin/events"},
 			{"CreateCTFEvent", "POST", "/admin/events"},
 			{"DeleteCTFEvent", "DELETE", "/admin/events/{id}"},
 			{"CreateCTFEventImportToken", "POST", "/admin/import_token"},
+			{"ListCourses", "GET", "/admin/courses"},
+			{"CreateCourse", "POST", "/admin/courses"},
+			{"UpdateCourse", "PUT", "/admin/courses/{id}"},
 		},
 		ListChallenges:            NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		GetChallengeMeta:          NewGetChallengeMetaHandler(e.GetChallengeMeta, mux, decoder, encoder, errhandler, formatter),
@@ -121,6 +127,9 @@ func New(
 		CreateCTFEvent:            NewCreateCTFEventHandler(e.CreateCTFEvent, mux, decoder, encoder, errhandler, formatter),
 		DeleteCTFEvent:            NewDeleteCTFEventHandler(e.DeleteCTFEvent, mux, decoder, encoder, errhandler, formatter),
 		CreateCTFEventImportToken: NewCreateCTFEventImportTokenHandler(e.CreateCTFEventImportToken, mux, decoder, encoder, errhandler, formatter),
+		ListCourses:               NewListCoursesHandler(e.ListCourses, mux, decoder, encoder, errhandler, formatter),
+		CreateCourse:              NewCreateCourseHandler(e.CreateCourse, mux, decoder, encoder, errhandler, formatter),
+		UpdateCourse:              NewUpdateCourseHandler(e.UpdateCourse, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -151,6 +160,9 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.CreateCTFEvent = m(s.CreateCTFEvent)
 	s.DeleteCTFEvent = m(s.DeleteCTFEvent)
 	s.CreateCTFEventImportToken = m(s.CreateCTFEventImportToken)
+	s.ListCourses = m(s.ListCourses)
+	s.CreateCourse = m(s.CreateCourse)
+	s.UpdateCourse = m(s.UpdateCourse)
 }
 
 // Mount configures the mux to serve the admin endpoints.
@@ -177,6 +189,9 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountCreateCTFEventHandler(mux, h.CreateCTFEvent)
 	MountDeleteCTFEventHandler(mux, h.DeleteCTFEvent)
 	MountCreateCTFEventImportTokenHandler(mux, h.CreateCTFEventImportToken)
+	MountListCoursesHandler(mux, h.ListCourses)
+	MountCreateCourseHandler(mux, h.CreateCourse)
+	MountUpdateCourseHandler(mux, h.UpdateCourse)
 }
 
 // MountListChallengesHandler configures the mux to serve the "admin" service
@@ -239,7 +254,7 @@ func MountGetChallengeMetaHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("GET", "/admin/challenges/{challengeID}", f)
+	mux.Handle("GET", "/admin/challenges/{challenge_id}", f)
 }
 
 // NewGetChallengeMetaHandler creates a HTTP handler which loads the HTTP
@@ -341,7 +356,7 @@ func MountUpdateChallengeHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("PUT", "/admin/challenges/{challengeID}", f)
+	mux.Handle("PUT", "/admin/challenges/{challenge_id}", f)
 }
 
 // NewUpdateChallengeHandler creates a HTTP handler which loads the HTTP
@@ -392,7 +407,7 @@ func MountPresignChallFileUploadHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/admin/challenges/{challengeID}/file_url", f)
+	mux.Handle("POST", "/admin/challenges/{challenge_id}/file_url", f)
 }
 
 // NewPresignChallFileUploadHandler creates a HTTP handler which loads the HTTP
@@ -494,7 +509,7 @@ func MountDeleteMonthlyChallengeHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("DELETE", "/admin/monthly_challenges/{challengeID}", f)
+	mux.Handle("DELETE", "/admin/monthly_challenges/{challenge_id}", f)
 }
 
 // NewDeleteMonthlyChallengeHandler creates a HTTP handler which loads the HTTP
@@ -902,7 +917,7 @@ func MountAddFlagHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("POST", "/admin/challenges/{challengeID}/flags", f)
+	mux.Handle("POST", "/admin/challenges/{challenge_id}/flags", f)
 }
 
 // NewAddFlagHandler creates a HTTP handler which loads the HTTP request and
@@ -953,7 +968,7 @@ func MountDeleteFlagHandler(mux goahttp.Muxer, h http.Handler) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("DELETE", "/admin/challenges/{challengeID}/flags/{flagID}", f)
+	mux.Handle("DELETE", "/admin/challenges/{challenge_id}/flags/{flagID}", f)
 }
 
 // NewDeleteFlagHandler creates a HTTP handler which loads the HTTP request and
@@ -1281,6 +1296,159 @@ func NewCreateCTFEventImportTokenHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "CreateCTFEventImportToken")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListCoursesHandler configures the mux to serve the "admin" service
+// "ListCourses" endpoint.
+func MountListCoursesHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/courses", f)
+}
+
+// NewListCoursesHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "ListCourses" endpoint.
+func NewListCoursesHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListCoursesRequest(mux, decoder)
+		encodeResponse = EncodeListCoursesResponse(encoder)
+		encodeError    = EncodeListCoursesError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListCourses")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateCourseHandler configures the mux to serve the "admin" service
+// "CreateCourse" endpoint.
+func MountCreateCourseHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/courses", f)
+}
+
+// NewCreateCourseHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "CreateCourse" endpoint.
+func NewCreateCourseHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateCourseRequest(mux, decoder)
+		encodeResponse = EncodeCreateCourseResponse(encoder)
+		encodeError    = EncodeCreateCourseError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateCourse")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateCourseHandler configures the mux to serve the "admin" service
+// "UpdateCourse" endpoint.
+func MountUpdateCourseHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("PUT", "/admin/courses/{id}", f)
+}
+
+// NewUpdateCourseHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "UpdateCourse" endpoint.
+func NewUpdateCourseHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateCourseRequest(mux, decoder)
+		encodeResponse = EncodeUpdateCourseResponse(encoder)
+		encodeError    = EncodeUpdateCourseError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateCourse")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

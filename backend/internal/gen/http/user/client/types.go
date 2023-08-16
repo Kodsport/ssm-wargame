@@ -36,10 +36,11 @@ type SearchSchoolsResponseBody []*SchoolResponse
 
 // SchoolResponse is used to define fields on response body types.
 type SchoolResponse struct {
-	ID               *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Name             *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	MunicipalityName *string `form:"municipality_name,omitempty" json:"municipality_name,omitempty" xml:"municipality_name,omitempty"`
 	IsUniversity     *bool   `form:"is_university,omitempty" json:"is_university,omitempty" xml:"is_university,omitempty"`
+	// ID of a file
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 }
 
 // NewJoinSchoolRequestBody builds the HTTP request body from the payload of
@@ -101,9 +102,6 @@ func ValidateGetSelfResponseBody(body *GetSelfResponseBody) (err error) {
 
 // ValidateSchoolResponse runs the validations defined on SchoolResponse
 func ValidateSchoolResponse(body *SchoolResponse) (err error) {
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
-	}
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
@@ -112,6 +110,9 @@ func ValidateSchoolResponse(body *SchoolResponse) (err error) {
 	}
 	if body.IsUniversity == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("is_university", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))

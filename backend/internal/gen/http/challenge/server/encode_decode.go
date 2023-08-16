@@ -37,17 +37,19 @@ func DecodeListChallengesRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 	return func(r *http.Request) (interface{}, error) {
 		var (
 			slug  *string
+			ids   []string
 			token *string
 		)
 		slugRaw := r.URL.Query().Get("slug")
 		if slugRaw != "" {
 			slug = &slugRaw
 		}
+		ids = r.URL.Query()["ids"]
 		tokenRaw := r.Header.Get("Authorization")
 		if tokenRaw != "" {
 			token = &tokenRaw
 		}
-		payload := NewListChallengesPayload(slug, token)
+		payload := NewListChallengesPayload(slug, ids, token)
 		if payload.Token != nil {
 			if strings.Contains(*payload.Token, " ") {
 				// Remove authorization scheme prefix (e.g. "Bearer")
@@ -231,7 +233,7 @@ func DecodeSubmitFlagRequest(mux goahttp.Muxer, decoder func(*http.Request) goah
 
 			params = mux.Vars(r)
 		)
-		challengeID = params["challengeID"]
+		challengeID = params["challenge_id"]
 		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
 
 		token = r.Header.Get("Authorization")
@@ -400,6 +402,128 @@ func DecodeListAuthorsRequest(mux goahttp.Muxer, decoder func(*http.Request) goa
 	}
 }
 
+// EncodeListCoursesResponse returns an encoder for responses returned by the
+// challenge ListCourses endpoint.
+func EncodeListCoursesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.([]*challenge.Course)
+		enc := encoder(ctx, w)
+		body := NewListCoursesResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListCoursesRequest returns a decoder for requests sent to the
+// challenge ListCourses endpoint.
+func DecodeListCoursesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewListCoursesPayload(token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeEnrollCourseResponse returns an encoder for responses returned by the
+// challenge EnrollCourse endpoint.
+func EncodeEnrollCourseResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeEnrollCourseRequest returns a decoder for requests sent to the
+// challenge EnrollCourse endpoint.
+func DecodeEnrollCourseRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			id    string
+			token *string
+			err   error
+
+			params = mux.Vars(r)
+		)
+		id = params["id"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewEnrollCoursePayload(id, token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeCompleteCourseResponse returns an encoder for responses returned by
+// the challenge CompleteCourse endpoint.
+func EncodeCompleteCourseResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeCompleteCourseRequest returns a decoder for requests sent to the
+// challenge CompleteCourse endpoint.
+func DecodeCompleteCourseRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			id    string
+			token *string
+			err   error
+
+			params = mux.Vars(r)
+		)
+		id = params["id"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewCompleteCoursePayload(id, token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
 // marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse builds a value
 // of type *SsmChallengeResponse from a value of type
 // *challengeviews.SsmChallengeView.
@@ -480,13 +604,13 @@ func marshalChallengeviewsAuthorViewToAuthorResponse(v *challengeviews.AuthorVie
 		return nil
 	}
 	res := &AuthorResponse{
-		ID:          *v.ID,
 		FullName:    *v.FullName,
 		Description: *v.Description,
 		Sponsor:     *v.Sponsor,
 		Slug:        *v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     *v.Publish,
+		ID:          *v.ID,
 	}
 
 	return res
@@ -511,8 +635,8 @@ func marshalChallengeviewsSsmSolverViewToSsmSolverResponse(v *challengeviews.Ssm
 // *CTFEventResponse from a value of type *challenge.CTFEvent.
 func marshalChallengeCTFEventToCTFEventResponse(v *challenge.CTFEvent) *CTFEventResponse {
 	res := &CTFEventResponse{
-		ID:   v.ID,
 		Name: v.Name,
+		ID:   v.ID,
 	}
 
 	return res
@@ -598,13 +722,13 @@ func marshalChallengeviewsAuthorViewToAuthorResponseBody(v *challengeviews.Autho
 		return nil
 	}
 	res := &AuthorResponseBody{
-		ID:          *v.ID,
 		FullName:    *v.FullName,
 		Description: *v.Description,
 		Sponsor:     *v.Sponsor,
 		Slug:        *v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     *v.Publish,
+		ID:          *v.ID,
 	}
 
 	return res
@@ -674,13 +798,58 @@ func marshalChallengeviewsUserScoreboardScoreViewToUserScoreboardScoreResponseBo
 // *AuthorResponse from a value of type *challenge.Author.
 func marshalChallengeAuthorToAuthorResponse(v *challenge.Author) *AuthorResponse {
 	res := &AuthorResponse{
-		ID:          v.ID,
 		FullName:    v.FullName,
 		Description: v.Description,
 		Sponsor:     v.Sponsor,
 		Slug:        v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     v.Publish,
+		ID:          v.ID,
+	}
+
+	return res
+}
+
+// marshalChallengeCourseToCourseResponse builds a value of type
+// *CourseResponse from a value of type *challenge.Course.
+func marshalChallengeCourseToCourseResponse(v *challenge.Course) *CourseResponse {
+	res := &CourseResponse{
+		Title:       v.Title,
+		Slug:        v.Slug,
+		Category:    v.Category,
+		Difficulty:  v.Difficulty,
+		Description: v.Description,
+		Enrolled:    v.Enrolled,
+		Publish:     v.Publish,
+		Completed:   v.Completed,
+		ID:          v.ID,
+	}
+	if v.Authors != nil {
+		res.Authors = make([]*AuthorResponse, len(v.Authors))
+		for i, val := range v.Authors {
+			res.Authors[i] = marshalChallengeAuthorToAuthorResponse(val)
+		}
+	}
+	if v.CourseItems != nil {
+		res.CourseItems = make([]*CourseItemResponse, len(v.CourseItems))
+		for i, val := range v.CourseItems {
+			res.CourseItems[i] = marshalChallengeCourseItemToCourseItemResponse(val)
+		}
+	}
+
+	return res
+}
+
+// marshalChallengeCourseItemToCourseItemResponse builds a value of type
+// *CourseItemResponse from a value of type *challenge.CourseItem.
+func marshalChallengeCourseItemToCourseItemResponse(v *challenge.CourseItem) *CourseItemResponse {
+	if v == nil {
+		return nil
+	}
+	res := &CourseItemResponse{
+		Position:    v.Position,
+		ID:          v.ID,
+		ChallengeID: v.ChallengeID,
 	}
 
 	return res

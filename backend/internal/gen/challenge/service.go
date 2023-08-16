@@ -33,6 +33,12 @@ type Service interface {
 	UserScoreboard(context.Context, *UserScoreboardPayload) (res *SsmUserScoreboard, err error)
 	// ListAuthors implements ListAuthors.
 	ListAuthors(context.Context, *ListAuthorsPayload) (res []*Author, err error)
+	// ListCourses implements ListCourses.
+	ListCourses(context.Context, *ListCoursesPayload) (res []*Course, err error)
+	// EnrollCourse implements EnrollCourse.
+	EnrollCourse(context.Context, *EnrollCoursePayload) (err error)
+	// CompleteCourse implements CompleteCourse.
+	CompleteCourse(context.Context, *CompleteCoursePayload) (err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -49,13 +55,15 @@ const ServiceName = "challenge"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [8]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyChallenge", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard", "UserScoreboard", "ListAuthors"}
+var MethodNames = [11]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyChallenge", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard", "UserScoreboard", "ListAuthors", "ListCourses", "EnrollCourse", "CompleteCourse"}
 
 // ListChallengesPayload is the payload type of the challenge service
 // ListChallenges method.
 type ListChallengesPayload struct {
 	// Filter by slug
-	Slug  *string
+	Slug *string
+	// Selectivly take out certain challs
+	Ids   []string
 	Token *string
 }
 
@@ -137,8 +145,31 @@ type ListAuthorsPayload struct {
 	Token *string
 }
 
+// ListCoursesPayload is the payload type of the challenge service ListCourses
+// method.
+type ListCoursesPayload struct {
+	Token *string
+}
+
+// EnrollCoursePayload is the payload type of the challenge service
+// EnrollCourse method.
+type EnrollCoursePayload struct {
+	Token *string
+	// ID of a file
+	ID string
+}
+
+// CompleteCoursePayload is the payload type of the challenge service
+// CompleteCourse method.
+type CompleteCoursePayload struct {
+	Token *string
+	// ID of a file
+	ID string
+}
+
 // A Wargame challenge
 type SsmChallenge struct {
+	// ID of a file
 	ID string
 	// A unique string that can be used in URLs
 	Slug string
@@ -172,13 +203,14 @@ type ChallengeFiles struct {
 }
 
 type Author struct {
-	ID          string
 	FullName    string
 	Description string
 	Sponsor     bool
 	Slug        string
 	ImageURL    *string
 	Publish     bool
+	// ID of a file
+	ID string
 }
 
 type SsmSolver struct {
@@ -188,8 +220,9 @@ type SsmSolver struct {
 }
 
 type CTFEvent struct {
-	ID   string
 	Name string
+	// ID of a file
+	ID string
 }
 
 type SchoolScoreboardScore struct {
@@ -203,6 +236,30 @@ type UserScoreboardScore struct {
 	Name       string
 	SchoolName string
 	Score      int
+}
+
+type Course struct {
+	Title       string
+	Slug        string
+	Category    string
+	Difficulty  string
+	Description string
+	Enrolled    bool
+	Publish     bool
+	Completed   bool
+	Authors     []*Author
+	CourseItems []*CourseItem
+	// ID of a file
+	ID string
+}
+
+type CourseItem struct {
+	// to sort after
+	Position int
+	// ID of a file
+	ID string
+	// ID of a challenge
+	ChallengeID string
 }
 
 // MakeNotFound builds a goa.ServiceError from an error.
@@ -593,13 +650,13 @@ func transformChallengeviewsAuthorViewToAuthor(v *challengeviews.AuthorView) *Au
 		return nil
 	}
 	res := &Author{
-		ID:          *v.ID,
 		FullName:    *v.FullName,
 		Description: *v.Description,
 		Sponsor:     *v.Sponsor,
 		Slug:        *v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     *v.Publish,
+		ID:          *v.ID,
 	}
 
 	return res
@@ -656,13 +713,13 @@ func transformAuthorToChallengeviewsAuthorView(v *Author) *challengeviews.Author
 		return nil
 	}
 	res := &challengeviews.AuthorView{
-		ID:          &v.ID,
 		FullName:    &v.FullName,
 		Description: &v.Description,
 		Sponsor:     &v.Sponsor,
 		Slug:        &v.Slug,
 		ImageURL:    v.ImageURL,
 		Publish:     &v.Publish,
+		ID:          &v.ID,
 	}
 
 	return res

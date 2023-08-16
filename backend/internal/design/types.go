@@ -5,22 +5,18 @@ import (
 )
 
 var Category = Type("Category", func() {
-	Attribute("id", String, func() {
-		Example("e721a338-44de-4de8-a562-43d2db5f4115")
-		Format(FormatUUID)
-	})
+	Extend(IDArtifact)
+
 	Attribute("name", String, func() {
 		Example("Forensics")
 	})
 
-	Required("id", "name")
+	Required("name")
 })
 
 var Challenge = Type("Challenge", func() {
-	Attribute("id", String, func() {
-		Example("e721a338-44de-4de8-a562-43d2db5f4115")
-		Format(FormatUUID)
-	})
+	Extend(IDArtifact)
+
 	Attribute("slug", String, "A unique string that can be used in URLs", func() {
 		Example("pwnme")
 	})
@@ -40,6 +36,9 @@ var Challenge = Type("Challenge", func() {
 	Attribute("solves", Int, "The numer of people who solved the challenge", func() {
 		Example(3)
 	})
+	Attribute("hide", Boolean, func() {
+		Example(false)
+	})
 
 	Attribute("ctf_event_id", String, "The ID of the CTF the challenge was taken from", func() {
 		Example("c397efb2-b171-4d77-9166-d105cf4f521a")
@@ -53,7 +52,7 @@ var Challenge = Type("Challenge", func() {
 	Attribute("services", ArrayOf(ChallengeService))
 	Attribute("files", ArrayOf(ChallengeFiles))
 
-	Required("id", "title", "description", "score", "slug", "solves", "category")
+	Required("title", "description", "score", "slug", "solves", "category", "hide")
 })
 
 var ChallengeService = Type("ChallengeService", func() {
@@ -67,10 +66,8 @@ var ChallengeService = Type("ChallengeService", func() {
 })
 
 var School = Type("School", func() {
-	Attribute("id", String, func() {
-		Example("ed832486-a529-43ff-930a-ab583bd52d01")
-		Format(FormatUUID)
-	})
+	Extend(IDArtifact)
+
 	Attribute("name", String, func() {
 		Example("Engelbrektsskolan")
 	})
@@ -80,18 +77,17 @@ var School = Type("School", func() {
 	Attribute("is_university", Boolean, func() {
 		Example(true)
 	})
-	Required("id", "name", "municipality_name", "is_university")
+	Required("name", "municipality_name", "is_university")
 })
 
 var AdminChallengeFlag = Type("AdminChallengeFlag", func() {
-	Attribute("id", String, func() {
-		Example("71333e34-4c6b-483e-b3c7-c77d73008cca")
-	})
+	Extend(IDArtifact)
+
 	Attribute("flag", String, func() {
 		Example("SSM{yo}")
 	})
 
-	Required("id", "flag")
+	Required("flag")
 })
 
 var MonthlyChallenge = Type("MonthlyChallenge", func() {
@@ -127,9 +123,8 @@ var ChallengeFiles = Type("ChallengeFiles", func() {
 })
 
 var AdminChallengeFile = Type("AdminChallengeFiles", func() {
-	Attribute("id", String, func() {
-		Example("71333e34-4c6b-483e-b3c7-c77d73008cca")
-	})
+	Extend(IDArtifact)
+
 	Attribute("filename", String, func() {
 		Example("decryptor.exe")
 	})
@@ -137,17 +132,16 @@ var AdminChallengeFile = Type("AdminChallengeFiles", func() {
 		Example("https://s3/bucket/key?signature")
 	})
 
-	Required("id", "filename", "url")
+	Required("filename", "url")
 })
 
 var CTFEvent = Type("CTFEvent", func() {
-	Attribute("id", String, func() {
-		Example("71333e34-4c6b-483e-b3c7-c77d73008cca")
-	})
+	Extend(IDArtifact)
+
 	Attribute("name", String, func() {
 		Example("Säkerhet-SM 2023")
 	})
-	Required("id", "name")
+	Required("name")
 })
 
 var ChallengeMeta = Type("ChallengeMeta", func() {
@@ -168,10 +162,8 @@ var ChallengeSolver = Type("ChallengeSolver", func() {
 })
 
 var ChallengeSubmission = Type("ChallengeSubmission", func() {
-	Attribute("id", String, func() {
-		Example("34062de2-6687-4acb-ab4b-608cc246b133")
-		Format(FormatUUID)
-	})
+	Extend(IDArtifact)
+
 	Attribute("input", String, func() {
 		Example("SSM{wrong_flag}")
 	})
@@ -185,13 +177,12 @@ var ChallengeSubmission = Type("ChallengeSubmission", func() {
 
 	Attribute("submitted_at", Int64)
 
-	Required("id", "user_id", "input", "successful", "submitted_at")
+	Required("user_id", "input", "successful", "submitted_at")
 })
 
 var Author = Type("Author", func() {
-	Attribute("id", String, func() {
-		Example("uuid todo")
-	})
+	Extend(IDArtifact)
+
 	Attribute("full_name", String, func() {
 		Example("Movitz Sunar")
 	})
@@ -212,6 +203,52 @@ var Author = Type("Author", func() {
 		Example(true)
 	})
 
-	Required("id", "sponsor", "full_name", "description", "slug", "publish")
+	Required("sponsor", "full_name", "description", "slug", "publish")
 
+})
+
+var Course = Type("Course", func() {
+	Extend(IDArtifact)
+	Attribute("title", String, func() {
+		Example("SQL-Injektioner")
+	})
+	Attribute("slug", String, func() {
+		Example("sqli")
+	})
+	Attribute("category", String, func() {
+		Example("web")
+	})
+	Attribute("difficulty", String, func() {
+		Example("advanced")
+	})
+	Attribute("description", String, func() {
+		Example("markdown text")
+	})
+
+	Attribute("enrolled", Boolean, func() {
+		Example(false)
+	})
+
+	Attribute("publish", Boolean, func() {
+		Example(true)
+	})
+	Attribute("completed", Boolean, func() {
+		Example(true)
+	})
+
+	Attribute("authors", ArrayOf(Author))
+	Attribute("course_items", ArrayOf(CourseItem))
+
+	Required("title", "category", "difficulty", "description", "publish", "slug", "enrolled", "completed")
+
+})
+
+var CourseItem = Type("CourseItem", func() {
+	Extend(IDArtifact)
+	Extend(ChallengeIDArtifact)
+	Attribute("position", Int, func() {
+		Example(0)
+		Description("to sort after")
+	})
+	Required("position")
 })

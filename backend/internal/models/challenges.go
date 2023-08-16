@@ -34,6 +34,7 @@ type Challenge struct {
 	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 	StaticScore null.Int    `boil:"static_score" json:"static_score,omitempty" toml:"static_score" yaml:"static_score,omitempty"`
+	Hide        bool        `boil:"hide" json:"hide" toml:"hide" yaml:"hide"`
 
 	R *challengeR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L challengeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -50,6 +51,7 @@ var ChallengeColumns = struct {
 	CreatedAt   string
 	UpdatedAt   string
 	StaticScore string
+	Hide        string
 }{
 	ID:          "id",
 	Slug:        "slug",
@@ -61,6 +63,7 @@ var ChallengeColumns = struct {
 	CreatedAt:   "created_at",
 	UpdatedAt:   "updated_at",
 	StaticScore: "static_score",
+	Hide:        "hide",
 }
 
 var ChallengeTableColumns = struct {
@@ -74,6 +77,7 @@ var ChallengeTableColumns = struct {
 	CreatedAt   string
 	UpdatedAt   string
 	StaticScore string
+	Hide        string
 }{
 	ID:          "challenges.id",
 	Slug:        "challenges.slug",
@@ -85,6 +89,7 @@ var ChallengeTableColumns = struct {
 	CreatedAt:   "challenges.created_at",
 	UpdatedAt:   "challenges.updated_at",
 	StaticScore: "challenges.static_score",
+	Hide:        "challenges.hide",
 }
 
 // Generated where
@@ -138,6 +143,7 @@ var ChallengeWhere = struct {
 	CreatedAt   whereHelpertime_Time
 	UpdatedAt   whereHelpernull_Time
 	StaticScore whereHelpernull_Int
+	Hide        whereHelperbool
 }{
 	ID:          whereHelperstring{field: "\"challenges\".\"id\""},
 	Slug:        whereHelperstring{field: "\"challenges\".\"slug\""},
@@ -149,6 +155,7 @@ var ChallengeWhere = struct {
 	CreatedAt:   whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
 	UpdatedAt:   whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
 	StaticScore: whereHelpernull_Int{field: "\"challenges\".\"static_score\""},
+	Hide:        whereHelperbool{field: "\"challenges\".\"hide\""},
 }
 
 // ChallengeRels is where relationship names are stored.
@@ -159,6 +166,7 @@ var ChallengeRels = struct {
 	Authors           string
 	ChallengeFiles    string
 	ChallengeServices string
+	CourseItems       string
 	Flags             string
 	SchoolSolves      string
 	Submissions       string
@@ -170,6 +178,7 @@ var ChallengeRels = struct {
 	Authors:           "Authors",
 	ChallengeFiles:    "ChallengeFiles",
 	ChallengeServices: "ChallengeServices",
+	CourseItems:       "CourseItems",
 	Flags:             "Flags",
 	SchoolSolves:      "SchoolSolves",
 	Submissions:       "Submissions",
@@ -184,6 +193,7 @@ type challengeR struct {
 	Authors           AuthorSlice           `boil:"Authors" json:"Authors" toml:"Authors" yaml:"Authors"`
 	ChallengeFiles    ChallengeFileSlice    `boil:"ChallengeFiles" json:"ChallengeFiles" toml:"ChallengeFiles" yaml:"ChallengeFiles"`
 	ChallengeServices ChallengeServiceSlice `boil:"ChallengeServices" json:"ChallengeServices" toml:"ChallengeServices" yaml:"ChallengeServices"`
+	CourseItems       CourseItemSlice       `boil:"CourseItems" json:"CourseItems" toml:"CourseItems" yaml:"CourseItems"`
 	Flags             FlagSlice             `boil:"Flags" json:"Flags" toml:"Flags" yaml:"Flags"`
 	SchoolSolves      SchoolSolfSlice       `boil:"SchoolSolves" json:"SchoolSolves" toml:"SchoolSolves" yaml:"SchoolSolves"`
 	Submissions       SubmissionSlice       `boil:"Submissions" json:"Submissions" toml:"Submissions" yaml:"Submissions"`
@@ -237,6 +247,13 @@ func (r *challengeR) GetChallengeServices() ChallengeServiceSlice {
 	return r.ChallengeServices
 }
 
+func (r *challengeR) GetCourseItems() CourseItemSlice {
+	if r == nil {
+		return nil
+	}
+	return r.CourseItems
+}
+
 func (r *challengeR) GetFlags() FlagSlice {
 	if r == nil {
 		return nil
@@ -269,9 +286,9 @@ func (r *challengeR) GetUserSolves() UserSolfSlice {
 type challengeL struct{}
 
 var (
-	challengeAllColumns            = []string{"id", "slug", "title", "description", "publish_at", "ctf_event_id", "category_id", "created_at", "updated_at", "static_score"}
+	challengeAllColumns            = []string{"id", "slug", "title", "description", "publish_at", "ctf_event_id", "category_id", "created_at", "updated_at", "static_score", "hide"}
 	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "category_id"}
-	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at", "static_score"}
+	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at", "static_score", "hide"}
 	challengePrimaryKeyColumns     = []string{"id"}
 	challengeGeneratedColumns      = []string{}
 )
@@ -628,6 +645,20 @@ func (o *Challenge) ChallengeServices(mods ...qm.QueryMod) challengeServiceQuery
 	)
 
 	return ChallengeServices(queryMods...)
+}
+
+// CourseItems retrieves all the course_item's CourseItems with an executor.
+func (o *Challenge) CourseItems(mods ...qm.QueryMod) courseItemQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"course_items\".\"challenge_id\"=?", o.ID),
+	)
+
+	return CourseItems(queryMods...)
 }
 
 // Flags retrieves all the flag's Flags with an executor.
@@ -1396,6 +1427,120 @@ func (challengeL) LoadChallengeServices(ctx context.Context, e boil.ContextExecu
 				local.R.ChallengeServices = append(local.R.ChallengeServices, foreign)
 				if foreign.R == nil {
 					foreign.R = &challengeServiceR{}
+				}
+				foreign.R.Challenge = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadCourseItems allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (challengeL) LoadCourseItems(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
+	var slice []*Challenge
+	var object *Challenge
+
+	if singular {
+		var ok bool
+		object, ok = maybeChallenge.(*Challenge)
+		if !ok {
+			object = new(Challenge)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeChallenge))
+			}
+		}
+	} else {
+		s, ok := maybeChallenge.(*[]*Challenge)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeChallenge))
+			}
+		}
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &challengeR{}
+		}
+		args = append(args, object.ID)
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &challengeR{}
+			}
+
+			for _, a := range args {
+				if a == obj.ID {
+					continue Outer
+				}
+			}
+
+			args = append(args, obj.ID)
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(
+		qm.From(`course_items`),
+		qm.WhereIn(`course_items.challenge_id in ?`, args...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load course_items")
+	}
+
+	var resultSlice []*CourseItem
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice course_items")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on course_items")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for course_items")
+	}
+
+	if len(courseItemAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.CourseItems = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &courseItemR{}
+			}
+			foreign.R.Challenge = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.ChallengeID {
+				local.R.CourseItems = append(local.R.CourseItems, foreign)
+				if foreign.R == nil {
+					foreign.R = &courseItemR{}
 				}
 				foreign.R.Challenge = local
 				break
@@ -2355,6 +2500,59 @@ func (o *Challenge) AddChallengeServices(ctx context.Context, exec boil.ContextE
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &challengeServiceR{
+				Challenge: o,
+			}
+		} else {
+			rel.R.Challenge = o
+		}
+	}
+	return nil
+}
+
+// AddCourseItems adds the given related objects to the existing relationships
+// of the challenge, optionally inserting them as new records.
+// Appends related to o.R.CourseItems.
+// Sets related.R.Challenge appropriately.
+func (o *Challenge) AddCourseItems(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*CourseItem) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.ChallengeID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"course_items\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"challenge_id"}),
+				strmangle.WhereClause("\"", "\"", 2, courseItemPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.ChallengeID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &challengeR{
+			CourseItems: related,
+		}
+	} else {
+		o.R.CourseItems = append(o.R.CourseItems, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &courseItemR{
 				Challenge: o,
 			}
 		} else {
