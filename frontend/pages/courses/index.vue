@@ -5,7 +5,8 @@
         </div>
         <div class="row pt-5">
             <div class="col-3 h-100" v-for="cat in categories">
-                <div class="rounded" :class="{ 'bg-info': selectedCategory == cat, 'bg-dark': selectedCategory != cat }"
+                <div class="rounded"
+                    :class="{ 'bg-info border border-1 border-primary': selectedCategory == cat, 'bg-dark': selectedCategory != cat }"
                     @click="selectedCategory = cat">
                     <div class="d-flex justify-content-center py-3">
                         <h2 class="text-primary">{{ cat }}</h2>
