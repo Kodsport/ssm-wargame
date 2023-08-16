@@ -13,6 +13,15 @@
                             Vi hoppas att du lär dig något här, vi välkomnar både nybörjare och proffs! Be gärna
                             om hjälp i <a href="">Kodsports Discordserver</a> om fastnar.
                         </p>
+
+                        <div class="py-3">
+                            Vilket namn vill du ha på poängtavlan?
+
+                            <div class="form-group">
+                                <input class="form-control" type="text" name="" id="" v-model="fullName">
+                            </div>
+                        </div>
+
                         <p>
                             Vill du representera din skola på poängtavlan?
                         </p>
@@ -55,6 +64,7 @@ const uni = ref(false)
 
 var schoolQuery = ref("")
 var schools = ref([])
+var fullName = ref(auth.user.full_name)
 
 async function joinSchool(id) {
     await http('/user/join_school', {
@@ -78,6 +88,12 @@ async function searchSchools() {
 
 
 async function finish() {
+    await http('/user/self', {
+        method: 'POST',
+        body: {
+            full_name: fullName.value
+        }
+    })
     await http('/user/complete_onboarding', { method: 'POST' })
     await auth.getUser()
 }

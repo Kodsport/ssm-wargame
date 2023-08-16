@@ -21,6 +21,10 @@ type Client struct {
 	// endpoint.
 	GetSelfDoer goahttp.Doer
 
+	// UpdateSelf Doer is the HTTP client used to make requests to the UpdateSelf
+	// endpoint.
+	UpdateSelfDoer goahttp.Doer
+
 	// CompleteOnboarding Doer is the HTTP client used to make requests to the
 	// CompleteOnboarding endpoint.
 	CompleteOnboardingDoer goahttp.Doer
@@ -58,6 +62,7 @@ func NewClient(
 ) *Client {
 	return &Client{
 		GetSelfDoer:            doer,
+		UpdateSelfDoer:         doer,
 		CompleteOnboardingDoer: doer,
 		JoinSchoolDoer:         doer,
 		LeaveSchoolDoer:        doer,
@@ -89,6 +94,30 @@ func (c *Client) GetSelf() goa.Endpoint {
 		resp, err := c.GetSelfDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("user", "GetSelf", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// UpdateSelf returns an endpoint that makes HTTP requests to the user service
+// UpdateSelf server.
+func (c *Client) UpdateSelf() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeUpdateSelfRequest(c.encoder)
+		decodeResponse = DecodeUpdateSelfResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildUpdateSelfRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.UpdateSelfDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("user", "UpdateSelf", err)
 		}
 		return decodeResponse(resp)
 	}

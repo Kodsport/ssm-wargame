@@ -24,6 +24,17 @@ var _ = Service("user", func() {
 			Response(StatusOK)
 		})
 	})
+	Method("UpdateSelf", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Reference(User)
+			Attribute("full_name")
+		})
+		HTTP(func() {
+			POST("/self")
+			Response(StatusOK)
+		})
+	})
 	Method("CompleteOnboarding", func() {
 		Payload(func() {
 			Extend(TokenPayload)

@@ -12,6 +12,12 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// UpdateSelfRequestBody is the type of the "user" service "UpdateSelf"
+// endpoint HTTP request body.
+type UpdateSelfRequestBody struct {
+	FullName string `form:"full_name" json:"full_name" xml:"full_name"`
+}
+
 // JoinSchoolRequestBody is the type of the "user" service "JoinSchool"
 // endpoint HTTP request body.
 type JoinSchoolRequestBody struct {
@@ -41,6 +47,15 @@ type SchoolResponse struct {
 	IsUniversity     *bool   `form:"is_university,omitempty" json:"is_university,omitempty" xml:"is_university,omitempty"`
 	// ID of a file
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+}
+
+// NewUpdateSelfRequestBody builds the HTTP request body from the payload of
+// the "UpdateSelf" endpoint of the "user" service.
+func NewUpdateSelfRequestBody(p *user.UpdateSelfPayload) *UpdateSelfRequestBody {
+	body := &UpdateSelfRequestBody{
+		FullName: p.FullName,
+	}
+	return body
 }
 
 // NewJoinSchoolRequestBody builds the HTTP request body from the payload of

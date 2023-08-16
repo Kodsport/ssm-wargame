@@ -17,6 +17,8 @@ import (
 type Service interface {
 	// GetSelf implements GetSelf.
 	GetSelf(context.Context, *GetSelfPayload) (res *GetSelfResult, err error)
+	// UpdateSelf implements UpdateSelf.
+	UpdateSelf(context.Context, *UpdateSelfPayload) (err error)
 	// CompleteOnboarding implements CompleteOnboarding.
 	CompleteOnboarding(context.Context, *CompleteOnboardingPayload) (err error)
 	// JoinSchool implements JoinSchool.
@@ -41,7 +43,7 @@ const ServiceName = "user"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [5]string{"GetSelf", "CompleteOnboarding", "JoinSchool", "LeaveSchool", "SearchSchools"}
+var MethodNames = [6]string{"GetSelf", "UpdateSelf", "CompleteOnboarding", "JoinSchool", "LeaveSchool", "SearchSchools"}
 
 // GetSelfPayload is the payload type of the user service GetSelf method.
 type GetSelfPayload struct {
@@ -57,6 +59,12 @@ type GetSelfResult struct {
 	FullName       string
 	Role           string
 	SchoolID       *string
+}
+
+// UpdateSelfPayload is the payload type of the user service UpdateSelf method.
+type UpdateSelfPayload struct {
+	FullName string
+	Token    string
 }
 
 // CompleteOnboardingPayload is the payload type of the user service

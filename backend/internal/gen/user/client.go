@@ -16,6 +16,7 @@ import (
 // Client is the "user" service client.
 type Client struct {
 	GetSelfEndpoint            goa.Endpoint
+	UpdateSelfEndpoint         goa.Endpoint
 	CompleteOnboardingEndpoint goa.Endpoint
 	JoinSchoolEndpoint         goa.Endpoint
 	LeaveSchoolEndpoint        goa.Endpoint
@@ -23,9 +24,10 @@ type Client struct {
 }
 
 // NewClient initializes a "user" service client given the endpoints.
-func NewClient(getSelf, completeOnboarding, joinSchool, leaveSchool, searchSchools goa.Endpoint) *Client {
+func NewClient(getSelf, updateSelf, completeOnboarding, joinSchool, leaveSchool, searchSchools goa.Endpoint) *Client {
 	return &Client{
 		GetSelfEndpoint:            getSelf,
+		UpdateSelfEndpoint:         updateSelf,
 		CompleteOnboardingEndpoint: completeOnboarding,
 		JoinSchoolEndpoint:         joinSchool,
 		LeaveSchoolEndpoint:        leaveSchool,
@@ -41,6 +43,12 @@ func (c *Client) GetSelf(ctx context.Context, p *GetSelfPayload) (res *GetSelfRe
 		return
 	}
 	return ires.(*GetSelfResult), nil
+}
+
+// UpdateSelf calls the "UpdateSelf" endpoint of the "user" service.
+func (c *Client) UpdateSelf(ctx context.Context, p *UpdateSelfPayload) (err error) {
+	_, err = c.UpdateSelfEndpoint(ctx, p)
+	return
 }
 
 // CompleteOnboarding calls the "CompleteOnboarding" endpoint of the "user"

@@ -20,6 +20,7 @@ import (
 type Server struct {
 	Mounts             []*MountPoint
 	GetSelf            http.Handler
+	UpdateSelf         http.Handler
 	CompleteOnboarding http.Handler
 	JoinSchool         http.Handler
 	LeaveSchool        http.Handler
@@ -60,12 +61,14 @@ func New(
 	return &Server{
 		Mounts: []*MountPoint{
 			{"GetSelf", "GET", "/user/self"},
+			{"UpdateSelf", "POST", "/user/self"},
 			{"CompleteOnboarding", "POST", "/user/complete_onboarding"},
 			{"JoinSchool", "POST", "/user/join_school"},
 			{"LeaveSchool", "POST", "/user/leave_school"},
 			{"SearchSchools", "GET", "/user/schools"},
 		},
 		GetSelf:            NewGetSelfHandler(e.GetSelf, mux, decoder, encoder, errhandler, formatter),
+		UpdateSelf:         NewUpdateSelfHandler(e.UpdateSelf, mux, decoder, encoder, errhandler, formatter),
 		CompleteOnboarding: NewCompleteOnboardingHandler(e.CompleteOnboarding, mux, decoder, encoder, errhandler, formatter),
 		JoinSchool:         NewJoinSchoolHandler(e.JoinSchool, mux, decoder, encoder, errhandler, formatter),
 		LeaveSchool:        NewLeaveSchoolHandler(e.LeaveSchool, mux, decoder, encoder, errhandler, formatter),
@@ -79,6 +82,7 @@ func (s *Server) Service() string { return "user" }
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.GetSelf = m(s.GetSelf)
+	s.UpdateSelf = m(s.UpdateSelf)
 	s.CompleteOnboarding = m(s.CompleteOnboarding)
 	s.JoinSchool = m(s.JoinSchool)
 	s.LeaveSchool = m(s.LeaveSchool)
@@ -88,6 +92,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 // Mount configures the mux to serve the user endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetSelfHandler(mux, h.GetSelf)
+	MountUpdateSelfHandler(mux, h.UpdateSelf)
 	MountCompleteOnboardingHandler(mux, h.CompleteOnboarding)
 	MountJoinSchoolHandler(mux, h.JoinSchool)
 	MountLeaveSchoolHandler(mux, h.LeaveSchool)
@@ -124,6 +129,57 @@ func NewGetSelfHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "GetSelf")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateSelfHandler configures the mux to serve the "user" service
+// "UpdateSelf" endpoint.
+func MountUpdateSelfHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/user/self", f)
+}
+
+// NewUpdateSelfHandler creates a HTTP handler which loads the HTTP request and
+// calls the "user" service "UpdateSelf" endpoint.
+func NewUpdateSelfHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateSelfRequest(mux, decoder)
+		encodeResponse = EncodeUpdateSelfResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateSelf")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "user")
 		payload, err := decodeRequest(r)
 		if err != nil {

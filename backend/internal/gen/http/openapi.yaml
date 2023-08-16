@@ -1397,6 +1397,33 @@ paths:
       - http
       security:
       - jwt_header_Authorization: []
+    post:
+      tags:
+      - user
+      summary: UpdateSelf user
+      operationId: user#UpdateSelf
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        type: string
+      - name: UpdateSelfRequestBody
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/UserUpdateSelfRequestBody'
+          required:
+          - id
+          - email
+          - full_name
+          - role
+      responses:
+        "200":
+          description: OK response.
+      schemes:
+      - http
+      security:
+      - jwt_header_Authorization: []
   /user_scoreboard:
     get:
       tags:
@@ -7790,6 +7817,20 @@ definitions:
     - school_name
     - score
     - name
+  UserUpdateSelfRequestBody:
+    title: UserUpdateSelfRequestBody
+    type: object
+    properties:
+      full_name:
+        type: string
+        example: Movitz Sunar
+    example:
+      full_name: Movitz Sunar
+    required:
+    - id
+    - email
+    - full_name
+    - role
 securityDefinitions:
   jwt_header_Authorization:
     type: apiKey

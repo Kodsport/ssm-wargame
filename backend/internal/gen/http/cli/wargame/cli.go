@@ -28,7 +28,7 @@ func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors|list-courses|enroll-course|complete-course)
 admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course)
-user (get-self|complete-onboarding|join-school|leave-school|search-schools)
+user (get-self|update-self|complete-onboarding|join-school|leave-school|search-schools)
 `
 }
 
@@ -205,6 +205,10 @@ func ParseEndpoint(
 		userGetSelfFlags     = flag.NewFlagSet("get-self", flag.ExitOnError)
 		userGetSelfTokenFlag = userGetSelfFlags.String("token", "REQUIRED", "")
 
+		userUpdateSelfFlags     = flag.NewFlagSet("update-self", flag.ExitOnError)
+		userUpdateSelfBodyFlag  = userUpdateSelfFlags.String("body", "REQUIRED", "")
+		userUpdateSelfTokenFlag = userUpdateSelfFlags.String("token", "REQUIRED", "")
+
 		userCompleteOnboardingFlags     = flag.NewFlagSet("complete-onboarding", flag.ExitOnError)
 		userCompleteOnboardingTokenFlag = userCompleteOnboardingFlags.String("token", "REQUIRED", "")
 
@@ -266,6 +270,7 @@ func ParseEndpoint(
 
 	userFlags.Usage = userUsage
 	userGetSelfFlags.Usage = userGetSelfUsage
+	userUpdateSelfFlags.Usage = userUpdateSelfUsage
 	userCompleteOnboardingFlags.Usage = userCompleteOnboardingUsage
 	userJoinSchoolFlags.Usage = userJoinSchoolUsage
 	userLeaveSchoolFlags.Usage = userLeaveSchoolUsage
@@ -440,6 +445,9 @@ func ParseEndpoint(
 			case "get-self":
 				epf = userGetSelfFlags
 
+			case "update-self":
+				epf = userUpdateSelfFlags
+
 			case "complete-onboarding":
 				epf = userCompleteOnboardingFlags
 
@@ -606,6 +614,9 @@ func ParseEndpoint(
 			case "get-self":
 				endpoint = c.GetSelf()
 				data, err = userc.BuildGetSelfPayload(*userGetSelfTokenFlag)
+			case "update-self":
+				endpoint = c.UpdateSelf()
+				data, err = userc.BuildUpdateSelfPayload(*userUpdateSelfBodyFlag, *userUpdateSelfTokenFlag)
 			case "complete-onboarding":
 				endpoint = c.CompleteOnboarding()
 				data, err = userc.BuildCompleteOnboardingPayload(*userCompleteOnboardingTokenFlag)
@@ -1281,6 +1292,7 @@ Usage:
 
 COMMAND:
     get-self: GetSelf implements GetSelf.
+    update-self: UpdateSelf implements UpdateSelf.
     complete-onboarding: CompleteOnboarding implements CompleteOnboarding.
     join-school: JoinSchool implements JoinSchool.
     leave-school: LeaveSchool implements LeaveSchool.
@@ -1298,6 +1310,20 @@ GetSelf implements GetSelf.
 
 Example:
     %[1]s user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func userUpdateSelfUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] user update-self -body JSON -token STRING
+
+UpdateSelf implements UpdateSelf.
+    -body JSON: 
+    -token STRING: 
+
+Example:
+    %[1]s user update-self --body '{
+      "full_name": "Movitz Sunar"
+   }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 

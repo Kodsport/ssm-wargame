@@ -12,6 +12,11 @@ func GetSelfUserPath() string {
 	return "/user/self"
 }
 
+// UpdateSelfUserPath returns the URL path to the user service UpdateSelf HTTP endpoint.
+func UpdateSelfUserPath() string {
+	return "/user/self"
+}
+
 // CompleteOnboardingUserPath returns the URL path to the user service CompleteOnboarding HTTP endpoint.
 func CompleteOnboardingUserPath() string {
 	return "/user/complete_onboarding"

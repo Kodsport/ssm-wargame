@@ -57,6 +57,56 @@ func DecodeGetSelfRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp
 	}
 }
 
+// EncodeUpdateSelfResponse returns an encoder for responses returned by the
+// user UpdateSelf endpoint.
+func EncodeUpdateSelfResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeUpdateSelfRequest returns a decoder for requests sent to the user
+// UpdateSelf endpoint.
+func DecodeUpdateSelfRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body UpdateSelfRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateUpdateSelfRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			token string
+		)
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewUpdateSelfPayload(&body, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
 // EncodeCompleteOnboardingResponse returns an encoder for responses returned
 // by the user CompleteOnboarding endpoint.
 func EncodeCompleteOnboardingResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {

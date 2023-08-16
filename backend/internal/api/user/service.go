@@ -69,3 +69,17 @@ func (s *service) CompleteOnboarding(ctx context.Context, req *spec.CompleteOnbo
 
 	return nil
 }
+
+func (s *service) UpdateSelf(ctx context.Context, req *spec.UpdateSelfPayload) error {
+	_, err := models.Users(
+		models.UserWhere.ID.EQ(auth.GetUser(ctx).ID),
+	).UpdateAll(ctx, s.db, models.M{
+		models.UserColumns.FullName: req.FullName,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

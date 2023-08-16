@@ -28,6 +28,29 @@ func BuildGetSelfPayload(userGetSelfToken string) (*user.GetSelfPayload, error) 
 	return v, nil
 }
 
+// BuildUpdateSelfPayload builds the payload for the user UpdateSelf endpoint
+// from CLI flags.
+func BuildUpdateSelfPayload(userUpdateSelfBody string, userUpdateSelfToken string) (*user.UpdateSelfPayload, error) {
+	var err error
+	var body UpdateSelfRequestBody
+	{
+		err = json.Unmarshal([]byte(userUpdateSelfBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"full_name\": \"Movitz Sunar\"\n   }'")
+		}
+	}
+	var token string
+	{
+		token = userUpdateSelfToken
+	}
+	v := &user.UpdateSelfPayload{
+		FullName: body.FullName,
+	}
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildCompleteOnboardingPayload builds the payload for the user
 // CompleteOnboarding endpoint from CLI flags.
 func BuildCompleteOnboardingPayload(userCompleteOnboardingToken string) (*user.CompleteOnboardingPayload, error) {

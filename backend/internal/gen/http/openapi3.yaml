@@ -2762,6 +2762,24 @@ paths:
                 school_name: Nisi asperiores sed maiores aut qui.
       security:
       - jwt_header_Authorization: []
+    post:
+      tags:
+      - user
+      summary: UpdateSelf user
+      operationId: user#UpdateSelf
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSelfRequestBody'
+            example:
+              full_name: Movitz Sunar
+      responses:
+        "200":
+          description: OK response.
+      security:
+      - jwt_header_Authorization: []
   /user_scoreboard:
     get:
       tags:
@@ -4709,6 +4727,19 @@ components:
       - slug
       - enrolled
       - completed
+    UpdateSelfRequestBody:
+      type: object
+      properties:
+        full_name:
+          type: string
+          example: Movitz Sunar
+      example:
+        full_name: Movitz Sunar
+      required:
+      - id
+      - email
+      - full_name
+      - role
     UserScoreboardScore:
       type: object
       properties:

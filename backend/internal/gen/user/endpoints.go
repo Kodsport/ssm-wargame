@@ -17,6 +17,7 @@ import (
 // Endpoints wraps the "user" service endpoints.
 type Endpoints struct {
 	GetSelf            goa.Endpoint
+	UpdateSelf         goa.Endpoint
 	CompleteOnboarding goa.Endpoint
 	JoinSchool         goa.Endpoint
 	LeaveSchool        goa.Endpoint
@@ -29,6 +30,7 @@ func NewEndpoints(s Service) *Endpoints {
 	a := s.(Auther)
 	return &Endpoints{
 		GetSelf:            NewGetSelfEndpoint(s, a.JWTAuth),
+		UpdateSelf:         NewUpdateSelfEndpoint(s, a.JWTAuth),
 		CompleteOnboarding: NewCompleteOnboardingEndpoint(s, a.JWTAuth),
 		JoinSchool:         NewJoinSchoolEndpoint(s, a.JWTAuth),
 		LeaveSchool:        NewLeaveSchoolEndpoint(s, a.JWTAuth),
@@ -39,6 +41,7 @@ func NewEndpoints(s Service) *Endpoints {
 // Use applies the given middleware to all the "user" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.GetSelf = m(e.GetSelf)
+	e.UpdateSelf = m(e.UpdateSelf)
 	e.CompleteOnboarding = m(e.CompleteOnboarding)
 	e.JoinSchool = m(e.JoinSchool)
 	e.LeaveSchool = m(e.LeaveSchool)
@@ -61,6 +64,25 @@ func NewGetSelfEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint 
 			return nil, err
 		}
 		return s.GetSelf(ctx, p)
+	}
+}
+
+// NewUpdateSelfEndpoint returns an endpoint function that calls the method
+// "UpdateSelf" of service "user".
+func NewUpdateSelfEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*UpdateSelfPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.UpdateSelf(ctx, p)
 	}
 }
 

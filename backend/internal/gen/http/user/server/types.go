@@ -12,6 +12,12 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
+// UpdateSelfRequestBody is the type of the "user" service "UpdateSelf"
+// endpoint HTTP request body.
+type UpdateSelfRequestBody struct {
+	FullName *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+}
+
 // JoinSchoolRequestBody is the type of the "user" service "JoinSchool"
 // endpoint HTTP request body.
 type JoinSchoolRequestBody struct {
@@ -76,6 +82,16 @@ func NewGetSelfPayload(token string) *user.GetSelfPayload {
 	return v
 }
 
+// NewUpdateSelfPayload builds a user service UpdateSelf endpoint payload.
+func NewUpdateSelfPayload(body *UpdateSelfRequestBody, token string) *user.UpdateSelfPayload {
+	v := &user.UpdateSelfPayload{
+		FullName: *body.FullName,
+	}
+	v.Token = token
+
+	return v
+}
+
 // NewCompleteOnboardingPayload builds a user service CompleteOnboarding
 // endpoint payload.
 func NewCompleteOnboardingPayload(token string) *user.CompleteOnboardingPayload {
@@ -111,6 +127,15 @@ func NewSearchSchoolsPayload(q string, university *bool, token string) *user.Sea
 	v.Token = token
 
 	return v
+}
+
+// ValidateUpdateSelfRequestBody runs the validations defined on
+// UpdateSelfRequestBody
+func ValidateUpdateSelfRequestBody(body *UpdateSelfRequestBody) (err error) {
+	if body.FullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("full_name", "body"))
+	}
+	return
 }
 
 // ValidateJoinSchoolRequestBody runs the validations defined on

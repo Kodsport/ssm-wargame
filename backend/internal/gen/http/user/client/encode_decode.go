@@ -96,6 +96,72 @@ func DecodeGetSelfResponse(decoder func(*http.Response) goahttp.Decoder, restore
 	}
 }
 
+// BuildUpdateSelfRequest instantiates a HTTP request object with method and
+// path set to call the "user" service "UpdateSelf" endpoint
+func (c *Client) BuildUpdateSelfRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateSelfUserPath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("user", "UpdateSelf", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeUpdateSelfRequest returns an encoder for requests sent to the user
+// UpdateSelf server.
+func EncodeUpdateSelfRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*user.UpdateSelfPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("user", "UpdateSelf", "*user.UpdateSelfPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewUpdateSelfRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("user", "UpdateSelf", err)
+		}
+		return nil
+	}
+}
+
+// DecodeUpdateSelfResponse returns a decoder for responses returned by the
+// user UpdateSelf endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+func DecodeUpdateSelfResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("user", "UpdateSelf", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildCompleteOnboardingRequest instantiates a HTTP request object with
 // method and path set to call the "user" service "CompleteOnboarding" endpoint
 func (c *Client) BuildCompleteOnboardingRequest(ctx context.Context, v interface{}) (*http.Request, error) {
