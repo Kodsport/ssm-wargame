@@ -77,25 +77,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="chall in challenges" :key="chall.id">
-                        <td>
-                            <NuxtLink :to="`/admin/challenges/${chall.slug}`" class="pe-2">
-                                {{ chall.title }}
-                            </NuxtLink>
-                            <span v-if="!chall.flags" title="No flags">⚠️⚠️⚠️</span>
-                            <span v-if="chall.hide" class="material-symbols-outlined text-primary">
-                                visibility_off
-                            </span>
-                        </td>
-                        <td>{{ chall.solves }}</td>
-                        <td>{{ getCategoryName(chall.category_id) }}</td>
-                        <td>{{ chall.static_score || 'Dynamic' }}</td>
-                        <td class="text-right">
-                            <NuxtLink class="btn btn-primary" :to="`/admin/challenges/${chall.slug}/edit`">
-                                Edit
-                            </NuxtLink>
-                        </td>
-                    </tr>
+                    <template v-for="cat in store.categories">
+
+                        <tr>
+                            <td class="fw-bold mt-5" colspan="5"> {{ cat.name }}</td>
+                        </tr>
+                        <tr v-for="chall in challenges.filter(c => c.category_id == cat.id)" :key="chall.id">
+                            <td>
+                                <NuxtLink :to="`/admin/challenges/${chall.slug}`" class="pe-2">
+                                    {{ chall.title }}
+                                </NuxtLink>
+                                <span v-if="!chall.flags" title="No flags">⚠️⚠️⚠️</span>
+                                <span v-if="chall.hide" class="material-symbols-outlined text-primary">
+                                    visibility_off
+                                </span>
+                            </td>
+                            <td>{{ chall.solves }}</td>
+                            <td>{{ getCategoryName(chall.category_id) }}</td>
+                            <td>{{ chall.static_score || 'Dynamic' }}</td>
+                            <td class="text-right">
+                                <NuxtLink class="btn btn-primary" :to="`/admin/challenges/${chall.slug}/edit`">
+                                    Edit
+                                </NuxtLink>
+                            </td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>
