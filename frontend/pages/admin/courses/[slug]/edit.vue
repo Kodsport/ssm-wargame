@@ -79,7 +79,7 @@ onMounted(async () => {
 
 async function updateCourse() {
     console.log(form.value)
-    await http(`/admin/courses/${course.value.id}`, {
+    await http(`/admin/courses/${course.value.id}/edit`, {
         method: 'PUT',
         body: form.value
     })
