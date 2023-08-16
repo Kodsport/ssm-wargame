@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
                 this.user = user
             } catch {
                 this.user = {}
-                // this.token = ''
+                this.token = ''
             }
         }
     },
