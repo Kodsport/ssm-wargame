@@ -19,6 +19,7 @@ func (s *service) EnrollCourse(ctx context.Context, req *spec.EnrollCoursePayloa
 		ID:       uuid.NewString(),
 		CourseID: req.ID,
 		UserID:   auth.GetUser(ctx).ID,
+		Finished: false,
 	}
 	return enroll.Insert(ctx, s.db, boil.Infer())
 }

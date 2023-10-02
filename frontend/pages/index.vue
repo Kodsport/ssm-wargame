@@ -30,6 +30,12 @@
                         </li>
                     </ul>
                 </div>
+                <div>
+                    <p>
+                        I år introducerar vi även en introkurs för både helt nya deltagare och mer erfarna, kursen är gratis
+                        och hålls i samarbete med FRO. <a href="https://forms.gle/ieFctFv84q9Sv5kx9">Anmäl dig här!</a>
+                    </p>
+                </div>
                 <p>
                     Joina gärna
                     <a :href="discordUrl">Kodsports Discordserver</a>

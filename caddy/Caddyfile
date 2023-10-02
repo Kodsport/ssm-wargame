@@ -1,4 +1,4 @@
-wargame.movitz.dev {
+wargame.movitz.dev, sakerhetssm.se {
 	encode gzip
 
 	handle /api/* {	
@@ -8,5 +8,13 @@ wargame.movitz.dev {
 	
 	handle {
 		reverse_proxy frontend:3000
+	}
+}
+
+spooktober.sakerhetssm.se, spooktober.wargame.movitz.dev {
+	handle {
+		root * /var/www/spooktober
+		try_files {path} /index.html
+		file_server
 	}
 }
