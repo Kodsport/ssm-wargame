@@ -1,4 +1,4 @@
-wargame.movitz.dev, sakerhetssm.se {
+sakerhetssm.se {
 	encode gzip
 
 	handle /api/* {	
@@ -11,7 +11,7 @@ wargame.movitz.dev, sakerhetssm.se {
 	}
 }
 
-spooktober.sakerhetssm.se, spooktober.wargame.movitz.dev {
+spooktober.sakerhetssm.se {
 	handle {
 		root * /var/www/spooktober
 		try_files {path} /index.html
