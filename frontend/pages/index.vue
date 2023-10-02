@@ -63,9 +63,12 @@
 
             </div>
 
-            <div class="col pt-4 pt-md-0" v-if="monthly.status.value == 'success'">
-                <h1 class="text-primary">Månadens utmaning - {{ monthly.data.value.display_month }}</h1>
-                <MonthlyChallenge :chall="monthly.data.value.challenge" />
+            <div class="col pt-4 pt-md-0" v-if="true">
+                <div class="halloween-card">
+                    <h1>Halloweenspelet 2023</h1>
+                    <p>Sugen på spelhacking och gamedev?</p>
+                    <a href="https://spooktober.sakerhetssm.se/">Prova på årets halloweenspel</a>
+                </div>
             </div>
             <div v-else-if="scoreboard.uniScores" class="col pt-4 pt-md-0 text-primary">
                 <h1>Poängtavla</h1>
@@ -89,6 +92,63 @@
         </div>
     </div>
 </template>
+
+<style lang="scss">
+.halloween-card {
+    position: relative;
+    // FIXME: Use proper path resolution?
+    background: url(/halloween.png);
+    background-size: contain;
+    height: 390px;
+    max-width: 550px;
+    border-radius: 8px;
+    overflow: auto;
+
+    >h1 {
+        margin-top: 24px;
+        padding: 4px 16px;
+        font-weight: bold;
+        color: #dd9b2a;
+        background-color: #004454;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.75);
+        font-size: 36px;
+        text-align: center;
+    }
+
+    >p {
+        display: inline-block;
+        margin: 12px 24px;
+        padding: 8px 12px;
+        color: #fff;
+        font-weight: bold;
+        font-size: 18px;
+        background-color: rgba(0, 68, 84, 0.75);
+    }
+
+    >a {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 250px;
+        margin: 64px 0;
+        padding: 8px 16px;
+        background-color: #2d2d2d;
+        border-radius: 4px;
+        font-size: 20px;
+        font-weight: bold;
+        color: rgb(255 171 28);
+        text-align: center;
+        text-shadow: 0 0 8px #ffab1ca1;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+        text-decoration: none;
+
+        &:hover {
+            background-color: #1a1a1a;
+        }
+    }
+}
+</style>
 
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges'
