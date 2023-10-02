@@ -3,8 +3,6 @@ const BLOCK_SIZE = 16 * 4;
 
 class Game {
 	constructor() {
-		this.state = "connecting";
-		
 		this.element = document.createElement("div");
 		this.element.className = "game";
 		
