@@ -22,11 +22,13 @@
               Poängtavla
             </nuxt-link>
           </li>
-          <li class="nav-item">
-            <nuxt-link active-class="active" class="nav-link" to="/courses">
-              Kurser
-            </nuxt-link>
-          </li>
+          <!--
+            <li class="nav-item">
+              <nuxt-link active-class="active" class="nav-link" to="/courses">
+                Kurser
+              </nuxt-link>
+            </li>
+          -->
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/learn">
               Läroresurser
