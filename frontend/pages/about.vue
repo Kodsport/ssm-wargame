@@ -10,13 +10,9 @@
                         <img class="rounded img-fluidx" :src="person.url" alt="">
                         <h5 class="pt-3">{{ person.name }}</h5>
                         <i>{{ person.role }}</i>
-                        <nuxt-link v-if="false" to="/challenges/terry">Se Terry's utmaningar</nuxt-link>
+                        <nuxt-link v-if="false" to="/challenges/terry">Se {{ person.name.split(" ")[0] }}'s
+                            utmaningar</nuxt-link>
 
-
-                        <span class="text-primary pt-2">
-                            <span class="material-symbols-outlined text-decoration-none pe-2">email</span>
-                            <a href="mailto:terry@kodsport.se">terry@kodsport.se</a>
-                        </span>
                     </div>
                 </div>
             </div>
