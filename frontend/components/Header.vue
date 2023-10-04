@@ -34,6 +34,20 @@
               Läroresurser
             </nuxt-link>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Tidigare år
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2023">2023</a></li>
+              <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2022">2022</a></li>
+              <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2021">2021</a></li>
+              <li><a class="text-primary dropdown-item" href="/halloween2020/">Halloween 2020</a></li>
+              <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2020">2020</a></li>
+              <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2019">2019</a></li>
+              <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2016">2016</a></li>
+            </ul>
+          </li>
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/about">
               Om oss
