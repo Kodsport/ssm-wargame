@@ -18,11 +18,11 @@
                         </li>
                         <li>
                             <span class="material-symbols-outlined">swords</span>
-                            Kval online (datum saknas)
+                            Kval online <b>8-10 februari 2023</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">emoji_events</span>
-                            Final i Stockholm (datum saknas)
+                            Final i Stockholm <b>3-5 maj 2023</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">azm</span>
