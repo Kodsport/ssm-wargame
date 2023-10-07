@@ -20,5 +20,6 @@ export const useScoreboardStore = defineStore('scoreboard', {
     getters: {
         uniScores: (state) => state.schoolScores.filter(s => s.is_university),
         nonUniScores: (state) => state.schoolScores.filter(s => !s.is_university),
+        userScores2: (state) => state.userScores.sort((a, b) => a.score < b.score), //????
     }
 })
