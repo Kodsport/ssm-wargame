@@ -6,8 +6,8 @@ RUN yarn
 
 COPY . /app/
 COPY .env /app/.env
-RUN yarn build
 ENV prod=true
+RUN yarn build
 
 ENTRYPOINT node .output/server/index.mjs
 
