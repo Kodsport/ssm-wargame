@@ -153,7 +153,10 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		})
 
 		res[i].Solvers = make([]*spec.SsmSolver, 0, 5)
-		for _, v := range chall.R.UserSolves[:5] {
+		for i, v := range chall.R.UserSolves {
+			if i == 5 {
+				break
+			}
 			res[i].Solvers = append(res[i].Solvers, &spec.SsmSolver{
 				ID:       v.UserID,
 				FullName: v.R.User.FullName,
