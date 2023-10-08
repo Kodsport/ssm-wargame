@@ -80,7 +80,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.Load(models.ChallengeRels.ChallengeFiles),
 		qm.Load(models.ChallengeRels.ChallengeServices),
 		qm.Load(models.ChallengeRels.Authors),
-		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User), qm.OrderBy(models.UserSolfColumns.CreatedAt)),
+		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User), qm.OrderBy(models.UserSolfColumns.CreatedAt+" ASC")),
 	)
 
 	if len(req.Ids) != 0 {
