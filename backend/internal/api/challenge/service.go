@@ -147,20 +147,16 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 		}
 
-		res[i].Solvers = make([]*spec.SsmSolver, len(chall.R.UserSolves))
-		for i2, v := range chall.R.UserSolves {
-			// TODO remove hotpatch
-			if v.R.User == nil {
-				continue
-			}
-			if len(res[i].Solvers) >= 5 {
+		res[i].Solvers = make([]*spec.SsmSolver, 0, 5)
+		for _, v := range chall.R.UserSolves {
+			if len(res[i].Solvers) == 5 {
 				break
 			}
-			res[i].Solvers[i2] = &spec.SsmSolver{
+			res[i].Solvers = append(res[i].Solvers, &spec.SsmSolver{
 				ID:       v.UserID,
 				FullName: v.R.User.FullName,
 				SolvedAt: v.CreatedAt.Unix(),
-			}
+			})
 		}
 
 		res[i].Services = make([]*spec.ChallengeService, len(chall.R.ChallengeServices))
