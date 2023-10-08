@@ -148,13 +148,13 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 		}
 
-		sort.SliceStable(chall.R.UserSolves, func(i, j int) bool {
-			return chall.R.UserSolves[i].CreatedAt.Before(chall.R.UserSolves[j].CreatedAt)
+		sort.SliceStable(chall.R.UserSolves, func(x, j int) bool {
+			return chall.R.UserSolves[x].CreatedAt.Before(chall.R.UserSolves[j].CreatedAt)
 		})
 
 		res[i].Solvers = make([]*spec.SsmSolver, 0, 5)
-		for i, v := range chall.R.UserSolves {
-			if i == 5 {
+		for i2, v := range chall.R.UserSolves {
+			if i2 == 5 {
 				break
 			}
 			res[i].Solvers = append(res[i].Solvers, &spec.SsmSolver{
