@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"math"
+	"sort"
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -80,7 +81,7 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		qm.Load(models.ChallengeRels.ChallengeFiles),
 		qm.Load(models.ChallengeRels.ChallengeServices),
 		qm.Load(models.ChallengeRels.Authors),
-		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User), qm.OrderBy(models.UserSolfColumns.CreatedAt+" ASC")),
+		qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User)),
 	)
 
 	if len(req.Ids) != 0 {
@@ -148,6 +149,10 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		}
 
 		res[i].Solvers = make([]*spec.SsmSolver, 0, 5)
+		sort.SliceStable(chall.R.UserSolves, func(i, j int) bool {
+			return chall.R.UserSolves[i].CreatedAt.After(chall.R.UserSolves[j].CreatedAt)
+		})
+
 		for _, v := range chall.R.UserSolves {
 			if len(res[i].Solvers) == 5 {
 				break
