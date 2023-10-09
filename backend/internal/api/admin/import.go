@@ -100,7 +100,7 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		Hide:        true,
 	}
 
-	err = chall.Upsert(ctx, tx, true, []string{}, boil.Infer(), boil.Infer())
+	err = chall.Upsert(ctx, tx, true, []string{}, boil.Blacklist("hide", "static_score", "slug"), boil.Blacklist())
 	if err != nil {
 		s.log.Error("could not upsert chall", zap.Error(err))
 		return err
@@ -171,14 +171,16 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		}
 
 		for _, v := range req.Authors {
+			slug := utils.Slugify(v)
 			author, err := models.Authors(
 				qm.Where("full_name ILIKE ?", "%"+v+"%"),
+				qm.Or("slug = ?", slug),
 			).One(ctx, tx)
 
 			if err == sql.ErrNoRows {
 				author = &models.Author{
 					ID:       uuid.NewString(),
-					Slug:     utils.Slugify(v),
+					Slug:     slug,
 					FullName: v,
 					Sponsor:  false,
 					Publish:  false,
