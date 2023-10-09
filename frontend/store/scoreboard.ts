@@ -10,11 +10,11 @@ export const useScoreboardStore = defineStore('scoreboard', {
     actions: {
         async getUserScoreboards() {
             const scores = await http('/user_scoreboard')
-            this.userScores = scores.scores.sort((a, b) => a.score < b.score)
+            this.userScores = scores.scores.sort((a, b) => a.score - b.score)
         },
         async getSchoolScoreboards() {
             const scores = await http('/scoreboard')
-            this.schoolScores = scores.scores.sort((a, b) => a.score < b.score)
+            this.schoolScores = scores.scores.sort((a, b) => a.score - b.score)
         },
     },
     getters: {
