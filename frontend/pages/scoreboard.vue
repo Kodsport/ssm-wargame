@@ -12,7 +12,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="score, i in scoreboard.userScores2.slice(0, 10)" :key="score.user_id">
+                        <tr v-for="score, i in scoreboard.userScores.sort((a, b) => a.score < b.score).slice(0, 10)" :key="score.user_id">
                             <td>{{ i + 1 }}</td>
                             <td>{{ score.name }}</td>
                             <td>{{ score.score }}</td>
