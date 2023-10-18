@@ -16,6 +16,7 @@ services:
       - db:/var/lib/postgresql/data
 
   frontend:
+    restart: always
     build: ./frontend
     env_file: .env.frontend
 
