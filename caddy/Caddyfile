@@ -1,4 +1,4 @@
-sakerhetssm.se, säkerhetssm.se {
+sakerhetssm.se {
 	encode gzip
 
 	handle /api/* {	
@@ -11,7 +11,7 @@ sakerhetssm.se, säkerhetssm.se {
 	}
 }
 
-spooktober.sakerhetssm.se, spooktober.säkerhetssm.se {
+spooktober.sakerhetssm.se {
 	handle {
 		root * /var/www/spooktober
 		try_files {path} /index.html
