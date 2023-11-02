@@ -18,7 +18,7 @@
                         </li>
                         <li>
                             <span class="material-symbols-outlined">swords</span>
-                            Kval online <b>8-10 februari 2023</b>
+                            Kval online <b>8-10 mars 2023</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">emoji_events</span>
