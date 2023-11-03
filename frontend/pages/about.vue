@@ -39,19 +39,14 @@
 
 const people = [
     {
-        name: "Aron Bergman",
-        role: "Projektledning",
-        url: "/aron.png"
+        name: "Martin Wennberg",
+        role: "Projektledare",
+        url: "/martin.jpg"
     },
     {
-        name: "Xenia Lööv",
-        role: "Projektledning",
-        url: "/xenia.png"
-    },
-    {
-        name: "Oskar Tornevall",
-        role: "Projektledning",
-        url: "/oskar.png"
+        name: "Antoni Kowalik",
+        role: "Projektledare",
+        url: "/antoni.jpg"
     },
     {
         name: "Mateusz Drwal",
