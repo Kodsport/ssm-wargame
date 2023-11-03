@@ -42,7 +42,7 @@
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2023">2023</a></li>
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2022">2022</a></li>
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2021">2021</a></li>
-              <li><a class="text-primary dropdown-item" href="/halloween2020/">Halloween 2020</a></li>
+              <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/halloween2020/">Halloween 2020</a></li>
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2020">2020</a></li>
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2019">2019</a></li>
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2016">2016</a></li>
@@ -97,7 +97,6 @@
                   {{ auth.user.full_name }}
                   <span class="material-symbols-outlined">person</span>
                 </span>
-
               </nuxt-link>
             </li>
           </ul>
