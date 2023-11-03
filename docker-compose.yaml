@@ -11,14 +11,13 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5432:5432" # assumes firewall
+      - "127.0.0.1:5432:5432"
     volumes:
       - db:/var/lib/postgresql/data
 
   frontend:
     restart: always
     build: ./frontend
-    env_file: .env.frontend
 
   caddy:
     build: ./caddy
