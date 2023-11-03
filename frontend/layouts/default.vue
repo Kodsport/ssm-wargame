@@ -2,7 +2,7 @@
     <div>
 
         <Header />
-        <div class="py-4">
+        <div class="px-3 py-4">
             <slot />
         </div>
         <!--
