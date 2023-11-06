@@ -19,7 +19,6 @@
                         </tr>
                     </tbody>
                 </table>
-
             </div>
             <div class="col-12 col-md-4">
                 <h1>Skolor</h1>
@@ -60,7 +59,6 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 </template>
@@ -76,6 +74,10 @@ await useAsyncData('scoreboard', scoreboard.getSchoolScoreboards)
 useHead({
     title: 'SSM - Poängtavla'
 })
-
-
 </script>
+
+<style scoped>
+    td {
+        overflow-wrap: anywhere;
+    }
+</style>
