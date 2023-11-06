@@ -12,7 +12,7 @@
       <div class="collapse navbar-collapse" :class="{ 'show': toggleCollapse }" id="navbarSupportedContent">
         <nuxt-link class="navbar-brand nav-link d-none d-md-inline" to="/">SSM</nuxt-link>
         <ul class="navbar-nav me-auto">
-          <li class="nav-item d-none d-md-inline">
+          <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/challenges">
               Utmaningar
             </nuxt-link>
@@ -22,13 +22,6 @@
               Poängtavla
             </nuxt-link>
           </li>
-          <!--
-            <li class="nav-item">
-              <nuxt-link active-class="active" class="nav-link" to="/courses">
-                Kurser
-              </nuxt-link>
-            </li>
-          -->
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/learn">
               Läroresurser
@@ -57,7 +50,6 @@
         <client-only>
           <ul v-if="auth.user" class="navbar-nav pe-3">
             <template v-if="auth.user.role == 'admin'">
-
               <li class="nav-item">
                 <nuxt-link active-class="active" class="nav-link" to="/admin/users">
                   Users
@@ -78,7 +70,6 @@
                   Courses
                 </nuxt-link>
               </li>
-
               <li class="nav-item">
                 <nuxt-link active-class="active" class="nav-link" to="/admin/events">
                   Events
@@ -100,11 +91,11 @@
               </nuxt-link>
             </li>
           </ul>
-          <template class="d-none d-md-inline">
+          <template class="d-inline">
             <button v-if="!isAuthenticated" class="btn btn-primary" @click="login">Logga in</button>
             <button v-else class="btn btn-primary" @click="logout">Logga ut</button>
           </template>
-          <template #fallback class="d-none d-md-inline">
+          <template #fallback class="d-inline">
             <button class="btn btn-primary">Logga in</button>
           </template>
         </client-only>
@@ -148,7 +139,6 @@ onMounted(() => {
     auth.setToken(jwt)
   }
 })
-
 
 function logout() {
   auth.setToken('')
