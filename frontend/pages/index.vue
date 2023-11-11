@@ -33,7 +33,7 @@
                 <div>
                     <p>
                         I år introducerar vi även en introkurs för både helt nya deltagare och mer erfarna, kursen är gratis
-                        och hålls i samarbete med FRO. <a href="https://forms.gle/ieFctFv84q9Sv5kx9">Anmäl dig här!</a>
+                        och hålls i samarbete med FRO. Anmälan är stängd.
                     </p>
                 </div>
                 <p>
