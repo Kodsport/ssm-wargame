@@ -67,7 +67,7 @@
                 <h1 class="text-primary">Månadens utmaning - {{ monthly.data.value.display_month }}</h1>
                 <MonthlyChallenge :chall="monthly.data.value.challenge" />
             </div>
-            <div v-else-if="scoreboard.uniScores" class="col pt-4 pt-md-0 text-primary">
+            <div v-else-if="scoreboard.nonUniScores" class="col pt-4 pt-md-0 text-primary">
                 <h1>Poängtavla</h1>
                 <table class="table">
                     <thead>
@@ -78,7 +78,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="score, i in scoreboard.uniScores.slice(0, 10)">
+                        <tr v-for="score, i in scoreboard.nonUniScores.slice(0, 10)">
                             <td>{{ i + 1 }}</td>
                             <td>{{ score.school_name }}</td>
                             <td>{{ score.score }}</td>
