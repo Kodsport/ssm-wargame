@@ -18,6 +18,7 @@ func (s *service) monthlyQuery(ctx context.Context) *queries.Query {
 		qm.Select("(SELECT COUNT(1) FROM user_solves WHERE challenge_id = monthly_challenges.challenge_id) num_solves"),
 		qm.From("monthly_challenges"),
 		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.ChallengeFiles)),
+		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.ChallengeServices)),
 		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.Category)),
 		qm.Load(qm.Rels(models.MonthlyChallengeRels.Challenge, models.ChallengeRels.Authors)),
 		models.MonthlyChallengeWhere.StartDate.LT(time.Now()),
@@ -69,5 +70,13 @@ func convertMonthly(chall *custommodels.UserMonthlyChall) *spec.SsmUserMonthlyCh
 			Publish:     v.Publish,
 		}
 	}
+	res.Challenge.Services = make([]*spec.ChallengeService, len(chall.R.Challenge.R.ChallengeServices))
+	for i, v := range chall.R.Challenge.R.ChallengeServices {
+		res.Challenge.Services[i] = &spec.ChallengeService{
+			UserDisplay: v.UserDisplay,
+			Hyperlink:   v.Hyperlink,
+		}
+	}
+
 	return res
 }
