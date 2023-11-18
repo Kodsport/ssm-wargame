@@ -12,6 +12,12 @@
             <FileDownload :file="file" />
         </div>
 
+        <div class="d-flex" v-for="service in props.chall.services">
+            <span class="material-symbols-outlined pe-2">router</span>
+            <a v-if="service.hyperlink" :href="service.user_display" target=”_blank”>{{ service.user_display }}</a>
+            <span v-else>{{ service.user_display }}</span>
+        </div>
+
         <div v-html="renderedDescription"></div>
 
         <div class="py-3">
