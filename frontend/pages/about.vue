@@ -73,6 +73,7 @@ const people = [
     }
 ];
 
+const url = useRequestURL()
 useHead({
     title: 'SSM - Om oss',
     link: [

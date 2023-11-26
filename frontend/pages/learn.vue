@@ -65,6 +65,7 @@
 </template>
 
 <script setup lang="ts">
+const url = useRequestURL()
 useHead({
     title: 'SSM - Läroresurser',
     link: [
