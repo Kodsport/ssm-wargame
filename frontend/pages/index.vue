@@ -101,10 +101,10 @@ const challs = useChallengeStore()
 const discordUrl = 'https://discord.gg/edKFKKU'
 const mailFormId = 'f6b65d3d-5ba1-4da9-8c42-4e3be8b6277f';
 
-const url = useRequestURL()
+const url = useRequestURL();
 useHead({
     title: 'Säkerhets-SM',
-    {
+    link: {
         rel: 'canonical',
         href: `${url.protocol}//${url.host}/`,
     },
