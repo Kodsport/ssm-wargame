@@ -74,7 +74,13 @@ const people = [
 ];
 
 useHead({
-    title: 'SSM - Om oss'
+    title: 'SSM - Om oss',
+    link: [
+        {
+            rel: 'canonical',
+            href: `${url.protocol}//${url.host}/about`,
+        },
+    ]
 })
 </script>
 

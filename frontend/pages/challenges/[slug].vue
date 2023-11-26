@@ -12,9 +12,16 @@ const store = useChallengeStore()
 const chall = computed(() => store.getBySlug(route.params.slug))
 
 const title = `SSM - ${chall.value.title}`
+const url = useRequestURL()
 
 useHead({
     title,
+    link: [
+        {
+            rel: 'canonical',
+            href: `${url.protocol}//${url.host}/challenges/` + chall.value.slug,
+        },
+    ]
 })
 
 

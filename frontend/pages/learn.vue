@@ -66,6 +66,12 @@
 
 <script setup lang="ts">
 useHead({
-    title: 'SSM - Läroresurser'
+    title: 'SSM - Läroresurser',
+    link: [
+        {
+            rel: 'canonical',
+            href: `${url.protocol}//${url.host}/learn`,
+        },
+    ]
 })
 </script>
