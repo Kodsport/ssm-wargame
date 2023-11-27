@@ -41,6 +41,8 @@
                     <div class="ssm-grid pt-3 pb-2">
                         <div v-for="chall in challenges.filter(c => c.category == category)">
                             <ChallengePreview class="pointer" @click="nav(chall.slug)" :chall="chall" />
+                            <!-- for seo -->
+                            <a class="d-none" :href="`/challenges/${chall.slug}`">{{ chall.title }}</a>
                         </div>
                     </div>
                 </div>
