@@ -18,14 +18,14 @@ provider "glesys" {
 }
 
 resource "glesys_ip" "ssm_ipv4" {
-  address = "188.126.93.221"
+  address = "46.246.30.77"
   version = "4"
   platform = "KVM"
   datacenter = "Stockholm"
 }
 
 resource "glesys_ip" "ssm_ipv6" {
-  address = "2a00:1a28:1410:5::10ba"
+  address = "2a00:1a28:1410:5::1005"
   version = "6"
   platform = "KVM"
   datacenter = "Stockholm"
@@ -39,8 +39,8 @@ resource "glesys_server" "ssm_server" {
   cpu = 2
   bandwidth = 100
 
-  hostname = "ssm-website"
-  description = "Säkerhets-SM:s hemsida (sakerhetssm.se)"
+  hostname = "ssm-server"
+  description = "Säkerhets-SM:s huvudserver. Ansvarig: Movitz/Mateusz"
 
   ipv4_address = glesys_ip.ssm_ipv4.address
   ipv6_address = glesys_ip.ssm_ipv6.address

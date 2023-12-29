@@ -23,11 +23,18 @@ runcmd:
 
 ssh_pwauth: false
 users:
-  - name: movitz
+  - name: mosu
     lock_passwd: true
     shell: /bin/bash
     groups: docker
     ssh_authorized_keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINrqJ9vWzaV1tG3kODMqfWW7owrjbpSmysT9nSR1KLSx movitz.sunar@gmail.com
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINrqJ9vWzaV1tG3kODMqfWW7owrjbpSmysT9nSR1KLSx
+    sudo: ALL=(ALL) NOPASSWD:ALL
+  - name: mati
+    lock_passwd: true
+    shell: /bin/bash
+    groups: docker
+    ssh_import_id:
+      - gh:mateuszdrwal
     sudo: ALL=(ALL) NOPASSWD:ALL
 
