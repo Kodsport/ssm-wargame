@@ -11,6 +11,6 @@ sakerhetssm.se {
 	}
 }
 
-www.sakerhetssm.se, säkerhetssm.se, www.säkerhetssm.se {
+www.sakerhetssm.se, www.xn--skerhetssm-q5a.se, www.xn--skerhetssm-q5a.se {
 	redir https://sakerhetssm.se
 }
