@@ -6,7 +6,7 @@ import (
 
 var User = ResultType("application/vnd.ssm.user", func() {
 	Attribute("id", String, func() {
-		Example("uuid todo")
+		Example("9f3e4702-d5b8-42c9-a409-a04678f23a33")
 	})
 	Attribute("email", String, func() {
 		Example("movitz.sunar@ssm.example")

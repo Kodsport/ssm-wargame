@@ -1578,33 +1578,33 @@ paths:
                 example:
                 - email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
-                  id: uuid todo
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   role: admin
                   school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
                 - email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
-                  id: uuid todo
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   role: admin
                   school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               example:
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
-                id: uuid todo
+                id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
-                id: uuid todo
+                id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
-                id: uuid todo
+                id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
-                id: uuid todo
+                id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
         "400":
@@ -1825,13 +1825,13 @@ paths:
                 solved: true
                 solvers:
                 - full_name: Movitz Sunar
-                  id: uuid todo
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
                 - full_name: Movitz Sunar
-                  id: uuid todo
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
                 - full_name: Movitz Sunar
-                  id: uuid todo
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
                 solves: 3
                 title: pwnme
@@ -1871,13 +1871,13 @@ paths:
                 solved: true
                 solvers:
                 - full_name: Movitz Sunar
-                  id: uuid todo
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
                 - full_name: Movitz Sunar
-                  id: uuid todo
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
                 - full_name: Movitz Sunar
-                  id: uuid todo
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
                 solves: 3
                 title: pwnme
@@ -2383,13 +2383,13 @@ paths:
                   solved: true
                   solvers:
                   - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   solves: 3
                   title: pwnme
@@ -2491,64 +2491,13 @@ paths:
                   solved: true
                   solvers:
                   - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   - full_name: Movitz Sunar
-                    id: uuid todo
-                    solved_at: 16123128
-                  solves: 3
-                  title: pwnme
-                challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                display_month: Januari/Februari
-                end_date: 1690884841
-                start_date: 1690874841
-              - challenge:
-                  authors:
-                  - description: Movitz gör saker
-                    full_name: Movitz Sunar
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    image_url: movitz
-                    publish: true
-                    slug: movitz
-                    sponsor: true
-                  - description: Movitz gör saker
-                    full_name: Movitz Sunar
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    image_url: movitz
-                    publish: true
-                    slug: movitz
-                    sponsor: true
-                  category: Misc
-                  ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-                  description: A heap overflow challenge
-                  files:
-                  - filename: decryptor.exe
-                    url: https://s3/bucket/key?signature
-                  - filename: decryptor.exe
-                    url: https://s3/bucket/key?signature
-                  - filename: decryptor.exe
-                    url: https://s3/bucket/key?signature
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  score: 50
-                  services:
-                  - hyperlink: true
-                    user_display: nc 0.0.0.0 1234
-                  - hyperlink: true
-                    user_display: nc 0.0.0.0 1234
-                  slug: pwnme
-                  solved: true
-                  solvers:
-                  - full_name: Movitz Sunar
-                    id: uuid todo
-                    solved_at: 16123128
-                  - full_name: Movitz Sunar
-                    id: uuid todo
-                    solved_at: 16123128
-                  - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   solves: 3
                   title: pwnme
@@ -2593,13 +2542,64 @@ paths:
                   solved: true
                   solvers:
                   - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   - full_name: Movitz Sunar
-                    id: uuid todo
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                    solved_at: 16123128
+                  solves: 3
+                  title: pwnme
+                challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                display_month: Januari/Februari
+                end_date: 1690884841
+                start_date: 1690874841
+              - challenge:
+                  authors:
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  category: Misc
+                  ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+                  description: A heap overflow challenge
+                  files:
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  - filename: decryptor.exe
+                    url: https://s3/bucket/key?signature
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  score: 50
+                  services:
+                  - hyperlink: true
+                    user_display: nc 0.0.0.0 1234
+                  - hyperlink: true
+                    user_display: nc 0.0.0.0 1234
+                  slug: pwnme
+                  solved: true
+                  solvers:
+                  - full_name: Movitz Sunar
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                    solved_at: 16123128
+                  - full_name: Movitz Sunar
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                    solved_at: 16123128
+                  - full_name: Movitz Sunar
+                    id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                     solved_at: 16123128
                   solves: 3
                   title: pwnme
@@ -2755,7 +2755,7 @@ paths:
               example:
                 email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
-                id: uuid todo
+                id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 onboarding_done: true
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
@@ -3566,7 +3566,7 @@ components:
           example: Movitz Sunar
         id:
           type: string
-          example: uuid todo
+          example: 9f3e4702-d5b8-42c9-a409-a04678f23a33
         onboarding_done:
           type: boolean
           example: true
@@ -3582,7 +3582,7 @@ components:
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
-        id: uuid todo
+        id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
         onboarding_done: true
         role: admin
         school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
@@ -4105,10 +4105,10 @@ components:
             $ref: '#/components/schemas/SsmSolver'
           example:
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
         solves:
           type: integer
@@ -4164,13 +4164,13 @@ components:
         solved: true
         solvers:
         - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         solves: 3
         title: pwnme
@@ -4225,59 +4225,13 @@ components:
         solved: true
         solvers:
         - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        solves: 3
-        title: pwnme
-      - authors:
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
-        category: Misc
-        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-        description: A heap overflow challenge
-        files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        score: 50
-        services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        slug: pwnme
-        solved: true
-        solvers:
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        - full_name: Movitz Sunar
-          id: uuid todo
-          solved_at: 16123128
-        - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         solves: 3
         title: pwnme
@@ -4317,13 +4271,59 @@ components:
         solved: true
         solvers:
         - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         - full_name: Movitz Sunar
-          id: uuid todo
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        solves: 3
+        title: pwnme
+      - authors:
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        category: Misc
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+        score: 50
+        services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        slug: pwnme
+        solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         solves: 3
         title: pwnme
@@ -4368,14 +4368,14 @@ components:
           example: Movitz Sunar
         id:
           type: string
-          example: uuid todo
+          example: 9f3e4702-d5b8-42c9-a409-a04678f23a33
         solved_at:
           type: integer
           example: 16123128
           format: int64
       example:
         full_name: Movitz Sunar
-        id: uuid todo
+        id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
         solved_at: 16123128
       required:
       - solved_at
@@ -4394,7 +4394,7 @@ components:
           example: Movitz Sunar
         id:
           type: string
-          example: uuid todo
+          example: 9f3e4702-d5b8-42c9-a409-a04678f23a33
         role:
           type: string
           example: admin
@@ -4404,7 +4404,7 @@ components:
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
-        id: uuid todo
+        id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
         role: admin
         school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
       required:
@@ -4473,13 +4473,13 @@ components:
           solved: true
           solvers:
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           solves: 3
           title: pwnme
@@ -4543,13 +4543,13 @@ components:
           solved: true
           solvers:
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           solves: 3
           title: pwnme
@@ -4594,13 +4594,13 @@ components:
           solved: true
           solvers:
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           - full_name: Movitz Sunar
-            id: uuid todo
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
           solves: 3
           title: pwnme
