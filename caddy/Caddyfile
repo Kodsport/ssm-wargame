@@ -11,10 +11,8 @@ sakerhetssm.se {
 	}
 }
 
-spooktober.sakerhetssm.se {
+www.sakerhetssm.se, säkerhetssm.se, www.säkerhetssm.se {
 	handle {
-		root * /var/www/spooktober
-		try_files {path} /index.html
-		file_server
+		redir https://sakerhetssm.se
 	}
 }
