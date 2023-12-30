@@ -113,7 +113,10 @@ func realMain() error {
 
 	var handler http.Handler = mux
 
-	handler = cors.AllowAll().Handler(handler) // TODO
+	handler = cors.New(cors.Options{
+		AllowedOrigins: []string{"sakerhetssm.se"},
+		MaxAge:         60 * 60 * 24,
+	}).Handler(handler)
 
 	srv := &http.Server{
 		Addr:    "0.0.0.0:8000",
