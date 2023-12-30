@@ -1,3 +1,4 @@
 .env
 .env.backend
+.env.frontend
 cmd/api/__debug_bin

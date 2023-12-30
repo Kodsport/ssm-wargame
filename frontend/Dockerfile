@@ -5,7 +5,6 @@ COPY package.json yarn.lock /app/
 RUN yarn
 
 COPY . /app/
-COPY .env /app/.env
 ENV prod=true
 RUN yarn build
 
