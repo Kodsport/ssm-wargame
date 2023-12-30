@@ -12,7 +12,7 @@ sakerhetssm.se {
 			-x-powered-by
 			-server
 
-			content-security-policy-report-only "base-uri 'none'; object-src 'none'; script-src 'self'; frame-ancestors 'none';"
+			content-security-policy-report-only "base-uri 'none'; object-src 'none'; script-src 'unsafe-inline' 'self'; script-src-attr 'none'; frame-ancestors 'none';"
 
 			strict-transport-security max-age=31536000;
 		}
