@@ -11,6 +11,6 @@ sakerhetssm.se {
 	}
 }
 
-www.sakerhetssm.se, www.xn--skerhetssm-q5a.se, www.xn--skerhetssm-q5a.se {
+www.sakerhetssm.se, xn--skerhetssm-q5a.se, www.xn--skerhetssm-q5a.se {
 	redir https://sakerhetssm.se
 }
