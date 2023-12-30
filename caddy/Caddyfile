@@ -12,7 +12,5 @@ sakerhetssm.se {
 }
 
 www.sakerhetssm.se, säkerhetssm.se, www.säkerhetssm.se {
-	handle {
-		redir https://sakerhetssm.se
-	}
+	redir https://sakerhetssm.se
 }
