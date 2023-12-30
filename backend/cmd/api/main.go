@@ -11,7 +11,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/joho/godotenv"
-	"github.com/rs/cors"
 	"go.uber.org/zap"
 
 	_ "github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-psql/driver"
@@ -113,10 +112,10 @@ func realMain() error {
 
 	var handler http.Handler = mux
 
-	handler = cors.New(cors.Options{
-		AllowedOrigins: []string{"sakerhetssm.se"},
-		MaxAge:         60 * 60 * 24,
-	}).Handler(handler)
+	//	handler = cors.New(cors.Options{
+	//		AllowedOrigins: []string{"sakerhetssm.se"},
+	//		MaxAge:         60 * 60 * 24,
+	//	}).Handler(handler)
 
 	srv := &http.Server{
 		Addr:    "0.0.0.0:8000",
