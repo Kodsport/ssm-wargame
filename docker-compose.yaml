@@ -18,6 +18,7 @@ services:
   frontend:
     restart: always
     build: ./frontend
+    env_file: frontend/.env
 
   caddy:
     build: ./caddy
