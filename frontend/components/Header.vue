@@ -14,7 +14,7 @@
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/challenges">
-              Utmaningar
+              Problemarkiv
             </nuxt-link>
           </li>
           <li class="nav-item">
