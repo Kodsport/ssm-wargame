@@ -30,12 +30,10 @@
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <p>
-                        I år introducerar vi även en introkurs för både helt nya deltagare och mer erfarna, kursen är gratis
-                        och hålls i samarbete med FRO. Anmälan är stängd.
-                    </p>
-                </div>
+                <p>
+                    Registrera dig på tävlingsplatformen för att detla!
+                    <a class="btn btn-primary" href="https://ctf.sakerhetssm.se/signin">Till tävlingsplatformen</a>
+                </p>
                 <p>
                     Joina gärna
                     <a :href="discordUrl">Kodsports Discordserver</a>
