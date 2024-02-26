@@ -31,7 +31,7 @@
                     </ul>
                 </div>
                 <p>
-                    Registrera dig på tävlingsplatformen för att detla!
+                    Registrera dig på tävlingsplatformen för att delta!
                     <a class="btn btn-primary" href="https://ctf.sakerhetssm.se/signin">Till tävlingsplatformen</a>
                 </p>
                 <p>
