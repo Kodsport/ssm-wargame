@@ -71,7 +71,7 @@ const people = [
         name: "Antoni Kowalik",
         role: "Projektledare",
         url: "/antoni.png",
-        mail: "antoni.kowalil@kodsport.se"
+        mail: "antoni.kowalik@kodsport.se"
     },
     {
         name: "Mateusz Drwal",
