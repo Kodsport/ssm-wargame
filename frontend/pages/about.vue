@@ -28,6 +28,7 @@
                 <img class="mw-100 rounded" :src="person.url" alt="">
                 <h5 class="pt-3">{{ person.name }}</h5>
                 <i>{{ person.role }}</i>
+                <a :href="`mailto:${person.mail}`">{{ person.mail }}</a>
             </div>
         </div>
 
@@ -48,6 +49,10 @@
                     träningsläger i tävlingsprogrammering och Capture
                     The Flag (datorsäkerhet).
                 </p>
+                <h3 class="text-primary">Kontakt</h3>
+                <p>
+                    Säkerhets-SM kan nås via mail på <a href="mailto:sakerhetssm@kodsport.se">sakerhetssm@kodsport.se</a>
+                </p>
             </div>
         </div>
     </div>
@@ -59,17 +64,20 @@ const people = [
     {
         name: "Martin Wennberg",
         role: "Projektledare",
-        url: "/martin.png"
+        url: "/martin.png",
+        mail: "martin.wennberg@kodsport.se"
     },
     {
         name: "Antoni Kowalik",
         role: "Projektledare",
-        url: "/antoni.png"
+        url: "/antoni.png",
+        mail: "antoni.kowalil@kodsport.se"
     },
     {
         name: "Mateusz Drwal",
-        role: "Infra",
-        url: "/mateusz.png"
+        role: "Tekniskt ansvarig",
+        url: "/mateusz.png",
+        mail: "mateusz.drwal@kodsport.se"
     }
 ];
 
