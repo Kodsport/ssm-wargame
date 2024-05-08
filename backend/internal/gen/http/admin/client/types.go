@@ -128,7 +128,8 @@ type CreateCTFEventRequestBody struct {
 // CreateCTFEventImportTokenRequestBody is the type of the "admin" service
 // "CreateCTFEventImportToken" endpoint HTTP request body.
 type CreateCTFEventImportTokenRequestBody struct {
-	EventID *string `form:"event_id,omitempty" json:"event_id,omitempty" xml:"event_id,omitempty"`
+	Name      string `form:"name" json:"name" xml:"name"`
+	ExpiresIn string `form:"expires_in" json:"expires_in" xml:"expires_in"`
 }
 
 // CreateCourseRequestBody is the type of the "admin" service "CreateCourse"
@@ -1874,7 +1875,8 @@ func NewCreateCTFEventRequestBody(p *admin.CreateCTFEventPayload) *CreateCTFEven
 // service.
 func NewCreateCTFEventImportTokenRequestBody(p *admin.CreateCTFEventImportTokenPayload) *CreateCTFEventImportTokenRequestBody {
 	body := &CreateCTFEventImportTokenRequestBody{
-		EventID: p.EventID,
+		Name:      p.Name,
+		ExpiresIn: p.ExpiresIn,
 	}
 	return body
 }

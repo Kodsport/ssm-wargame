@@ -80,10 +80,25 @@ func (s *service) CreateCTFEventImportToken(ctx context.Context, req *spec.Creat
 	if err != nil {
 		return nil, err
 	}
+
+	var expiresAt time.Time
+	switch req.ExpiresIn {
+	case "hour":
+		expiresAt = time.Now().Add(time.Hour)
+	case "week":
+		expiresAt = time.Now().Add(time.Hour * 24 * 7)
+	case "year":
+		expiresAt = time.Now().Add(time.Hour * 24 * 7 * 52)
+	default:
+		return nil, errors.New("bad time period")
+	}
+
 	t := models.ChalltoolsImportToken{
 		ID:        id.String(),
 		Token:     string(hash),
-		ExpiresAt: time.Now().Add(time.Hour),
+		ExpiresAt: expiresAt,
+		Name:      req.Name,
+		LastUsed:  time.Unix(0, 0),
 	}
 	err = t.Insert(ctx, s.db, boil.Infer())
 	if err != nil {

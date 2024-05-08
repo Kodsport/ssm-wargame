@@ -128,7 +128,8 @@ type CreateCTFEventRequestBody struct {
 // CreateCTFEventImportTokenRequestBody is the type of the "admin" service
 // "CreateCTFEventImportToken" endpoint HTTP request body.
 type CreateCTFEventImportTokenRequestBody struct {
-	EventID *string `form:"event_id,omitempty" json:"event_id,omitempty" xml:"event_id,omitempty"`
+	Name      *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	ExpiresIn *string `form:"expires_in,omitempty" json:"expires_in,omitempty" xml:"expires_in,omitempty"`
 }
 
 // CreateCourseRequestBody is the type of the "admin" service "CreateCourse"
@@ -3175,7 +3176,8 @@ func NewDeleteCTFEventPayload(id string, token string) *admin.DeleteCTFEventPayl
 // CreateCTFEventImportToken endpoint payload.
 func NewCreateCTFEventImportTokenPayload(body *CreateCTFEventImportTokenRequestBody, token string) *admin.CreateCTFEventImportTokenPayload {
 	v := &admin.CreateCTFEventImportTokenPayload{
-		EventID: body.EventID,
+		Name:      *body.Name,
+		ExpiresIn: *body.ExpiresIn,
 	}
 	v.Token = token
 
@@ -3417,8 +3419,16 @@ func ValidateCreateCTFEventRequestBody(body *CreateCTFEventRequestBody) (err err
 // ValidateCreateCTFEventImportTokenRequestBody runs the validations defined on
 // CreateCTFEventImportTokenRequestBody
 func ValidateCreateCTFEventImportTokenRequestBody(body *CreateCTFEventImportTokenRequestBody) (err error) {
-	if body.EventID != nil {
-		err = goa.MergeErrors(err, goa.ValidateFormat("body.event_id", *body.EventID, goa.FormatUUID))
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ExpiresIn == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("expires_in", "body"))
+	}
+	if body.ExpiresIn != nil {
+		if !(*body.ExpiresIn == "hour" || *body.ExpiresIn == "week" || *body.ExpiresIn == "year") {
+			err = goa.MergeErrors(err, goa.InvalidEnumValueError("body.expires_in", *body.ExpiresIn, []interface{}{"hour", "week", "year"}))
+		}
 	}
 	return
 }

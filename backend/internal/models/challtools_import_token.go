@@ -27,6 +27,8 @@ type ChalltoolsImportToken struct {
 	Token     string    `boil:"token" json:"token" toml:"token" yaml:"token"`
 	ExpiresAt time.Time `boil:"expires_at" json:"expires_at" toml:"expires_at" yaml:"expires_at"`
 	CreatedAt time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	Name      string    `boil:"name" json:"name" toml:"name" yaml:"name"`
+	LastUsed  time.Time `boil:"last_used" json:"last_used" toml:"last_used" yaml:"last_used"`
 
 	R *challtoolsImportTokenR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L challtoolsImportTokenL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -37,11 +39,15 @@ var ChalltoolsImportTokenColumns = struct {
 	Token     string
 	ExpiresAt string
 	CreatedAt string
+	Name      string
+	LastUsed  string
 }{
 	ID:        "id",
 	Token:     "token",
 	ExpiresAt: "expires_at",
 	CreatedAt: "created_at",
+	Name:      "name",
+	LastUsed:  "last_used",
 }
 
 var ChalltoolsImportTokenTableColumns = struct {
@@ -49,11 +55,15 @@ var ChalltoolsImportTokenTableColumns = struct {
 	Token     string
 	ExpiresAt string
 	CreatedAt string
+	Name      string
+	LastUsed  string
 }{
 	ID:        "challtools_import_token.id",
 	Token:     "challtools_import_token.token",
 	ExpiresAt: "challtools_import_token.expires_at",
 	CreatedAt: "challtools_import_token.created_at",
+	Name:      "challtools_import_token.name",
+	LastUsed:  "challtools_import_token.last_used",
 }
 
 // Generated where
@@ -63,11 +73,15 @@ var ChalltoolsImportTokenWhere = struct {
 	Token     whereHelperstring
 	ExpiresAt whereHelpertime_Time
 	CreatedAt whereHelpertime_Time
+	Name      whereHelperstring
+	LastUsed  whereHelpertime_Time
 }{
 	ID:        whereHelperstring{field: "\"challtools_import_token\".\"id\""},
 	Token:     whereHelperstring{field: "\"challtools_import_token\".\"token\""},
 	ExpiresAt: whereHelpertime_Time{field: "\"challtools_import_token\".\"expires_at\""},
 	CreatedAt: whereHelpertime_Time{field: "\"challtools_import_token\".\"created_at\""},
+	Name:      whereHelperstring{field: "\"challtools_import_token\".\"name\""},
+	LastUsed:  whereHelpertime_Time{field: "\"challtools_import_token\".\"last_used\""},
 }
 
 // ChalltoolsImportTokenRels is where relationship names are stored.
@@ -87,8 +101,8 @@ func (*challtoolsImportTokenR) NewStruct() *challtoolsImportTokenR {
 type challtoolsImportTokenL struct{}
 
 var (
-	challtoolsImportTokenAllColumns            = []string{"id", "token", "expires_at", "created_at"}
-	challtoolsImportTokenColumnsWithoutDefault = []string{"id", "token", "expires_at"}
+	challtoolsImportTokenAllColumns            = []string{"id", "token", "expires_at", "created_at", "name", "last_used"}
+	challtoolsImportTokenColumnsWithoutDefault = []string{"id", "token", "expires_at", "name", "last_used"}
 	challtoolsImportTokenColumnsWithDefault    = []string{"created_at"}
 	challtoolsImportTokenPrimaryKeyColumns     = []string{"id"}
 	challtoolsImportTokenGeneratedColumns      = []string{}

@@ -1150,22 +1150,22 @@ Example:
          {
             "flag": "fl4g_l0l",
             "type": "regex"
-         },
-         {
-            "flag": "fl4g_l0l",
-            "type": "regex"
-         },
-         {
-            "flag": "fl4g_l0l",
-            "type": "regex"
          }
       ],
       "human_metadata": {
-         "event_name": "A est est labore eligendi."
+         "event_name": "Architecto a est est labore eligendi."
       },
       "order": 5,
       "score": 100,
       "services": [
+         {
+            "hyperlink": true,
+            "user_display": "nc 0.0.0.0 1234"
+         },
+         {
+            "hyperlink": true,
+            "user_display": "nc 0.0.0.0 1234"
+         },
          {
             "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"
@@ -1226,7 +1226,8 @@ CreateCTFEventImportToken implements CreateCTFEventImportToken.
 
 Example:
     %[1]s admin create-ctf-event-import-token --body '{
-      "event_id": "e3bb4dc5-9479-42ce-aed3-b41e8139fccb"
+      "expires_in": "year",
+      "name": "e3bb4dc5-9479-42ce-aed3-b41e8139fccb"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }

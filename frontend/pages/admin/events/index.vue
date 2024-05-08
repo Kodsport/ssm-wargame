@@ -24,10 +24,13 @@
                 <div>
                     <h3>Create import token</h3>
                     <div class="form-group">
-                        <label>Event (optional)</label>
-                        <select class="form-control" v-model="form.event_id">
-                            <option :value="null">No event</option>
-                            <option v-for="event in challs.events" :value="event.id">{{ event.name }}</option>
+                        <label>Name</label>
+                        <input type="text" v-model="tokenForm.name">
+                    </div>
+                    <div class="form-group">
+                        <label>Expires</label>
+                        <select class="form-control" v-model="tokenForm.expires_in">
+                            <option v-for="period in ['hour', 'week', 'year']" :value="period">{{ period }}</option>
                         </select>
                     </div>
                     <div class="form-group pt-2">
@@ -39,7 +42,6 @@
                 </div>
                 <div v-if="newToken" class="mt-3 alert alert-success">
                     <p>{{ newToken }}</p>
-                    <p>Expires in 1 hour</p>
                 </div>
             </div>
 
@@ -80,6 +82,11 @@ const form = ref({
     event_id: null,
 })
 
+const tokenForm = ref({
+    name: '',
+    expires_in: 'hour'
+})
+
 onMounted(() => {
     challs.getEvents()
     challs.getChallenges()
@@ -98,9 +105,7 @@ async function createEvent() {
 async function createToken() {
     const resp = await http('/admin/import_token', {
         method: 'POST',
-        body: {
-            event_id: form.value.event_id
-        }
+        body: tokenForm.value
     })
 
     newToken.value = resp.token

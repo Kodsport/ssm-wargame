@@ -34,7 +34,6 @@ func (s *service) authImport(ctx context.Context, token string) (*models.Challto
 	}
 	t, err := models.ChalltoolsImportTokens(
 		models.ChalltoolsImportTokenWhere.ID.EQ(uuidID.String()),
-		models.ChalltoolsImportTokenWhere.ExpiresAt.GT(time.Now()),
 	).One(ctx, s.db)
 	if err != nil {
 		return nil, err
@@ -43,6 +42,17 @@ func (s *service) authImport(ctx context.Context, token string) (*models.Challto
 	if err = bcrypt.CompareHashAndPassword([]byte(t.Token), []byte(token)); err != nil {
 		return nil, err
 	}
+
+	if t.ExpiresAt.Before(time.Now()) {
+		return nil, errors.New("token is expired")
+	}
+
+	t.LastUsed = time.Now()
+	_, err = t.Update(ctx, s.db, boil.Whitelist(models.ChalltoolsImportTokenColumns.LastUsed))
+	if err != nil {
+		return nil, err
+	}
+
 	return t, nil
 }
 

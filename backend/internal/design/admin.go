@@ -279,10 +279,13 @@ var _ = Service("admin", func() {
 	Method("CreateCTFEventImportToken", func() {
 		Payload(func() {
 			Extend(TokenPayload)
-			Attribute("event_id", String, func() {
+			Attribute("name", String, func() {
 				Example("e3bb4dc5-9479-42ce-aed3-b41e8139fccb")
-				Format(FormatUUID)
 			})
+			Attribute("expires_in", String, func() {
+				Enum("hour", "week", "year")
+			})
+			Required("name", "expires_in")
 		})
 		Result(func() {
 			Attribute("token")

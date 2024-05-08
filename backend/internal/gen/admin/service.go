@@ -315,8 +315,9 @@ type DeleteCTFEventPayload struct {
 // CreateCTFEventImportTokenPayload is the payload type of the admin service
 // CreateCTFEventImportToken method.
 type CreateCTFEventImportTokenPayload struct {
-	EventID *string
-	Token   string
+	Name      string
+	ExpiresIn string
+	Token     string
 }
 
 // CreateCTFEventImportTokenResult is the result type of the admin service
