@@ -9,7 +9,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
-	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
@@ -82,10 +81,9 @@ func (s *service) CreateCTFEventImportToken(ctx context.Context, req *spec.Creat
 		return nil, err
 	}
 	t := models.ChalltoolsImportToken{
-		ID:         id.String(),
-		Token:      string(hash),
-		ExpiresAt:  time.Now().Add(time.Hour),
-		CTFEventID: null.StringFromPtr(req.EventID),
+		ID:        id.String(),
+		Token:     string(hash),
+		ExpiresAt: time.Now().Add(time.Hour),
 	}
 	err = t.Insert(ctx, s.db, boil.Infer())
 	if err != nil {

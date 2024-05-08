@@ -104,18 +104,19 @@ type AddFlagRequestBody struct {
 // ChalltoolsImportRequestBody is the type of the "admin" service
 // "ChalltoolsImport" endpoint HTTP request body.
 type ChalltoolsImportRequestBody struct {
-	Title            *string                          `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
-	Description      *string                          `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	Authors          []string                         `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
-	Categories       []string                         `form:"categories,omitempty" json:"categories,omitempty" xml:"categories,omitempty"`
-	Score            *int                             `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-	ChallengeID      *string                          `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
-	FlagFormatPrefix *string                          `form:"flag_format_prefix,omitempty" json:"flag_format_prefix,omitempty" xml:"flag_format_prefix,omitempty"`
-	FlagFormatSuffix *string                          `form:"flag_format_suffix,omitempty" json:"flag_format_suffix,omitempty" xml:"flag_format_suffix,omitempty"`
-	FileUrls         []string                         `form:"file_urls,omitempty" json:"file_urls,omitempty" xml:"file_urls,omitempty"`
-	Flags            []*ImportChallFlagRequestBody    `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
-	Order            *int                             `form:"order,omitempty" json:"order,omitempty" xml:"order,omitempty"`
-	Services         []*ImportChallServiceRequestBody `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Title            *string                              `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
+	Description      *string                              `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	Authors          []string                             `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Categories       []string                             `form:"categories,omitempty" json:"categories,omitempty" xml:"categories,omitempty"`
+	Score            *int                                 `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	ChallengeID      *string                              `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
+	FlagFormatPrefix *string                              `form:"flag_format_prefix,omitempty" json:"flag_format_prefix,omitempty" xml:"flag_format_prefix,omitempty"`
+	FlagFormatSuffix *string                              `form:"flag_format_suffix,omitempty" json:"flag_format_suffix,omitempty" xml:"flag_format_suffix,omitempty"`
+	FileUrls         []string                             `form:"file_urls,omitempty" json:"file_urls,omitempty" xml:"file_urls,omitempty"`
+	Flags            []*ImportChallFlagRequestBody        `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
+	Order            *int                                 `form:"order,omitempty" json:"order,omitempty" xml:"order,omitempty"`
+	Services         []*ImportChallServiceRequestBody     `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	HumanMetadata    *ImportChallHumanMetadataRequestBody `form:"human_metadata,omitempty" json:"human_metadata,omitempty" xml:"human_metadata,omitempty"`
 }
 
 // CreateCTFEventRequestBody is the type of the "admin" service
@@ -1701,6 +1702,12 @@ type ImportChallServiceRequestBody struct {
 	Hyperlink   *bool   `form:"hyperlink,omitempty" json:"hyperlink,omitempty" xml:"hyperlink,omitempty"`
 }
 
+// ImportChallHumanMetadataRequestBody is used to define fields on request body
+// types.
+type ImportChallHumanMetadataRequestBody struct {
+	EventName *string `form:"event_name,omitempty" json:"event_name,omitempty" xml:"event_name,omitempty"`
+}
+
 // NewSsmAdminChallengeResponseCollection builds the HTTP response body from
 // the result of the "ListChallenges" endpoint of the "admin" service.
 func NewSsmAdminChallengeResponseCollection(res adminviews.SsmAdminChallengeCollectionView) SsmAdminChallengeResponseCollection {
@@ -3125,6 +3132,9 @@ func NewChalltoolsImportPayload(body *ChalltoolsImportRequestBody, importToken s
 		for i, val := range body.Services {
 			v.Services[i] = unmarshalImportChallServiceRequestBodyToAdminImportChallService(val)
 		}
+	}
+	if body.HumanMetadata != nil {
+		v.HumanMetadata = unmarshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata(body.HumanMetadata)
 	}
 	v.ImportToken = importToken
 

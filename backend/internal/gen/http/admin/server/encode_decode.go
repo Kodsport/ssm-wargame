@@ -2664,6 +2664,20 @@ func unmarshalImportChallServiceRequestBodyToAdminImportChallService(v *ImportCh
 	return res
 }
 
+// unmarshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata
+// builds a value of type *admin.ImportChallHumanMetadata from a value of type
+// *ImportChallHumanMetadataRequestBody.
+func unmarshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata(v *ImportChallHumanMetadataRequestBody) *admin.ImportChallHumanMetadata {
+	if v == nil {
+		return nil
+	}
+	res := &admin.ImportChallHumanMetadata{
+		EventName: v.EventName,
+	}
+
+	return res
+}
+
 // marshalAdminCTFEventToCTFEventResponse builds a value of type
 // *CTFEventResponse from a value of type *admin.CTFEvent.
 func marshalAdminCTFEventToCTFEventResponse(v *admin.CTFEvent) *CTFEventResponse {

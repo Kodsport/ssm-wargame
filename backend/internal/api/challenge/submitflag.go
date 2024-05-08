@@ -66,11 +66,6 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 		}
 	}
 
-	if err != nil {
-		s.log.Error("FlagExists failed", zap.Error(err), utils.C(ctx))
-		return err
-	}
-
 	attempt := models.Submission{
 		ID:          uuid.New().String(),
 		UserID:      user.ID,
@@ -99,7 +94,7 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 				UserID:      user.ID,
 				ChallengeID: challID.String(),
 			}
-			schoolSolve.Insert(ctx, tx, boil.Infer())
+			err = schoolSolve.Insert(ctx, tx, boil.Infer())
 			if err != nil {
 				return err
 			}

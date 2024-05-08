@@ -1154,15 +1154,18 @@ Example:
          {
             "flag": "fl4g_l0l",
             "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
          }
       ],
+      "human_metadata": {
+         "event_name": "A est est labore eligendi."
+      },
       "order": 5,
       "score": 100,
       "services": [
-         {
-            "hyperlink": true,
-            "user_display": "nc 0.0.0.0 1234"
-         },
          {
             "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"

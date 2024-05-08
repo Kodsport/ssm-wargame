@@ -288,6 +288,7 @@ type ChalltoolsImportPayload struct {
 	Flags            []*ImportChallFlag
 	Order            *int
 	Services         []*ImportChallService
+	HumanMetadata    *ImportChallHumanMetadata
 }
 
 // ListCTFEventsPayload is the payload type of the admin service ListCTFEvents
@@ -462,6 +463,10 @@ type ImportChallFlag struct {
 type ImportChallService struct {
 	UserDisplay string
 	Hyperlink   bool
+}
+
+type ImportChallHumanMetadata struct {
+	EventName *string
 }
 
 type CTFEvent struct {

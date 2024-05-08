@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -47,7 +48,7 @@ func (s *service) authImport(ctx context.Context, token string) (*models.Challto
 
 func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImportPayload) error {
 
-	token, err := s.authImport(ctx, req.ImportToken)
+	_, err := s.authImport(ctx, req.ImportToken)
 	if err != nil {
 		fmt.Println(err.Error())
 
@@ -89,6 +90,25 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		categoryID = cat.ID
 	}
 
+	var eventID *string
+
+	if req.HumanMetadata != nil && req.HumanMetadata.EventName != nil {
+
+		event, err := models.CTFEvents(
+			models.CTFEventWhere.Name.EQ(*req.HumanMetadata.EventName),
+		).One(ctx, tx)
+
+		if err == sql.ErrNoRows {
+			return errors.New("no such event found, did you misspell?")
+		}
+
+		if err != nil {
+			return err
+		}
+
+		eventID = &event.ID
+	}
+
 	chall := models.Challenge{
 		ID:          req.ChallengeID,
 		Slug:        utils.Slugify(req.Title),
@@ -96,7 +116,7 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		Description: req.Description,
 		StaticScore: null.IntFromPtr(req.Score),
 		CategoryID:  categoryID,
-		CTFEventID:  token.CTFEventID,
+		CTFEventID:  null.StringFromPtr(eventID),
 		Hide:        true,
 	}
 

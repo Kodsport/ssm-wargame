@@ -47,6 +47,10 @@ var ImportChallService = Type("ImportChallService", func() {
 	Attribute("hyperlink", Boolean)
 })
 
+var ImportChallHumanMetadata = Type("ImportChallHumanMetadata", func() {
+	Attribute("event_name", String)
+})
+
 var ImportChallFlag = Type("ImportChallFlag", func() {
 	Attribute("type", String, func() {
 		Example("regex")
@@ -93,6 +97,7 @@ var ChallImport = Type("ChallImport", func() {
 		Example(5)
 	})
 	Attribute("services", ArrayOf(ImportChallService))
+	Attribute("human_metadata", ImportChallHumanMetadata)
 
 	Required("title", "description", "challenge_id")
 })

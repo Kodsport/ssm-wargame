@@ -104,18 +104,19 @@ type AddFlagRequestBody struct {
 // ChalltoolsImportRequestBody is the type of the "admin" service
 // "ChalltoolsImport" endpoint HTTP request body.
 type ChalltoolsImportRequestBody struct {
-	Title            string                           `form:"title" json:"title" xml:"title"`
-	Description      string                           `form:"description" json:"description" xml:"description"`
-	Authors          []string                         `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
-	Categories       []string                         `form:"categories,omitempty" json:"categories,omitempty" xml:"categories,omitempty"`
-	Score            *int                             `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
-	ChallengeID      string                           `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
-	FlagFormatPrefix *string                          `form:"flag_format_prefix,omitempty" json:"flag_format_prefix,omitempty" xml:"flag_format_prefix,omitempty"`
-	FlagFormatSuffix *string                          `form:"flag_format_suffix,omitempty" json:"flag_format_suffix,omitempty" xml:"flag_format_suffix,omitempty"`
-	FileUrls         []string                         `form:"file_urls,omitempty" json:"file_urls,omitempty" xml:"file_urls,omitempty"`
-	Flags            []*ImportChallFlagRequestBody    `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
-	Order            *int                             `form:"order,omitempty" json:"order,omitempty" xml:"order,omitempty"`
-	Services         []*ImportChallServiceRequestBody `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	Title            string                               `form:"title" json:"title" xml:"title"`
+	Description      string                               `form:"description" json:"description" xml:"description"`
+	Authors          []string                             `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Categories       []string                             `form:"categories,omitempty" json:"categories,omitempty" xml:"categories,omitempty"`
+	Score            *int                                 `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	ChallengeID      string                               `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
+	FlagFormatPrefix *string                              `form:"flag_format_prefix,omitempty" json:"flag_format_prefix,omitempty" xml:"flag_format_prefix,omitempty"`
+	FlagFormatSuffix *string                              `form:"flag_format_suffix,omitempty" json:"flag_format_suffix,omitempty" xml:"flag_format_suffix,omitempty"`
+	FileUrls         []string                             `form:"file_urls,omitempty" json:"file_urls,omitempty" xml:"file_urls,omitempty"`
+	Flags            []*ImportChallFlagRequestBody        `form:"flags,omitempty" json:"flags,omitempty" xml:"flags,omitempty"`
+	Order            *int                                 `form:"order,omitempty" json:"order,omitempty" xml:"order,omitempty"`
+	Services         []*ImportChallServiceRequestBody     `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
+	HumanMetadata    *ImportChallHumanMetadataRequestBody `form:"human_metadata,omitempty" json:"human_metadata,omitempty" xml:"human_metadata,omitempty"`
 }
 
 // CreateCTFEventRequestBody is the type of the "admin" service
@@ -1681,6 +1682,12 @@ type ImportChallServiceRequestBody struct {
 	Hyperlink   bool   `form:"hyperlink" json:"hyperlink" xml:"hyperlink"`
 }
 
+// ImportChallHumanMetadataRequestBody is used to define fields on request body
+// types.
+type ImportChallHumanMetadataRequestBody struct {
+	EventName *string `form:"event_name,omitempty" json:"event_name,omitempty" xml:"event_name,omitempty"`
+}
+
 // CTFEventResponse is used to define fields on response body types.
 type CTFEventResponse struct {
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
@@ -1846,6 +1853,9 @@ func NewChalltoolsImportRequestBody(p *admin.ChalltoolsImportPayload) *Challtool
 		for i, val := range p.Services {
 			body.Services[i] = marshalAdminImportChallServiceToImportChallServiceRequestBody(val)
 		}
+	}
+	if p.HumanMetadata != nil {
+		body.HumanMetadata = marshalAdminImportChallHumanMetadataToImportChallHumanMetadataRequestBody(p.HumanMetadata)
 	}
 	return body
 }

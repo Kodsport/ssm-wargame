@@ -475,7 +475,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 	{
 		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"A est est labore eligendi.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 
@@ -525,6 +525,9 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 		for i, val := range body.Services {
 			v.Services[i] = marshalImportChallServiceRequestBodyToAdminImportChallService(val)
 		}
+	}
+	if body.HumanMetadata != nil {
+		v.HumanMetadata = marshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata(body.HumanMetadata)
 	}
 	v.ImportToken = importToken
 

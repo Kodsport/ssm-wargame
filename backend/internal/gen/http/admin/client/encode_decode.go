@@ -3266,6 +3266,20 @@ func marshalAdminImportChallServiceToImportChallServiceRequestBody(v *admin.Impo
 	return res
 }
 
+// marshalAdminImportChallHumanMetadataToImportChallHumanMetadataRequestBody
+// builds a value of type *ImportChallHumanMetadataRequestBody from a value of
+// type *admin.ImportChallHumanMetadata.
+func marshalAdminImportChallHumanMetadataToImportChallHumanMetadataRequestBody(v *admin.ImportChallHumanMetadata) *ImportChallHumanMetadataRequestBody {
+	if v == nil {
+		return nil
+	}
+	res := &ImportChallHumanMetadataRequestBody{
+		EventName: v.EventName,
+	}
+
+	return res
+}
+
 // marshalImportChallFlagRequestBodyToAdminImportChallFlag builds a value of
 // type *admin.ImportChallFlag from a value of type *ImportChallFlagRequestBody.
 func marshalImportChallFlagRequestBodyToAdminImportChallFlag(v *ImportChallFlagRequestBody) *admin.ImportChallFlag {
@@ -3290,6 +3304,20 @@ func marshalImportChallServiceRequestBodyToAdminImportChallService(v *ImportChal
 	res := &admin.ImportChallService{
 		UserDisplay: v.UserDisplay,
 		Hyperlink:   v.Hyperlink,
+	}
+
+	return res
+}
+
+// marshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata
+// builds a value of type *admin.ImportChallHumanMetadata from a value of type
+// *ImportChallHumanMetadataRequestBody.
+func marshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata(v *ImportChallHumanMetadataRequestBody) *admin.ImportChallHumanMetadata {
+	if v == nil {
+		return nil
+	}
+	res := &admin.ImportChallHumanMetadata{
+		EventName: v.EventName,
 	}
 
 	return res
