@@ -148,9 +148,9 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 		models.ChallengeColumns.Slug:        req.Slug,
 		models.ChallengeColumns.Description: req.Description,
 		models.ChallengeColumns.PublishAt:   pubAt,
-		models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID),
-		models.ChallengeColumns.CategoryID:  req.CategoryID,
-		models.ChallengeColumns.Hide:        req.Hide,
+		// models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID), // TODO: hacky for now, issue where frontend doesnt send this field
+		models.ChallengeColumns.CategoryID: req.CategoryID,
+		models.ChallengeColumns.Hide:       req.Hide,
 	})
 	if err != nil {
 		s.log.Error("could not update chall", zap.Error(err))
