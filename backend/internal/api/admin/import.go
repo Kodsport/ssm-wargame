@@ -130,7 +130,7 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		Hide:        true,
 	}
 
-	err = chall.Upsert(ctx, tx, true, []string{}, boil.Blacklist("hide", "static_score", "slug"), boil.Blacklist())
+	err = chall.Upsert(ctx, tx, true, []string{}, boil.Blacklist("hide", "slug"), boil.Blacklist())
 	if err != nil {
 		s.log.Error("could not upsert chall", zap.Error(err))
 		return err
