@@ -32,6 +32,7 @@
               Tidigare år
             </a>
             <ul class="dropdown-menu">
+              <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2024">2024</a></li>
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2023">2023</a></li>
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2022">2022</a></li>
               <li><a class="text-primary dropdown-item" href="https://arkiv.sakerhetssm.se/ssm2021">2021</a></li>
