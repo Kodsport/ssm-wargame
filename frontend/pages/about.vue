@@ -13,18 +13,14 @@
             flex-md-row
             ssm-row
         ">
-            <div
-                v-for="person in people"
-                class="
+            <div v-for="person in people" class="
                     d-flex
                     flex-column
                     bg-dark
                     m-2
                     p-3
                     rounded
-                "
-                style="max-width: 22.5rem"
-            >
+                " style="max-width: 22.5rem">
                 <img class="mw-100 rounded" :src="person.url" alt="">
                 <h5 class="pt-3">{{ person.name }}</h5>
                 <i>{{ person.role }}</i>
@@ -51,7 +47,8 @@
                 </p>
                 <h3 class="text-primary">Kontakt</h3>
                 <p>
-                    Säkerhets-SM kan nås via mail på <a href="mailto:sakerhetssm@kodsport.se">sakerhetssm@kodsport.se</a>
+                    Säkerhets-SM kan nås via mail på <a
+                        href="mailto:sakerhetssm@kodsport.se">sakerhetssm@kodsport.se</a>
                 </p>
             </div>
         </div>
@@ -62,16 +59,16 @@
 
 const people = [
     {
+        name: "Movitz Sunar",
+        role: "Projektledare",
+        url: "/movitz.jpg",
+        mail: "movitz.sunar@kodsport.se"
+    },
+    {
         name: "Martin Wennberg",
         role: "Projektledare",
         url: "/martin.png",
         mail: "martin.wennberg@kodsport.se"
-    },
-    {
-        name: "Antoni Kowalik",
-        role: "Projektledare",
-        url: "/antoni.png",
-        mail: "antoni.kowalik@kodsport.se"
     },
     {
         name: "Mateusz Drwal",
@@ -94,16 +91,18 @@ useHead({
 </script>
 
 <style scoped>
-  .ks-logo {
+.ks-logo {
     max-width: 100%;
-  }
-  /* Bootstrap's md breakpoint */
-  @media (min-width: 768px) {
+}
+
+/* Bootstrap's md breakpoint */
+@media (min-width: 768px) {
     .ssm-row {
-      max-width: 75rem;
+        max-width: 75rem;
     }
+
     .ks-logo {
-      max-width: 50%;
+        max-width: 50%;
     }
-  }
+}
 </style>
