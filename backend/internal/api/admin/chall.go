@@ -143,14 +143,10 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 	n, err := models.Challenges(
 		models.ChallengeWhere.ID.EQ(req.ChallengeID),
 	).UpdateAll(ctx, tx, models.M{
-		models.ChallengeColumns.Title:       req.Title,
-		models.ChallengeColumns.StaticScore: null.IntFromPtr(req.StaticScore),
-		models.ChallengeColumns.Slug:        req.Slug,
-		models.ChallengeColumns.Description: req.Description,
-		models.ChallengeColumns.PublishAt:   pubAt,
+		models.ChallengeColumns.Slug:      req.Slug,
+		models.ChallengeColumns.PublishAt: pubAt,
 		// models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID), // TODO: hacky for now, issue where frontend doesnt send this field
-		models.ChallengeColumns.CategoryID: req.CategoryID,
-		models.ChallengeColumns.Hide:       req.Hide,
+		models.ChallengeColumns.Hide: req.Hide,
 	})
 	if err != nil {
 		s.log.Error("could not update chall", zap.Error(err))
@@ -158,20 +154,6 @@ func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallenge
 	}
 	if n == 0 {
 		return spec.MakeNotFound(errors.New("chall not found"))
-	}
-
-	// hacky
-	_, err = tx.ExecContext(ctx, "DELETE FROM challenge_authors WHERE challenge_id = $1", req.ChallengeID)
-	if err != nil {
-		s.log.Error("could not delete old authors", zap.Error(err))
-		return err
-	}
-	for _, v := range req.Authors {
-		_, err = tx.ExecContext(ctx, "INSERT INTO challenge_authors (challenge_id, author_id) VALUES ($1,$2)", req.ChallengeID, v)
-		if err != nil {
-			s.log.Error("could not insert new author", zap.Error(err))
-			return err
-		}
 	}
 
 	err = tx.Commit()
@@ -342,6 +324,9 @@ func (s *service) GetChallengeMeta(ctx context.Context, req *spec.GetChallengeMe
 	solves, err := models.UserSolves(
 		models.UserSolfWhere.ChallengeID.EQ(req.ChallengeID),
 	).All(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
 
 	res := &spec.ChallengeMeta{
 		Solvers:     make([]*spec.ChallengeSolver, len(solves)),

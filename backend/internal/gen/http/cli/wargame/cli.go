@@ -924,17 +924,9 @@ UpdateChallenge implements UpdateChallenge.
 
 Example:
     %[1]s admin update-challenge --body '{
-      "authors": [
-         "1b678293-6737-4cc7-8eae-aa821100293f"
-      ],
-      "category_id": "1b678292-6737-4cc7-8eae-aa821100293f",
-      "ctf_event_id": "c397efb2-b171-4d77-9166-d105cf4f521a",
-      "description": "A heap overflow challenge",
       "hide": false,
       "publish_at": 1638384718,
-      "slug": "pwnme",
-      "static_score": 50,
-      "title": "pwnme"
+      "slug": "pwnme"
    }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }

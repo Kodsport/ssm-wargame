@@ -37,18 +37,9 @@ type CreateChallengeRequestBody struct {
 type UpdateChallengeRequestBody struct {
 	// A unique string that can be used in URLs
 	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
-	// Title displayed to user
-	Title *string `form:"title,omitempty" json:"title,omitempty" xml:"title,omitempty"`
-	// A short text describing the challenge
-	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
-	// The ID of the CTF the challenge was taken from
-	CtfEventID  *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	Hide        *bool    `form:"hide,omitempty" json:"hide,omitempty" xml:"hide,omitempty"`
-	StaticScore *int     `form:"static_score,omitempty" json:"static_score,omitempty" xml:"static_score,omitempty"`
-	CategoryID  *string  `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
-	Authors     []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Hide      *bool  `form:"hide,omitempty" json:"hide,omitempty" xml:"hide,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -2929,20 +2920,9 @@ func NewCreateChallengePayload(body *CreateChallengeRequestBody, token string) *
 // payload.
 func NewUpdateChallengePayload(body *UpdateChallengeRequestBody, challengeID string, token string) *admin.UpdateChallengePayload {
 	v := &admin.UpdateChallengePayload{
-		Slug:        *body.Slug,
-		Title:       *body.Title,
-		Description: *body.Description,
-		PublishAt:   body.PublishAt,
-		CtfEventID:  body.CtfEventID,
-		Hide:        *body.Hide,
-		StaticScore: body.StaticScore,
-		CategoryID:  *body.CategoryID,
-	}
-	if body.Authors != nil {
-		v.Authors = make([]string, len(body.Authors))
-		for i, val := range body.Authors {
-			v.Authors[i] = val
-		}
+		Slug:      *body.Slug,
+		PublishAt: body.PublishAt,
+		Hide:      *body.Hide,
 	}
 	v.ChallengeID = challengeID
 	v.Token = token
@@ -3265,26 +3245,11 @@ func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err e
 // ValidateUpdateChallengeRequestBody runs the validations defined on
 // UpdateChallengeRequestBody
 func ValidateUpdateChallengeRequestBody(body *UpdateChallengeRequestBody) (err error) {
-	if body.CategoryID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("category_id", "body"))
-	}
-	if body.Title == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
-	}
-	if body.Description == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
-	}
 	if body.Slug == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
 	}
 	if body.Hide == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("hide", "body"))
-	}
-	if body.CtfEventID != nil {
-		err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
-	}
-	if body.CategoryID != nil {
-		err = goa.MergeErrors(err, goa.ValidateFormat("body.category_id", *body.CategoryID, goa.FormatUUID))
 	}
 	return
 }

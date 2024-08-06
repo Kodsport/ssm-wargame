@@ -57,7 +57,7 @@ var _ = Service("admin", func() {
 
 	Method("UpdateChallenge", func() {
 		Payload(func() {
-			Extend(CreateChallengePayload)
+			Extend(UpdateChallengePayload)
 			Extend(TokenPayload)
 			Extend(ChallengeIDArtifact)
 		})

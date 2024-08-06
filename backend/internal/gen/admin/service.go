@@ -135,19 +135,10 @@ type CreateChallengePayload struct {
 type UpdateChallengePayload struct {
 	// A unique string that can be used in URLs
 	Slug string
-	// Title displayed to user
-	Title string
-	// A short text describing the challenge
-	Description string
 	// unix timestamp
 	PublishAt *int64
-	// The ID of the CTF the challenge was taken from
-	CtfEventID  *string
-	Hide        bool
-	StaticScore *int
-	CategoryID  string
-	Authors     []string
-	Token       string
+	Hide      bool
+	Token     string
 	// ID of a challenge
 	ChallengeID string
 }

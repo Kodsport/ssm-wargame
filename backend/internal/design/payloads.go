@@ -30,6 +30,14 @@ var CreateChallengePayload = Type("CreateChallengePayload", func() {
 	Required("category_id")
 })
 
+var UpdateChallengePayload = Type("UpdateChallengePayload", func() {
+	Reference(Challenge)
+
+	Attribute("slug")
+	Attribute("publish_at")
+	Attribute("hide")
+})
+
 var TokenPayload = Type("TokenPayload", func() {
 	Extend(OptionalTokenPayload)
 	Required("token")

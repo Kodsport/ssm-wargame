@@ -104,15 +104,7 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 	{
 		err = json.Unmarshal([]byte(adminUpdateChallengeBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"1b678293-6737-4cc7-8eae-aa821100293f\"\n      ],\n      \"category_id\": \"1b678292-6737-4cc7-8eae-aa821100293f\",\n      \"ctf_event_id\": \"c397efb2-b171-4d77-9166-d105cf4f521a\",\n      \"description\": \"A heap overflow challenge\",\n      \"hide\": false,\n      \"publish_at\": 1638384718,\n      \"slug\": \"pwnme\",\n      \"static_score\": 50,\n      \"title\": \"pwnme\"\n   }'")
-		}
-		if body.CtfEventID != nil {
-			err = goa.MergeErrors(err, goa.ValidateFormat("body.ctf_event_id", *body.CtfEventID, goa.FormatUUID))
-		}
-		err = goa.MergeErrors(err, goa.ValidateFormat("body.category_id", body.CategoryID, goa.FormatUUID))
-
-		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"hide\": false,\n      \"publish_at\": 1638384718,\n      \"slug\": \"pwnme\"\n   }'")
 		}
 	}
 	var challengeID string
@@ -129,20 +121,9 @@ func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateCha
 		token = adminUpdateChallengeToken
 	}
 	v := &admin.UpdateChallengePayload{
-		Slug:        body.Slug,
-		Title:       body.Title,
-		Description: body.Description,
-		PublishAt:   body.PublishAt,
-		CtfEventID:  body.CtfEventID,
-		Hide:        body.Hide,
-		StaticScore: body.StaticScore,
-		CategoryID:  body.CategoryID,
-	}
-	if body.Authors != nil {
-		v.Authors = make([]string, len(body.Authors))
-		for i, val := range body.Authors {
-			v.Authors[i] = val
-		}
+		Slug:      body.Slug,
+		PublishAt: body.PublishAt,
+		Hide:      body.Hide,
 	}
 	v.ChallengeID = challengeID
 	v.Token = token

@@ -92,6 +92,9 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 				Name: req.Categories[0],
 			}
 			err = cat.Insert(ctx, tx, boil.Infer())
+			if err != nil {
+				return err
+			}
 		} else if err != nil {
 			s.log.Error("could not something", zap.Error(err))
 			return err

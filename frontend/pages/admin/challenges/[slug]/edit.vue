@@ -17,12 +17,13 @@
                 </div>
                 <div v-if="!dynamicScoring" class="form-group">
                     <label>Static score</label>
-                    <input class="form-control" type="number" placeholder="Enter score" v-model.number="form.static_score"
-                        step="50" min="0" max="1500" />
+                    <input class="form-control" type="number" placeholder="Enter score"
+                        v-model.number="form.static_score" step="50" min="0" max="1500" />
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea class="form-control" rows="7" placeholder="Enter description" v-model="form.description" />
+                    <textarea class="form-control" rows="7" placeholder="Enter description"
+                        v-model="form.description" />
                 </div>
                 <div class="form-group">
                     <label>Category</label>
@@ -44,22 +45,6 @@
                         v-model="form.publishAt" />
                 </div>
                 <div class="form-group pt-2">
-                    <label>Authors</label>
-                    <ul>
-                        <li v-for="(author, i) in challs.authors.filter(a => form.authors.indexOf(a.id) != -1)">
-                            {{ author.full_name
-                            }}
-                            <span @click="form.authors.splice(i, 1)">[x]</span>
-                        </li>
-                    </ul>
-                    <select ref="authSelect" class="form-control" @change="pushAuthor">
-                        <option value="" disabled selected>Choose Authors</option>
-                        <option v-for="author in challs.authors.filter(u => form.authors.indexOf(u.id) == -1)"
-                            :value="author.id">
-                            {{ author.full_name }}</option>
-                    </select>
-                </div>
-                <div class="form-group pt-2">
                     <button class="btn btn-primary" @click="updateChall">Update</button>
                 </div>
             </form>
@@ -71,35 +56,16 @@
                     <thead>
                         <tr>
                             <th>Flag</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="flag in chall.flags" :key="flag.id">
                             <td>{{ flag.flag }}</td>
-                            <td>
-                                <button class="btn btn-danger" @click="deleteFlag(flag.id)">
-                                    Delete
-                                </button>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
 
-                <div class="pb-4">
-                    <div class="row">
-                        <div class="col">
-                            <input class="form-control" placeholder="SSM{..." type="text" v-model="newFlag">
 
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-primary" @click="addFlag">
-                                Add
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
 
             </div>
 
@@ -117,24 +83,13 @@
                             <td>{{ file.filename }}</td>
                             <td>
                                 <a class="btn btn-primary" :href="file.url">Download</a>
-                                <button class="btn btn-danger" @click="deleteFile(file.id)">
-                                    Delete
-                                </button>
+
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <h1>Upload file</h1>
-            <div class="form-group">
-                <input ref="fileInput" class="form-control-file" type="file" @change="checkFile" />
-            </div>
-            <button class="btn btn-primary" v-bind:class="{
-                disabled: !hasFile,
-            }" @click="uploadFile">
-                Upload
-            </button>
         </div>
     </div>
 </template>
@@ -184,15 +139,10 @@ onMounted(async () => {
     }
 
     form.value = {
-        title: chall.value.title,
-        description: chall.value.description,
-        static_score: chall.value.static_score,
         slug: chall.value.slug,
-        categoryId: chall.value.category_id,
         publishAt: chall.value.publish_at == null ? '' : new Date(chall.value.publish_at * 1000).toISOString().slice(0, 16), // hacky af,pls fix
         hide: chall.value.hide,
         authors: chall.value.authors || [],
-
     };
     publishImm.value = chall.value.publish_at == null
     dynamicScoring.value = chall.value.static_score == null
@@ -201,49 +151,12 @@ onMounted(async () => {
 
 })
 
-async function uploadFile() {
-    // @ts-ignore
-    const file = fileInput.value.files[0] as File;
-
-    const hash = md5.base64(await file.arrayBuffer());
-    const res = await http(`/admin/challenges/${chall.value.id}/file_url`,
-        {
-            method: 'POST',
-            body: {
-                md5: hash,
-                filename: file.name,
-                size: file.size,
-            }
-        }
-    );
-
-    await fetch(res.url, {
-        body: await file.arrayBuffer(),
-        method: "PUT",
-        headers: {
-            "content-md5": hash,
-        },
-    });
-
-    challs.getChallenges()
-}
-
-function checkFile() {
-    // @ts-ignore
-    hasFile.value = fileInput.value.file?.files.length !== 0;
-}
-
 async function updateChall() {
     await http(`/admin/challenges/${chall.value.id}`, {
         method: 'PUT',
         body: {
-            title: form.value.title,
-            description: form.value.description,
-            static_score: dynamicScoring.value ? null : form.value.static_score,
             slug: form.value.slug,
-            category_id: form.value.categoryId,
             publish_at: publishImm.value ? null : new Date(form.value.publishAt).valueOf() / 1000,
-            authors: form.value.authors,
             hide: form.value.hide,
         }
     });
@@ -252,51 +165,4 @@ async function updateChall() {
     router.replace(`/admin/challenges/${form.value.slug}/edit`)
 }
 
-function fileSize(size: number): String {
-    if (size === 0) {
-        return "0 Bytes";
-    }
-
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
-
-    const i = Math.floor(Math.log(size) / Math.log(1000));
-
-    return parseFloat((size / Math.pow(1000, i)).toFixed(2)) + " " + sizes[i];
-}
-
-async function deleteFile(fileId: string) {
-    await http(`/admin/files/${fileId}`, {
-        method: 'DELETE'
-    });
-    challs.getChallenges()
-}
-
-async function addFlag() {
-    await http(`/admin/challenges/${chall.value.id}/flags`, {
-        method: 'POST',
-        body: {
-            flag: newFlag.value
-        }
-    })
-    challs.getChallenges()
-    newFlag.value = ""
-}
-
-async function deleteFlag(flagId: string) {
-    await http(`/admin/challenges/${chall.value.id}/flags/${flagId}`, {
-        method: 'DELETE'
-    })
-    challs.getChallenges()
-
-    if (newFlag.value == "") {
-        newFlag.value = chall.value.flags.find((f: any) => f.id == flagId).flag
-    }
-}
-
-
-function pushAuthor(event) {
-    form.value.authors.push(event.target.value)
-    authSelect.value.value = ''
-}
 </script>
-  

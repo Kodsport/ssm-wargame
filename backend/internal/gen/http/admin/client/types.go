@@ -37,18 +37,9 @@ type CreateChallengeRequestBody struct {
 type UpdateChallengeRequestBody struct {
 	// A unique string that can be used in URLs
 	Slug string `form:"slug" json:"slug" xml:"slug"`
-	// Title displayed to user
-	Title string `form:"title" json:"title" xml:"title"`
-	// A short text describing the challenge
-	Description string `form:"description" json:"description" xml:"description"`
 	// unix timestamp
 	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
-	// The ID of the CTF the challenge was taken from
-	CtfEventID  *string  `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
-	Hide        bool     `form:"hide" json:"hide" xml:"hide"`
-	StaticScore *int     `form:"static_score,omitempty" json:"static_score,omitempty" xml:"static_score,omitempty"`
-	CategoryID  string   `form:"category_id" json:"category_id" xml:"category_id"`
-	Authors     []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Hide      bool   `form:"hide" json:"hide" xml:"hide"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -1735,20 +1726,9 @@ func NewCreateChallengeRequestBody(p *admin.CreateChallengePayload) *CreateChall
 // of the "UpdateChallenge" endpoint of the "admin" service.
 func NewUpdateChallengeRequestBody(p *admin.UpdateChallengePayload) *UpdateChallengeRequestBody {
 	body := &UpdateChallengeRequestBody{
-		Slug:        p.Slug,
-		Title:       p.Title,
-		Description: p.Description,
-		PublishAt:   p.PublishAt,
-		CtfEventID:  p.CtfEventID,
-		Hide:        p.Hide,
-		StaticScore: p.StaticScore,
-		CategoryID:  p.CategoryID,
-	}
-	if p.Authors != nil {
-		body.Authors = make([]string, len(p.Authors))
-		for i, val := range p.Authors {
-			body.Authors[i] = val
-		}
+		Slug:      p.Slug,
+		PublishAt: p.PublishAt,
+		Hide:      p.Hide,
 	}
 	return body
 }
