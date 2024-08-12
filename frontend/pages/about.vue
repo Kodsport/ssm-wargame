@@ -66,7 +66,7 @@ const people = [
     },
     {
         name: "Martin Wennberg",
-        role: "Projektledare",
+        role: "Vice Projektledare",
         url: "/martin.png",
         mail: "martin.wennberg@kodsport.se"
     },
