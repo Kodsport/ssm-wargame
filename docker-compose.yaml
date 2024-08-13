@@ -7,7 +7,7 @@ volumes:
 services:
   db:
     image: postgres
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
@@ -16,11 +16,12 @@ services:
       - db:/var/lib/postgresql/data
 
   frontend:
-    restart: always
+    restart: unless-stopped
     build: ./frontend
     env_file: frontend/.env
 
   caddy:
+    restart: unless-stopped
     build: ./caddy
     volumes:
       - caddy_data:/data
@@ -29,5 +30,6 @@ services:
       - "443:443"
 
   api:
+    restart: unless-stopped
     build: ./backend
     env_file: .env.backend
