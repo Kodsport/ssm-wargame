@@ -18,7 +18,7 @@
                         <div v-for="chall in challenges.filter(c => c.category == category)">
                             <ChallengePreview class="pointer" @click="nav(chall.slug)" :chall="chall" />
                             <!-- for seo -->
-                            <a class="d-none" :href="`/challenges/${chall.slug}`">{{ chall.title }}</a>
+                            <a class="d-none" :href="`/knackkoden/${chall.slug}`">{{ chall.title }}</a>
                         </div>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { useChallengeStore } from '../../store/challenges'
+import { useChallengeStore } from '../store/challenges'
 
 useHead({
     title: 'SSM - Knäck Koden'
@@ -60,7 +60,7 @@ const challenges = computed(() => {
 })
 
 function nav(slug: string) {
-    router.push(`/challenges/${slug}`)
+    router.push(`/knackkoden/${slug}`)
 }
 </script>
 
