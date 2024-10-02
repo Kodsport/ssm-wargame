@@ -39,6 +39,9 @@ var Challenge = Type("Challenge", func() {
 	Attribute("hide", Boolean, func() {
 		Example(false)
 	})
+	Attribute("chall_namespace", String, func() {
+		Example("knackkoden")
+	})
 
 	Attribute("ctf_event_id", String, "The ID of the CTF the challenge was taken from", func() {
 		Example("c397efb2-b171-4d77-9166-d105cf4f521a")

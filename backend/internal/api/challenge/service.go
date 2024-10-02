@@ -116,15 +116,16 @@ func (s *service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		}
 
 		res[i] = &spec.SsmChallenge{
-			ID:          chall.ID,
-			Slug:        chall.Slug,
-			Title:       chall.Title,
-			Description: chall.Description,
-			Score:       score,
-			Solves:      chall.NumSolves,
-			Solved:      chall.Solved,
-			Category:    chall.Category,
-			CtfEventID:  chall.CTFEventID.Ptr(),
+			ID:             chall.ID,
+			Slug:           chall.Slug,
+			Title:          chall.Title,
+			Description:    chall.Description,
+			Score:          score,
+			Solves:         chall.NumSolves,
+			Solved:         chall.Solved,
+			Category:       chall.Category,
+			CtfEventID:     chall.CTFEventID.Ptr(),
+			ChallNamespace: chall.ChallNamespace.Ptr(),
 		}
 
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))

@@ -77,7 +77,8 @@ type SsmChallengeView struct {
 	// The numer of people who solved the challenge
 	Solves *int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
+	CtfEventID     *string
+	ChallNamespace *string
 	// whether the user has solved the challenge or not
 	Solved   *bool
 	Category *string
@@ -173,6 +174,7 @@ var (
 			"files",
 			"solves",
 			"ctf_event_id",
+			"chall_namespace",
 			"solved",
 			"category",
 			"authors",
@@ -228,6 +230,7 @@ var (
 			"files",
 			"solves",
 			"ctf_event_id",
+			"chall_namespace",
 			"solved",
 			"category",
 			"authors",

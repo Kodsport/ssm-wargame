@@ -108,6 +108,7 @@ type ChalltoolsImportRequestBody struct {
 	Order            *int                                 `form:"order,omitempty" json:"order,omitempty" xml:"order,omitempty"`
 	Services         []*ImportChallServiceRequestBody     `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
 	HumanMetadata    *ImportChallHumanMetadataRequestBody `form:"human_metadata,omitempty" json:"human_metadata,omitempty" xml:"human_metadata,omitempty"`
+	Custom           map[string]interface{}               `form:"custom,omitempty" json:"custom,omitempty" xml:"custom,omitempty"`
 }
 
 // CreateCTFEventRequestBody is the type of the "admin" service
@@ -1837,6 +1838,14 @@ func NewChalltoolsImportRequestBody(p *admin.ChalltoolsImportPayload) *Challtool
 	}
 	if p.HumanMetadata != nil {
 		body.HumanMetadata = marshalAdminImportChallHumanMetadataToImportChallHumanMetadataRequestBody(p.HumanMetadata)
+	}
+	if p.Custom != nil {
+		body.Custom = make(map[string]interface{}, len(p.Custom))
+		for key, val := range p.Custom {
+			tk := key
+			tv := val
+			body.Custom[tk] = tv
+		}
 	}
 	return body
 }

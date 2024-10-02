@@ -21,10 +21,8 @@
 
                 <div class="form-check" v-for="event in challs.events">
                     <input type="checkbox" class="form-check-input pointer" v-model="challFilter.eventFilter[event.id]">
-                    <label
-                        class="form-check-label pointer"
-                        @click="challFilter.eventFilter[event.id] = !challFilter.eventFilter[event.id]"
-                    >
+                    <label class="form-check-label pointer"
+                        @click="challFilter.eventFilter[event.id] = !challFilter.eventFilter[event.id]">
                         {{ event.name }}
                     </label>
                 </div>
@@ -33,7 +31,8 @@
 
         <div class="flex-grow-1 d-flex flex-column">
             <template v-for="category in categories">
-                <div v-if="(challFilter.categoryFilter == '' || category == challFilter.categoryFilter) && challenges.filter(c => c.category == category).length">
+                <div
+                    v-if="(challFilter.categoryFilter == '' || category == challFilter.categoryFilter) && challenges.filter(c => c.category == category).length">
                     <div class="text-primary border-primary border-bottom border-3 pt-2 pb-2">
                         <h4 class="text-lowercase">{{ category }}</h4>
                     </div>
@@ -84,7 +83,7 @@ const challenges = computed(() => {
         if (!value) continue
         allowedEvents.push(key)
     }
-    var res = challs.challenges
+    var res = challs.challenges.filter(c => c.chall_namespace == null)
     if (allowedEvents.length != 0) {
         res = res.filter(v => allowedEvents.includes(v.ctf_event_id))
     }
@@ -101,19 +100,21 @@ function nav(slug: string) {
 </script>
 
 <style scoped>
-    .pointer {
-        cursor: pointer;
+.pointer {
+    cursor: pointer;
+}
+
+.ssm-grid {
+    display: grid;
+    /* Magic auto-sizing grid: https://css-tricks.com/auto-sizing-columns-css-grid-auto-fill-vs-auto-fit/ */
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1rem;
+}
+
+/* Bootstrap large */
+@media (min-width: 992px) {
+    .ssm-filter {
+        width: 21rem;
     }
-    .ssm-grid {
-        display: grid;
-        /* Magic auto-sizing grid: https://css-tricks.com/auto-sizing-columns-css-grid-auto-fill-vs-auto-fit/ */
-        grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-        gap: 1rem;
-    }
-    /* Bootstrap large */
-    @media (min-width: 992px) {
-        .ssm-filter {
-            width: 21rem;
-        }
-    }
+}
 </style>

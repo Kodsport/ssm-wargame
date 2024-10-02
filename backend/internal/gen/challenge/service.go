@@ -184,7 +184,8 @@ type SsmChallenge struct {
 	// The numer of people who solved the challenge
 	Solves int
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string
+	CtfEventID     *string
+	ChallNamespace *string
 	// whether the user has solved the challenge or not
 	Solved   bool
 	Category string
@@ -383,7 +384,8 @@ func newSsmChallengeCollectionView(res SsmChallengeCollection) challengeviews.Ss
 // SsmChallenge.
 func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 	res := &SsmChallenge{
-		CtfEventID: vres.CtfEventID,
+		CtfEventID:     vres.CtfEventID,
+		ChallNamespace: vres.ChallNamespace,
 	}
 	if vres.ID != nil {
 		res.ID = *vres.ID
@@ -440,15 +442,16 @@ func newSsmChallenge(vres *challengeviews.SsmChallengeView) *SsmChallenge {
 // SsmChallengeView using the "default" view.
 func newSsmChallengeView(res *SsmChallenge) *challengeviews.SsmChallengeView {
 	vres := &challengeviews.SsmChallengeView{
-		ID:          &res.ID,
-		Slug:        &res.Slug,
-		Title:       &res.Title,
-		Description: &res.Description,
-		Score:       &res.Score,
-		Solves:      &res.Solves,
-		CtfEventID:  res.CtfEventID,
-		Solved:      &res.Solved,
-		Category:    &res.Category,
+		ID:             &res.ID,
+		Slug:           &res.Slug,
+		Title:          &res.Title,
+		Description:    &res.Description,
+		Score:          &res.Score,
+		Solves:         &res.Solves,
+		CtfEventID:     res.CtfEventID,
+		ChallNamespace: res.ChallNamespace,
+		Solved:         &res.Solved,
+		Category:       &res.Category,
 	}
 	if res.Services != nil {
 		vres.Services = make([]*challengeviews.ChallengeServiceView, len(res.Services))

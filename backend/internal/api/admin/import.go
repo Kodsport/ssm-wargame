@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -131,6 +132,15 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		CategoryID:  categoryID,
 		CTFEventID:  null.StringFromPtr(eventID),
 		Hide:        true,
+	}
+
+	if req.Custom != nil {
+		bs, _ := json.Marshal(req.Custom)
+		chall.Custom = null.JSONFrom(bs)
+
+		if ns, ok := req.Custom["chall_namespace"]; ok {
+			chall.ChallNamespace = null.StringFrom(ns.(string))
+		}
 	}
 
 	err = chall.Upsert(ctx, tx, true, []string{}, boil.Blacklist("hide", "slug"), boil.Blacklist())

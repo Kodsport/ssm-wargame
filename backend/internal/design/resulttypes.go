@@ -84,6 +84,7 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Attribute("files")
 	Attribute("solves")
 	Attribute("ctf_event_id")
+	Attribute("chall_namespace")
 
 	Attribute("solved", Boolean, func() {
 		Example(true)

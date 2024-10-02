@@ -810,7 +810,7 @@ func (authorL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, singu
 	}
 
 	query := NewQuery(
-		qm.Select("\"challenges\".\"id\", \"challenges\".\"slug\", \"challenges\".\"title\", \"challenges\".\"description\", \"challenges\".\"publish_at\", \"challenges\".\"ctf_event_id\", \"challenges\".\"category_id\", \"challenges\".\"created_at\", \"challenges\".\"updated_at\", \"challenges\".\"static_score\", \"challenges\".\"hide\", \"a\".\"author_id\""),
+		qm.Select("\"challenges\".\"id\", \"challenges\".\"slug\", \"challenges\".\"title\", \"challenges\".\"description\", \"challenges\".\"publish_at\", \"challenges\".\"ctf_event_id\", \"challenges\".\"category_id\", \"challenges\".\"created_at\", \"challenges\".\"updated_at\", \"challenges\".\"static_score\", \"challenges\".\"hide\", \"challenges\".\"custom\", \"challenges\".\"chall_namespace\", \"a\".\"author_id\""),
 		qm.From("\"challenges\""),
 		qm.InnerJoin("\"challenge_authors\" as \"a\" on \"challenges\".\"id\" = \"a\".\"challenge_id\""),
 		qm.WhereIn("\"a\".\"author_id\" in ?", argsSlice...),
@@ -831,7 +831,7 @@ func (authorL) LoadChallenges(ctx context.Context, e boil.ContextExecutor, singu
 		one := new(Challenge)
 		var localJoinCol string
 
-		err = results.Scan(&one.ID, &one.Slug, &one.Title, &one.Description, &one.PublishAt, &one.CTFEventID, &one.CategoryID, &one.CreatedAt, &one.UpdatedAt, &one.StaticScore, &one.Hide, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Slug, &one.Title, &one.Description, &one.PublishAt, &one.CTFEventID, &one.CategoryID, &one.CreatedAt, &one.UpdatedAt, &one.StaticScore, &one.Hide, &one.Custom, &one.ChallNamespace, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for challenges")
 		}

@@ -280,6 +280,7 @@ type ChalltoolsImportPayload struct {
 	Order            *int
 	Services         []*ImportChallService
 	HumanMetadata    *ImportChallHumanMetadata
+	Custom           map[string]interface{}
 }
 
 // ListCTFEventsPayload is the payload type of the admin service ListCTFEvents

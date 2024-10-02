@@ -18,6 +18,11 @@
             </nuxt-link>
           </li>
           <li class="nav-item">
+            <nuxt-link active-class="active" class="nav-link" to="/knackkoden">
+              Knäck Koden
+            </nuxt-link>
+          </li>
+          <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/scoreboard">
               Poängtavla
             </nuxt-link>

@@ -138,7 +138,8 @@ type SsmChallengeResponse struct {
 	// The numer of people who solved the challenge
 	Solves int `form:"solves" json:"solves" xml:"solves"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CtfEventID     *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	ChallNamespace *string `form:"chall_namespace,omitempty" json:"chall_namespace,omitempty" xml:"chall_namespace,omitempty"`
 	// whether the user has solved the challenge or not
 	Solved   bool                 `form:"solved" json:"solved" xml:"solved"`
 	Category string               `form:"category" json:"category" xml:"category"`
@@ -201,7 +202,8 @@ type SsmChallengeResponseBody struct {
 	// The numer of people who solved the challenge
 	Solves int `form:"solves" json:"solves" xml:"solves"`
 	// The ID of the CTF the challenge was taken from
-	CtfEventID *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	CtfEventID     *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
+	ChallNamespace *string `form:"chall_namespace,omitempty" json:"chall_namespace,omitempty" xml:"chall_namespace,omitempty"`
 	// whether the user has solved the challenge or not
 	Solved   bool                     `form:"solved" json:"solved" xml:"solved"`
 	Category string                   `form:"category" json:"category" xml:"category"`

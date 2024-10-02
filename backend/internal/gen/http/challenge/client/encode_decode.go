@@ -933,15 +933,16 @@ func DecodeCompleteCourseResponse(decoder func(*http.Response) goahttp.Decoder, 
 // *SsmChallengeResponse.
 func unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView(v *SsmChallengeResponse) *challengeviews.SsmChallengeView {
 	res := &challengeviews.SsmChallengeView{
-		ID:          v.ID,
-		Slug:        v.Slug,
-		Title:       v.Title,
-		Description: v.Description,
-		Score:       v.Score,
-		Solves:      v.Solves,
-		CtfEventID:  v.CtfEventID,
-		Solved:      v.Solved,
-		Category:    v.Category,
+		ID:             v.ID,
+		Slug:           v.Slug,
+		Title:          v.Title,
+		Description:    v.Description,
+		Score:          v.Score,
+		Solves:         v.Solves,
+		CtfEventID:     v.CtfEventID,
+		ChallNamespace: v.ChallNamespace,
+		Solved:         v.Solved,
+		Category:       v.Category,
 	}
 	if v.Services != nil {
 		res.Services = make([]*challengeviews.ChallengeServiceView, len(v.Services))
@@ -1051,15 +1052,16 @@ func unmarshalCTFEventResponseToChallengeCTFEvent(v *CTFEventResponse) *challeng
 // *SsmChallengeResponseBody.
 func unmarshalSsmChallengeResponseBodyToChallengeviewsSsmChallengeView(v *SsmChallengeResponseBody) *challengeviews.SsmChallengeView {
 	res := &challengeviews.SsmChallengeView{
-		ID:          v.ID,
-		Slug:        v.Slug,
-		Title:       v.Title,
-		Description: v.Description,
-		Score:       v.Score,
-		Solves:      v.Solves,
-		CtfEventID:  v.CtfEventID,
-		Solved:      v.Solved,
-		Category:    v.Category,
+		ID:             v.ID,
+		Slug:           v.Slug,
+		Title:          v.Title,
+		Description:    v.Description,
+		Score:          v.Score,
+		Solves:         v.Solves,
+		CtfEventID:     v.CtfEventID,
+		ChallNamespace: v.ChallNamespace,
+		Solved:         v.Solved,
+		Category:       v.Category,
 	}
 	if v.Services != nil {
 		res.Services = make([]*challengeviews.ChallengeServiceView, len(v.Services))

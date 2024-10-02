@@ -1128,6 +1128,11 @@ Example:
          "web"
       ],
       "challenge_id": "225ada44-3fde-460d-84a4-2f16ff579618",
+      "custom": {
+         "Est molestias vitae asperiores voluptatem nihil et.": "Ut facilis.",
+         "Natus fugiat cumque eius rem vel.": "Sit minus quae error molestias neque.",
+         "Odit et error enim minus.": "Pariatur quo quia."
+      },
       "description": "how to dns",
       "file_urls": [
          "https://bucket/key"
@@ -1145,7 +1150,7 @@ Example:
          }
       ],
       "human_metadata": {
-         "event_name": "Architecto a est est labore eligendi."
+         "event_name": "Amet quasi."
       },
       "order": 5,
       "score": 100,
@@ -1218,7 +1223,7 @@ CreateCTFEventImportToken implements CreateCTFEventImportToken.
 
 Example:
     %[1]s admin create-ctf-event-import-token --body '{
-      "expires_in": "year",
+      "expires_in": "hour",
       "name": "e3bb4dc5-9479-42ce-aed3-b41e8139fccb"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])

@@ -106,6 +106,7 @@ var ChallImport = Type("ChallImport", func() {
 	})
 	Attribute("services", ArrayOf(ImportChallService))
 	Attribute("human_metadata", ImportChallHumanMetadata)
+	Attribute("custom", MapOf(String, Any))
 
 	Required("title", "description", "challenge_id")
 })

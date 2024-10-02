@@ -24,72 +24,82 @@ import (
 
 // Challenge is an object representing the database table.
 type Challenge struct {
-	ID          string      `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Slug        string      `boil:"slug" json:"slug" toml:"slug" yaml:"slug"`
-	Title       string      `boil:"title" json:"title" toml:"title" yaml:"title"`
-	Description string      `boil:"description" json:"description" toml:"description" yaml:"description"`
-	PublishAt   null.Time   `boil:"publish_at" json:"publish_at,omitempty" toml:"publish_at" yaml:"publish_at,omitempty"`
-	CTFEventID  null.String `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
-	CategoryID  string      `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
-	CreatedAt   time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt   null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
-	StaticScore null.Int    `boil:"static_score" json:"static_score,omitempty" toml:"static_score" yaml:"static_score,omitempty"`
-	Hide        bool        `boil:"hide" json:"hide" toml:"hide" yaml:"hide"`
+	ID             string      `boil:"id" json:"id" toml:"id" yaml:"id"`
+	Slug           string      `boil:"slug" json:"slug" toml:"slug" yaml:"slug"`
+	Title          string      `boil:"title" json:"title" toml:"title" yaml:"title"`
+	Description    string      `boil:"description" json:"description" toml:"description" yaml:"description"`
+	PublishAt      null.Time   `boil:"publish_at" json:"publish_at,omitempty" toml:"publish_at" yaml:"publish_at,omitempty"`
+	CTFEventID     null.String `boil:"ctf_event_id" json:"ctf_event_id,omitempty" toml:"ctf_event_id" yaml:"ctf_event_id,omitempty"`
+	CategoryID     string      `boil:"category_id" json:"category_id" toml:"category_id" yaml:"category_id"`
+	CreatedAt      time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	UpdatedAt      null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	StaticScore    null.Int    `boil:"static_score" json:"static_score,omitempty" toml:"static_score" yaml:"static_score,omitempty"`
+	Hide           bool        `boil:"hide" json:"hide" toml:"hide" yaml:"hide"`
+	Custom         null.JSON   `boil:"custom" json:"custom,omitempty" toml:"custom" yaml:"custom,omitempty"`
+	ChallNamespace null.String `boil:"chall_namespace" json:"chall_namespace,omitempty" toml:"chall_namespace" yaml:"chall_namespace,omitempty"`
 
 	R *challengeR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L challengeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var ChallengeColumns = struct {
-	ID          string
-	Slug        string
-	Title       string
-	Description string
-	PublishAt   string
-	CTFEventID  string
-	CategoryID  string
-	CreatedAt   string
-	UpdatedAt   string
-	StaticScore string
-	Hide        string
+	ID             string
+	Slug           string
+	Title          string
+	Description    string
+	PublishAt      string
+	CTFEventID     string
+	CategoryID     string
+	CreatedAt      string
+	UpdatedAt      string
+	StaticScore    string
+	Hide           string
+	Custom         string
+	ChallNamespace string
 }{
-	ID:          "id",
-	Slug:        "slug",
-	Title:       "title",
-	Description: "description",
-	PublishAt:   "publish_at",
-	CTFEventID:  "ctf_event_id",
-	CategoryID:  "category_id",
-	CreatedAt:   "created_at",
-	UpdatedAt:   "updated_at",
-	StaticScore: "static_score",
-	Hide:        "hide",
+	ID:             "id",
+	Slug:           "slug",
+	Title:          "title",
+	Description:    "description",
+	PublishAt:      "publish_at",
+	CTFEventID:     "ctf_event_id",
+	CategoryID:     "category_id",
+	CreatedAt:      "created_at",
+	UpdatedAt:      "updated_at",
+	StaticScore:    "static_score",
+	Hide:           "hide",
+	Custom:         "custom",
+	ChallNamespace: "chall_namespace",
 }
 
 var ChallengeTableColumns = struct {
-	ID          string
-	Slug        string
-	Title       string
-	Description string
-	PublishAt   string
-	CTFEventID  string
-	CategoryID  string
-	CreatedAt   string
-	UpdatedAt   string
-	StaticScore string
-	Hide        string
+	ID             string
+	Slug           string
+	Title          string
+	Description    string
+	PublishAt      string
+	CTFEventID     string
+	CategoryID     string
+	CreatedAt      string
+	UpdatedAt      string
+	StaticScore    string
+	Hide           string
+	Custom         string
+	ChallNamespace string
 }{
-	ID:          "challenges.id",
-	Slug:        "challenges.slug",
-	Title:       "challenges.title",
-	Description: "challenges.description",
-	PublishAt:   "challenges.publish_at",
-	CTFEventID:  "challenges.ctf_event_id",
-	CategoryID:  "challenges.category_id",
-	CreatedAt:   "challenges.created_at",
-	UpdatedAt:   "challenges.updated_at",
-	StaticScore: "challenges.static_score",
-	Hide:        "challenges.hide",
+	ID:             "challenges.id",
+	Slug:           "challenges.slug",
+	Title:          "challenges.title",
+	Description:    "challenges.description",
+	PublishAt:      "challenges.publish_at",
+	CTFEventID:     "challenges.ctf_event_id",
+	CategoryID:     "challenges.category_id",
+	CreatedAt:      "challenges.created_at",
+	UpdatedAt:      "challenges.updated_at",
+	StaticScore:    "challenges.static_score",
+	Hide:           "challenges.hide",
+	Custom:         "challenges.custom",
+	ChallNamespace: "challenges.chall_namespace",
 }
 
 // Generated where
@@ -132,30 +142,58 @@ func (w whereHelpernull_Int) NIN(slice []int) qm.QueryMod {
 func (w whereHelpernull_Int) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
 func (w whereHelpernull_Int) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
 
+type whereHelpernull_JSON struct{ field string }
+
+func (w whereHelpernull_JSON) EQ(x null.JSON) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, false, x)
+}
+func (w whereHelpernull_JSON) NEQ(x null.JSON) qm.QueryMod {
+	return qmhelper.WhereNullEQ(w.field, true, x)
+}
+func (w whereHelpernull_JSON) LT(x null.JSON) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LT, x)
+}
+func (w whereHelpernull_JSON) LTE(x null.JSON) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.LTE, x)
+}
+func (w whereHelpernull_JSON) GT(x null.JSON) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GT, x)
+}
+func (w whereHelpernull_JSON) GTE(x null.JSON) qm.QueryMod {
+	return qmhelper.Where(w.field, qmhelper.GTE, x)
+}
+
+func (w whereHelpernull_JSON) IsNull() qm.QueryMod    { return qmhelper.WhereIsNull(w.field) }
+func (w whereHelpernull_JSON) IsNotNull() qm.QueryMod { return qmhelper.WhereIsNotNull(w.field) }
+
 var ChallengeWhere = struct {
-	ID          whereHelperstring
-	Slug        whereHelperstring
-	Title       whereHelperstring
-	Description whereHelperstring
-	PublishAt   whereHelpernull_Time
-	CTFEventID  whereHelpernull_String
-	CategoryID  whereHelperstring
-	CreatedAt   whereHelpertime_Time
-	UpdatedAt   whereHelpernull_Time
-	StaticScore whereHelpernull_Int
-	Hide        whereHelperbool
+	ID             whereHelperstring
+	Slug           whereHelperstring
+	Title          whereHelperstring
+	Description    whereHelperstring
+	PublishAt      whereHelpernull_Time
+	CTFEventID     whereHelpernull_String
+	CategoryID     whereHelperstring
+	CreatedAt      whereHelpertime_Time
+	UpdatedAt      whereHelpernull_Time
+	StaticScore    whereHelpernull_Int
+	Hide           whereHelperbool
+	Custom         whereHelpernull_JSON
+	ChallNamespace whereHelpernull_String
 }{
-	ID:          whereHelperstring{field: "\"challenges\".\"id\""},
-	Slug:        whereHelperstring{field: "\"challenges\".\"slug\""},
-	Title:       whereHelperstring{field: "\"challenges\".\"title\""},
-	Description: whereHelperstring{field: "\"challenges\".\"description\""},
-	PublishAt:   whereHelpernull_Time{field: "\"challenges\".\"publish_at\""},
-	CTFEventID:  whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
-	CategoryID:  whereHelperstring{field: "\"challenges\".\"category_id\""},
-	CreatedAt:   whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
-	UpdatedAt:   whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
-	StaticScore: whereHelpernull_Int{field: "\"challenges\".\"static_score\""},
-	Hide:        whereHelperbool{field: "\"challenges\".\"hide\""},
+	ID:             whereHelperstring{field: "\"challenges\".\"id\""},
+	Slug:           whereHelperstring{field: "\"challenges\".\"slug\""},
+	Title:          whereHelperstring{field: "\"challenges\".\"title\""},
+	Description:    whereHelperstring{field: "\"challenges\".\"description\""},
+	PublishAt:      whereHelpernull_Time{field: "\"challenges\".\"publish_at\""},
+	CTFEventID:     whereHelpernull_String{field: "\"challenges\".\"ctf_event_id\""},
+	CategoryID:     whereHelperstring{field: "\"challenges\".\"category_id\""},
+	CreatedAt:      whereHelpertime_Time{field: "\"challenges\".\"created_at\""},
+	UpdatedAt:      whereHelpernull_Time{field: "\"challenges\".\"updated_at\""},
+	StaticScore:    whereHelpernull_Int{field: "\"challenges\".\"static_score\""},
+	Hide:           whereHelperbool{field: "\"challenges\".\"hide\""},
+	Custom:         whereHelpernull_JSON{field: "\"challenges\".\"custom\""},
+	ChallNamespace: whereHelpernull_String{field: "\"challenges\".\"chall_namespace\""},
 }
 
 // ChallengeRels is where relationship names are stored.
@@ -286,9 +324,9 @@ func (r *challengeR) GetUserSolves() UserSolfSlice {
 type challengeL struct{}
 
 var (
-	challengeAllColumns            = []string{"id", "slug", "title", "description", "publish_at", "ctf_event_id", "category_id", "created_at", "updated_at", "static_score", "hide"}
+	challengeAllColumns            = []string{"id", "slug", "title", "description", "publish_at", "ctf_event_id", "category_id", "created_at", "updated_at", "static_score", "hide", "custom", "chall_namespace"}
 	challengeColumnsWithoutDefault = []string{"id", "slug", "title", "description", "category_id"}
-	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at", "static_score", "hide"}
+	challengeColumnsWithDefault    = []string{"publish_at", "ctf_event_id", "created_at", "updated_at", "static_score", "hide", "custom", "chall_namespace"}
 	challengePrimaryKeyColumns     = []string{"id"}
 	challengeGeneratedColumns      = []string{}
 )

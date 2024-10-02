@@ -112,6 +112,18 @@ func realMain() error {
 
 	var handler http.Handler = mux
 
+	handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("access-control-allow-origin", `*`)
+		w.Header().Add("access-control-allow-headers", `authorization`)
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		mux.ServeHTTP(w, r)
+	})
+
 	//	handler = cors.New(cors.Options{
 	//		AllowedOrigins: []string{"sakerhetssm.se"},
 	//		MaxAge:         60 * 60 * 24,
