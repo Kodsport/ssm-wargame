@@ -137,3 +137,15 @@ var CreateCoursePayload = Type("CreateCoursePayload", func() {
 	})
 
 })
+
+var KnackKodenRegisterClassPayload = Type("KnackKodenRegisterClassPayload", func() {
+
+	Attribute("teacher_full_name", String)
+	Attribute("teacher_email", String)
+	Attribute("teacher_phonenr", String)
+	Attribute("school_name", String)
+	Attribute("class_name", String)
+	Attribute("postal_code", String)
+
+	Required("teacher_full_name", "teacher_email", "teacher_phonenr", "school_name", "class_name", "postal_code")
+})

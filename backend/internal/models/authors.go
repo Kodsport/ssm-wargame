@@ -940,7 +940,7 @@ func (authorL) LoadCourses(ctx context.Context, e boil.ContextExecutor, singular
 	}
 
 	query := NewQuery(
-		qm.Select("\"courses\".\"id\", \"courses\".\"category\", \"courses\".\"difficulty\", \"courses\".\"description\", \"courses\".\"created_at\", \"courses\".\"updated_at\", \"courses\".\"publish\", \"courses\".\"title\", \"courses\".\"slug\", \"a\".\"author_id\""),
+		qm.Select("\"courses\".\"id\", \"courses\".\"category\", \"courses\".\"difficulty\", \"courses\".\"title\", \"courses\".\"slug\", \"courses\".\"description\", \"courses\".\"created_at\", \"courses\".\"publish\", \"courses\".\"updated_at\", \"a\".\"author_id\""),
 		qm.From("\"courses\""),
 		qm.InnerJoin("\"course_authors\" as \"a\" on \"courses\".\"id\" = \"a\".\"course_id\""),
 		qm.WhereIn("\"a\".\"author_id\" in ?", argsSlice...),
@@ -961,7 +961,7 @@ func (authorL) LoadCourses(ctx context.Context, e boil.ContextExecutor, singular
 		one := new(Course)
 		var localJoinCol string
 
-		err = results.Scan(&one.ID, &one.Category, &one.Difficulty, &one.Description, &one.CreatedAt, &one.UpdatedAt, &one.Publish, &one.Title, &one.Slug, &localJoinCol)
+		err = results.Scan(&one.ID, &one.Category, &one.Difficulty, &one.Title, &one.Slug, &one.Description, &one.CreatedAt, &one.Publish, &one.UpdatedAt, &localJoinCol)
 		if err != nil {
 			return errors.Wrap(err, "failed to scan eager loaded results for courses")
 		}

@@ -206,6 +206,7 @@ var ChallengeRels = struct {
 	ChallengeServices string
 	CourseItems       string
 	Flags             string
+	KnackKodenSolves  string
 	SchoolSolves      string
 	Submissions       string
 	UserSolves        string
@@ -218,6 +219,7 @@ var ChallengeRels = struct {
 	ChallengeServices: "ChallengeServices",
 	CourseItems:       "CourseItems",
 	Flags:             "Flags",
+	KnackKodenSolves:  "KnackKodenSolves",
 	SchoolSolves:      "SchoolSolves",
 	Submissions:       "Submissions",
 	UserSolves:        "UserSolves",
@@ -233,6 +235,7 @@ type challengeR struct {
 	ChallengeServices ChallengeServiceSlice `boil:"ChallengeServices" json:"ChallengeServices" toml:"ChallengeServices" yaml:"ChallengeServices"`
 	CourseItems       CourseItemSlice       `boil:"CourseItems" json:"CourseItems" toml:"CourseItems" yaml:"CourseItems"`
 	Flags             FlagSlice             `boil:"Flags" json:"Flags" toml:"Flags" yaml:"Flags"`
+	KnackKodenSolves  KnackKodenSolfSlice   `boil:"KnackKodenSolves" json:"KnackKodenSolves" toml:"KnackKodenSolves" yaml:"KnackKodenSolves"`
 	SchoolSolves      SchoolSolfSlice       `boil:"SchoolSolves" json:"SchoolSolves" toml:"SchoolSolves" yaml:"SchoolSolves"`
 	Submissions       SubmissionSlice       `boil:"Submissions" json:"Submissions" toml:"Submissions" yaml:"Submissions"`
 	UserSolves        UserSolfSlice         `boil:"UserSolves" json:"UserSolves" toml:"UserSolves" yaml:"UserSolves"`
@@ -297,6 +300,13 @@ func (r *challengeR) GetFlags() FlagSlice {
 		return nil
 	}
 	return r.Flags
+}
+
+func (r *challengeR) GetKnackKodenSolves() KnackKodenSolfSlice {
+	if r == nil {
+		return nil
+	}
+	return r.KnackKodenSolves
 }
 
 func (r *challengeR) GetSchoolSolves() SchoolSolfSlice {
@@ -738,6 +748,20 @@ func (o *Challenge) Flags(mods ...qm.QueryMod) flagQuery {
 	)
 
 	return Flags(queryMods...)
+}
+
+// KnackKodenSolves retrieves all the knack_koden_solf's KnackKodenSolves with an executor.
+func (o *Challenge) KnackKodenSolves(mods ...qm.QueryMod) knackKodenSolfQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"knack_koden_solves\".\"challenge_id\"=?", o.ID),
+	)
+
+	return KnackKodenSolves(queryMods...)
 }
 
 // SchoolSolves retrieves all the school_solf's SchoolSolves with an executor.
@@ -1725,6 +1749,119 @@ func (challengeL) LoadFlags(ctx context.Context, e boil.ContextExecutor, singula
 	return nil
 }
 
+// LoadKnackKodenSolves allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (challengeL) LoadKnackKodenSolves(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
+	var slice []*Challenge
+	var object *Challenge
+
+	if singular {
+		var ok bool
+		object, ok = maybeChallenge.(*Challenge)
+		if !ok {
+			object = new(Challenge)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeChallenge))
+			}
+		}
+	} else {
+		s, ok := maybeChallenge.(*[]*Challenge)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeChallenge))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &challengeR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &challengeR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`knack_koden_solves`),
+		qm.WhereIn(`knack_koden_solves.challenge_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load knack_koden_solves")
+	}
+
+	var resultSlice []*KnackKodenSolf
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice knack_koden_solves")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on knack_koden_solves")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for knack_koden_solves")
+	}
+
+	if len(knackKodenSolfAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.KnackKodenSolves = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &knackKodenSolfR{}
+			}
+			foreign.R.Challenge = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.ChallengeID {
+				local.R.KnackKodenSolves = append(local.R.KnackKodenSolves, foreign)
+				if foreign.R == nil {
+					foreign.R = &knackKodenSolfR{}
+				}
+				foreign.R.Challenge = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
 // LoadSchoolSolves allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
 func (challengeL) LoadSchoolSolves(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
@@ -2663,6 +2800,59 @@ func (o *Challenge) AddFlags(ctx context.Context, exec boil.ContextExecutor, ins
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &flagR{
+				Challenge: o,
+			}
+		} else {
+			rel.R.Challenge = o
+		}
+	}
+	return nil
+}
+
+// AddKnackKodenSolves adds the given related objects to the existing relationships
+// of the challenge, optionally inserting them as new records.
+// Appends related to o.R.KnackKodenSolves.
+// Sets related.R.Challenge appropriately.
+func (o *Challenge) AddKnackKodenSolves(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*KnackKodenSolf) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.ChallengeID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"knack_koden_solves\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"challenge_id"}),
+				strmangle.WhereClause("\"", "\"", 2, knackKodenSolfPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ChallengeID, rel.KnackKodenTeamID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.ChallengeID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &challengeR{
+			KnackKodenSolves: related,
+		}
+	} else {
+		o.R.KnackKodenSolves = append(o.R.KnackKodenSolves, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &knackKodenSolfR{
 				Challenge: o,
 			}
 		} else {

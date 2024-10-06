@@ -30,6 +30,10 @@ type Server struct {
 	ListCourses                http.Handler
 	EnrollCourse               http.Handler
 	CompleteCourse             http.Handler
+	KnackKodenSubmitFlag       http.Handler
+	KnackKodenScoreboard       http.Handler
+	KnackKodenRegisterClass    http.Handler
+	KnackKodenGetClass         http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -76,6 +80,10 @@ func New(
 			{"ListCourses", "GET", "/courses"},
 			{"EnrollCourse", "POST", "/courses/{id}/enroll"},
 			{"CompleteCourse", "POST", "/courses/{id}/complete"},
+			{"KnackKodenSubmitFlag", "POST", "/challenges/{challenge_id}/knack_koden_attempt"},
+			{"KnackKodenScoreboard", "GET", "/knack_koden_scoreboard"},
+			{"KnackKodenRegisterClass", "POST", "/knack_koden_register_class"},
+			{"KnackKodenGetClass", "POST", "/knack_koden_get_class"},
 		},
 		ListChallenges:             NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		ListEvents:                 NewListEventsHandler(e.ListEvents, mux, decoder, encoder, errhandler, formatter),
@@ -88,6 +96,10 @@ func New(
 		ListCourses:                NewListCoursesHandler(e.ListCourses, mux, decoder, encoder, errhandler, formatter),
 		EnrollCourse:               NewEnrollCourseHandler(e.EnrollCourse, mux, decoder, encoder, errhandler, formatter),
 		CompleteCourse:             NewCompleteCourseHandler(e.CompleteCourse, mux, decoder, encoder, errhandler, formatter),
+		KnackKodenSubmitFlag:       NewKnackKodenSubmitFlagHandler(e.KnackKodenSubmitFlag, mux, decoder, encoder, errhandler, formatter),
+		KnackKodenScoreboard:       NewKnackKodenScoreboardHandler(e.KnackKodenScoreboard, mux, decoder, encoder, errhandler, formatter),
+		KnackKodenRegisterClass:    NewKnackKodenRegisterClassHandler(e.KnackKodenRegisterClass, mux, decoder, encoder, errhandler, formatter),
+		KnackKodenGetClass:         NewKnackKodenGetClassHandler(e.KnackKodenGetClass, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -107,6 +119,10 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListCourses = m(s.ListCourses)
 	s.EnrollCourse = m(s.EnrollCourse)
 	s.CompleteCourse = m(s.CompleteCourse)
+	s.KnackKodenSubmitFlag = m(s.KnackKodenSubmitFlag)
+	s.KnackKodenScoreboard = m(s.KnackKodenScoreboard)
+	s.KnackKodenRegisterClass = m(s.KnackKodenRegisterClass)
+	s.KnackKodenGetClass = m(s.KnackKodenGetClass)
 }
 
 // Mount configures the mux to serve the challenge endpoints.
@@ -122,6 +138,10 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountListCoursesHandler(mux, h.ListCourses)
 	MountEnrollCourseHandler(mux, h.EnrollCourse)
 	MountCompleteCourseHandler(mux, h.CompleteCourse)
+	MountKnackKodenSubmitFlagHandler(mux, h.KnackKodenSubmitFlag)
+	MountKnackKodenScoreboardHandler(mux, h.KnackKodenScoreboard)
+	MountKnackKodenRegisterClassHandler(mux, h.KnackKodenRegisterClass)
+	MountKnackKodenGetClassHandler(mux, h.KnackKodenGetClass)
 }
 
 // MountListChallengesHandler configures the mux to serve the "challenge"
@@ -665,6 +685,211 @@ func NewCompleteCourseHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "CompleteCourse")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountKnackKodenSubmitFlagHandler configures the mux to serve the "challenge"
+// service "KnackKodenSubmitFlag" endpoint.
+func MountKnackKodenSubmitFlagHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/challenges/{challenge_id}/knack_koden_attempt", f)
+}
+
+// NewKnackKodenSubmitFlagHandler creates a HTTP handler which loads the HTTP
+// request and calls the "challenge" service "KnackKodenSubmitFlag" endpoint.
+func NewKnackKodenSubmitFlagHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeKnackKodenSubmitFlagRequest(mux, decoder)
+		encodeResponse = EncodeKnackKodenSubmitFlagResponse(encoder)
+		encodeError    = EncodeKnackKodenSubmitFlagError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "KnackKodenSubmitFlag")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountKnackKodenScoreboardHandler configures the mux to serve the "challenge"
+// service "KnackKodenScoreboard" endpoint.
+func MountKnackKodenScoreboardHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/knack_koden_scoreboard", f)
+}
+
+// NewKnackKodenScoreboardHandler creates a HTTP handler which loads the HTTP
+// request and calls the "challenge" service "KnackKodenScoreboard" endpoint.
+func NewKnackKodenScoreboardHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeKnackKodenScoreboardRequest(mux, decoder)
+		encodeResponse = EncodeKnackKodenScoreboardResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "KnackKodenScoreboard")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountKnackKodenRegisterClassHandler configures the mux to serve the
+// "challenge" service "KnackKodenRegisterClass" endpoint.
+func MountKnackKodenRegisterClassHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/knack_koden_register_class", f)
+}
+
+// NewKnackKodenRegisterClassHandler creates a HTTP handler which loads the
+// HTTP request and calls the "challenge" service "KnackKodenRegisterClass"
+// endpoint.
+func NewKnackKodenRegisterClassHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeKnackKodenRegisterClassRequest(mux, decoder)
+		encodeResponse = EncodeKnackKodenRegisterClassResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "KnackKodenRegisterClass")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountKnackKodenGetClassHandler configures the mux to serve the "challenge"
+// service "KnackKodenGetClass" endpoint.
+func MountKnackKodenGetClassHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/knack_koden_get_class", f)
+}
+
+// NewKnackKodenGetClassHandler creates a HTTP handler which loads the HTTP
+// request and calls the "challenge" service "KnackKodenGetClass" endpoint.
+func NewKnackKodenGetClassHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeKnackKodenGetClassRequest(mux, decoder)
+		encodeResponse = EncodeKnackKodenGetClassResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "KnackKodenGetClass")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "challenge")
 		payload, err := decodeRequest(r)
 		if err != nil {

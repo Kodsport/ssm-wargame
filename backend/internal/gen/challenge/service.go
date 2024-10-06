@@ -39,6 +39,14 @@ type Service interface {
 	EnrollCourse(context.Context, *EnrollCoursePayload) (err error)
 	// CompleteCourse implements CompleteCourse.
 	CompleteCourse(context.Context, *CompleteCoursePayload) (err error)
+	// KnackKodenSubmitFlag implements KnackKodenSubmitFlag.
+	KnackKodenSubmitFlag(context.Context, *KnackKodenSubmitFlagPayload) (err error)
+	// KnackKodenScoreboard implements KnackKodenScoreboard.
+	KnackKodenScoreboard(context.Context, *KnackKodenScoreboardPayload) (res *SsmSchoolScoreboard, err error)
+	// KnackKodenRegisterClass implements KnackKodenRegisterClass.
+	KnackKodenRegisterClass(context.Context, *KnackKodenRegisterClassPayload) (res *KnackKodenRegisterClassResult, err error)
+	// KnackKodenGetClass implements KnackKodenGetClass.
+	KnackKodenGetClass(context.Context, *KnackKodenGetClassPayload) (res *KnackKodenGetClassResult, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -55,7 +63,7 @@ const ServiceName = "challenge"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [11]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyChallenge", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard", "UserScoreboard", "ListAuthors", "ListCourses", "EnrollCourse", "CompleteCourse"}
+var MethodNames = [15]string{"ListChallenges", "ListEvents", "GetCurrentMonthlyChallenge", "ListMonthlyChallenges", "SubmitFlag", "SchoolScoreboard", "UserScoreboard", "ListAuthors", "ListCourses", "EnrollCourse", "CompleteCourse", "KnackKodenSubmitFlag", "KnackKodenScoreboard", "KnackKodenRegisterClass", "KnackKodenGetClass"}
 
 // ListChallengesPayload is the payload type of the challenge service
 // ListChallenges method.
@@ -165,6 +173,54 @@ type CompleteCoursePayload struct {
 	Token *string
 	// ID of a file
 	ID string
+}
+
+// KnackKodenSubmitFlagPayload is the payload type of the challenge service
+// KnackKodenSubmitFlag method.
+type KnackKodenSubmitFlagPayload struct {
+	Flag     string
+	Password string
+	// ID of a challenge
+	ChallengeID string
+	Token       *string
+}
+
+// KnackKodenScoreboardPayload is the payload type of the challenge service
+// KnackKodenScoreboard method.
+type KnackKodenScoreboardPayload struct {
+	Token *string
+}
+
+// KnackKodenRegisterClassPayload is the payload type of the challenge service
+// KnackKodenRegisterClass method.
+type KnackKodenRegisterClassPayload struct {
+	Token           *string
+	TeacherFullName string
+	TeacherEmail    string
+	TeacherPhonenr  string
+	SchoolName      string
+	ClassName       string
+	PostalCode      string
+}
+
+// KnackKodenRegisterClassResult is the result type of the challenge service
+// KnackKodenRegisterClass method.
+type KnackKodenRegisterClassResult struct {
+	Password string
+}
+
+// KnackKodenGetClassPayload is the payload type of the challenge service
+// KnackKodenGetClass method.
+type KnackKodenGetClassPayload struct {
+	Password string
+	Token    *string
+}
+
+// KnackKodenGetClassResult is the result type of the challenge service
+// KnackKodenGetClass method.
+type KnackKodenGetClassResult struct {
+	ClassName string
+	Solves    []string
 }
 
 // A Wargame challenge

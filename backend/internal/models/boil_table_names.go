@@ -17,6 +17,8 @@ var TableNames = struct {
 	Courses               string
 	CTFEvents             string
 	Flags                 string
+	KnackKodenSolves      string
+	KnackKodenTeams       string
 	MonthlyChallenges     string
 	SchoolSolves          string
 	Schools               string
@@ -37,6 +39,8 @@ var TableNames = struct {
 	Courses:               "courses",
 	CTFEvents:             "ctf_events",
 	Flags:                 "flags",
+	KnackKodenSolves:      "knack_koden_solves",
+	KnackKodenTeams:       "knack_koden_teams",
 	MonthlyChallenges:     "monthly_challenges",
 	SchoolSolves:          "school_solves",
 	Schools:               "schools",

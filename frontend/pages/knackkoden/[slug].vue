@@ -1,5 +1,5 @@
 <template>
-    <ChallengeModal v-if="chall" :chall="chall" @back="router.push(`/knackkoden`)" />
+    <KnackKodenChallengeModal v-if="chall" :chall="chall" @back="router.push(`/knackkoden`)" />
 </template>
 
 <script setup lang="ts">

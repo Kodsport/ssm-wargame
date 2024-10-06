@@ -145,4 +145,76 @@ var _ = Service("challenge", func() {
 			Response(StatusOK)
 		})
 	})
+
+	// hacky addition of knäck koden routes
+
+	Method("KnackKodenSubmitFlag", func() {
+		Payload(func() {
+			Attribute("flag", String, func() {
+				Example("SSM{flag}")
+				MaxLength(200)
+			})
+			Extend(ChallengeIDArtifact)
+			Extend(OptionalTokenPayload)
+			Attribute("password", String)
+			Required("flag", "password")
+		})
+		Error("already_solved")
+		Error("incorrect_flag")
+		HTTP(func() {
+			POST("/challenges/{challenge_id}/knack_koden_attempt")
+			Response(StatusOK)
+			Response("already_solved", StatusConflict, func() {
+				Description("If the challenge is already solved")
+			})
+			Response("incorrect_flag", StatusBadRequest, func() {
+				Description("If the challenge is already solved")
+			})
+		})
+	})
+
+	Method("KnackKodenScoreboard", func() {
+		Result(SchoolScoreboard)
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+		})
+		HTTP(func() {
+			GET("/knack_koden_scoreboard")
+			Response(StatusOK)
+		})
+	})
+
+	Method("KnackKodenRegisterClass", func() {
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+			Extend(KnackKodenRegisterClassPayload)
+		})
+		Result(func() {
+			Attribute("password", String)
+			Required("password")
+		})
+		HTTP(func() {
+			POST("/knack_koden_register_class")
+			Response(StatusOK)
+
+		})
+	})
+	Method("KnackKodenGetClass", func() {
+		Payload(func() {
+			Extend(OptionalTokenPayload)
+			Attribute("password", String)
+			Required("password")
+		})
+		Result(func() {
+			Attribute("class_name", String)
+			Attribute("solves", ArrayOf(String))
+			Required("class_name", "solves")
+		})
+		HTTP(func() {
+			POST("/knack_koden_get_class")
+			Response(StatusOK)
+
+		})
+	})
+
 })

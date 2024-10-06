@@ -524,6 +524,244 @@ func DecodeCompleteCourseRequest(mux goahttp.Muxer, decoder func(*http.Request) 
 	}
 }
 
+// EncodeKnackKodenSubmitFlagResponse returns an encoder for responses returned
+// by the challenge KnackKodenSubmitFlag endpoint.
+func EncodeKnackKodenSubmitFlagResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeKnackKodenSubmitFlagRequest returns a decoder for requests sent to the
+// challenge KnackKodenSubmitFlag endpoint.
+func DecodeKnackKodenSubmitFlagRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body KnackKodenSubmitFlagRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateKnackKodenSubmitFlagRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			challengeID string
+			token       *string
+
+			params = mux.Vars(r)
+		)
+		challengeID = params["challenge_id"]
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewKnackKodenSubmitFlagPayload(&body, challengeID, token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeKnackKodenSubmitFlagError returns an encoder for errors returned by
+// the KnackKodenSubmitFlag challenge endpoint.
+func EncodeKnackKodenSubmitFlagError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "already_solved":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewKnackKodenSubmitFlagAlreadySolvedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusConflict)
+			return enc.Encode(body)
+		case "incorrect_flag":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewKnackKodenSubmitFlagIncorrectFlagResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeKnackKodenScoreboardResponse returns an encoder for responses returned
+// by the challenge KnackKodenScoreboard endpoint.
+func EncodeKnackKodenScoreboardResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*challengeviews.SsmSchoolScoreboard)
+		enc := encoder(ctx, w)
+		body := NewKnackKodenScoreboardResponseBody(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeKnackKodenScoreboardRequest returns a decoder for requests sent to the
+// challenge KnackKodenScoreboard endpoint.
+func DecodeKnackKodenScoreboardRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewKnackKodenScoreboardPayload(token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeKnackKodenRegisterClassResponse returns an encoder for responses
+// returned by the challenge KnackKodenRegisterClass endpoint.
+func EncodeKnackKodenRegisterClassResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.(*challenge.KnackKodenRegisterClassResult)
+		enc := encoder(ctx, w)
+		body := NewKnackKodenRegisterClassResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeKnackKodenRegisterClassRequest returns a decoder for requests sent to
+// the challenge KnackKodenRegisterClass endpoint.
+func DecodeKnackKodenRegisterClassRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body KnackKodenRegisterClassRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateKnackKodenRegisterClassRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewKnackKodenRegisterClassPayload(&body, token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeKnackKodenGetClassResponse returns an encoder for responses returned
+// by the challenge KnackKodenGetClass endpoint.
+func EncodeKnackKodenGetClassResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.(*challenge.KnackKodenGetClassResult)
+		enc := encoder(ctx, w)
+		body := NewKnackKodenGetClassResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeKnackKodenGetClassRequest returns a decoder for requests sent to the
+// challenge KnackKodenGetClass endpoint.
+func DecodeKnackKodenGetClassRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body KnackKodenGetClassRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateKnackKodenGetClassRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			token *string
+		)
+		tokenRaw := r.Header.Get("Authorization")
+		if tokenRaw != "" {
+			token = &tokenRaw
+		}
+		payload := NewKnackKodenGetClassPayload(&body, token)
+		if payload.Token != nil {
+			if strings.Contains(*payload.Token, " ") {
+				// Remove authorization scheme prefix (e.g. "Bearer")
+				cred := strings.SplitN(*payload.Token, " ", 2)[1]
+				payload.Token = &cred
+			}
+		}
+
+		return payload, nil
+	}
+}
+
 // marshalChallengeviewsSsmChallengeViewToSsmChallengeResponse builds a value
 // of type *SsmChallengeResponse from a value of type
 // *challengeviews.SsmChallengeView.

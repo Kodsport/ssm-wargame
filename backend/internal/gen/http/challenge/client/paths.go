@@ -65,3 +65,23 @@ func EnrollCourseChallengePath(id string) string {
 func CompleteCourseChallengePath(id string) string {
 	return fmt.Sprintf("/courses/%v/complete", id)
 }
+
+// KnackKodenSubmitFlagChallengePath returns the URL path to the challenge service KnackKodenSubmitFlag HTTP endpoint.
+func KnackKodenSubmitFlagChallengePath(challengeID string) string {
+	return fmt.Sprintf("/challenges/%v/knack_koden_attempt", challengeID)
+}
+
+// KnackKodenScoreboardChallengePath returns the URL path to the challenge service KnackKodenScoreboard HTTP endpoint.
+func KnackKodenScoreboardChallengePath() string {
+	return "/knack_koden_scoreboard"
+}
+
+// KnackKodenRegisterClassChallengePath returns the URL path to the challenge service KnackKodenRegisterClass HTTP endpoint.
+func KnackKodenRegisterClassChallengePath() string {
+	return "/knack_koden_register_class"
+}
+
+// KnackKodenGetClassChallengePath returns the URL path to the challenge service KnackKodenGetClass HTTP endpoint.
+func KnackKodenGetClassChallengePath() string {
+	return "/knack_koden_get_class"
+}

@@ -17,6 +17,7 @@ require (
 	go.uber.org/zap v1.17.0
 	goa.design/goa/v3 v3.5.2
 	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d
+	golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
 	gopkg.in/yaml.v3 v3.0.1
 )

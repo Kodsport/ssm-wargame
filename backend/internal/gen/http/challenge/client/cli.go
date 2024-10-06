@@ -244,3 +244,115 @@ func BuildCompleteCoursePayload(challengeCompleteCourseID string, challengeCompl
 
 	return v, nil
 }
+
+// BuildKnackKodenSubmitFlagPayload builds the payload for the challenge
+// KnackKodenSubmitFlag endpoint from CLI flags.
+func BuildKnackKodenSubmitFlagPayload(challengeKnackKodenSubmitFlagBody string, challengeKnackKodenSubmitFlagChallengeID string, challengeKnackKodenSubmitFlagToken string) (*challenge.KnackKodenSubmitFlagPayload, error) {
+	var err error
+	var body KnackKodenSubmitFlagRequestBody
+	{
+		err = json.Unmarshal([]byte(challengeKnackKodenSubmitFlagBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"flag\": \"SSM{flag}\",\n      \"password\": \"Minima distinctio.\"\n   }'")
+		}
+		if utf8.RuneCountInString(body.Flag) > 200 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.flag", body.Flag, utf8.RuneCountInString(body.Flag), 200, false))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	var challengeID string
+	{
+		challengeID = challengeKnackKodenSubmitFlagChallengeID
+		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token *string
+	{
+		if challengeKnackKodenSubmitFlagToken != "" {
+			token = &challengeKnackKodenSubmitFlagToken
+		}
+	}
+	v := &challenge.KnackKodenSubmitFlagPayload{
+		Flag:     body.Flag,
+		Password: body.Password,
+	}
+	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildKnackKodenScoreboardPayload builds the payload for the challenge
+// KnackKodenScoreboard endpoint from CLI flags.
+func BuildKnackKodenScoreboardPayload(challengeKnackKodenScoreboardToken string) (*challenge.KnackKodenScoreboardPayload, error) {
+	var token *string
+	{
+		if challengeKnackKodenScoreboardToken != "" {
+			token = &challengeKnackKodenScoreboardToken
+		}
+	}
+	v := &challenge.KnackKodenScoreboardPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildKnackKodenRegisterClassPayload builds the payload for the challenge
+// KnackKodenRegisterClass endpoint from CLI flags.
+func BuildKnackKodenRegisterClassPayload(challengeKnackKodenRegisterClassBody string, challengeKnackKodenRegisterClassToken string) (*challenge.KnackKodenRegisterClassPayload, error) {
+	var err error
+	var body KnackKodenRegisterClassRequestBody
+	{
+		err = json.Unmarshal([]byte(challengeKnackKodenRegisterClassBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"class_name\": \"Dolores et in.\",\n      \"postal_code\": \"Repellendus et vel.\",\n      \"school_name\": \"Quas nobis dolorem necessitatibus autem aut.\",\n      \"teacher_email\": \"Nihil quia vel.\",\n      \"teacher_full_name\": \"Voluptas voluptatum et.\",\n      \"teacher_phonenr\": \"Velit ut a sapiente earum.\"\n   }'")
+		}
+	}
+	var token *string
+	{
+		if challengeKnackKodenRegisterClassToken != "" {
+			token = &challengeKnackKodenRegisterClassToken
+		}
+	}
+	v := &challenge.KnackKodenRegisterClassPayload{
+		TeacherFullName: body.TeacherFullName,
+		TeacherEmail:    body.TeacherEmail,
+		TeacherPhonenr:  body.TeacherPhonenr,
+		SchoolName:      body.SchoolName,
+		ClassName:       body.ClassName,
+		PostalCode:      body.PostalCode,
+	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildKnackKodenGetClassPayload builds the payload for the challenge
+// KnackKodenGetClass endpoint from CLI flags.
+func BuildKnackKodenGetClassPayload(challengeKnackKodenGetClassBody string, challengeKnackKodenGetClassToken string) (*challenge.KnackKodenGetClassPayload, error) {
+	var err error
+	var body KnackKodenGetClassRequestBody
+	{
+		err = json.Unmarshal([]byte(challengeKnackKodenGetClassBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"password\": \"Amet animi ipsum nam.\"\n   }'")
+		}
+	}
+	var token *string
+	{
+		if challengeKnackKodenGetClassToken != "" {
+			token = &challengeKnackKodenGetClassToken
+		}
+	}
+	v := &challenge.KnackKodenGetClassPayload{
+		Password: body.Password,
+	}
+	v.Token = token
+
+	return v, nil
+}

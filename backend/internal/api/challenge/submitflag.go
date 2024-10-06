@@ -39,6 +39,20 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 		return spec.MakeAlreadySolved(errors.New("already solved"))
 	}
 
+	exits, err := models.Challenges(
+		models.ChallengeWhere.ID.EQ(req.ChallengeID),
+		models.ChallengeWhere.ChallNamespace.IsNull(),
+	).Exists(ctx, tx)
+
+	if err != nil {
+		s.log.Error("could not check chall exists", zap.Error(err))
+		return err
+	}
+
+	if !exits {
+		return errors.New("challenge not found")
+	}
+
 	flags, err := models.Flags(
 		models.FlagWhere.ChallengeID.EQ(challID.String()),
 	).All(ctx, tx)

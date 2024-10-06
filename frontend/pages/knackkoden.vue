@@ -1,13 +1,21 @@
 <template>
     <h1 class="text-primary">Knäck Koden</h1>
     <p>
-        Knäck Koden är en tävling inom hacking för mellanstadieelever. Man kan inte ännu samla poäng för klassen, den
-        funktionaliteten kommer senare!
+        Knäck Koden är en tävling inom hacking för mellanstadieelever.
     </p>
+
+    <div v-if="!auth.knackKodenPassword" class="form-group col-3">
+        <label for="password">Klasslösenord</label>
+        <input class="form-control" type="text" v-model="password">
+        <button class="btn btn-primary mt-2" @click="login(password)">Logga in</button>
+    </div>
+    <div v-else>
+        Du representerar {{ classData.class_name }}
+    </div>
 
     <div class="d-flex flex-column flex-lg-row pt-4">
 
-        <div class="flex-grow-1 d-flex flex-column">
+        <div class="flex-grow-1 d-flex flex-column col-6">
             <template v-for="category in categories">
                 <div v-if="challenges.filter(c => c.category == category).length">
                     <div class="text-primary border-primary border-bottom border-3 pt-2 pb-2">
@@ -16,7 +24,8 @@
 
                     <div class="ssm-grid pt-3 pb-2">
                         <div v-for="chall in challenges.filter(c => c.category == category)">
-                            <ChallengePreview class="pointer" @click="nav(chall.slug)" :chall="chall" />
+                            <ChallengePreview :hideSolves="true" class="pointer" @click="nav(chall.slug)"
+                                :chall="chall" />
                             <!-- for seo -->
                             <a class="d-none" :href="`/knackkoden/${chall.slug}`">{{ chall.title }}</a>
                         </div>
@@ -24,12 +33,32 @@
                 </div>
             </template>
         </div>
+        <div class="col-6 p-2">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Klass</th>
+                        <th>Poäng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="row in scoreboard.scores">
+                        <td>{{ row.school_name }}</td>
+                        <td>{{ row.score }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <NuxtPage />
 </template>
 
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges'
+import { useAuthStore } from '../store/auth'
+
+const password = ref("")
+const classData = ref({})
 
 useHead({
     title: 'SSM - Knäck Koden'
@@ -41,20 +70,26 @@ useServerSeoMeta({
 
 const challs = useChallengeStore()
 const router = useRouter()
-
+const http = useHttp()
+const auth = useAuthStore()
 
 await useAsyncData('challenges', challs.getChallenges)
 await useAsyncData('events', challs.getEvents)
 
 onMounted(() => {
     challs.getChallenges()
+
+    const pw = localStorage.getItem('ssm-knackkoden-password')
+    if (pw) {
+        login(pw)
+    }
 })
 
 const categories = computed(() => challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i))
 
 const challenges = computed(() => {
 
-    var res = challs.challenges.filter(c => c.chall_namespace == "knackkoden")
+    var res = challs.challenges.filter(c => c.chall_namespace == "knackkoden").map(c => ({ ...c, solved: classData?.value?.solves?.includes(c.id) }))
 
     return res
 })
@@ -62,6 +97,28 @@ const challenges = computed(() => {
 function nav(slug: string) {
     router.push(`/knackkoden/${slug}`)
 }
+
+const scoreboard = await http("/knack_koden_scoreboard")
+
+async function login(pw) {
+    try {
+        const resp = await http("/knack_koden_get_class", {
+            method: "POST",
+            body: {
+                password: pw
+            }
+        })
+        classData.value = resp;
+        auth.setKnackKodenPassword(pw)
+        localStorage.setItem("ssm-knackkoden-password", pw)
+
+    } catch (error) {
+        localStorage.removeItem("ssm-knackkoden-password")
+        alert("Fel klasslösenord")
+    }
+
+}
+
 </script>
 
 <style scoped>

@@ -7,7 +7,7 @@
             </h5>
         </div>
         <div class="card-body d-flex justify-content-between">
-            <div class="align-items-end d-flex">
+            <div v-if="!props.hideSolves" class="align-items-end d-flex">
                 <span v-if="props.chall.solves != 0">{{ props.chall.solves }} lösare</span>
                 <span v-else>Olöst</span>
             </div>
@@ -15,13 +15,13 @@
         </div>
     </div>
 </template>
-  
+
 <script setup lang="ts">
 
 import { useChallengeStore } from '../store/challenges';
 
 const store = useChallengeStore()
-const props = defineProps(['chall'])
+const props = defineProps(['chall', 'hideSolves'])
 
 const event = computed(() => store.events.find(e => e.id == props.chall.ctf_event_id))
 

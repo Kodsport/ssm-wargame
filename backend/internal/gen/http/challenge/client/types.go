@@ -19,6 +19,30 @@ type SubmitFlagRequestBody struct {
 	Flag string `form:"flag" json:"flag" xml:"flag"`
 }
 
+// KnackKodenSubmitFlagRequestBody is the type of the "challenge" service
+// "KnackKodenSubmitFlag" endpoint HTTP request body.
+type KnackKodenSubmitFlagRequestBody struct {
+	Flag     string `form:"flag" json:"flag" xml:"flag"`
+	Password string `form:"password" json:"password" xml:"password"`
+}
+
+// KnackKodenRegisterClassRequestBody is the type of the "challenge" service
+// "KnackKodenRegisterClass" endpoint HTTP request body.
+type KnackKodenRegisterClassRequestBody struct {
+	TeacherFullName string `form:"teacher_full_name" json:"teacher_full_name" xml:"teacher_full_name"`
+	TeacherEmail    string `form:"teacher_email" json:"teacher_email" xml:"teacher_email"`
+	TeacherPhonenr  string `form:"teacher_phonenr" json:"teacher_phonenr" xml:"teacher_phonenr"`
+	SchoolName      string `form:"school_name" json:"school_name" xml:"school_name"`
+	ClassName       string `form:"class_name" json:"class_name" xml:"class_name"`
+	PostalCode      string `form:"postal_code" json:"postal_code" xml:"postal_code"`
+}
+
+// KnackKodenGetClassRequestBody is the type of the "challenge" service
+// "KnackKodenGetClass" endpoint HTTP request body.
+type KnackKodenGetClassRequestBody struct {
+	Password string `form:"password" json:"password" xml:"password"`
+}
+
 // ListChallengesResponseBody is the type of the "challenge" service
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmChallengeResponse
@@ -64,6 +88,25 @@ type ListAuthorsResponseBody []*AuthorResponse
 // endpoint HTTP response body.
 type ListCoursesResponseBody []*CourseResponse
 
+// KnackKodenScoreboardResponseBody is the type of the "challenge" service
+// "KnackKodenScoreboard" endpoint HTTP response body.
+type KnackKodenScoreboardResponseBody struct {
+	Scores []*SchoolScoreboardScoreResponseBody `form:"scores,omitempty" json:"scores,omitempty" xml:"scores,omitempty"`
+}
+
+// KnackKodenRegisterClassResponseBody is the type of the "challenge" service
+// "KnackKodenRegisterClass" endpoint HTTP response body.
+type KnackKodenRegisterClassResponseBody struct {
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
+
+// KnackKodenGetClassResponseBody is the type of the "challenge" service
+// "KnackKodenGetClass" endpoint HTTP response body.
+type KnackKodenGetClassResponseBody struct {
+	ClassName *string  `form:"class_name,omitempty" json:"class_name,omitempty" xml:"class_name,omitempty"`
+	Solves    []string `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+}
+
 // GetCurrentMonthlyChallengeNotFoundResponseBody is the type of the
 // "challenge" service "GetCurrentMonthlyChallenge" endpoint HTTP response body
 // for the "not_found" error.
@@ -104,6 +147,44 @@ type SubmitFlagAlreadySolvedResponseBody struct {
 // SubmitFlagIncorrectFlagResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "incorrect_flag" error.
 type SubmitFlagIncorrectFlagResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// KnackKodenSubmitFlagAlreadySolvedResponseBody is the type of the "challenge"
+// service "KnackKodenSubmitFlag" endpoint HTTP response body for the
+// "already_solved" error.
+type KnackKodenSubmitFlagAlreadySolvedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// KnackKodenSubmitFlagIncorrectFlagResponseBody is the type of the "challenge"
+// service "KnackKodenSubmitFlag" endpoint HTTP response body for the
+// "incorrect_flag" error.
+type KnackKodenSubmitFlagIncorrectFlagResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -305,6 +386,39 @@ func NewSubmitFlagRequestBody(p *challenge.SubmitFlagPayload) *SubmitFlagRequest
 	return body
 }
 
+// NewKnackKodenSubmitFlagRequestBody builds the HTTP request body from the
+// payload of the "KnackKodenSubmitFlag" endpoint of the "challenge" service.
+func NewKnackKodenSubmitFlagRequestBody(p *challenge.KnackKodenSubmitFlagPayload) *KnackKodenSubmitFlagRequestBody {
+	body := &KnackKodenSubmitFlagRequestBody{
+		Flag:     p.Flag,
+		Password: p.Password,
+	}
+	return body
+}
+
+// NewKnackKodenRegisterClassRequestBody builds the HTTP request body from the
+// payload of the "KnackKodenRegisterClass" endpoint of the "challenge" service.
+func NewKnackKodenRegisterClassRequestBody(p *challenge.KnackKodenRegisterClassPayload) *KnackKodenRegisterClassRequestBody {
+	body := &KnackKodenRegisterClassRequestBody{
+		TeacherFullName: p.TeacherFullName,
+		TeacherEmail:    p.TeacherEmail,
+		TeacherPhonenr:  p.TeacherPhonenr,
+		SchoolName:      p.SchoolName,
+		ClassName:       p.ClassName,
+		PostalCode:      p.PostalCode,
+	}
+	return body
+}
+
+// NewKnackKodenGetClassRequestBody builds the HTTP request body from the
+// payload of the "KnackKodenGetClass" endpoint of the "challenge" service.
+func NewKnackKodenGetClassRequestBody(p *challenge.KnackKodenGetClassPayload) *KnackKodenGetClassRequestBody {
+	body := &KnackKodenGetClassRequestBody{
+		Password: p.Password,
+	}
+	return body
+}
+
 // NewListChallengesSsmChallengeCollectionOK builds a "challenge" service
 // "ListChallenges" endpoint result from a HTTP "OK" response.
 func NewListChallengesSsmChallengeCollectionOK(body ListChallengesResponseBody) challengeviews.SsmChallengeCollectionView {
@@ -445,6 +559,93 @@ func NewListCoursesCourseOK(body []*CourseResponse) []*challenge.Course {
 	return v
 }
 
+// NewKnackKodenSubmitFlagAlreadySolved builds a challenge service
+// KnackKodenSubmitFlag endpoint already_solved error.
+func NewKnackKodenSubmitFlagAlreadySolved(body *KnackKodenSubmitFlagAlreadySolvedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewKnackKodenSubmitFlagIncorrectFlag builds a challenge service
+// KnackKodenSubmitFlag endpoint incorrect_flag error.
+func NewKnackKodenSubmitFlagIncorrectFlag(body *KnackKodenSubmitFlagIncorrectFlagResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewKnackKodenScoreboardSsmSchoolScoreboardOK builds a "challenge" service
+// "KnackKodenScoreboard" endpoint result from a HTTP "OK" response.
+func NewKnackKodenScoreboardSsmSchoolScoreboardOK(body *KnackKodenScoreboardResponseBody) *challengeviews.SsmSchoolScoreboardView {
+	v := &challengeviews.SsmSchoolScoreboardView{}
+	v.Scores = make([]*challengeviews.SchoolScoreboardScoreView, len(body.Scores))
+	for i, val := range body.Scores {
+		v.Scores[i] = unmarshalSchoolScoreboardScoreResponseBodyToChallengeviewsSchoolScoreboardScoreView(val)
+	}
+
+	return v
+}
+
+// NewKnackKodenRegisterClassResultOK builds a "challenge" service
+// "KnackKodenRegisterClass" endpoint result from a HTTP "OK" response.
+func NewKnackKodenRegisterClassResultOK(body *KnackKodenRegisterClassResponseBody) *challenge.KnackKodenRegisterClassResult {
+	v := &challenge.KnackKodenRegisterClassResult{
+		Password: *body.Password,
+	}
+
+	return v
+}
+
+// NewKnackKodenGetClassResultOK builds a "challenge" service
+// "KnackKodenGetClass" endpoint result from a HTTP "OK" response.
+func NewKnackKodenGetClassResultOK(body *KnackKodenGetClassResponseBody) *challenge.KnackKodenGetClassResult {
+	v := &challenge.KnackKodenGetClassResult{
+		ClassName: *body.ClassName,
+	}
+	v.Solves = make([]string, len(body.Solves))
+	for i, val := range body.Solves {
+		v.Solves[i] = val
+	}
+
+	return v
+}
+
+// ValidateKnackKodenRegisterClassResponseBody runs the validations defined on
+// KnackKodenRegisterClassResponseBody
+func ValidateKnackKodenRegisterClassResponseBody(body *KnackKodenRegisterClassResponseBody) (err error) {
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
+	}
+	return
+}
+
+// ValidateKnackKodenGetClassResponseBody runs the validations defined on
+// KnackKodenGetClassResponseBody
+func ValidateKnackKodenGetClassResponseBody(body *KnackKodenGetClassResponseBody) (err error) {
+	if body.ClassName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("class_name", "body"))
+	}
+	if body.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	return
+}
+
 // ValidateGetCurrentMonthlyChallengeNotFoundResponseBody runs the validations
 // defined on GetCurrentMonthlyChallenge_not_found_Response_Body
 func ValidateGetCurrentMonthlyChallengeNotFoundResponseBody(body *GetCurrentMonthlyChallengeNotFoundResponseBody) (err error) {
@@ -496,6 +697,54 @@ func ValidateSubmitFlagAlreadySolvedResponseBody(body *SubmitFlagAlreadySolvedRe
 // ValidateSubmitFlagIncorrectFlagResponseBody runs the validations defined on
 // SubmitFlag_incorrect_flag_Response_Body
 func ValidateSubmitFlagIncorrectFlagResponseBody(body *SubmitFlagIncorrectFlagResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateKnackKodenSubmitFlagAlreadySolvedResponseBody runs the validations
+// defined on KnackKodenSubmitFlag_already_solved_Response_Body
+func ValidateKnackKodenSubmitFlagAlreadySolvedResponseBody(body *KnackKodenSubmitFlagAlreadySolvedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateKnackKodenSubmitFlagIncorrectFlagResponseBody runs the validations
+// defined on KnackKodenSubmitFlag_incorrect_flag_Response_Body
+func ValidateKnackKodenSubmitFlagIncorrectFlagResponseBody(body *KnackKodenSubmitFlagIncorrectFlagResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}

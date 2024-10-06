@@ -26,7 +26,7 @@ import (
 //	command (subcommand1|subcommand2|...)
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
-challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors|list-courses|enroll-course|complete-course)
+challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors|list-courses|enroll-course|complete-course|knack-koden-submit-flag|knack-koden-scoreboard|knack-koden-register-class|knack-koden-get-class)
 admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course)
 user (get-self|update-self|complete-onboarding|join-school|leave-school|search-schools)
 `
@@ -98,6 +98,22 @@ func ParseEndpoint(
 		challengeCompleteCourseFlags     = flag.NewFlagSet("complete-course", flag.ExitOnError)
 		challengeCompleteCourseIDFlag    = challengeCompleteCourseFlags.String("id", "REQUIRED", "ID of a file")
 		challengeCompleteCourseTokenFlag = challengeCompleteCourseFlags.String("token", "", "")
+
+		challengeKnackKodenSubmitFlagFlags           = flag.NewFlagSet("knack-koden-submit-flag", flag.ExitOnError)
+		challengeKnackKodenSubmitFlagBodyFlag        = challengeKnackKodenSubmitFlagFlags.String("body", "REQUIRED", "")
+		challengeKnackKodenSubmitFlagChallengeIDFlag = challengeKnackKodenSubmitFlagFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
+		challengeKnackKodenSubmitFlagTokenFlag       = challengeKnackKodenSubmitFlagFlags.String("token", "", "")
+
+		challengeKnackKodenScoreboardFlags     = flag.NewFlagSet("knack-koden-scoreboard", flag.ExitOnError)
+		challengeKnackKodenScoreboardTokenFlag = challengeKnackKodenScoreboardFlags.String("token", "", "")
+
+		challengeKnackKodenRegisterClassFlags     = flag.NewFlagSet("knack-koden-register-class", flag.ExitOnError)
+		challengeKnackKodenRegisterClassBodyFlag  = challengeKnackKodenRegisterClassFlags.String("body", "REQUIRED", "")
+		challengeKnackKodenRegisterClassTokenFlag = challengeKnackKodenRegisterClassFlags.String("token", "", "")
+
+		challengeKnackKodenGetClassFlags     = flag.NewFlagSet("knack-koden-get-class", flag.ExitOnError)
+		challengeKnackKodenGetClassBodyFlag  = challengeKnackKodenGetClassFlags.String("body", "REQUIRED", "")
+		challengeKnackKodenGetClassTokenFlag = challengeKnackKodenGetClassFlags.String("token", "", "")
 
 		adminFlags = flag.NewFlagSet("admin", flag.ContinueOnError)
 
@@ -240,6 +256,10 @@ func ParseEndpoint(
 	challengeListCoursesFlags.Usage = challengeListCoursesUsage
 	challengeEnrollCourseFlags.Usage = challengeEnrollCourseUsage
 	challengeCompleteCourseFlags.Usage = challengeCompleteCourseUsage
+	challengeKnackKodenSubmitFlagFlags.Usage = challengeKnackKodenSubmitFlagUsage
+	challengeKnackKodenScoreboardFlags.Usage = challengeKnackKodenScoreboardUsage
+	challengeKnackKodenRegisterClassFlags.Usage = challengeKnackKodenRegisterClassUsage
+	challengeKnackKodenGetClassFlags.Usage = challengeKnackKodenGetClassUsage
 
 	adminFlags.Usage = adminUsage
 	adminListChallengesFlags.Usage = adminListChallengesUsage
@@ -358,6 +378,18 @@ func ParseEndpoint(
 
 			case "complete-course":
 				epf = challengeCompleteCourseFlags
+
+			case "knack-koden-submit-flag":
+				epf = challengeKnackKodenSubmitFlagFlags
+
+			case "knack-koden-scoreboard":
+				epf = challengeKnackKodenScoreboardFlags
+
+			case "knack-koden-register-class":
+				epf = challengeKnackKodenRegisterClassFlags
+
+			case "knack-koden-get-class":
+				epf = challengeKnackKodenGetClassFlags
 
 			}
 
@@ -528,6 +560,18 @@ func ParseEndpoint(
 			case "complete-course":
 				endpoint = c.CompleteCourse()
 				data, err = challengec.BuildCompleteCoursePayload(*challengeCompleteCourseIDFlag, *challengeCompleteCourseTokenFlag)
+			case "knack-koden-submit-flag":
+				endpoint = c.KnackKodenSubmitFlag()
+				data, err = challengec.BuildKnackKodenSubmitFlagPayload(*challengeKnackKodenSubmitFlagBodyFlag, *challengeKnackKodenSubmitFlagChallengeIDFlag, *challengeKnackKodenSubmitFlagTokenFlag)
+			case "knack-koden-scoreboard":
+				endpoint = c.KnackKodenScoreboard()
+				data, err = challengec.BuildKnackKodenScoreboardPayload(*challengeKnackKodenScoreboardTokenFlag)
+			case "knack-koden-register-class":
+				endpoint = c.KnackKodenRegisterClass()
+				data, err = challengec.BuildKnackKodenRegisterClassPayload(*challengeKnackKodenRegisterClassBodyFlag, *challengeKnackKodenRegisterClassTokenFlag)
+			case "knack-koden-get-class":
+				endpoint = c.KnackKodenGetClass()
+				data, err = challengec.BuildKnackKodenGetClassPayload(*challengeKnackKodenGetClassBodyFlag, *challengeKnackKodenGetClassTokenFlag)
 			}
 		case "admin":
 			c := adminc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -696,6 +740,10 @@ COMMAND:
     list-courses: ListCourses implements ListCourses.
     enroll-course: EnrollCourse implements EnrollCourse.
     complete-course: CompleteCourse implements CompleteCourse.
+    knack-koden-submit-flag: KnackKodenSubmitFlag implements KnackKodenSubmitFlag.
+    knack-koden-scoreboard: KnackKodenScoreboard implements KnackKodenScoreboard.
+    knack-koden-register-class: KnackKodenRegisterClass implements KnackKodenRegisterClass.
+    knack-koden-get-class: KnackKodenGetClass implements KnackKodenGetClass.
 
 Additional help:
     %[1]s challenge COMMAND --help
@@ -827,6 +875,66 @@ CompleteCourse implements CompleteCourse.
 
 Example:
     %[1]s challenge complete-course --id "020817da-8b5c-42c4-9e52-0f3a6628c1f8" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeKnackKodenSubmitFlagUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge knack-koden-submit-flag -body JSON -challenge-id STRING -token STRING
+
+KnackKodenSubmitFlag implements KnackKodenSubmitFlag.
+    -body JSON: 
+    -challenge-id STRING: ID of a challenge
+    -token STRING: 
+
+Example:
+    %[1]s challenge knack-koden-submit-flag --body '{
+      "flag": "SSM{flag}",
+      "password": "Minima distinctio."
+   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeKnackKodenScoreboardUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge knack-koden-scoreboard -token STRING
+
+KnackKodenScoreboard implements KnackKodenScoreboard.
+    -token STRING: 
+
+Example:
+    %[1]s challenge knack-koden-scoreboard --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeKnackKodenRegisterClassUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge knack-koden-register-class -body JSON -token STRING
+
+KnackKodenRegisterClass implements KnackKodenRegisterClass.
+    -body JSON: 
+    -token STRING: 
+
+Example:
+    %[1]s challenge knack-koden-register-class --body '{
+      "class_name": "Dolores et in.",
+      "postal_code": "Repellendus et vel.",
+      "school_name": "Quas nobis dolorem necessitatibus autem aut.",
+      "teacher_email": "Nihil quia vel.",
+      "teacher_full_name": "Voluptas voluptatum et.",
+      "teacher_phonenr": "Velit ut a sapiente earum."
+   }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func challengeKnackKodenGetClassUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] challenge knack-koden-get-class -body JSON -token STRING
+
+KnackKodenGetClass implements KnackKodenGetClass.
+    -body JSON: 
+    -token STRING: 
+
+Example:
+    %[1]s challenge knack-koden-get-class --body '{
+      "password": "Amet animi ipsum nam."
+   }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -1129,9 +1237,9 @@ Example:
       ],
       "challenge_id": "225ada44-3fde-460d-84a4-2f16ff579618",
       "custom": {
-         "Est molestias vitae asperiores voluptatem nihil et.": "Ut facilis.",
-         "Natus fugiat cumque eius rem vel.": "Sit minus quae error molestias neque.",
-         "Odit et error enim minus.": "Pariatur quo quia."
+         "Deleniti perspiciatis doloremque qui veritatis.": "Animi ut voluptas est.",
+         "Deserunt modi voluptatem quisquam.": "Totam voluptates neque.",
+         "Vel qui quos nesciunt sed quia.": "Quasi earum quisquam illo necessitatibus officia sapiente."
       },
       "description": "how to dns",
       "file_urls": [
@@ -1150,7 +1258,7 @@ Example:
          }
       ],
       "human_metadata": {
-         "event_name": "Amet quasi."
+         "event_name": "Officia earum facere soluta omnis."
       },
       "order": 5,
       "score": 100,
@@ -1223,7 +1331,7 @@ CreateCTFEventImportToken implements CreateCTFEventImportToken.
 
 Example:
     %[1]s admin create-ctf-event-import-token --body '{
-      "expires_in": "hour",
+      "expires_in": "week",
       "name": "e3bb4dc5-9479-42ce-aed3-b41e8139fccb"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])

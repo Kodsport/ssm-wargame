@@ -5,9 +5,13 @@ import useHttp from '../composables/use-http'
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: "",
-        user: {}
+        user: {},
+        knackKodenPassword: ""
     }),
     actions: {
+        setKnackKodenPassword(pw: string) {
+            this.knackKodenPassword = pw;
+        },
         setToken(token: string) {
             this.token = token
             this.getUser()

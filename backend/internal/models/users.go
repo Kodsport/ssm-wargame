@@ -29,11 +29,11 @@ type User struct {
 	FullName       string      `boil:"full_name" json:"full_name" toml:"full_name" yaml:"full_name"`
 	Email          string      `boil:"email" json:"email" toml:"email" yaml:"email"`
 	Role           string      `boil:"role" json:"role" toml:"role" yaml:"role"`
+	SchoolID       null.String `boil:"school_id" json:"school_id,omitempty" toml:"school_id" yaml:"school_id,omitempty"`
 	AuthorID       null.String `boil:"author_id" json:"author_id,omitempty" toml:"author_id" yaml:"author_id,omitempty"`
+	OnboardingDone bool        `boil:"onboarding_done" json:"onboarding_done" toml:"onboarding_done" yaml:"onboarding_done"`
 	CreatedAt      time.Time   `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
 	UpdatedAt      null.Time   `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
-	SchoolID       null.String `boil:"school_id" json:"school_id,omitempty" toml:"school_id" yaml:"school_id,omitempty"`
-	OnboardingDone bool        `boil:"onboarding_done" json:"onboarding_done" toml:"onboarding_done" yaml:"onboarding_done"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -45,22 +45,22 @@ var UserColumns = struct {
 	FullName       string
 	Email          string
 	Role           string
+	SchoolID       string
 	AuthorID       string
+	OnboardingDone string
 	CreatedAt      string
 	UpdatedAt      string
-	SchoolID       string
-	OnboardingDone string
 }{
 	ID:             "id",
 	DiscordID:      "discord_id",
 	FullName:       "full_name",
 	Email:          "email",
 	Role:           "role",
+	SchoolID:       "school_id",
 	AuthorID:       "author_id",
+	OnboardingDone: "onboarding_done",
 	CreatedAt:      "created_at",
 	UpdatedAt:      "updated_at",
-	SchoolID:       "school_id",
-	OnboardingDone: "onboarding_done",
 }
 
 var UserTableColumns = struct {
@@ -69,22 +69,22 @@ var UserTableColumns = struct {
 	FullName       string
 	Email          string
 	Role           string
+	SchoolID       string
 	AuthorID       string
+	OnboardingDone string
 	CreatedAt      string
 	UpdatedAt      string
-	SchoolID       string
-	OnboardingDone string
 }{
 	ID:             "users.id",
 	DiscordID:      "users.discord_id",
 	FullName:       "users.full_name",
 	Email:          "users.email",
 	Role:           "users.role",
+	SchoolID:       "users.school_id",
 	AuthorID:       "users.author_id",
+	OnboardingDone: "users.onboarding_done",
 	CreatedAt:      "users.created_at",
 	UpdatedAt:      "users.updated_at",
-	SchoolID:       "users.school_id",
-	OnboardingDone: "users.onboarding_done",
 }
 
 // Generated where
@@ -95,22 +95,22 @@ var UserWhere = struct {
 	FullName       whereHelperstring
 	Email          whereHelperstring
 	Role           whereHelperstring
+	SchoolID       whereHelpernull_String
 	AuthorID       whereHelpernull_String
+	OnboardingDone whereHelperbool
 	CreatedAt      whereHelpertime_Time
 	UpdatedAt      whereHelpernull_Time
-	SchoolID       whereHelpernull_String
-	OnboardingDone whereHelperbool
 }{
 	ID:             whereHelperstring{field: "\"users\".\"id\""},
 	DiscordID:      whereHelpernull_String{field: "\"users\".\"discord_id\""},
 	FullName:       whereHelperstring{field: "\"users\".\"full_name\""},
 	Email:          whereHelperstring{field: "\"users\".\"email\""},
 	Role:           whereHelperstring{field: "\"users\".\"role\""},
+	SchoolID:       whereHelpernull_String{field: "\"users\".\"school_id\""},
 	AuthorID:       whereHelpernull_String{field: "\"users\".\"author_id\""},
+	OnboardingDone: whereHelperbool{field: "\"users\".\"onboarding_done\""},
 	CreatedAt:      whereHelpertime_Time{field: "\"users\".\"created_at\""},
 	UpdatedAt:      whereHelpernull_Time{field: "\"users\".\"updated_at\""},
-	SchoolID:       whereHelpernull_String{field: "\"users\".\"school_id\""},
-	OnboardingDone: whereHelperbool{field: "\"users\".\"onboarding_done\""},
 }
 
 // UserRels is where relationship names are stored.
@@ -191,9 +191,9 @@ func (r *userR) GetUserSolves() UserSolfSlice {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "discord_id", "full_name", "email", "role", "author_id", "created_at", "updated_at", "school_id", "onboarding_done"}
+	userAllColumns            = []string{"id", "discord_id", "full_name", "email", "role", "school_id", "author_id", "onboarding_done", "created_at", "updated_at"}
 	userColumnsWithoutDefault = []string{"id", "full_name", "email", "role"}
-	userColumnsWithDefault    = []string{"discord_id", "author_id", "created_at", "updated_at", "school_id", "onboarding_done"}
+	userColumnsWithDefault    = []string{"discord_id", "school_id", "author_id", "onboarding_done", "created_at", "updated_at"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )

@@ -928,6 +928,353 @@ func DecodeCompleteCourseResponse(decoder func(*http.Response) goahttp.Decoder, 
 	}
 }
 
+// BuildKnackKodenSubmitFlagRequest instantiates a HTTP request object with
+// method and path set to call the "challenge" service "KnackKodenSubmitFlag"
+// endpoint
+func (c *Client) BuildKnackKodenSubmitFlagRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		challengeID string
+	)
+	{
+		p, ok := v.(*challenge.KnackKodenSubmitFlagPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("challenge", "KnackKodenSubmitFlag", "*challenge.KnackKodenSubmitFlagPayload", v)
+		}
+		challengeID = p.ChallengeID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: KnackKodenSubmitFlagChallengePath(challengeID)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "KnackKodenSubmitFlag", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeKnackKodenSubmitFlagRequest returns an encoder for requests sent to
+// the challenge KnackKodenSubmitFlag server.
+func EncodeKnackKodenSubmitFlagRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.KnackKodenSubmitFlagPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "KnackKodenSubmitFlag", "*challenge.KnackKodenSubmitFlagPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewKnackKodenSubmitFlagRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("challenge", "KnackKodenSubmitFlag", err)
+		}
+		return nil
+	}
+}
+
+// DecodeKnackKodenSubmitFlagResponse returns a decoder for responses returned
+// by the challenge KnackKodenSubmitFlag endpoint. restoreBody controls whether
+// the response body should be restored after having been read.
+// DecodeKnackKodenSubmitFlagResponse may return the following errors:
+//   - "already_solved" (type *goa.ServiceError): http.StatusConflict
+//   - "incorrect_flag" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeKnackKodenSubmitFlagResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusConflict:
+			var (
+				body KnackKodenSubmitFlagAlreadySolvedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "KnackKodenSubmitFlag", err)
+			}
+			err = ValidateKnackKodenSubmitFlagAlreadySolvedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "KnackKodenSubmitFlag", err)
+			}
+			return nil, NewKnackKodenSubmitFlagAlreadySolved(&body)
+		case http.StatusBadRequest:
+			var (
+				body KnackKodenSubmitFlagIncorrectFlagResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "KnackKodenSubmitFlag", err)
+			}
+			err = ValidateKnackKodenSubmitFlagIncorrectFlagResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "KnackKodenSubmitFlag", err)
+			}
+			return nil, NewKnackKodenSubmitFlagIncorrectFlag(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "KnackKodenSubmitFlag", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildKnackKodenScoreboardRequest instantiates a HTTP request object with
+// method and path set to call the "challenge" service "KnackKodenScoreboard"
+// endpoint
+func (c *Client) BuildKnackKodenScoreboardRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: KnackKodenScoreboardChallengePath()}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "KnackKodenScoreboard", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeKnackKodenScoreboardRequest returns an encoder for requests sent to
+// the challenge KnackKodenScoreboard server.
+func EncodeKnackKodenScoreboardRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.KnackKodenScoreboardPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "KnackKodenScoreboard", "*challenge.KnackKodenScoreboardPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeKnackKodenScoreboardResponse returns a decoder for responses returned
+// by the challenge KnackKodenScoreboard endpoint. restoreBody controls whether
+// the response body should be restored after having been read.
+func DecodeKnackKodenScoreboardResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body KnackKodenScoreboardResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "KnackKodenScoreboard", err)
+			}
+			p := NewKnackKodenScoreboardSsmSchoolScoreboardOK(&body)
+			view := "default"
+			vres := &challengeviews.SsmSchoolScoreboard{Projected: p, View: view}
+			if err = challengeviews.ValidateSsmSchoolScoreboard(vres); err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "KnackKodenScoreboard", err)
+			}
+			res := challenge.NewSsmSchoolScoreboard(vres)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "KnackKodenScoreboard", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildKnackKodenRegisterClassRequest instantiates a HTTP request object with
+// method and path set to call the "challenge" service
+// "KnackKodenRegisterClass" endpoint
+func (c *Client) BuildKnackKodenRegisterClassRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: KnackKodenRegisterClassChallengePath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "KnackKodenRegisterClass", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeKnackKodenRegisterClassRequest returns an encoder for requests sent to
+// the challenge KnackKodenRegisterClass server.
+func EncodeKnackKodenRegisterClassRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.KnackKodenRegisterClassPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "KnackKodenRegisterClass", "*challenge.KnackKodenRegisterClassPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewKnackKodenRegisterClassRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("challenge", "KnackKodenRegisterClass", err)
+		}
+		return nil
+	}
+}
+
+// DecodeKnackKodenRegisterClassResponse returns a decoder for responses
+// returned by the challenge KnackKodenRegisterClass endpoint. restoreBody
+// controls whether the response body should be restored after having been read.
+func DecodeKnackKodenRegisterClassResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body KnackKodenRegisterClassResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "KnackKodenRegisterClass", err)
+			}
+			err = ValidateKnackKodenRegisterClassResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "KnackKodenRegisterClass", err)
+			}
+			res := NewKnackKodenRegisterClassResultOK(&body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "KnackKodenRegisterClass", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildKnackKodenGetClassRequest instantiates a HTTP request object with
+// method and path set to call the "challenge" service "KnackKodenGetClass"
+// endpoint
+func (c *Client) BuildKnackKodenGetClassRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: KnackKodenGetClassChallengePath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("challenge", "KnackKodenGetClass", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeKnackKodenGetClassRequest returns an encoder for requests sent to the
+// challenge KnackKodenGetClass server.
+func EncodeKnackKodenGetClassRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*challenge.KnackKodenGetClassPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("challenge", "KnackKodenGetClass", "*challenge.KnackKodenGetClassPayload", v)
+		}
+		if p.Token != nil {
+			head := *p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewKnackKodenGetClassRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("challenge", "KnackKodenGetClass", err)
+		}
+		return nil
+	}
+}
+
+// DecodeKnackKodenGetClassResponse returns a decoder for responses returned by
+// the challenge KnackKodenGetClass endpoint. restoreBody controls whether the
+// response body should be restored after having been read.
+func DecodeKnackKodenGetClassResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body KnackKodenGetClassResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("challenge", "KnackKodenGetClass", err)
+			}
+			err = ValidateKnackKodenGetClassResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("challenge", "KnackKodenGetClass", err)
+			}
+			res := NewKnackKodenGetClassResultOK(&body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("challenge", "KnackKodenGetClass", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmChallengeResponseToChallengeviewsSsmChallengeView builds a value
 // of type *challengeviews.SsmChallengeView from a value of type
 // *SsmChallengeResponse.

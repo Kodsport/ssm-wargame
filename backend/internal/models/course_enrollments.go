@@ -27,9 +27,9 @@ type CourseEnrollment struct {
 	ID         string    `boil:"id" json:"id" toml:"id" yaml:"id"`
 	CourseID   string    `boil:"course_id" json:"course_id" toml:"course_id" yaml:"course_id"`
 	UserID     string    `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
+	Finished   bool      `boil:"finished" json:"finished" toml:"finished" yaml:"finished"`
 	FinishedAt null.Time `boil:"finished_at" json:"finished_at,omitempty" toml:"finished_at" yaml:"finished_at,omitempty"`
 	CreatedAt  time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	Finished   bool      `boil:"finished" json:"finished" toml:"finished" yaml:"finished"`
 
 	R *courseEnrollmentR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L courseEnrollmentL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -39,32 +39,32 @@ var CourseEnrollmentColumns = struct {
 	ID         string
 	CourseID   string
 	UserID     string
+	Finished   string
 	FinishedAt string
 	CreatedAt  string
-	Finished   string
 }{
 	ID:         "id",
 	CourseID:   "course_id",
 	UserID:     "user_id",
+	Finished:   "finished",
 	FinishedAt: "finished_at",
 	CreatedAt:  "created_at",
-	Finished:   "finished",
 }
 
 var CourseEnrollmentTableColumns = struct {
 	ID         string
 	CourseID   string
 	UserID     string
+	Finished   string
 	FinishedAt string
 	CreatedAt  string
-	Finished   string
 }{
 	ID:         "course_enrollments.id",
 	CourseID:   "course_enrollments.course_id",
 	UserID:     "course_enrollments.user_id",
+	Finished:   "course_enrollments.finished",
 	FinishedAt: "course_enrollments.finished_at",
 	CreatedAt:  "course_enrollments.created_at",
-	Finished:   "course_enrollments.finished",
 }
 
 // Generated where
@@ -73,16 +73,16 @@ var CourseEnrollmentWhere = struct {
 	ID         whereHelperstring
 	CourseID   whereHelperstring
 	UserID     whereHelperstring
+	Finished   whereHelperbool
 	FinishedAt whereHelpernull_Time
 	CreatedAt  whereHelpertime_Time
-	Finished   whereHelperbool
 }{
 	ID:         whereHelperstring{field: "\"course_enrollments\".\"id\""},
 	CourseID:   whereHelperstring{field: "\"course_enrollments\".\"course_id\""},
 	UserID:     whereHelperstring{field: "\"course_enrollments\".\"user_id\""},
+	Finished:   whereHelperbool{field: "\"course_enrollments\".\"finished\""},
 	FinishedAt: whereHelpernull_Time{field: "\"course_enrollments\".\"finished_at\""},
 	CreatedAt:  whereHelpertime_Time{field: "\"course_enrollments\".\"created_at\""},
-	Finished:   whereHelperbool{field: "\"course_enrollments\".\"finished\""},
 }
 
 // CourseEnrollmentRels is where relationship names are stored.
@@ -123,9 +123,9 @@ func (r *courseEnrollmentR) GetUser() *User {
 type courseEnrollmentL struct{}
 
 var (
-	courseEnrollmentAllColumns            = []string{"id", "course_id", "user_id", "finished_at", "created_at", "finished"}
+	courseEnrollmentAllColumns            = []string{"id", "course_id", "user_id", "finished", "finished_at", "created_at"}
 	courseEnrollmentColumnsWithoutDefault = []string{"id", "course_id", "user_id"}
-	courseEnrollmentColumnsWithDefault    = []string{"finished_at", "created_at", "finished"}
+	courseEnrollmentColumnsWithDefault    = []string{"finished", "finished_at", "created_at"}
 	courseEnrollmentPrimaryKeyColumns     = []string{"id"}
 	courseEnrollmentGeneratedColumns      = []string{}
 )

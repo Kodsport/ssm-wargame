@@ -21,6 +21,30 @@ type SubmitFlagRequestBody struct {
 	Flag *string `form:"flag,omitempty" json:"flag,omitempty" xml:"flag,omitempty"`
 }
 
+// KnackKodenSubmitFlagRequestBody is the type of the "challenge" service
+// "KnackKodenSubmitFlag" endpoint HTTP request body.
+type KnackKodenSubmitFlagRequestBody struct {
+	Flag     *string `form:"flag,omitempty" json:"flag,omitempty" xml:"flag,omitempty"`
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
+
+// KnackKodenRegisterClassRequestBody is the type of the "challenge" service
+// "KnackKodenRegisterClass" endpoint HTTP request body.
+type KnackKodenRegisterClassRequestBody struct {
+	TeacherFullName *string `form:"teacher_full_name,omitempty" json:"teacher_full_name,omitempty" xml:"teacher_full_name,omitempty"`
+	TeacherEmail    *string `form:"teacher_email,omitempty" json:"teacher_email,omitempty" xml:"teacher_email,omitempty"`
+	TeacherPhonenr  *string `form:"teacher_phonenr,omitempty" json:"teacher_phonenr,omitempty" xml:"teacher_phonenr,omitempty"`
+	SchoolName      *string `form:"school_name,omitempty" json:"school_name,omitempty" xml:"school_name,omitempty"`
+	ClassName       *string `form:"class_name,omitempty" json:"class_name,omitempty" xml:"class_name,omitempty"`
+	PostalCode      *string `form:"postal_code,omitempty" json:"postal_code,omitempty" xml:"postal_code,omitempty"`
+}
+
+// KnackKodenGetClassRequestBody is the type of the "challenge" service
+// "KnackKodenGetClass" endpoint HTTP request body.
+type KnackKodenGetClassRequestBody struct {
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
+
 // SsmChallengeResponseCollection is the type of the "challenge" service
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
@@ -66,6 +90,25 @@ type ListAuthorsResponseBody []*AuthorResponse
 // endpoint HTTP response body.
 type ListCoursesResponseBody []*CourseResponse
 
+// KnackKodenScoreboardResponseBody is the type of the "challenge" service
+// "KnackKodenScoreboard" endpoint HTTP response body.
+type KnackKodenScoreboardResponseBody struct {
+	Scores []*SchoolScoreboardScoreResponseBody `form:"scores" json:"scores" xml:"scores"`
+}
+
+// KnackKodenRegisterClassResponseBody is the type of the "challenge" service
+// "KnackKodenRegisterClass" endpoint HTTP response body.
+type KnackKodenRegisterClassResponseBody struct {
+	Password string `form:"password" json:"password" xml:"password"`
+}
+
+// KnackKodenGetClassResponseBody is the type of the "challenge" service
+// "KnackKodenGetClass" endpoint HTTP response body.
+type KnackKodenGetClassResponseBody struct {
+	ClassName string   `form:"class_name" json:"class_name" xml:"class_name"`
+	Solves    []string `form:"solves" json:"solves" xml:"solves"`
+}
+
 // GetCurrentMonthlyChallengeNotFoundResponseBody is the type of the
 // "challenge" service "GetCurrentMonthlyChallenge" endpoint HTTP response body
 // for the "not_found" error.
@@ -106,6 +149,44 @@ type SubmitFlagAlreadySolvedResponseBody struct {
 // SubmitFlagIncorrectFlagResponseBody is the type of the "challenge" service
 // "SubmitFlag" endpoint HTTP response body for the "incorrect_flag" error.
 type SubmitFlagIncorrectFlagResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// KnackKodenSubmitFlagAlreadySolvedResponseBody is the type of the "challenge"
+// service "KnackKodenSubmitFlag" endpoint HTTP response body for the
+// "already_solved" error.
+type KnackKodenSubmitFlagAlreadySolvedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// KnackKodenSubmitFlagIncorrectFlagResponseBody is the type of the "challenge"
+// service "KnackKodenSubmitFlag" endpoint HTTP response body for the
+// "incorrect_flag" error.
+type KnackKodenSubmitFlagIncorrectFlagResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -391,6 +472,44 @@ func NewListCoursesResponseBody(res []*challenge.Course) ListCoursesResponseBody
 	return body
 }
 
+// NewKnackKodenScoreboardResponseBody builds the HTTP response body from the
+// result of the "KnackKodenScoreboard" endpoint of the "challenge" service.
+func NewKnackKodenScoreboardResponseBody(res *challengeviews.SsmSchoolScoreboardView) *KnackKodenScoreboardResponseBody {
+	body := &KnackKodenScoreboardResponseBody{}
+	if res.Scores != nil {
+		body.Scores = make([]*SchoolScoreboardScoreResponseBody, len(res.Scores))
+		for i, val := range res.Scores {
+			body.Scores[i] = marshalChallengeviewsSchoolScoreboardScoreViewToSchoolScoreboardScoreResponseBody(val)
+		}
+	}
+	return body
+}
+
+// NewKnackKodenRegisterClassResponseBody builds the HTTP response body from
+// the result of the "KnackKodenRegisterClass" endpoint of the "challenge"
+// service.
+func NewKnackKodenRegisterClassResponseBody(res *challenge.KnackKodenRegisterClassResult) *KnackKodenRegisterClassResponseBody {
+	body := &KnackKodenRegisterClassResponseBody{
+		Password: res.Password,
+	}
+	return body
+}
+
+// NewKnackKodenGetClassResponseBody builds the HTTP response body from the
+// result of the "KnackKodenGetClass" endpoint of the "challenge" service.
+func NewKnackKodenGetClassResponseBody(res *challenge.KnackKodenGetClassResult) *KnackKodenGetClassResponseBody {
+	body := &KnackKodenGetClassResponseBody{
+		ClassName: res.ClassName,
+	}
+	if res.Solves != nil {
+		body.Solves = make([]string, len(res.Solves))
+		for i, val := range res.Solves {
+			body.Solves[i] = val
+		}
+	}
+	return body
+}
+
 // NewGetCurrentMonthlyChallengeNotFoundResponseBody builds the HTTP response
 // body from the result of the "GetCurrentMonthlyChallenge" endpoint of the
 // "challenge" service.
@@ -424,6 +543,36 @@ func NewSubmitFlagAlreadySolvedResponseBody(res *goa.ServiceError) *SubmitFlagAl
 // the result of the "SubmitFlag" endpoint of the "challenge" service.
 func NewSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *SubmitFlagIncorrectFlagResponseBody {
 	body := &SubmitFlagIncorrectFlagResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewKnackKodenSubmitFlagAlreadySolvedResponseBody builds the HTTP response
+// body from the result of the "KnackKodenSubmitFlag" endpoint of the
+// "challenge" service.
+func NewKnackKodenSubmitFlagAlreadySolvedResponseBody(res *goa.ServiceError) *KnackKodenSubmitFlagAlreadySolvedResponseBody {
+	body := &KnackKodenSubmitFlagAlreadySolvedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewKnackKodenSubmitFlagIncorrectFlagResponseBody builds the HTTP response
+// body from the result of the "KnackKodenSubmitFlag" endpoint of the
+// "challenge" service.
+func NewKnackKodenSubmitFlagIncorrectFlagResponseBody(res *goa.ServiceError) *KnackKodenSubmitFlagIncorrectFlagResponseBody {
+	body := &KnackKodenSubmitFlagIncorrectFlagResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -538,6 +687,55 @@ func NewCompleteCoursePayload(id string, token *string) *challenge.CompleteCours
 	return v
 }
 
+// NewKnackKodenSubmitFlagPayload builds a challenge service
+// KnackKodenSubmitFlag endpoint payload.
+func NewKnackKodenSubmitFlagPayload(body *KnackKodenSubmitFlagRequestBody, challengeID string, token *string) *challenge.KnackKodenSubmitFlagPayload {
+	v := &challenge.KnackKodenSubmitFlagPayload{
+		Flag:     *body.Flag,
+		Password: *body.Password,
+	}
+	v.ChallengeID = challengeID
+	v.Token = token
+
+	return v
+}
+
+// NewKnackKodenScoreboardPayload builds a challenge service
+// KnackKodenScoreboard endpoint payload.
+func NewKnackKodenScoreboardPayload(token *string) *challenge.KnackKodenScoreboardPayload {
+	v := &challenge.KnackKodenScoreboardPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewKnackKodenRegisterClassPayload builds a challenge service
+// KnackKodenRegisterClass endpoint payload.
+func NewKnackKodenRegisterClassPayload(body *KnackKodenRegisterClassRequestBody, token *string) *challenge.KnackKodenRegisterClassPayload {
+	v := &challenge.KnackKodenRegisterClassPayload{
+		TeacherFullName: *body.TeacherFullName,
+		TeacherEmail:    *body.TeacherEmail,
+		TeacherPhonenr:  *body.TeacherPhonenr,
+		SchoolName:      *body.SchoolName,
+		ClassName:       *body.ClassName,
+		PostalCode:      *body.PostalCode,
+	}
+	v.Token = token
+
+	return v
+}
+
+// NewKnackKodenGetClassPayload builds a challenge service KnackKodenGetClass
+// endpoint payload.
+func NewKnackKodenGetClassPayload(body *KnackKodenGetClassRequestBody, token *string) *challenge.KnackKodenGetClassPayload {
+	v := &challenge.KnackKodenGetClassPayload{
+		Password: *body.Password,
+	}
+	v.Token = token
+
+	return v
+}
+
 // ValidateSubmitFlagRequestBody runs the validations defined on
 // SubmitFlagRequestBody
 func ValidateSubmitFlagRequestBody(body *SubmitFlagRequestBody) (err error) {
@@ -548,6 +746,56 @@ func ValidateSubmitFlagRequestBody(body *SubmitFlagRequestBody) (err error) {
 		if utf8.RuneCountInString(*body.Flag) > 200 {
 			err = goa.MergeErrors(err, goa.InvalidLengthError("body.flag", *body.Flag, utf8.RuneCountInString(*body.Flag), 200, false))
 		}
+	}
+	return
+}
+
+// ValidateKnackKodenSubmitFlagRequestBody runs the validations defined on
+// KnackKodenSubmitFlagRequestBody
+func ValidateKnackKodenSubmitFlagRequestBody(body *KnackKodenSubmitFlagRequestBody) (err error) {
+	if body.Flag == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("flag", "body"))
+	}
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
+	}
+	if body.Flag != nil {
+		if utf8.RuneCountInString(*body.Flag) > 200 {
+			err = goa.MergeErrors(err, goa.InvalidLengthError("body.flag", *body.Flag, utf8.RuneCountInString(*body.Flag), 200, false))
+		}
+	}
+	return
+}
+
+// ValidateKnackKodenRegisterClassRequestBody runs the validations defined on
+// KnackKodenRegisterClassRequestBody
+func ValidateKnackKodenRegisterClassRequestBody(body *KnackKodenRegisterClassRequestBody) (err error) {
+	if body.TeacherFullName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("teacher_full_name", "body"))
+	}
+	if body.TeacherEmail == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("teacher_email", "body"))
+	}
+	if body.TeacherPhonenr == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("teacher_phonenr", "body"))
+	}
+	if body.SchoolName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("school_name", "body"))
+	}
+	if body.ClassName == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("class_name", "body"))
+	}
+	if body.PostalCode == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("postal_code", "body"))
+	}
+	return
+}
+
+// ValidateKnackKodenGetClassRequestBody runs the validations defined on
+// KnackKodenGetClassRequestBody
+func ValidateKnackKodenGetClassRequestBody(body *KnackKodenGetClassRequestBody) (err error) {
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
 	}
 	return
 }

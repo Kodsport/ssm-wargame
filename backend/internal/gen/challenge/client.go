@@ -26,10 +26,14 @@ type Client struct {
 	ListCoursesEndpoint                goa.Endpoint
 	EnrollCourseEndpoint               goa.Endpoint
 	CompleteCourseEndpoint             goa.Endpoint
+	KnackKodenSubmitFlagEndpoint       goa.Endpoint
+	KnackKodenScoreboardEndpoint       goa.Endpoint
+	KnackKodenRegisterClassEndpoint    goa.Endpoint
+	KnackKodenGetClassEndpoint         goa.Endpoint
 }
 
 // NewClient initializes a "challenge" service client given the endpoints.
-func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard, userScoreboard, listAuthors, listCourses, enrollCourse, completeCourse goa.Endpoint) *Client {
+func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonthlyChallenges, submitFlag, schoolScoreboard, userScoreboard, listAuthors, listCourses, enrollCourse, completeCourse, knackKodenSubmitFlag, knackKodenScoreboard, knackKodenRegisterClass, knackKodenGetClass goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:             listChallenges,
 		ListEventsEndpoint:                 listEvents,
@@ -42,6 +46,10 @@ func NewClient(listChallenges, listEvents, getCurrentMonthlyChallenge, listMonth
 		ListCoursesEndpoint:                listCourses,
 		EnrollCourseEndpoint:               enrollCourse,
 		CompleteCourseEndpoint:             completeCourse,
+		KnackKodenSubmitFlagEndpoint:       knackKodenSubmitFlag,
+		KnackKodenScoreboardEndpoint:       knackKodenScoreboard,
+		KnackKodenRegisterClassEndpoint:    knackKodenRegisterClass,
+		KnackKodenGetClassEndpoint:         knackKodenGetClass,
 	}
 }
 
@@ -154,4 +162,48 @@ func (c *Client) EnrollCourse(ctx context.Context, p *EnrollCoursePayload) (err 
 func (c *Client) CompleteCourse(ctx context.Context, p *CompleteCoursePayload) (err error) {
 	_, err = c.CompleteCourseEndpoint(ctx, p)
 	return
+}
+
+// KnackKodenSubmitFlag calls the "KnackKodenSubmitFlag" endpoint of the
+// "challenge" service.
+// KnackKodenSubmitFlag may return the following errors:
+//   - "already_solved" (type *goa.ServiceError)
+//   - "incorrect_flag" (type *goa.ServiceError)
+//   - error: internal error
+func (c *Client) KnackKodenSubmitFlag(ctx context.Context, p *KnackKodenSubmitFlagPayload) (err error) {
+	_, err = c.KnackKodenSubmitFlagEndpoint(ctx, p)
+	return
+}
+
+// KnackKodenScoreboard calls the "KnackKodenScoreboard" endpoint of the
+// "challenge" service.
+func (c *Client) KnackKodenScoreboard(ctx context.Context, p *KnackKodenScoreboardPayload) (res *SsmSchoolScoreboard, err error) {
+	var ires interface{}
+	ires, err = c.KnackKodenScoreboardEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*SsmSchoolScoreboard), nil
+}
+
+// KnackKodenRegisterClass calls the "KnackKodenRegisterClass" endpoint of the
+// "challenge" service.
+func (c *Client) KnackKodenRegisterClass(ctx context.Context, p *KnackKodenRegisterClassPayload) (res *KnackKodenRegisterClassResult, err error) {
+	var ires interface{}
+	ires, err = c.KnackKodenRegisterClassEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*KnackKodenRegisterClassResult), nil
+}
+
+// KnackKodenGetClass calls the "KnackKodenGetClass" endpoint of the
+// "challenge" service.
+func (c *Client) KnackKodenGetClass(ctx context.Context, p *KnackKodenGetClassPayload) (res *KnackKodenGetClassResult, err error) {
+	var ires interface{}
+	ires, err = c.KnackKodenGetClassEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*KnackKodenGetClassResult), nil
 }

@@ -27,6 +27,10 @@ type Endpoints struct {
 	ListCourses                goa.Endpoint
 	EnrollCourse               goa.Endpoint
 	CompleteCourse             goa.Endpoint
+	KnackKodenSubmitFlag       goa.Endpoint
+	KnackKodenScoreboard       goa.Endpoint
+	KnackKodenRegisterClass    goa.Endpoint
+	KnackKodenGetClass         goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "challenge" service with endpoints.
@@ -45,6 +49,10 @@ func NewEndpoints(s Service) *Endpoints {
 		ListCourses:                NewListCoursesEndpoint(s, a.JWTAuth),
 		EnrollCourse:               NewEnrollCourseEndpoint(s, a.JWTAuth),
 		CompleteCourse:             NewCompleteCourseEndpoint(s, a.JWTAuth),
+		KnackKodenSubmitFlag:       NewKnackKodenSubmitFlagEndpoint(s, a.JWTAuth),
+		KnackKodenScoreboard:       NewKnackKodenScoreboardEndpoint(s, a.JWTAuth),
+		KnackKodenRegisterClass:    NewKnackKodenRegisterClassEndpoint(s, a.JWTAuth),
+		KnackKodenGetClass:         NewKnackKodenGetClassEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -61,6 +69,10 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListCourses = m(e.ListCourses)
 	e.EnrollCourse = m(e.EnrollCourse)
 	e.CompleteCourse = m(e.CompleteCourse)
+	e.KnackKodenSubmitFlag = m(e.KnackKodenSubmitFlag)
+	e.KnackKodenScoreboard = m(e.KnackKodenScoreboard)
+	e.KnackKodenRegisterClass = m(e.KnackKodenRegisterClass)
+	e.KnackKodenGetClass = m(e.KnackKodenGetClass)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -334,5 +346,102 @@ func NewCompleteCourseEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 			return nil, err
 		}
 		return nil, s.CompleteCourse(ctx, p)
+	}
+}
+
+// NewKnackKodenSubmitFlagEndpoint returns an endpoint function that calls the
+// method "KnackKodenSubmitFlag" of service "challenge".
+func NewKnackKodenSubmitFlagEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*KnackKodenSubmitFlagPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.KnackKodenSubmitFlag(ctx, p)
+	}
+}
+
+// NewKnackKodenScoreboardEndpoint returns an endpoint function that calls the
+// method "KnackKodenScoreboard" of service "challenge".
+func NewKnackKodenScoreboardEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*KnackKodenScoreboardPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		res, err := s.KnackKodenScoreboard(ctx, p)
+		if err != nil {
+			return nil, err
+		}
+		vres := NewViewedSsmSchoolScoreboard(res, "default")
+		return vres, nil
+	}
+}
+
+// NewKnackKodenRegisterClassEndpoint returns an endpoint function that calls
+// the method "KnackKodenRegisterClass" of service "challenge".
+func NewKnackKodenRegisterClassEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*KnackKodenRegisterClassPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.KnackKodenRegisterClass(ctx, p)
+	}
+}
+
+// NewKnackKodenGetClassEndpoint returns an endpoint function that calls the
+// method "KnackKodenGetClass" of service "challenge".
+func NewKnackKodenGetClassEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*KnackKodenGetClassPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		var token string
+		if p.Token != nil {
+			token = *p.Token
+		}
+		ctx, err = authJWTFn(ctx, token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.KnackKodenGetClass(ctx, p)
 	}
 }

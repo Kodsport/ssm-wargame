@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -86,6 +87,7 @@ func realMain() error {
 		endpoints := challenge_transport.NewEndpoints(svc)
 		s := challenge_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
+		s.Use(RequestInContext())
 		challenge_server.Mount(mux, s)
 	}
 	{
@@ -112,17 +114,18 @@ func realMain() error {
 
 	var handler http.Handler = mux
 
-	handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("access-control-allow-origin", `*`)
-		w.Header().Add("access-control-allow-headers", `authorization`)
-
-		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		mux.ServeHTTP(w, r)
-	})
+	// oops this is dev only
+	// handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 	w.Header().Add("access-control-allow-origin", `*`)
+	// 	w.Header().Add("access-control-allow-headers", r.Header.Get("Access-Control-Request-Headers"))
+	//
+	// 	if r.Method == http.MethodOptions {
+	// 		w.WriteHeader(http.StatusNoContent)
+	// 		return
+	// 	}
+	//
+	// 	mux.ServeHTTP(w, r)
+	// })
 
 	//	handler = cors.New(cors.Options{
 	//		AllowedOrigins: []string{"sakerhetssm.se"},
@@ -136,4 +139,14 @@ func realMain() error {
 
 	log.Info("starting http server")
 	return srv.ListenAndServe()
+}
+
+func RequestInContext() func(http.Handler) http.Handler {
+	return func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := context.WithValue(r.Context(), "ssm_http_req", r)
+
+			h.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
 }

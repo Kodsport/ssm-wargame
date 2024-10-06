@@ -27,12 +27,12 @@ type Course struct {
 	ID          string    `boil:"id" json:"id" toml:"id" yaml:"id"`
 	Category    string    `boil:"category" json:"category" toml:"category" yaml:"category"`
 	Difficulty  string    `boil:"difficulty" json:"difficulty" toml:"difficulty" yaml:"difficulty"`
-	Description string    `boil:"description" json:"description" toml:"description" yaml:"description"`
-	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
-	UpdatedAt   null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
-	Publish     bool      `boil:"publish" json:"publish" toml:"publish" yaml:"publish"`
 	Title       string    `boil:"title" json:"title" toml:"title" yaml:"title"`
 	Slug        string    `boil:"slug" json:"slug" toml:"slug" yaml:"slug"`
+	Description string    `boil:"description" json:"description" toml:"description" yaml:"description"`
+	CreatedAt   time.Time `boil:"created_at" json:"created_at" toml:"created_at" yaml:"created_at"`
+	Publish     bool      `boil:"publish" json:"publish" toml:"publish" yaml:"publish"`
+	UpdatedAt   null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 
 	R *courseR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L courseL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -42,44 +42,44 @@ var CourseColumns = struct {
 	ID          string
 	Category    string
 	Difficulty  string
-	Description string
-	CreatedAt   string
-	UpdatedAt   string
-	Publish     string
 	Title       string
 	Slug        string
+	Description string
+	CreatedAt   string
+	Publish     string
+	UpdatedAt   string
 }{
 	ID:          "id",
 	Category:    "category",
 	Difficulty:  "difficulty",
-	Description: "description",
-	CreatedAt:   "created_at",
-	UpdatedAt:   "updated_at",
-	Publish:     "publish",
 	Title:       "title",
 	Slug:        "slug",
+	Description: "description",
+	CreatedAt:   "created_at",
+	Publish:     "publish",
+	UpdatedAt:   "updated_at",
 }
 
 var CourseTableColumns = struct {
 	ID          string
 	Category    string
 	Difficulty  string
-	Description string
-	CreatedAt   string
-	UpdatedAt   string
-	Publish     string
 	Title       string
 	Slug        string
+	Description string
+	CreatedAt   string
+	Publish     string
+	UpdatedAt   string
 }{
 	ID:          "courses.id",
 	Category:    "courses.category",
 	Difficulty:  "courses.difficulty",
-	Description: "courses.description",
-	CreatedAt:   "courses.created_at",
-	UpdatedAt:   "courses.updated_at",
-	Publish:     "courses.publish",
 	Title:       "courses.title",
 	Slug:        "courses.slug",
+	Description: "courses.description",
+	CreatedAt:   "courses.created_at",
+	Publish:     "courses.publish",
+	UpdatedAt:   "courses.updated_at",
 }
 
 // Generated where
@@ -88,22 +88,22 @@ var CourseWhere = struct {
 	ID          whereHelperstring
 	Category    whereHelperstring
 	Difficulty  whereHelperstring
-	Description whereHelperstring
-	CreatedAt   whereHelpertime_Time
-	UpdatedAt   whereHelpernull_Time
-	Publish     whereHelperbool
 	Title       whereHelperstring
 	Slug        whereHelperstring
+	Description whereHelperstring
+	CreatedAt   whereHelpertime_Time
+	Publish     whereHelperbool
+	UpdatedAt   whereHelpernull_Time
 }{
 	ID:          whereHelperstring{field: "\"courses\".\"id\""},
 	Category:    whereHelperstring{field: "\"courses\".\"category\""},
 	Difficulty:  whereHelperstring{field: "\"courses\".\"difficulty\""},
-	Description: whereHelperstring{field: "\"courses\".\"description\""},
-	CreatedAt:   whereHelpertime_Time{field: "\"courses\".\"created_at\""},
-	UpdatedAt:   whereHelpernull_Time{field: "\"courses\".\"updated_at\""},
-	Publish:     whereHelperbool{field: "\"courses\".\"publish\""},
 	Title:       whereHelperstring{field: "\"courses\".\"title\""},
 	Slug:        whereHelperstring{field: "\"courses\".\"slug\""},
+	Description: whereHelperstring{field: "\"courses\".\"description\""},
+	CreatedAt:   whereHelpertime_Time{field: "\"courses\".\"created_at\""},
+	Publish:     whereHelperbool{field: "\"courses\".\"publish\""},
+	UpdatedAt:   whereHelpernull_Time{field: "\"courses\".\"updated_at\""},
 }
 
 // CourseRels is where relationship names are stored.
@@ -154,8 +154,8 @@ func (r *courseR) GetCourseItems() CourseItemSlice {
 type courseL struct{}
 
 var (
-	courseAllColumns            = []string{"id", "category", "difficulty", "description", "created_at", "updated_at", "publish", "title", "slug"}
-	courseColumnsWithoutDefault = []string{"id", "category", "difficulty", "description", "publish", "title", "slug"}
+	courseAllColumns            = []string{"id", "category", "difficulty", "title", "slug", "description", "created_at", "publish", "updated_at"}
+	courseColumnsWithoutDefault = []string{"id", "category", "difficulty", "title", "slug", "description", "publish"}
 	courseColumnsWithDefault    = []string{"created_at", "updated_at"}
 	coursePrimaryKeyColumns     = []string{"id"}
 	courseGeneratedColumns      = []string{}

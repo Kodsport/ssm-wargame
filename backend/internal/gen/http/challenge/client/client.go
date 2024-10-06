@@ -61,6 +61,22 @@ type Client struct {
 	// CompleteCourse endpoint.
 	CompleteCourseDoer goahttp.Doer
 
+	// KnackKodenSubmitFlag Doer is the HTTP client used to make requests to the
+	// KnackKodenSubmitFlag endpoint.
+	KnackKodenSubmitFlagDoer goahttp.Doer
+
+	// KnackKodenScoreboard Doer is the HTTP client used to make requests to the
+	// KnackKodenScoreboard endpoint.
+	KnackKodenScoreboardDoer goahttp.Doer
+
+	// KnackKodenRegisterClass Doer is the HTTP client used to make requests to the
+	// KnackKodenRegisterClass endpoint.
+	KnackKodenRegisterClassDoer goahttp.Doer
+
+	// KnackKodenGetClass Doer is the HTTP client used to make requests to the
+	// KnackKodenGetClass endpoint.
+	KnackKodenGetClassDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -92,6 +108,10 @@ func NewClient(
 		ListCoursesDoer:                doer,
 		EnrollCourseDoer:               doer,
 		CompleteCourseDoer:             doer,
+		KnackKodenSubmitFlagDoer:       doer,
+		KnackKodenScoreboardDoer:       doer,
+		KnackKodenRegisterClassDoer:    doer,
+		KnackKodenGetClassDoer:         doer,
 		RestoreResponseBody:            restoreBody,
 		scheme:                         scheme,
 		host:                           host,
@@ -359,6 +379,102 @@ func (c *Client) CompleteCourse() goa.Endpoint {
 		resp, err := c.CompleteCourseDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("challenge", "CompleteCourse", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// KnackKodenSubmitFlag returns an endpoint that makes HTTP requests to the
+// challenge service KnackKodenSubmitFlag server.
+func (c *Client) KnackKodenSubmitFlag() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeKnackKodenSubmitFlagRequest(c.encoder)
+		decodeResponse = DecodeKnackKodenSubmitFlagResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildKnackKodenSubmitFlagRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.KnackKodenSubmitFlagDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "KnackKodenSubmitFlag", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// KnackKodenScoreboard returns an endpoint that makes HTTP requests to the
+// challenge service KnackKodenScoreboard server.
+func (c *Client) KnackKodenScoreboard() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeKnackKodenScoreboardRequest(c.encoder)
+		decodeResponse = DecodeKnackKodenScoreboardResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildKnackKodenScoreboardRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.KnackKodenScoreboardDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "KnackKodenScoreboard", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// KnackKodenRegisterClass returns an endpoint that makes HTTP requests to the
+// challenge service KnackKodenRegisterClass server.
+func (c *Client) KnackKodenRegisterClass() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeKnackKodenRegisterClassRequest(c.encoder)
+		decodeResponse = DecodeKnackKodenRegisterClassResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildKnackKodenRegisterClassRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.KnackKodenRegisterClassDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "KnackKodenRegisterClass", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// KnackKodenGetClass returns an endpoint that makes HTTP requests to the
+// challenge service KnackKodenGetClass server.
+func (c *Client) KnackKodenGetClass() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeKnackKodenGetClassRequest(c.encoder)
+		decodeResponse = DecodeKnackKodenGetClassResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildKnackKodenGetClassRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.KnackKodenGetClassDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("challenge", "KnackKodenGetClass", err)
 		}
 		return decodeResponse(resp)
 	}
