@@ -1,7 +1,7 @@
 <template>
     <h1 class="text-primary">Knäck Koden</h1>
     <p>
-        Knäck Koden är en tävling inom hacking för mellanstadieelever.
+        Knäck Koden är en tävling inom hacking för mellanstadieelever. Fråga din lärare om lösenordet till klassen!
     </p>
 
     <div v-if="!auth.knackKodenPassword" class="form-group col-3">
@@ -10,7 +10,10 @@
         <button class="btn btn-primary mt-2" @click="login(password)">Logga in</button>
     </div>
     <div v-else>
-        Du representerar {{ classData.class_name }}
+        Du representerar {{ auth.knackKodenData.class_name }}
+
+        <button class="btn btn-primary mt-2" @click="logout()">Byt klass</button>
+
     </div>
 
     <div class="d-flex flex-column flex-lg-row pt-4">
@@ -58,7 +61,6 @@ import { useChallengeStore } from '../store/challenges'
 import { useAuthStore } from '../store/auth'
 
 const password = ref("")
-const classData = ref({})
 
 useHead({
     title: 'SSM - Knäck Koden'
@@ -81,15 +83,25 @@ onMounted(() => {
 
     const pw = localStorage.getItem('ssm-knackkoden-password')
     if (pw) {
+
         login(pw)
     }
 })
 
-const categories = computed(() => challs.challenges.map(c => c.category).filter((v, i, a) => a.indexOf(v) == i))
+const catOrder = ["kryptografi", "generellt", "web"]
+
+const categories = computed(() => challs.challenges
+    .map(c => c.category)
+    .filter((v, i, a) => a.indexOf(v) == i)
+    .sort((a, b) => catOrder.indexOf(a) - catOrder.indexOf(b))
+)
 
 const challenges = computed(() => {
 
-    var res = challs.challenges.filter(c => c.chall_namespace == "knackkoden").map(c => ({ ...c, solved: classData?.value?.solves?.includes(c.id) }))
+    var res = challs.challenges
+        .filter(c => c.chall_namespace == "knackkoden")
+        .map(c => ({ ...c, solved: auth.knackKodenData?.solves?.includes(c.id) }))
+        .sort((a, b) => a.score - b.score)
 
     return res
 })
@@ -100,22 +112,22 @@ function nav(slug: string) {
 
 const scoreboard = await http("/knack_koden_scoreboard")
 
-async function login(pw) {
+function login(pw: string) {
     try {
-        const resp = await http("/knack_koden_get_class", {
-            method: "POST",
-            body: {
-                password: pw
-            }
-        })
-        classData.value = resp;
-        auth.setKnackKodenPassword(pw)
+        auth.getKnackKodenData(pw)
         localStorage.setItem("ssm-knackkoden-password", pw)
 
     } catch (error) {
         localStorage.removeItem("ssm-knackkoden-password")
         alert("Fel klasslösenord")
+
     }
+}
+
+function logout() {
+    localStorage.removeItem("ssm-knackkoden-password")
+    auth.knackKodenData = null;
+    auth.knackKodenPassword = null;
 
 }
 

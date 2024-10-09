@@ -6,12 +6,10 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: "",
         user: {},
-        knackKodenPassword: ""
+        knackKodenPassword: "",
+        knackKodenData: null
     }),
     actions: {
-        setKnackKodenPassword(pw: string) {
-            this.knackKodenPassword = pw;
-        },
         setToken(token: string) {
             this.token = token
             this.getUser()
@@ -26,6 +24,21 @@ export const useAuthStore = defineStore('auth', {
                 this.user = {}
                 this.token = ''
             }
+        },
+        async getKnackKodenData(pw: string | null) {
+            const http = useHttp()
+
+            const resp = await http("/knack_koden_get_class", {
+                method: "POST",
+                body: {
+                    password: pw || this.knackKodenPassword
+                }
+            })
+            this.knackKodenData = resp;
+            if (pw) {
+                this.knackKodenPassword = pw
+            }
+
         }
     },
     getters: {

@@ -30,7 +30,8 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12 col-lg-6 order-2 order-lg-1" v-html="renderMarkdown(props.chall.description)">
+                        <div class="col-12 col-lg-6 order-2 order-lg-1"
+                            v-html="renderMarkdown(props.chall.description)">
                         </div>
                         <div class="col-12 col-lg-6 order-1 order-lg-2 mb-3 mb-lg-0">
                             <div v-if="props.chall?.authors?.length">
@@ -49,7 +50,9 @@
                             </div>
                             <div class="d-flex" v-for="service in props.chall.services">
                                 <span class="material-symbols-outlined pe-2">router</span>
-                                <a v-if="service.hyperlink" :href="service.user_display" target="_blank" rel="nofollow">{{ service.user_display }}</a>
+                                <a v-if="service.hyperlink" :href="service.user_display" target="_blank"
+                                    rel="nofollow">{{ service.user_display
+                                    }}</a>
                                 <span v-else>{{ service.user_display }}</span>
                             </div>
                             <div v-for="file in props.chall.files">
@@ -60,8 +63,8 @@
                                 <ol>
                                     <li v-for="solver in props.chall.solvers">
                                         {{ solver.full_name }} <span class="badge bg-info">{{
-                                            timeAgo(solver.solved_at)
-                                        }}</span>
+        timeAgo(solver.solved_at)
+    }}</span>
                                     </li>
                                 </ol>
                             </div>

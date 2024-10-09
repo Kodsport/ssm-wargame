@@ -80,7 +80,6 @@
 import renderMarkdown from '../utils/markdown';
 import { useAuthStore } from '../store/auth';
 import { useChallengeStore } from '../store/challenges';
-import * as moment from 'moment'
 
 
 const route = useRoute()
@@ -110,8 +109,7 @@ async function submitFlag() {
             }
         })
 
-        store.getChallenges()
-        store.getMonthlies()
+        auth.getKnackKodenData(null)
 
     } catch (error) {
         console.log(error)

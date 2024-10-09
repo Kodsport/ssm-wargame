@@ -4,6 +4,10 @@
         <h1>Registrera din klass för Knäck Koden!</h1>
 
         <p>
+            Inloggningen för knäck koden är separat från den som visas i det övre högra hörnet. Gå in på fliken "Knäck
+            Koden" för att logga in!
+        </p>
+        <p>
             Vid problem, mejla movitz@kodsport.se
         </p>
         <div class="col-4">
