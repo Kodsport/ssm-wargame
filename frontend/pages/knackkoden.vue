@@ -1,57 +1,67 @@
 <template>
     <h1 class="text-primary">Knäck Koden</h1>
-    <p>
-        Knäck Koden är en tävling inom hacking för mellanstadieelever. Fråga din lärare om lösenordet till klassen!
-    </p>
-
-    <div v-if="!auth.knackKodenPassword" class="form-group col-3">
-        <label for="password">Klasslösenord</label>
-        <input class="form-control" type="text" v-model="password">
-        <button class="btn btn-primary mt-2" @click="login(password)">Logga in</button>
+    <div v-if="!competitionIsOpen">
+        <p>
+            Knäck Koden är en tävling inom hacking för mellanstadieelever. Tävlingen startar den 21 oktober!
+        </p>
     </div>
     <div v-else>
-        Du representerar {{ auth.knackKodenData.class_name }}
+        <p>
+            Knäck Koden är en tävling inom hacking för mellanstadieelever. Fråga din lärare om lösenordet till klassen!
+        </p>
 
-        <button class="btn btn-primary mt-2" @click="logout()">Byt klass</button>
 
-    </div>
 
-    <div class="d-flex flex-column flex-lg-row pt-4">
+        <div v-if="!auth.knackKodenPassword" class="form-group col-3">
+            <label for="password">Klasslösenord</label>
+            <input class="form-control" type="text" v-model="password">
+            <button class="btn btn-primary mt-2" @click="login(password)">Logga in</button>
+        </div>
+        <div v-else>
+            Du representerar {{ auth.knackKodenData.class_name }}
 
-        <div class="flex-grow-1 d-flex flex-column col-6">
-            <template v-for="category in categories">
-                <div v-if="challenges.filter(c => c.category == category).length">
-                    <div class="text-primary border-primary border-bottom border-3 pt-2 pb-2">
-                        <h4 class="text-lowercase">{{ category }}</h4>
-                    </div>
+            <button class="btn btn-primary mt-2" @click="logout()">Byt klass</button>
 
-                    <div class="ssm-grid pt-3 pb-2">
-                        <div v-for="chall in challenges.filter(c => c.category == category)">
-                            <ChallengePreview :hideSolves="true" class="pointer" @click="nav(chall.slug)"
-                                :chall="chall" />
-                            <!-- for seo -->
-                            <a class="d-none" :href="`/knackkoden/${chall.slug}`">{{ chall.title }}</a>
+        </div>
+
+        <div class="d-flex flex-column flex-lg-row pt-4">
+
+            <div class="flex-grow-1 d-flex flex-column col-6">
+                <template v-for="category in categories">
+                    <div v-if="challenges.filter(c => c.category == category).length">
+                        <div class="text-primary border-primary border-bottom border-3 pt-2 pb-2">
+                            <h4 class="text-lowercase">{{ category }}</h4>
+                        </div>
+
+                        <div class="ssm-grid pt-3 pb-2">
+                            <div v-for="chall in challenges.filter(c => c.category == category)">
+                                <ChallengePreview :hideSolves="true" class="pointer" @click="nav(chall.slug)"
+                                    :chall="chall" />
+                                <!-- for seo -->
+                                <a class="d-none" :href="`/knackkoden/${chall.slug}`">{{ chall.title }}</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
+            <div class="col-6 p-2">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Klass</th>
+                            <th>Poäng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="row in scoreboard.scores">
+                            <td>{{ row.school_name }}</td>
+                            <td>{{ row.score }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="col-6 p-2">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Klass</th>
-                        <th>Poäng</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="row in scoreboard.scores">
-                        <td>{{ row.school_name }}</td>
-                        <td>{{ row.score }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+
     </div>
     <NuxtPage />
 </template>
@@ -69,6 +79,9 @@ useHead({
 useServerSeoMeta({
     title: 'SSM - Knäck Koden'
 })
+
+const ts = new Date().getTime();
+const competitionIsOpen = ts > 1729504800000 && ts < 1731106740000;
 
 const challs = useChallengeStore()
 const router = useRouter()
