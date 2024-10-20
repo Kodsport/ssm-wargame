@@ -1,7 +1,11 @@
 <template>
     <h1 class="text-primary">Knäck Koden</h1>
-    <div v-if="!competitionIsOpen">
-        <p>
+    <div v-if="(!competitionHasBegun || competitionHasEnded) && !bypass">
+        <p v-if="competitionHasEnded">
+            Knäck Koden är en tävling inom hacking för mellanstadieelever. Tävlingen är avslutad och vinnaren kontaktas
+            snart.
+        </p>
+        <p v-else>
             Knäck Koden är en tävling inom hacking för mellanstadieelever. Tävlingen startar den 21 oktober!
         </p>
     </div>
@@ -81,12 +85,15 @@ useServerSeoMeta({
 })
 
 const ts = new Date().getTime();
-const competitionIsOpen = ts > 1729504800000 && ts < 1731106740000;
+const competitionHasBegun = ts > 1729504800000;
+const competitionHasEnded = ts > 1731106740000;
 
 const challs = useChallengeStore()
 const router = useRouter()
 const http = useHttp()
 const auth = useAuthStore()
+
+const bypass = router.currentRoute.value.fullPath.includes("hihibypassiamsosmart")
 
 await useAsyncData('challenges', challs.getChallenges)
 await useAsyncData('events', challs.getEvents)
