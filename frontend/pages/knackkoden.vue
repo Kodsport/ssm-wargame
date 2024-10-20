@@ -108,7 +108,7 @@ onMounted(() => {
     }
 })
 
-const catOrder = ["kryptografi", "generellt", "web"]
+const catOrder = ["kryptografi", "generellt", "web", "reversing", "osint", "forensics"]
 
 const categories = computed(() => challs.challenges
     .map(c => c.category)
