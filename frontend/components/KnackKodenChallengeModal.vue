@@ -19,12 +19,6 @@
                             </span>
                             <span class="material-symbols-outlined">control_point_duplicate</span>
                         </span>
-                        <span class="mx-3 d-flex">
-                            <span class="me-1">
-                                {{ props.chall.solves }}
-                            </span>
-                            <span class="material-symbols-outlined">flag</span>
-                        </span>
                     </div>
                 </h5>
 

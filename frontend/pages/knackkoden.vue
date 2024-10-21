@@ -13,6 +13,13 @@
         <p>
             Knäck Koden är en tävling inom hacking för mellanstadieelever. Fråga din lärare om lösenordet till klassen!
         </p>
+        <p>
+            Om ni skulle få problem med uppgifter under tävlingens gång så kan ni kontakta oss genom mail på
+            <br>
+            Kodsport: kontakt@kodsport.se
+            <br>
+            Kodcentrum: info@kodcentrum.se
+        </p>
 
 
 
