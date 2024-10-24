@@ -1,11 +1,19 @@
 import { defineStore } from 'pinia'
 import useHttp from '../composables/use-http'
 
+// Unsure about the correct types here. Please replace string with the correct types of you find that a string type is not enough
+interface User {
+    onboarding_fone: boolean,
+    id: string,
+    email: string,
+    full_name: string,
+    role: string
+}
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: "",
-        user: {},
+        user: <User>{},
         knackKodenPassword: "",
         knackKodenData: null
     }),
@@ -21,7 +29,7 @@ export const useAuthStore = defineStore('auth', {
                 const user = await http('/user/self')
                 this.user = user
             } catch {
-                this.user = {}
+                this.user = {} as User;
                 this.token = ''
             }
         },

@@ -29,7 +29,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: 'set via env'
+      apiBase: 'http://localhost:8000'
     }
   },
   routeRules: {
