@@ -1,15 +1,14 @@
 <template>
   <div class="border border-dark bg-dark rounded p-4 position-relative">
-    <h4>
-      {{ props.chall.title }}
-      {{ props.displayMonth ? ` - ${props.displayMonth}` : "" }}
-    </h4>
+    <div class="d-flex justify-content-between align-items-start">
+      <h4>
+        {{ props.chall.title }}
+        {{ props.displayMonth ? ` - ${props.displayMonth}` : "" }}
+      </h4>
 
-    <div
-      class="badge bg-primary position-absolute"
-      style="top: 25px; right: 19px"
-    >
-      {{ props.chall.category }}
+      <div class="badge bg-primary">
+        {{ props.chall.category }}
+      </div>
     </div>
 
     <div class="pb-2" v-if="props.chall.authors?.length">

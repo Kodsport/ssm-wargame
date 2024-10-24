@@ -152,59 +152,72 @@
         <client-only>
           <ul v-if="auth.user" class="navbar-nav pe-3">
             <template v-if="auth.user.role == 'admin'">
-              <li class="nav-item">
+              <li class="nav-item dropdown hover-drop-down pe-2">
                 <nuxt-link
-                  active-class="active"
-                  class="nav-link"
-                  to="/admin/users"
+                  to="/admin"
+                  class="nav-link dropdown-toggle padding-fix"
+                  role="button"
+                  aria-expanded="false"
+                  data-toggle="dropdown"
                 >
-                  Users
+                  Admin
                 </nuxt-link>
-              </li>
-              <li class="nav-item">
-                <nuxt-link
-                  active-class="active"
-                  class="nav-link"
-                  to="/admin/challenges"
-                >
-                  Challenges
-                </nuxt-link>
-              </li>
-              <li class="nav-item">
-                <nuxt-link
-                  active-class="active"
-                  class="nav-link"
-                  to="/admin/monthly"
-                >
-                  Monthly
-                </nuxt-link>
-              </li>
-              <li class="nav-item">
-                <nuxt-link
-                  active-class="active"
-                  class="nav-link"
-                  to="/admin/courses"
-                >
-                  Courses
-                </nuxt-link>
-              </li>
-              <li class="nav-item">
-                <nuxt-link
-                  active-class="active"
-                  class="nav-link"
-                  to="/admin/events"
-                >
-                  Events
-                </nuxt-link>
-              </li>
-              <li class="nav-item">
-                <nuxt-link
-                  active-class="active"
-                  class="nav-link"
-                  to="/admin/authors"
-                >
-                  Authors
-                </nuxt-link>
+                <ul class="dropdown-menu">
+                  <li class="nav-item">
+                    <nuxt-link
+                      active-class="active-drop-down-el"
+                      class="text-primary dropdown-item"
+                      to="/admin/users"
+                    >
+                      Users
+                    </nuxt-link>
+                  </li>
+                  <li class="nav-item">
+                    <nuxt-link
+                      active-class="active-drop-down-el"
+                      class="text-primary dropdown-item"
+                      to="/admin/challenges"
+                    >
+                      Challenges
+                    </nuxt-link>
+                  </li>
+                  <li class="nav-item">
+                    <nuxt-link
+                      active-class="active-drop-down-el"
+                      class="text-primary dropdown-item"
+                      to="/admin/monthly"
+                    >
+                      Monthly
+                    </nuxt-link>
+                  </li>
+                  <li class="nav-item">
+                    <nuxt-link
+                      active-class="active-drop-down-el"
+                      class="text-primary dropdown-item"
+                      to="/admin/courses"
+                    >
+                      Courses
+                    </nuxt-link>
+                  </li>
+                  <li class="nav-item">
+                    <nuxt-link
+                      active-class="active-drop-down-el"
+                      class="text-primary dropdown-item"
+                      to="/admin/events"
+                    >
+                      Events
+                    </nuxt-link>
+                  </li>
+                  <li class="nav-item">
+                    <nuxt-link
+                      active-class="active-drop-down-el"
+                      class="text-primary dropdown-item"
+                      to="/admin/authors"
+                    >
+                      Authors
+                    </nuxt-link>
+                  </li>
+                </ul>
               </li>
             </template>
             <li class="nav-item">
@@ -322,5 +335,8 @@ header {
 }
 .active-drop-down-el {
   color: var(--bs-navbar-active-color) !important;
+}
+.padding-fix {
+  padding-top: 10px;
 }
 </style>

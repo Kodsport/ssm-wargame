@@ -20,19 +20,18 @@
       >
         <div class="bg-dark rounded">
           <div
-            class="text-primary rounded p-4 position-relative bg-body-hover pointer-cursor hover-thing"
+            class="text-primary rounded p-4 d-flex justify-content-between align-items-center bg-body-hover pointer-cursor hover-thing"
             v-if="show_prev_monthly != prev_monthly.challenge_id"
             @click="show_prev_monthly = prev_monthly.challenge_id"
           >
-            {{ prev_monthly.challenge.title }} -
+            <div>
+              {{ prev_monthly.challenge.title }} -
 
-            {{ prev_monthly.display_month }}
-            {{ new Date(prev_monthly.start_date * 1000).getFullYear() }}
+              {{ prev_monthly.display_month }}
+              {{ new Date(prev_monthly.start_date * 1000).getFullYear() }}
+            </div>
 
-            <div
-              class="badge bg-primary position-absolute"
-              style="top: 50%; right: 20px; transform: translateY(-50%)"
-            >
+            <div class="badge bg-primary">
               {{ prev_monthly.challenge.category }}
             </div>
           </div>
@@ -48,9 +47,9 @@
           />
         </div>
       </div>
-      <p class="mt-4" style="font-size: 8px">
+      <p class="mt-4">
         Om du vill hjälpa till och skapa nästa månadens utmaning, kontakta
-        Movitz (@mvtz på discord) och skriv "skibidi utmaning" som kodord!
+        Movitz (@mvtz på discord)!
       </p>
     </div>
   </div>
