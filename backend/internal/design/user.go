@@ -25,6 +25,11 @@ var _ = Service("user", func() {
 		})
 	})
 	Method("UpdateSelf", func() {
+		Error("InvalidUsername")
+		HTTP(func() {
+			Response("InvalidUsername", StatusBadRequest)
+
+		})
 		Payload(func() {
 			Extend(TokenPayload)
 			Reference(User)

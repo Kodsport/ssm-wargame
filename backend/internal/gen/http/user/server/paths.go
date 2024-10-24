@@ -3,7 +3,7 @@
 // HTTP request path constructors for the user service.
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
 
 package server
 

@@ -3,7 +3,7 @@
 // admin endpoints
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
 
 package admin
 

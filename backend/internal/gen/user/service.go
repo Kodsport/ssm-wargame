@@ -3,13 +3,14 @@
 // user service
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
 
 package user
 
 import (
 	"context"
 
+	goa "goa.design/goa/v3/pkg"
 	"goa.design/goa/v3/security"
 )
 
@@ -99,4 +100,13 @@ type School struct {
 	IsUniversity     bool
 	// ID of a file
 	ID string
+}
+
+// MakeInvalidUsername builds a goa.ServiceError from an error.
+func MakeInvalidUsername(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "InvalidUsername",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
 }

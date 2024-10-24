@@ -18,8 +18,10 @@
                             Vilket namn vill du ha på poängtavlan?
 
                             <div class="form-group">
-                                <input class="form-control" type="text" name="" id="" v-model="fullName">
+                                <input class="form-control" type="text" name="" id="" v-model="fullName" @keydown="checkUsername">
                             </div>
+
+                            <p v-show="badUsername" style="color: red">Ditt användarnamn får inte vara längre än 30 bokstäver, och det får inte vara kortare än 3 bokstäver</p>
                         </div>
 
                         <p>
@@ -65,6 +67,7 @@ const uni = ref(false)
 var schoolQuery = ref("")
 var schools = ref([])
 var fullName = ref(auth.user.full_name)
+var badUsername = false;
 
 async function joinSchool(id) {
     await http('/user/join_school', {
@@ -88,6 +91,9 @@ async function searchSchools() {
 
 
 async function finish() {
+    if (/[\t\n\f\r]/gm.test(fullName.value) || fullName.value.length >= 30 || fullName.value.length < 3) {
+        return;
+    }
     await http('/user/self', {
         method: 'POST',
         body: {
@@ -96,6 +102,11 @@ async function finish() {
     })
     await http('/user/complete_onboarding', { method: 'POST' })
     await auth.getUser()
+}
+
+function checkUsername() {
+    console.log("triggered");
+    badUsername = (/[\t\n\f\r]/gm.test(fullName.value) || fullName.value.length >= 30 || fullName.value.length < 3)
 }
 
 </script>
