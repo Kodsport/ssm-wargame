@@ -18,10 +18,13 @@
                             Vilket namn vill du ha på poängtavlan?
 
                             <div class="form-group">
-                                <input class="form-control" type="text" name="" id="" v-model="fullName" @keydown="checkUsername">
+                                <input class="form-control" type="text" name="" id="" v-model="fullName"
+                                    @keydown="checkUsername">
                             </div>
 
-                            <p v-show="badUsername" style="color: red">Ditt användarnamn får inte vara längre än 30 bokstäver, och det får inte vara kortare än 3 bokstäver</p>
+                            <p v-show="badUsername" class="text-danger">Ditt användarnamn får inte vara längre än 30
+                                bokstäver,
+                                och det får inte vara kortare än 3 bokstäver</p>
                         </div>
 
                         <p>
