@@ -282,14 +282,12 @@ setInterval(() => {
   }
 }, 1000);
 
-function loginIfToken() {
+onMounted(() => {
   const jwt = localStorage.getItem("ssm-token");
   if (jwt) {
     auth.setToken(jwt);
   }
-}
-
-onMounted(loginIfToken);
+});
 
 function logout() {
   auth.setToken("");
@@ -308,9 +306,18 @@ async function login() {
   }
 }
 if (process.client) {
-  window.addEventListener("message", (event) => {
-    if (event.data == "auth") {
-      loginIfToken();
+  window.addEventListener("message", async (event) => {
+    if (event.data.type == "auth") {
+      const resp = await http("/auth/discord/exchange", {
+        method: "POST",
+        body: {
+          code: event.data.code,
+          state: event.data.state,
+        },
+      });
+
+      auth.setToken(resp.jwt);
+      localStorage.setItem("ssm-token", resp.jwt);
     }
   });
 }

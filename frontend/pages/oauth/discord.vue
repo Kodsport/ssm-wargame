@@ -18,7 +18,6 @@
 
 <script setup lang="ts">
 import { useAuthStore } from "../../store/auth";
-const http = useHttp();
 const auth = useAuthStore();
 const router = useRouter();
 
@@ -27,30 +26,19 @@ const errorMsg = ref("");
 async function getToken() {
   if (process.server) return;
 
-  if (auth.isAuthed) {
+  const params = new URLSearchParams(window.location.search);
+
+  if (auth.isAuthed || !params.has("code")) {
     router.push("/");
   }
 
-  try {
-    const params = new URLSearchParams(window.location.search);
+  window.opener.postMessage({
+    type: "auth",
+    code: params.get("code"),
+    state: params.get("state"),
+  });
 
-    const resp = await http("/auth/discord/exchange", {
-      method: "POST",
-      body: {
-        code: params.get("code"),
-        state: params.get("state"),
-      },
-    });
-
-    auth.setToken(resp.jwt);
-    localStorage.setItem("ssm-token", resp.jwt);
-
-    window.opener.postMessage("auth");
-
-    window.close();
-  } catch (error) {
-    errorMsg.value = "Något gick fel, försök logga in igen.";
-  }
+  window.close();
 }
 
 getToken();
