@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async setToken(token: string) {
             this.token = token
-            this.getUser()
+            await this.getUser()
         },
         async getUser() {
             try {
