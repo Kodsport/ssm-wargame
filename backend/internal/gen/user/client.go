@@ -3,7 +3,7 @@
 // user client
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
 
 package user
 
@@ -46,6 +46,9 @@ func (c *Client) GetSelf(ctx context.Context, p *GetSelfPayload) (res *GetSelfRe
 }
 
 // UpdateSelf calls the "UpdateSelf" endpoint of the "user" service.
+// UpdateSelf may return the following errors:
+//   - "InvalidUsername" (type *goa.ServiceError)
+//   - error: internal error
 func (c *Client) UpdateSelf(ctx context.Context, p *UpdateSelfPayload) (err error) {
 	_, err = c.UpdateSelfEndpoint(ctx, p)
 	return

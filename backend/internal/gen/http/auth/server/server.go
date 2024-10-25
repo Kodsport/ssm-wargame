@@ -3,7 +3,7 @@
 // auth HTTP server
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
 
 package server
 

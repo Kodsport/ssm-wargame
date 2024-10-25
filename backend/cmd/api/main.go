@@ -115,6 +115,7 @@ func realMain() error {
 	var handler http.Handler = mux
 
 	// oops this is dev only
+	// Uncomment when cors needs to be modified, ex. when api is on localhost:8000 and app is on localhost:3000
 	// handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	// 	w.Header().Add("access-control-allow-origin", `*`)
 	// 	w.Header().Add("access-control-allow-headers", r.Header.Get("Access-Control-Request-Headers"))
@@ -126,7 +127,7 @@ func realMain() error {
 	//
 	// 	mux.ServeHTTP(w, r)
 	// })
-
+	//
 	//	handler = cors.New(cors.Options{
 	//		AllowedOrigins: []string{"sakerhetssm.se"},
 	//		MaxAge:         60 * 60 * 24,

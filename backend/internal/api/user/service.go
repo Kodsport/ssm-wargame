@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"regexp"
 
 	"github.com/sakerhetsm/ssm-wargame/internal/auth"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
@@ -71,6 +72,10 @@ func (s *service) CompleteOnboarding(ctx context.Context, req *spec.CompleteOnbo
 }
 
 func (s *service) UpdateSelf(ctx context.Context, req *spec.UpdateSelfPayload) error {
+	re, _ := regexp.Compile(`[\t\n\f\r]`)
+	if re.FindAllString(req.FullName, -1) != nil || len(req.FullName) > 30 || len(req.FullName) < 3 {
+		return spec.MakeInvalidUsername(errors.New("fullname must be less than 30 characters and not contain newlines"))
+	}
 	_, err := models.Users(
 		models.UserWhere.ID.EQ(auth.GetUser(ctx).ID),
 	).UpdateAll(ctx, s.db, models.M{
