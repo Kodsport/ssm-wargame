@@ -282,10 +282,19 @@ setInterval(() => {
   }
 }, 1000);
 
-onMounted(() => {
+onMounted(async () => {
   const jwt = localStorage.getItem("ssm-token");
   if (jwt) {
-    auth.setToken(jwt);
+    await auth.setToken(jwt);
+  }
+
+  if (
+    process.client &&
+    window.location.pathname.startsWith("/admin") &&
+    (!(auth.user.role == "admin" || auth.user.role == "author") ||
+      !auth.user.role)
+  ) {
+    router.push("/");
   }
 });
 

@@ -5,7 +5,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   if (
     to.path.startsWith("/admin") &&
-    !(auth.user.role = "admin" || auth.user.role == "author")
+    auth.user.role &&
+    !(auth.user.role == "admin" || auth.user.role == "author")
   ) {
     return abortNavigation();
   }
