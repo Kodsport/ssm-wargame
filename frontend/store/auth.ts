@@ -49,31 +49,6 @@ export const useAuthStore = defineStore("auth", {
       }
     },
   },
-  async getUser() {
-    try {
-      const http = useHttp();
-
-      const user = await http("/user/self");
-      this.user = user;
-    } catch {
-      this.user = {};
-      this.token = "";
-    }
-  },
-  async getKnackKodenData(pw: string | null) {
-    const http = useHttp();
-
-    const resp = await http("/knack_koden_get_class", {
-      method: "POST",
-      body: {
-        password: pw || this.knackKodenPassword,
-      },
-    });
-    this.knackKodenData = resp;
-    if (pw) {
-      this.knackKodenPassword = pw;
-    }
-  },
 
   getters: {
     isAuthed(state) {
