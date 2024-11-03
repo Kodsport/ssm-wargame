@@ -36,7 +36,7 @@ async function getToken() {
     type: "auth",
     code: params.get("code"),
     state: params.get("state"),
-  });
+  }, window.origin);
 
   window.close();
 }

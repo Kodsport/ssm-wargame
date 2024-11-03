@@ -316,18 +316,24 @@ async function login() {
 }
 if (process.client) {
   window.addEventListener("message", async (event) => {
-    if (event.data.type == "auth") {
-      const resp = await http("/auth/discord/exchange", {
-        method: "POST",
-        body: {
-          code: event.data.code,
-          state: event.data.state,
-        },
-      });
-
-      auth.setToken(resp.jwt);
-      localStorage.setItem("ssm-token", resp.jwt);
+    if (event.data.type !== "auth") {
+      return;
     }
+
+    if (event.origin !== window.origin) {
+      return;
+    }
+
+    const resp = await http("/auth/discord/exchange", {
+      method: "POST",
+      body: {
+        code: event.data.code,
+        state: event.data.state,
+      },
+    });
+
+    auth.setToken(resp.jwt);
+    localStorage.setItem("ssm-token", resp.jwt);
   });
 }
 </script>
