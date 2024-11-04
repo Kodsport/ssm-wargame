@@ -5,9 +5,11 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/challenge"
@@ -17,7 +19,6 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
-	"golang.org/x/exp/rand"
 )
 
 func (s *service) KnackKodenSubmitFlag(ctx context.Context, req *spec.KnackKodenSubmitFlagPayload) error {
@@ -215,9 +216,10 @@ func (s *service) KnackKodenGetClass(ctx context.Context, req *spec.KnackKodenGe
 
 }
 
-var letterRunes = []rune("123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var letterRunes = []rune("23456789ABCDEFGHIJKLMNOPQRSTUVWXYZ1")
 
 func randpasswd(n int) string {
+	rand.Seed(time.Now().Unix()) // wtf, fick cykel efter 62 lösen
 	b := make([]rune, n)
 	for i := range b {
 		b[i] = letterRunes[rand.Intn(len(letterRunes))]
