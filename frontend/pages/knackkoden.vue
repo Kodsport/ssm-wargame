@@ -2,8 +2,8 @@
     <h1 class="text-primary">Knäck Koden</h1>
     <div v-if="(!competitionHasBegun || competitionHasEnded) && !bypass">
         <p v-if="competitionHasEnded">
-            Knäck Koden är en tävling inom hacking för mellanstadieelever. Tävlingen är avslutad och vinnaren kontaktas
-            snart.
+            Knäck Koden är en tävling inom hacking för mellanstadieelever. Första delen av tävlingen är avslutad och
+            finalen hålls den 15 november.
         </p>
         <p v-else>
             Knäck Koden är en tävling inom hacking för mellanstadieelever. Tävlingen startar den 21 oktober!
