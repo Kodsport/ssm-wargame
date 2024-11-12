@@ -125,12 +125,13 @@ func (s *service) KnackKodenScoreboard(ctx context.Context, req *spec.KnackKoden
 		knack_koden_teams.id AS team_id,
 		knack_koden_teams.school_name AS school_name,
 		knack_koden_teams.class_name AS class_name,
-		SUM(challenges.static_score) AS score
+		SUM(challenges.static_score) AS score,
+		(SELECT MAX(created_at) from knack_koden_solves where knack_koden_team_id = knack_koden_teams.id ) AS last_solve
 	from knack_koden_solves 
 	JOIN challenges ON challenges.id = knack_koden_solves.challenge_id AND challenges.chall_namespace = 'knackkoden'
 	JOIN knack_koden_teams ON knack_koden_teams.id = knack_koden_solves.knack_koden_team_id
 	GROUP BY knack_koden_teams.id
-	ORDER BY score DESC;
+	ORDER BY score DESC, last_solve ASC;
 	`
 
 	type Row struct {
