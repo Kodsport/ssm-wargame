@@ -55,7 +55,7 @@
                     </div>
                 </template>
             </div>
-            <div class="col-6 p-2">
+            <div v-if="bypass" class="col-6 p-2">
                 <table class="table">
                     <thead>
                         <tr>
@@ -92,8 +92,14 @@ useServerSeoMeta({
 })
 
 const ts = new Date().getTime();
-const competitionHasBegun = ts > 1729504800000;
-const competitionHasEnded = ts > 1731106740000;
+const competitionHasBegun = ref(ts > 1731657600000);
+const competitionHasEnded = ref(ts > 1731661200000);
+
+setInterval(() => {
+    const ts = new Date().getTime();
+    competitionHasBegun.value = ts > 1731657600000;
+    competitionHasEnded.value = ts > 1731661200000;
+}, 1000);
 
 const challs = useChallengeStore()
 const router = useRouter()
