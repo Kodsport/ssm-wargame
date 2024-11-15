@@ -50,6 +50,11 @@
                     Säkerhets-SM kan nås via mail på <a
                         href="mailto:sakerhetssm@kodsport.se">sakerhetssm@kodsport.se</a>
                 </p>
+                <h3 class="text-primary">Stöd</h3>
+                <p>
+                    Hosting av sakerhetssm.se sponsras av GleSYS,
+                    vill eran organisation och stödja oss? Kontakta oss ovan!
+                </p>
             </div>
         </div>
     </div>
