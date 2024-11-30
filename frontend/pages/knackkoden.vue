@@ -1,5 +1,12 @@
 <template>
     <h1 class="text-primary">Knäck Koden</h1>
+    <p>
+        Knäck koden är en tävling för mellanstadieelever som vill lära sig mer om hacking och cybersäkerhet.
+        Tävlingen för 2024 är över! Vill du ha Knäck Koden-lektioner i din skola? Spana in <a
+            href="https://kodcentrum.se/stoppahackaren">informationen hos Kodcentrum!</a>
+    </p>
+
+    <!--
     <div v-if="(!competitionHasBegun || competitionHasEnded) && !bypass">
         <p v-if="competitionHasEnded">
             Finalen är över!
@@ -48,33 +55,34 @@
                             <div v-for="chall in challenges.filter(c => c.category == category)">
                                 <ChallengePreview :hideSolves="true" class="pointer" @click="nav(chall.slug)"
                                     :chall="chall" />
-                                <!-- for seo -->
-                                <a class="d-none" :href="`/knackkoden/${chall.slug}`">{{ chall.title }}</a>
-                            </div>
-                        </div>
-                    </div>
-                </template>
-            </div>
-            <div v-if="bypass" class="col-6 p-2">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Klass</th>
-                            <th>Poäng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="row in scoreboard.scores">
-                            <td>{{ row.school_name }}</td>
-                            <td>{{ row.score }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
+    <a class="d-none" :href="`/knackkoden/${chall.slug}`">{{ chall.title }}</a>
     </div>
-    <NuxtPage />
+    </div>
+    </div>
+</template>
+</div>
+<div class="col-6 p-2">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Klass</th>
+                <th>Poäng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="row in scoreboard.scores">
+                <td>{{ row.school_name }}</td>
+                <td>{{ row.score }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+
+</div>
+<NuxtPage />
+
+-->
 </template>
 
 <script setup lang="ts">
@@ -90,6 +98,8 @@ useHead({
 useServerSeoMeta({
     title: 'SSM - Knäck Koden'
 })
+
+/*
 
 const ts = new Date().getTime();
 const competitionHasBegun = ref(ts > 1731657600000);
@@ -163,6 +173,8 @@ function logout() {
     auth.knackKodenPassword = null;
 
 }
+
+*/
 
 </script>
 

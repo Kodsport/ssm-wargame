@@ -4,10 +4,13 @@
             <div class="col-12 col-md-6">
                 <h1 class="text-primary">Vad är Säkerhets-SM?</h1>
                 <p>
-                    Har du ett intresse för datorrelaterad problemlösning, eller vill du lära dig vad det egentligen innebär
-                    att hacka? Säkerhets-SM är en tävling för gymnasie- och högstadieelever med fokus på att lära ut koncept
+                    Har du ett intresse för datorrelaterad problemlösning, eller vill du lära dig vad det egentligen
+                    innebär
+                    att hacka? Säkerhets-SM är en tävling för gymnasie- och högstadieelever med fokus på att lära ut
+                    koncept
                     inom cybersäkerhet och hackning. Tävlingen är skapad för att passa alla kunskapsnivåer,
-                    så det spelar ingen roll om du är total nybörjare eller erfaren. Går det riktigt bra får du chansen att
+                    så det spelar ingen roll om du är total nybörjare eller erfaren. Går det riktigt bra får du chansen
+                    att
                     bli uttagen till landslaget och åka på EM!
                 </p>
                 <div class="">
@@ -18,11 +21,11 @@
                         </li>
                         <li>
                             <span class="material-symbols-outlined">swords</span>
-                            Kval online <b>8-10 mars 2024</b>
+                            Kval online <b>18-19 januari 2025</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">emoji_events</span>
-                            Final i Stockholm <b>3-5 maj 2024</b>
+                            Final i Stockholm <b>7-9 mars 2025</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">azm</span>
@@ -37,7 +40,8 @@
                 <p>
                     Joina gärna
                     <a :href="discordUrl">Kodsports Discordserver</a>
-                    där du kan nå oss organisatörer, prata med andra deltagare, visa dina egna projekt eller ställa allmänna
+                    där du kan nå oss organisatörer, prata med andra deltagare, visa dina egna projekt eller ställa
+                    allmänna
                     datorrelaterade frågor. Vi har också en <a
                         href="https://mail.sakerhetssm.se/subscription/form">mailinglista</a> där vi skickar ut
                     uppdateringar om tävlingen.
