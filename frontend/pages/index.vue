@@ -21,7 +21,7 @@
                         </li>
                         <li>
                             <span class="material-symbols-outlined">swords</span>
-                            Kval online <b>18-19 januari 2025</b>
+                            Kval online <b>17-19 januari 2025</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">emoji_events</span>
