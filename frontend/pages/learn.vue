@@ -52,6 +52,7 @@
                 </li>
                 <li><a href="https://picoctf.com/">PicoCTF</a></li>
                 <li><a href="http://overthewire.org/">OverTheWire</a></li>
+                <li><a href="https://ctf.fro.se/">FRO CTF</a></li>
             </ul>
             <h3 class="text-primary">Länksamlingar och anteckningar</h3>
             <ul>
