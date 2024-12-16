@@ -95,10 +95,12 @@
 <script setup lang="ts">
 import { useChallengeStore } from '../store/challenges'
 import { useScoreboardStore } from '../store/scoreboard'
+import { useAuthStore } from "../store/auth";
 
 const http = useHttp()
 const scoreboard = useScoreboardStore()
 const challs = useChallengeStore()
+const auth = useAuthStore();
 
 const discordUrl = 'https://discord.gg/edKFKKU'
 const mailFormId = 'f6b65d3d-5ba1-4da9-8c42-4e3be8b6277f';
@@ -117,6 +119,15 @@ if (monthly.error.value) {
     await useAsyncData('scoreboard', scoreboard.getSchoolScoreboards)
 }
 
+watch(
+  () => auth.user,
+  () => {
+    if (auth.user.id) {
+      monthly.refresh();
+      prev_monthlies.refresh();
+    }
+  }
+);
 
 onMounted(() => {
     challs.getChallenges()

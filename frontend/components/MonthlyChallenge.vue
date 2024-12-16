@@ -41,26 +41,10 @@
     <div class="py-3">
       <div class="d-none d-md-inline">
         <client-only>
-          <div v-if="auth.isAuthed">
-            <div
-              v-if="!props.chall.solved"
-              v-bind:class="{ alert: warn, 'alert-danger': warn }"
-            >
-              <input
-                class="form-control"
-                type="text"
-                placeholder="SSM{..."
-                v-model="flag"
-                @keypress.enter="submitFlag"
-              />
-            </div>
-            <InputReplacer v-else text="Löst!" />
-          </div>
-          <div v-else>
-            <InputReplacer text="Logga in för att lösa skicka in flaggor" />
-          </div>
+          <FlagInput :class="{ 'alert alert-danger': warn }" v-model="flag" @keypress.enter="submitFlag"
+              :solved="props.chall.solved" />
           <template #fallback>
-            <InputReplacer text="Logga in för att lösa skicka in flaggor" />
+            <InputReplacer text="Logga in för att skicka in flaggor" />
           </template>
         </client-only>
       </div>
@@ -110,6 +94,7 @@ async function submitFlag() {
 
     challs.getChallenges();
     challs.getMonthlies();
+    props.chall.solved = true;
   } catch (error) {
     console.log(error);
     warn.value = true;
