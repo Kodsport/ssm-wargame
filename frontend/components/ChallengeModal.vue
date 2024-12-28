@@ -30,7 +30,7 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-12 col-lg-6 order-2 order-lg-1"
+                        <div class="col-12 col-lg-6 order-2 order-lg-1 text-break"
                             v-html="renderMarkdown(props.chall.description)">
                         </div>
                         <div class="col-12 col-lg-6 order-1 order-lg-2 mb-3 mb-lg-0">
