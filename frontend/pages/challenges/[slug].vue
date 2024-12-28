@@ -9,7 +9,20 @@ const route = useRoute()
 const router = useRouter()
 const store = useChallengeStore()
 
-const chall = computed(() => store.getBySlug(route.params.slug))
+const chall = computed(() => {
+    const c = store.getBySlug(route.params.slug)
+
+    if (!c) {
+        throw createError({
+            statusCode: 404,
+            statusMessage: 'Page Not Found'
+        })
+    }
+
+    return c;
+})
+
+
 
 const title = `SSM - ${chall.value.title}`
 const url = useRequestURL()
