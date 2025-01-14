@@ -21,7 +21,7 @@
                     p-3
                     rounded
                 " style="max-width: 22.5rem">
-                <img class="mw-100 rounded" :src="person.url" alt="">
+                <img class="mw-100 rounded" style="filter: grayscale(1)" :src="person.url" alt="">
                 <h5 class="pt-3">{{ person.name }}</h5>
                 <i>{{ person.role }}</i>
                 <a :href="`mailto:${person.mail}`">{{ person.mail }}</a>

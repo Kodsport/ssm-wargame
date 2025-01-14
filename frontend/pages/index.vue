@@ -63,6 +63,22 @@
                     Gå med i Discord!
                 </a>
 
+
+                <div class="mt-5">
+                    <h3 class="">I samarbete med</h3>
+                    <div class="m-5">
+                        <a href="https://www.fra.se/">
+                            <img
+                            class="img-fluid "
+                            src="~/assets/fra.png"
+                            alt="FRA - Försvarets Radioanstalt"
+                            >
+                        </a>
+                    </div>
+                <p style="text-align: center">
+                    Kodsport's infrastructure is sponsored by <a href="https://glesys.com/">GleSYS</a>
+                </p>
+            </div>
             </div>
 
             <div class="col pt-4 pt-md-0" v-if="monthly.status.value == 'success'">
