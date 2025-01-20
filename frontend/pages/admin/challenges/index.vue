@@ -82,7 +82,7 @@
                         <tr>
                             <td class="fw-bold mt-5" colspan="5"> {{ cat.name }}</td>
                         </tr>
-                        <tr v-for="chall in challenges.filter(c => c.category_id == cat.id)" :key="chall.id">
+                        <tr v-for="chall in challenges.filter(c => c.category_id == cat.id).sort((a, b) => a.score - b.score)" :key="chall.id">
                             <td>
                                 <NuxtLink :to="`/admin/challenges/${chall.slug}`" class="pe-2">
                                     {{ chall.title }}
@@ -96,9 +96,7 @@
                             <td>{{ getCategoryName(chall.category_id) }}</td>
                             <td>{{ chall.static_score || 'Dynamic' }}</td>
                             <td class="text-right">
-                                <NuxtLink class="btn btn-primary" :to="`/admin/challenges/${chall.slug}/edit`">
-                                    Edit
-                                </NuxtLink>
+                                
                             </td>
                         </tr>
                     </template>

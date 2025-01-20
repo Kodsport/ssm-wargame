@@ -3,7 +3,7 @@
 // admin service
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package admin
 
@@ -23,8 +23,6 @@ type Service interface {
 	GetChallengeMeta(context.Context, *GetChallengeMetaPayload) (res *ChallengeMeta, err error)
 	// CreateChallenge implements CreateChallenge.
 	CreateChallenge(context.Context, *CreateChallengePayload) (err error)
-	// UpdateChallenge implements UpdateChallenge.
-	UpdateChallenge(context.Context, *UpdateChallengePayload) (err error)
 	// PresignChallFileUpload implements PresignChallFileUpload.
 	PresignChallFileUpload(context.Context, *PresignChallFileUploadPayload) (res *PresignChallFileUploadResult, err error)
 	// ListMonthlyChallenges implements ListMonthlyChallenges.
@@ -83,7 +81,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [25]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "UpdateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse"}
+var MethodNames = [24]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -128,19 +126,6 @@ type CreateChallengePayload struct {
 	CategoryID  string
 	Authors     []string
 	Token       string
-}
-
-// UpdateChallengePayload is the payload type of the admin service
-// UpdateChallenge method.
-type UpdateChallengePayload struct {
-	// A unique string that can be used in URLs
-	Slug string
-	// unix timestamp
-	PublishAt *int64
-	Hide      bool
-	Token     string
-	// ID of a challenge
-	ChallengeID string
 }
 
 // PresignChallFileUploadPayload is the payload type of the admin service
@@ -280,7 +265,7 @@ type ChalltoolsImportPayload struct {
 	Order            *int
 	Services         []*ImportChallService
 	HumanMetadata    *ImportChallHumanMetadata
-	Custom           map[string]interface{}
+	Custom           *ImportChallCustom
 }
 
 // ListCTFEventsPayload is the payload type of the admin service ListCTFEvents
@@ -460,6 +445,13 @@ type ImportChallService struct {
 
 type ImportChallHumanMetadata struct {
 	EventName *string
+}
+
+type ImportChallCustom struct {
+	Publish        *bool
+	PublishAt      *string
+	Slug           *string
+	ChallNamespace *string
 }
 
 type CTFEvent struct {

@@ -138,26 +138,25 @@ func (s *service) ChalltoolsImport(ctx context.Context, req *spec.ChalltoolsImpo
 		bs, _ := json.Marshal(req.Custom)
 		chall.Custom = null.JSONFrom(bs)
 
-		if ns, ok := req.Custom["chall_namespace"]; ok {
-			chall.ChallNamespace = null.StringFrom(ns.(string))
+		chall.ChallNamespace = null.StringFromPtr(req.Custom.ChallNamespace)
+
+		if req.Custom.Publish != nil {
+			chall.Hide = !*req.Custom.Publish
 		}
 
-		if publish, ok := req.Custom["publish"]; ok {
-			if _, ok := publish.(bool); ok {
-				chall.Hide = !publish.(bool)
+		if req.Custom.PublishAt != nil {
+
+			t, err := time.Parse(time.RFC3339, *req.Custom.PublishAt)
+			if err == nil {
+				chall.PublishAt = null.TimeFrom(t)
 			}
 		}
-		if publishAt, ok := req.Custom["publish_at"]; ok {
-			if publishAtStr, ok := publishAt.(string); ok {
-				t, err := time.Parse(time.RFC3339, publishAtStr)
-				if err == nil {
-					chall.PublishAt = null.TimeFrom(t)
-				}
-			}
+		if req.Custom.Slug != nil {
+			chall.Slug = *req.Custom.Slug
 		}
 	}
 
-	err = chall.Upsert(ctx, tx, true, []string{}, boil.Blacklist("slug"), boil.Blacklist())
+	err = chall.Upsert(ctx, tx, true, []string{}, boil.Blacklist(), boil.Blacklist())
 	if err != nil {
 		s.log.Error("could not upsert chall", zap.Error(err))
 		return err

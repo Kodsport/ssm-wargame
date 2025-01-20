@@ -55,18 +55,6 @@ var _ = Service("admin", func() {
 		})
 	})
 
-	Method("UpdateChallenge", func() {
-		Payload(func() {
-			Extend(UpdateChallengePayload)
-			Extend(TokenPayload)
-			Extend(ChallengeIDArtifact)
-		})
-		HTTP(func() {
-			PUT("/challenges/{challenge_id}")
-			Response(StatusCreated)
-		})
-	})
-
 	Method("PresignChallFileUpload", func() {
 		Payload(func() {
 			Extend(TokenPayload)

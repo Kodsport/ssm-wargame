@@ -3,7 +3,7 @@
 // admin HTTP client encoders and decoders
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package client
 
@@ -386,129 +386,6 @@ func DecodeCreateChallengeResponse(decoder func(*http.Response) goahttp.Decoder,
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("admin", "CreateChallenge", resp.StatusCode, string(body))
-		}
-	}
-}
-
-// BuildUpdateChallengeRequest instantiates a HTTP request object with method
-// and path set to call the "admin" service "UpdateChallenge" endpoint
-func (c *Client) BuildUpdateChallengeRequest(ctx context.Context, v interface{}) (*http.Request, error) {
-	var (
-		challengeID string
-	)
-	{
-		p, ok := v.(*admin.UpdateChallengePayload)
-		if !ok {
-			return nil, goahttp.ErrInvalidType("admin", "UpdateChallenge", "*admin.UpdateChallengePayload", v)
-		}
-		challengeID = p.ChallengeID
-	}
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateChallengeAdminPath(challengeID)}
-	req, err := http.NewRequest("PUT", u.String(), nil)
-	if err != nil {
-		return nil, goahttp.ErrInvalidURL("admin", "UpdateChallenge", u.String(), err)
-	}
-	if ctx != nil {
-		req = req.WithContext(ctx)
-	}
-
-	return req, nil
-}
-
-// EncodeUpdateChallengeRequest returns an encoder for requests sent to the
-// admin UpdateChallenge server.
-func EncodeUpdateChallengeRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
-	return func(req *http.Request, v interface{}) error {
-		p, ok := v.(*admin.UpdateChallengePayload)
-		if !ok {
-			return goahttp.ErrInvalidType("admin", "UpdateChallenge", "*admin.UpdateChallengePayload", v)
-		}
-		{
-			head := p.Token
-			if !strings.Contains(head, " ") {
-				req.Header.Set("Authorization", "Bearer "+head)
-			} else {
-				req.Header.Set("Authorization", head)
-			}
-		}
-		body := NewUpdateChallengeRequestBody(p)
-		if err := encoder(req).Encode(&body); err != nil {
-			return goahttp.ErrEncodingError("admin", "UpdateChallenge", err)
-		}
-		return nil
-	}
-}
-
-// DecodeUpdateChallengeResponse returns a decoder for responses returned by
-// the admin UpdateChallenge endpoint. restoreBody controls whether the
-// response body should be restored after having been read.
-// DecodeUpdateChallengeResponse may return the following errors:
-//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
-//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
-//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
-//   - error: internal error
-func DecodeUpdateChallengeResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
-	return func(resp *http.Response) (interface{}, error) {
-		if restoreBody {
-			b, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				return nil, err
-			}
-			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
-			defer func() {
-				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
-			}()
-		} else {
-			defer resp.Body.Close()
-		}
-		switch resp.StatusCode {
-		case http.StatusCreated:
-			return nil, nil
-		case http.StatusForbidden:
-			var (
-				body UpdateChallengeUnauthorizedResponseBody
-				err  error
-			)
-			err = decoder(resp).Decode(&body)
-			if err != nil {
-				return nil, goahttp.ErrDecodingError("admin", "UpdateChallenge", err)
-			}
-			err = ValidateUpdateChallengeUnauthorizedResponseBody(&body)
-			if err != nil {
-				return nil, goahttp.ErrValidationError("admin", "UpdateChallenge", err)
-			}
-			return nil, NewUpdateChallengeUnauthorized(&body)
-		case http.StatusNotFound:
-			var (
-				body UpdateChallengeNotFoundResponseBody
-				err  error
-			)
-			err = decoder(resp).Decode(&body)
-			if err != nil {
-				return nil, goahttp.ErrDecodingError("admin", "UpdateChallenge", err)
-			}
-			err = ValidateUpdateChallengeNotFoundResponseBody(&body)
-			if err != nil {
-				return nil, goahttp.ErrValidationError("admin", "UpdateChallenge", err)
-			}
-			return nil, NewUpdateChallengeNotFound(&body)
-		case http.StatusBadRequest:
-			var (
-				body UpdateChallengeBadRequestResponseBody
-				err  error
-			)
-			err = decoder(resp).Decode(&body)
-			if err != nil {
-				return nil, goahttp.ErrDecodingError("admin", "UpdateChallenge", err)
-			}
-			err = ValidateUpdateChallengeBadRequestResponseBody(&body)
-			if err != nil {
-				return nil, goahttp.ErrValidationError("admin", "UpdateChallenge", err)
-			}
-			return nil, NewUpdateChallengeBadRequest(&body)
-		default:
-			body, _ := ioutil.ReadAll(resp.Body)
-			return nil, goahttp.ErrInvalidResponse("admin", "UpdateChallenge", resp.StatusCode, string(body))
 		}
 	}
 }
@@ -3280,6 +3157,23 @@ func marshalAdminImportChallHumanMetadataToImportChallHumanMetadataRequestBody(v
 	return res
 }
 
+// marshalAdminImportChallCustomToImportChallCustomRequestBody builds a value
+// of type *ImportChallCustomRequestBody from a value of type
+// *admin.ImportChallCustom.
+func marshalAdminImportChallCustomToImportChallCustomRequestBody(v *admin.ImportChallCustom) *ImportChallCustomRequestBody {
+	if v == nil {
+		return nil
+	}
+	res := &ImportChallCustomRequestBody{
+		Publish:        v.Publish,
+		PublishAt:      v.PublishAt,
+		Slug:           v.Slug,
+		ChallNamespace: v.ChallNamespace,
+	}
+
+	return res
+}
+
 // marshalImportChallFlagRequestBodyToAdminImportChallFlag builds a value of
 // type *admin.ImportChallFlag from a value of type *ImportChallFlagRequestBody.
 func marshalImportChallFlagRequestBodyToAdminImportChallFlag(v *ImportChallFlagRequestBody) *admin.ImportChallFlag {
@@ -3318,6 +3212,23 @@ func marshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata(v
 	}
 	res := &admin.ImportChallHumanMetadata{
 		EventName: v.EventName,
+	}
+
+	return res
+}
+
+// marshalImportChallCustomRequestBodyToAdminImportChallCustom builds a value
+// of type *admin.ImportChallCustom from a value of type
+// *ImportChallCustomRequestBody.
+func marshalImportChallCustomRequestBodyToAdminImportChallCustom(v *ImportChallCustomRequestBody) *admin.ImportChallCustom {
+	if v == nil {
+		return nil
+	}
+	res := &admin.ImportChallCustom{
+		Publish:        v.Publish,
+		PublishAt:      v.PublishAt,
+		Slug:           v.Slug,
+		ChallNamespace: v.ChallNamespace,
 	}
 
 	return res

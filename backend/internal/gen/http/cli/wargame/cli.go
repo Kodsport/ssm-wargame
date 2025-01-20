@@ -3,7 +3,7 @@
 // wargame HTTP client CLI support package
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package cli
 
@@ -27,7 +27,7 @@ import (
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors|list-courses|enroll-course|complete-course|knack-koden-submit-flag|knack-koden-scoreboard|knack-koden-register-class|knack-koden-get-class)
-admin (list-challenges|get-challenge-meta|create-challenge|update-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course)
+admin (list-challenges|get-challenge-meta|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course)
 user (get-self|update-self|complete-onboarding|join-school|leave-school|search-schools)
 `
 }
@@ -127,11 +127,6 @@ func ParseEndpoint(
 		adminCreateChallengeFlags     = flag.NewFlagSet("create-challenge", flag.ExitOnError)
 		adminCreateChallengeBodyFlag  = adminCreateChallengeFlags.String("body", "REQUIRED", "")
 		adminCreateChallengeTokenFlag = adminCreateChallengeFlags.String("token", "REQUIRED", "")
-
-		adminUpdateChallengeFlags           = flag.NewFlagSet("update-challenge", flag.ExitOnError)
-		adminUpdateChallengeBodyFlag        = adminUpdateChallengeFlags.String("body", "REQUIRED", "")
-		adminUpdateChallengeChallengeIDFlag = adminUpdateChallengeFlags.String("challenge-id", "REQUIRED", "ID of a challenge")
-		adminUpdateChallengeTokenFlag       = adminUpdateChallengeFlags.String("token", "REQUIRED", "")
 
 		adminPresignChallFileUploadFlags           = flag.NewFlagSet("presign-chall-file-upload", flag.ExitOnError)
 		adminPresignChallFileUploadBodyFlag        = adminPresignChallFileUploadFlags.String("body", "REQUIRED", "")
@@ -265,7 +260,6 @@ func ParseEndpoint(
 	adminListChallengesFlags.Usage = adminListChallengesUsage
 	adminGetChallengeMetaFlags.Usage = adminGetChallengeMetaUsage
 	adminCreateChallengeFlags.Usage = adminCreateChallengeUsage
-	adminUpdateChallengeFlags.Usage = adminUpdateChallengeUsage
 	adminPresignChallFileUploadFlags.Usage = adminPresignChallFileUploadUsage
 	adminListMonthlyChallengesFlags.Usage = adminListMonthlyChallengesUsage
 	adminDeleteMonthlyChallengeFlags.Usage = adminDeleteMonthlyChallengeUsage
@@ -403,9 +397,6 @@ func ParseEndpoint(
 
 			case "create-challenge":
 				epf = adminCreateChallengeFlags
-
-			case "update-challenge":
-				epf = adminUpdateChallengeFlags
 
 			case "presign-chall-file-upload":
 				epf = adminPresignChallFileUploadFlags
@@ -585,9 +576,6 @@ func ParseEndpoint(
 			case "create-challenge":
 				endpoint = c.CreateChallenge()
 				data, err = adminc.BuildCreateChallengePayload(*adminCreateChallengeBodyFlag, *adminCreateChallengeTokenFlag)
-			case "update-challenge":
-				endpoint = c.UpdateChallenge()
-				data, err = adminc.BuildUpdateChallengePayload(*adminUpdateChallengeBodyFlag, *adminUpdateChallengeChallengeIDFlag, *adminUpdateChallengeTokenFlag)
 			case "presign-chall-file-upload":
 				endpoint = c.PresignChallFileUpload()
 				data, err = adminc.BuildPresignChallFileUploadPayload(*adminPresignChallFileUploadBodyFlag, *adminPresignChallFileUploadChallengeIDFlag, *adminPresignChallFileUploadTokenFlag)
@@ -889,7 +877,7 @@ KnackKodenSubmitFlag implements KnackKodenSubmitFlag.
 Example:
     %[1]s challenge knack-koden-submit-flag --body '{
       "flag": "SSM{flag}",
-      "password": "Minima distinctio."
+      "password": "Quos maxime atque porro."
    }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -914,12 +902,12 @@ KnackKodenRegisterClass implements KnackKodenRegisterClass.
 
 Example:
     %[1]s challenge knack-koden-register-class --body '{
-      "class_name": "Dolores et in.",
-      "postal_code": "Repellendus et vel.",
-      "school_name": "Quas nobis dolorem necessitatibus autem aut.",
-      "teacher_email": "Nihil quia vel.",
-      "teacher_full_name": "Voluptas voluptatum et.",
-      "teacher_phonenr": "Velit ut a sapiente earum."
+      "class_name": "Voluptatum et quaerat nihil quia.",
+      "postal_code": "Quia velit ut a sapiente earum.",
+      "school_name": "Est corrupti et minima distinctio occaecati amet.",
+      "teacher_email": "Accusantium architecto ut.",
+      "teacher_full_name": "Quasi at aliquid cumque aut velit sapiente.",
+      "teacher_phonenr": "Tempore blanditiis non id."
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -933,7 +921,7 @@ KnackKodenGetClass implements KnackKodenGetClass.
 
 Example:
     %[1]s challenge knack-koden-get-class --body '{
-      "password": "Amet animi ipsum nam."
+      "password": "Dolores et in."
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -948,7 +936,6 @@ COMMAND:
     list-challenges: ListChallenges implements ListChallenges.
     get-challenge-meta: GetChallengeMeta implements GetChallengeMeta.
     create-challenge: CreateChallenge implements CreateChallenge.
-    update-challenge: UpdateChallenge implements UpdateChallenge.
     presign-chall-file-upload: PresignChallFileUpload implements PresignChallFileUpload.
     list-monthly-challenges: ListMonthlyChallenges implements ListMonthlyChallenges.
     delete-monthly-challenge: DeleteMonthlyChallenge implements DeleteMonthlyChallenge.
@@ -1019,23 +1006,6 @@ Example:
       "static_score": 50,
       "title": "pwnme"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
-`, os.Args[0])
-}
-
-func adminUpdateChallengeUsage() {
-	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin update-challenge -body JSON -challenge-id STRING -token STRING
-
-UpdateChallenge implements UpdateChallenge.
-    -body JSON: 
-    -challenge-id STRING: ID of a challenge
-    -token STRING: 
-
-Example:
-    %[1]s admin update-challenge --body '{
-      "hide": false,
-      "publish_at": 1638384718,
-      "slug": "pwnme"
-   }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -1237,9 +1207,10 @@ Example:
       ],
       "challenge_id": "225ada44-3fde-460d-84a4-2f16ff579618",
       "custom": {
-         "Deleniti perspiciatis doloremque qui veritatis.": "Animi ut voluptas est.",
-         "Deserunt modi voluptatem quisquam.": "Totam voluptates neque.",
-         "Vel qui quos nesciunt sed quia.": "Quasi earum quisquam illo necessitatibus officia sapiente."
+         "chall_namespace": "Voluptas sunt sit aut consequatur hic repellendus.",
+         "publish": false,
+         "publish_at": "Et distinctio accusantium.",
+         "slug": "Et libero qui laborum vel eos."
       },
       "description": "how to dns",
       "file_urls": [
@@ -1258,7 +1229,7 @@ Example:
          }
       ],
       "human_metadata": {
-         "event_name": "Officia earum facere soluta omnis."
+         "event_name": "Harum ab eos tenetur itaque omnis itaque."
       },
       "order": 5,
       "score": 100,
@@ -1331,7 +1302,7 @@ CreateCTFEventImportToken implements CreateCTFEventImportToken.
 
 Example:
     %[1]s admin create-ctf-event-import-token --body '{
-      "expires_in": "week",
+      "expires_in": "year",
       "name": "e3bb4dc5-9479-42ce-aed3-b41e8139fccb"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])

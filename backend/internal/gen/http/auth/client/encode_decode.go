@@ -3,7 +3,7 @@
 // auth HTTP client encoders and decoders
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package client
 

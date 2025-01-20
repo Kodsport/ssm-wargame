@@ -3,7 +3,7 @@
 // admin HTTP client CLI support package
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package client
 
@@ -91,41 +91,6 @@ func BuildCreateChallengePayload(adminCreateChallengeBody string, adminCreateCha
 			v.Authors[i] = val
 		}
 	}
-	v.Token = token
-
-	return v, nil
-}
-
-// BuildUpdateChallengePayload builds the payload for the admin UpdateChallenge
-// endpoint from CLI flags.
-func BuildUpdateChallengePayload(adminUpdateChallengeBody string, adminUpdateChallengeChallengeID string, adminUpdateChallengeToken string) (*admin.UpdateChallengePayload, error) {
-	var err error
-	var body UpdateChallengeRequestBody
-	{
-		err = json.Unmarshal([]byte(adminUpdateChallengeBody), &body)
-		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"hide\": false,\n      \"publish_at\": 1638384718,\n      \"slug\": \"pwnme\"\n   }'")
-		}
-	}
-	var challengeID string
-	{
-		challengeID = adminUpdateChallengeChallengeID
-		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	var token string
-	{
-		token = adminUpdateChallengeToken
-	}
-	v := &admin.UpdateChallengePayload{
-		Slug:      body.Slug,
-		PublishAt: body.PublishAt,
-		Hide:      body.Hide,
-	}
-	v.ChallengeID = challengeID
 	v.Token = token
 
 	return v, nil
@@ -456,7 +421,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 	{
 		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"custom\": {\n         \"Deleniti perspiciatis doloremque qui veritatis.\": \"Animi ut voluptas est.\",\n         \"Deserunt modi voluptatem quisquam.\": \"Totam voluptates neque.\",\n         \"Vel qui quos nesciunt sed quia.\": \"Quasi earum quisquam illo necessitatibus officia sapiente.\"\n      },\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"Officia earum facere soluta omnis.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"custom\": {\n         \"chall_namespace\": \"Voluptas sunt sit aut consequatur hic repellendus.\",\n         \"publish\": false,\n         \"publish_at\": \"Et distinctio accusantium.\",\n         \"slug\": \"Et libero qui laborum vel eos.\"\n      },\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"Harum ab eos tenetur itaque omnis itaque.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 
@@ -511,12 +476,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 		v.HumanMetadata = marshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata(body.HumanMetadata)
 	}
 	if body.Custom != nil {
-		v.Custom = make(map[string]interface{}, len(body.Custom))
-		for key, val := range body.Custom {
-			tk := key
-			tv := val
-			v.Custom[tk] = tv
-		}
+		v.Custom = marshalImportChallCustomRequestBodyToAdminImportChallCustom(body.Custom)
 	}
 	v.ImportToken = importToken
 
@@ -591,7 +551,7 @@ func BuildCreateCTFEventImportTokenPayload(adminCreateCTFEventImportTokenBody st
 	{
 		err = json.Unmarshal([]byte(adminCreateCTFEventImportTokenBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"expires_in\": \"week\",\n      \"name\": \"e3bb4dc5-9479-42ce-aed3-b41e8139fccb\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"expires_in\": \"year\",\n      \"name\": \"e3bb4dc5-9479-42ce-aed3-b41e8139fccb\"\n   }'")
 		}
 		if !(body.ExpiresIn == "hour" || body.ExpiresIn == "week" || body.ExpiresIn == "year") {
 			err = goa.MergeErrors(err, goa.InvalidEnumValueError("body.expires_in", body.ExpiresIn, []interface{}{"hour", "week", "year"}))

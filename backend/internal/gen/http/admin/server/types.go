@@ -3,7 +3,7 @@
 // admin HTTP server types
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package server
 
@@ -30,16 +30,6 @@ type CreateChallengeRequestBody struct {
 	StaticScore *int     `form:"static_score,omitempty" json:"static_score,omitempty" xml:"static_score,omitempty"`
 	CategoryID  *string  `form:"category_id,omitempty" json:"category_id,omitempty" xml:"category_id,omitempty"`
 	Authors     []string `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
-}
-
-// UpdateChallengeRequestBody is the type of the "admin" service
-// "UpdateChallenge" endpoint HTTP request body.
-type UpdateChallengeRequestBody struct {
-	// A unique string that can be used in URLs
-	Slug *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
-	// unix timestamp
-	PublishAt *int64 `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
-	Hide      *bool  `form:"hide,omitempty" json:"hide,omitempty" xml:"hide,omitempty"`
 }
 
 // PresignChallFileUploadRequestBody is the type of the "admin" service
@@ -108,7 +98,7 @@ type ChalltoolsImportRequestBody struct {
 	Order            *int                                 `form:"order,omitempty" json:"order,omitempty" xml:"order,omitempty"`
 	Services         []*ImportChallServiceRequestBody     `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
 	HumanMetadata    *ImportChallHumanMetadataRequestBody `form:"human_metadata,omitempty" json:"human_metadata,omitempty" xml:"human_metadata,omitempty"`
-	Custom           map[string]interface{}               `form:"custom,omitempty" json:"custom,omitempty" xml:"custom,omitempty"`
+	Custom           *ImportChallCustomRequestBody        `form:"custom,omitempty" json:"custom,omitempty" xml:"custom,omitempty"`
 }
 
 // CreateCTFEventRequestBody is the type of the "admin" service
@@ -343,60 +333,6 @@ type CreateChallengeNotFoundResponseBody struct {
 // CreateChallengeBadRequestResponseBody is the type of the "admin" service
 // "CreateChallenge" endpoint HTTP response body for the "bad_request" error.
 type CreateChallengeBadRequestResponseBody struct {
-	// Name is the name of this class of errors.
-	Name string `form:"name" json:"name" xml:"name"`
-	// ID is a unique identifier for this particular occurrence of the problem.
-	ID string `form:"id" json:"id" xml:"id"`
-	// Message is a human-readable explanation specific to this occurrence of the
-	// problem.
-	Message string `form:"message" json:"message" xml:"message"`
-	// Is the error temporary?
-	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
-	// Is the error a timeout?
-	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
-	// Is the error a server-side fault?
-	Fault bool `form:"fault" json:"fault" xml:"fault"`
-}
-
-// UpdateChallengeUnauthorizedResponseBody is the type of the "admin" service
-// "UpdateChallenge" endpoint HTTP response body for the "unauthorized" error.
-type UpdateChallengeUnauthorizedResponseBody struct {
-	// Name is the name of this class of errors.
-	Name string `form:"name" json:"name" xml:"name"`
-	// ID is a unique identifier for this particular occurrence of the problem.
-	ID string `form:"id" json:"id" xml:"id"`
-	// Message is a human-readable explanation specific to this occurrence of the
-	// problem.
-	Message string `form:"message" json:"message" xml:"message"`
-	// Is the error temporary?
-	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
-	// Is the error a timeout?
-	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
-	// Is the error a server-side fault?
-	Fault bool `form:"fault" json:"fault" xml:"fault"`
-}
-
-// UpdateChallengeNotFoundResponseBody is the type of the "admin" service
-// "UpdateChallenge" endpoint HTTP response body for the "not_found" error.
-type UpdateChallengeNotFoundResponseBody struct {
-	// Name is the name of this class of errors.
-	Name string `form:"name" json:"name" xml:"name"`
-	// ID is a unique identifier for this particular occurrence of the problem.
-	ID string `form:"id" json:"id" xml:"id"`
-	// Message is a human-readable explanation specific to this occurrence of the
-	// problem.
-	Message string `form:"message" json:"message" xml:"message"`
-	// Is the error temporary?
-	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
-	// Is the error a timeout?
-	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
-	// Is the error a server-side fault?
-	Fault bool `form:"fault" json:"fault" xml:"fault"`
-}
-
-// UpdateChallengeBadRequestResponseBody is the type of the "admin" service
-// "UpdateChallenge" endpoint HTTP response body for the "bad_request" error.
-type UpdateChallengeBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -1701,6 +1637,14 @@ type ImportChallHumanMetadataRequestBody struct {
 	EventName *string `form:"event_name,omitempty" json:"event_name,omitempty" xml:"event_name,omitempty"`
 }
 
+// ImportChallCustomRequestBody is used to define fields on request body types.
+type ImportChallCustomRequestBody struct {
+	Publish        *bool   `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
+	PublishAt      *string `form:"publish_at,omitempty" json:"publish_at,omitempty" xml:"publish_at,omitempty"`
+	Slug           *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	ChallNamespace *string `form:"chall_namespace,omitempty" json:"chall_namespace,omitempty" xml:"chall_namespace,omitempty"`
+}
+
 // NewSsmAdminChallengeResponseCollection builds the HTTP response body from
 // the result of the "ListChallenges" endpoint of the "admin" service.
 func NewSsmAdminChallengeResponseCollection(res adminviews.SsmAdminChallengeCollectionView) SsmAdminChallengeResponseCollection {
@@ -1925,48 +1869,6 @@ func NewCreateChallengeNotFoundResponseBody(res *goa.ServiceError) *CreateChalle
 // the result of the "CreateChallenge" endpoint of the "admin" service.
 func NewCreateChallengeBadRequestResponseBody(res *goa.ServiceError) *CreateChallengeBadRequestResponseBody {
 	body := &CreateChallengeBadRequestResponseBody{
-		Name:      res.Name,
-		ID:        res.ID,
-		Message:   res.Message,
-		Temporary: res.Temporary,
-		Timeout:   res.Timeout,
-		Fault:     res.Fault,
-	}
-	return body
-}
-
-// NewUpdateChallengeUnauthorizedResponseBody builds the HTTP response body
-// from the result of the "UpdateChallenge" endpoint of the "admin" service.
-func NewUpdateChallengeUnauthorizedResponseBody(res *goa.ServiceError) *UpdateChallengeUnauthorizedResponseBody {
-	body := &UpdateChallengeUnauthorizedResponseBody{
-		Name:      res.Name,
-		ID:        res.ID,
-		Message:   res.Message,
-		Temporary: res.Temporary,
-		Timeout:   res.Timeout,
-		Fault:     res.Fault,
-	}
-	return body
-}
-
-// NewUpdateChallengeNotFoundResponseBody builds the HTTP response body from
-// the result of the "UpdateChallenge" endpoint of the "admin" service.
-func NewUpdateChallengeNotFoundResponseBody(res *goa.ServiceError) *UpdateChallengeNotFoundResponseBody {
-	body := &UpdateChallengeNotFoundResponseBody{
-		Name:      res.Name,
-		ID:        res.ID,
-		Message:   res.Message,
-		Temporary: res.Temporary,
-		Timeout:   res.Timeout,
-		Fault:     res.Fault,
-	}
-	return body
-}
-
-// NewUpdateChallengeBadRequestResponseBody builds the HTTP response body from
-// the result of the "UpdateChallenge" endpoint of the "admin" service.
-func NewUpdateChallengeBadRequestResponseBody(res *goa.ServiceError) *UpdateChallengeBadRequestResponseBody {
-	body := &UpdateChallengeBadRequestResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -2917,20 +2819,6 @@ func NewCreateChallengePayload(body *CreateChallengeRequestBody, token string) *
 	return v
 }
 
-// NewUpdateChallengePayload builds a admin service UpdateChallenge endpoint
-// payload.
-func NewUpdateChallengePayload(body *UpdateChallengeRequestBody, challengeID string, token string) *admin.UpdateChallengePayload {
-	v := &admin.UpdateChallengePayload{
-		Slug:      *body.Slug,
-		PublishAt: body.PublishAt,
-		Hide:      *body.Hide,
-	}
-	v.ChallengeID = challengeID
-	v.Token = token
-
-	return v
-}
-
 // NewPresignChallFileUploadPayload builds a admin service
 // PresignChallFileUpload endpoint payload.
 func NewPresignChallFileUploadPayload(body *PresignChallFileUploadRequestBody, challengeID string, token string) *admin.PresignChallFileUploadPayload {
@@ -3119,12 +3007,7 @@ func NewChalltoolsImportPayload(body *ChalltoolsImportRequestBody, importToken s
 		v.HumanMetadata = unmarshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata(body.HumanMetadata)
 	}
 	if body.Custom != nil {
-		v.Custom = make(map[string]interface{}, len(body.Custom))
-		for key, val := range body.Custom {
-			tk := key
-			tv := val
-			v.Custom[tk] = tv
-		}
+		v.Custom = unmarshalImportChallCustomRequestBodyToAdminImportChallCustom(body.Custom)
 	}
 	v.ImportToken = importToken
 
@@ -3247,18 +3130,6 @@ func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err e
 	}
 	if body.CategoryID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.category_id", *body.CategoryID, goa.FormatUUID))
-	}
-	return
-}
-
-// ValidateUpdateChallengeRequestBody runs the validations defined on
-// UpdateChallengeRequestBody
-func ValidateUpdateChallengeRequestBody(body *UpdateChallengeRequestBody) (err error) {
-	if body.Slug == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
-	}
-	if body.Hide == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("hide", "body"))
 	}
 	return
 }

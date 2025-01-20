@@ -3,7 +3,7 @@
 // admin endpoints
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package admin
 
@@ -19,7 +19,6 @@ type Endpoints struct {
 	ListChallenges            goa.Endpoint
 	GetChallengeMeta          goa.Endpoint
 	CreateChallenge           goa.Endpoint
-	UpdateChallenge           goa.Endpoint
 	PresignChallFileUpload    goa.Endpoint
 	ListMonthlyChallenges     goa.Endpoint
 	DeleteMonthlyChallenge    goa.Endpoint
@@ -51,7 +50,6 @@ func NewEndpoints(s Service) *Endpoints {
 		ListChallenges:            NewListChallengesEndpoint(s, a.JWTAuth),
 		GetChallengeMeta:          NewGetChallengeMetaEndpoint(s, a.JWTAuth),
 		CreateChallenge:           NewCreateChallengeEndpoint(s, a.JWTAuth),
-		UpdateChallenge:           NewUpdateChallengeEndpoint(s, a.JWTAuth),
 		PresignChallFileUpload:    NewPresignChallFileUploadEndpoint(s, a.JWTAuth),
 		ListMonthlyChallenges:     NewListMonthlyChallengesEndpoint(s, a.JWTAuth),
 		DeleteMonthlyChallenge:    NewDeleteMonthlyChallengeEndpoint(s, a.JWTAuth),
@@ -81,7 +79,6 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListChallenges = m(e.ListChallenges)
 	e.GetChallengeMeta = m(e.GetChallengeMeta)
 	e.CreateChallenge = m(e.CreateChallenge)
-	e.UpdateChallenge = m(e.UpdateChallenge)
 	e.PresignChallFileUpload = m(e.PresignChallFileUpload)
 	e.ListMonthlyChallenges = m(e.ListMonthlyChallenges)
 	e.DeleteMonthlyChallenge = m(e.DeleteMonthlyChallenge)
@@ -164,25 +161,6 @@ func NewCreateChallengeEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.E
 			return nil, err
 		}
 		return nil, s.CreateChallenge(ctx, p)
-	}
-}
-
-// NewUpdateChallengeEndpoint returns an endpoint function that calls the
-// method "UpdateChallenge" of service "admin".
-func NewUpdateChallengeEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
-	return func(ctx context.Context, req interface{}) (interface{}, error) {
-		p := req.(*UpdateChallengePayload)
-		var err error
-		sc := security.JWTScheme{
-			Name:           "jwt",
-			Scopes:         []string{},
-			RequiredScopes: []string{},
-		}
-		ctx, err = authJWTFn(ctx, p.Token, &sc)
-		if err != nil {
-			return nil, err
-		}
-		return nil, s.UpdateChallenge(ctx, p)
 	}
 }
 

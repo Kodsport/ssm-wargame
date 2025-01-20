@@ -3,7 +3,7 @@
 // HTTP request path constructors for the admin service.
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package server
 
@@ -24,11 +24,6 @@ func GetChallengeMetaAdminPath(challengeID string) string {
 // CreateChallengeAdminPath returns the URL path to the admin service CreateChallenge HTTP endpoint.
 func CreateChallengeAdminPath() string {
 	return "/admin/challenges"
-}
-
-// UpdateChallengeAdminPath returns the URL path to the admin service UpdateChallenge HTTP endpoint.
-func UpdateChallengeAdminPath(challengeID string) string {
-	return fmt.Sprintf("/admin/challenges/%v", challengeID)
 }
 
 // PresignChallFileUploadAdminPath returns the URL path to the admin service PresignChallFileUpload HTTP endpoint.

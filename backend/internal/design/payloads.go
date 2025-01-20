@@ -30,14 +30,6 @@ var CreateChallengePayload = Type("CreateChallengePayload", func() {
 	Required("category_id")
 })
 
-var UpdateChallengePayload = Type("UpdateChallengePayload", func() {
-	Reference(Challenge)
-
-	Attribute("slug")
-	Attribute("publish_at")
-	Attribute("hide")
-})
-
 var TokenPayload = Type("TokenPayload", func() {
 	Extend(OptionalTokenPayload)
 	Required("token")
@@ -57,6 +49,13 @@ var ImportChallService = Type("ImportChallService", func() {
 
 var ImportChallHumanMetadata = Type("ImportChallHumanMetadata", func() {
 	Attribute("event_name", String)
+})
+
+var ImportChallCustom = Type("ImportChallCustom", func() {
+	Attribute("publish", Boolean)
+	Attribute("publish_at", String)
+	Attribute("slug", String)
+	Attribute("chall_namespace", String)
 })
 
 var ImportChallFlag = Type("ImportChallFlag", func() {
@@ -106,7 +105,7 @@ var ChallImport = Type("ChallImport", func() {
 	})
 	Attribute("services", ArrayOf(ImportChallService))
 	Attribute("human_metadata", ImportChallHumanMetadata)
-	Attribute("custom", MapOf(String, Any))
+	Attribute("custom", ImportChallCustom)
 
 	Required("title", "description", "challenge_id")
 })

@@ -127,44 +127,6 @@ func (s *service) CreateChallenge(ctx context.Context, req *spec.CreateChallenge
 	return nil
 }
 
-func (s *service) UpdateChallenge(ctx context.Context, req *spec.UpdateChallengePayload) error {
-
-	tx, err := s.db.Begin()
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback()
-
-	var pubAt null.Time
-	if req.PublishAt != nil {
-		pubAt = null.TimeFrom(time.Unix(*req.PublishAt, 0))
-	}
-
-	n, err := models.Challenges(
-		models.ChallengeWhere.ID.EQ(req.ChallengeID),
-	).UpdateAll(ctx, tx, models.M{
-		models.ChallengeColumns.Slug:      req.Slug,
-		models.ChallengeColumns.PublishAt: pubAt,
-		// models.ChallengeColumns.CTFEventID:  null.StringFromPtr(req.CtfEventID), // TODO: hacky for now, issue where frontend doesnt send this field
-		models.ChallengeColumns.Hide: req.Hide,
-	})
-	if err != nil {
-		s.log.Error("could not update chall", zap.Error(err))
-		return err
-	}
-	if n == 0 {
-		return spec.MakeNotFound(errors.New("chall not found"))
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		s.log.Error("could not commit", zap.Error(err))
-		return err
-	}
-
-	return nil
-}
-
 func (s *service) PresignChallFileUpload(ctx context.Context, req *spec.PresignChallFileUploadPayload) (*spec.PresignChallFileUploadResult, error) {
 	log := s.log.With(zap.String("challengeID", req.ChallengeID), utils.C(ctx))
 

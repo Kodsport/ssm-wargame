@@ -3,7 +3,7 @@
 // admin client
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package admin
 
@@ -18,7 +18,6 @@ type Client struct {
 	ListChallengesEndpoint            goa.Endpoint
 	GetChallengeMetaEndpoint          goa.Endpoint
 	CreateChallengeEndpoint           goa.Endpoint
-	UpdateChallengeEndpoint           goa.Endpoint
 	PresignChallFileUploadEndpoint    goa.Endpoint
 	ListMonthlyChallengesEndpoint     goa.Endpoint
 	DeleteMonthlyChallengeEndpoint    goa.Endpoint
@@ -43,12 +42,11 @@ type Client struct {
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, updateChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:            listChallenges,
 		GetChallengeMetaEndpoint:          getChallengeMeta,
 		CreateChallengeEndpoint:           createChallenge,
-		UpdateChallengeEndpoint:           updateChallenge,
 		PresignChallFileUploadEndpoint:    presignChallFileUpload,
 		ListMonthlyChallengesEndpoint:     listMonthlyChallenges,
 		DeleteMonthlyChallengeEndpoint:    deleteMonthlyChallenge,
@@ -97,12 +95,6 @@ func (c *Client) GetChallengeMeta(ctx context.Context, p *GetChallengeMetaPayloa
 // CreateChallenge calls the "CreateChallenge" endpoint of the "admin" service.
 func (c *Client) CreateChallenge(ctx context.Context, p *CreateChallengePayload) (err error) {
 	_, err = c.CreateChallengeEndpoint(ctx, p)
-	return
-}
-
-// UpdateChallenge calls the "UpdateChallenge" endpoint of the "admin" service.
-func (c *Client) UpdateChallenge(ctx context.Context, p *UpdateChallengePayload) (err error) {
-	_, err = c.UpdateChallengeEndpoint(ctx, p)
 	return
 }
 

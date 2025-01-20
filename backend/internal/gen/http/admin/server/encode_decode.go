@@ -3,7 +3,7 @@
 // admin HTTP server encoders and decoders
 //
 // Command:
-// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design
+// $ goa gen github.com/sakerhetsm/ssm-wargame/internal/design -o internal/
 
 package server
 
@@ -297,114 +297,6 @@ func EncodeCreateChallengeError(encoder func(context.Context, http.ResponseWrite
 				body = formatter(res)
 			} else {
 				body = NewCreateChallengeBadRequestResponseBody(res)
-			}
-			w.Header().Set("goa-error", res.ErrorName())
-			w.WriteHeader(http.StatusBadRequest)
-			return enc.Encode(body)
-		default:
-			return encodeError(ctx, w, v)
-		}
-	}
-}
-
-// EncodeUpdateChallengeResponse returns an encoder for responses returned by
-// the admin UpdateChallenge endpoint.
-func EncodeUpdateChallengeResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
-	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		w.WriteHeader(http.StatusCreated)
-		return nil
-	}
-}
-
-// DecodeUpdateChallengeRequest returns a decoder for requests sent to the
-// admin UpdateChallenge endpoint.
-func DecodeUpdateChallengeRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
-	return func(r *http.Request) (interface{}, error) {
-		var (
-			body UpdateChallengeRequestBody
-			err  error
-		)
-		err = decoder(r).Decode(&body)
-		if err != nil {
-			if err == io.EOF {
-				return nil, goa.MissingPayloadError()
-			}
-			return nil, goa.DecodePayloadError(err.Error())
-		}
-		err = ValidateUpdateChallengeRequestBody(&body)
-		if err != nil {
-			return nil, err
-		}
-
-		var (
-			challengeID string
-			token       string
-
-			params = mux.Vars(r)
-		)
-		challengeID = params["challenge_id"]
-		err = goa.MergeErrors(err, goa.ValidateFormat("challengeID", challengeID, goa.FormatUUID))
-
-		token = r.Header.Get("Authorization")
-		if token == "" {
-			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
-		}
-		if err != nil {
-			return nil, err
-		}
-		payload := NewUpdateChallengePayload(&body, challengeID, token)
-		if strings.Contains(payload.Token, " ") {
-			// Remove authorization scheme prefix (e.g. "Bearer")
-			cred := strings.SplitN(payload.Token, " ", 2)[1]
-			payload.Token = cred
-		}
-
-		return payload, nil
-	}
-}
-
-// EncodeUpdateChallengeError returns an encoder for errors returned by the
-// UpdateChallenge admin endpoint.
-func EncodeUpdateChallengeError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
-	encodeError := goahttp.ErrorEncoder(encoder, formatter)
-	return func(ctx context.Context, w http.ResponseWriter, v error) error {
-		en, ok := v.(ErrorNamer)
-		if !ok {
-			return encodeError(ctx, w, v)
-		}
-		switch en.ErrorName() {
-		case "unauthorized":
-			res := v.(*goa.ServiceError)
-			enc := encoder(ctx, w)
-			var body interface{}
-			if formatter != nil {
-				body = formatter(res)
-			} else {
-				body = NewUpdateChallengeUnauthorizedResponseBody(res)
-			}
-			w.Header().Set("goa-error", res.ErrorName())
-			w.WriteHeader(http.StatusForbidden)
-			return enc.Encode(body)
-		case "not_found":
-			res := v.(*goa.ServiceError)
-			enc := encoder(ctx, w)
-			var body interface{}
-			if formatter != nil {
-				body = formatter(res)
-			} else {
-				body = NewUpdateChallengeNotFoundResponseBody(res)
-			}
-			w.Header().Set("goa-error", res.ErrorName())
-			w.WriteHeader(http.StatusNotFound)
-			return enc.Encode(body)
-		case "bad_request":
-			res := v.(*goa.ServiceError)
-			enc := encoder(ctx, w)
-			var body interface{}
-			if formatter != nil {
-				body = formatter(res)
-			} else {
-				body = NewUpdateChallengeBadRequestResponseBody(res)
 			}
 			w.Header().Set("goa-error", res.ErrorName())
 			w.WriteHeader(http.StatusBadRequest)
@@ -2673,6 +2565,23 @@ func unmarshalImportChallHumanMetadataRequestBodyToAdminImportChallHumanMetadata
 	}
 	res := &admin.ImportChallHumanMetadata{
 		EventName: v.EventName,
+	}
+
+	return res
+}
+
+// unmarshalImportChallCustomRequestBodyToAdminImportChallCustom builds a value
+// of type *admin.ImportChallCustom from a value of type
+// *ImportChallCustomRequestBody.
+func unmarshalImportChallCustomRequestBodyToAdminImportChallCustom(v *ImportChallCustomRequestBody) *admin.ImportChallCustom {
+	if v == nil {
+		return nil
+	}
+	res := &admin.ImportChallCustom{
+		Publish:        v.Publish,
+		PublishAt:      v.PublishAt,
+		Slug:           v.Slug,
+		ChallNamespace: v.ChallNamespace,
 	}
 
 	return res
