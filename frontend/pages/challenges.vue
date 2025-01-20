@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="ssm-grid pt-3 pb-2">
-                        <div v-for="chall in challenges.filter(c => c.category == category)">
+                        <div v-for="chall in challenges.filter(c => c.category == category).sort((a, b) => a.score - b.score)">
                             <ChallengePreview class="pointer" @click="nav(chall.slug)" :chall="chall" />
                             <!-- for seo -->
                             <a class="d-none" :href="`/challenges/${chall.slug}`">{{ chall.title }}</a>
