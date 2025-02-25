@@ -108,7 +108,7 @@ async function submitFlag() {
         await http(`/challenges/${chall.value.id}/attempt`, {
             method: 'POST',
             body: {
-                flag: flag.value
+                flag: flag.value.trim()
             }
         })
 

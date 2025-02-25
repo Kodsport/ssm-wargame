@@ -98,7 +98,7 @@ async function submitFlag() {
         await http(`/challenges/${chall.value.id}/knack_koden_attempt`, {
             method: 'POST',
             body: {
-                flag: flagInput.value,
+                flag: flagInput.value.trim(),
                 password: auth.knackKodenPassword
             }
         })
