@@ -8,8 +8,8 @@ use std::net::SocketAddr;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
 
-use russh::{Channel, ChannelId, CryptoVec, Pty};
-use russh::server::{Config, Msg, Session, Auth, Server as _};
+use russh::{Channel, ChannelId, CryptoVec, Pty, MethodSet, MethodKind};
+use russh::server::{Config, Msg, Session, Auth, Response, Server as _};
 use russh::keys::{Algorithm, PublicKey, PrivateKey, Certificate};
 
 #[tokio::main]
@@ -22,6 +22,7 @@ async fn main() {
 			PrivateKey::random(&mut StdRng::seed_from_u64(0), Algorithm::Ed25519).unwrap(),
 		],
 		preferred: Default::default(),
+		methods: MethodSet::from([MethodKind::None].as_slice()),
 		..Default::default()
 	});
 	let mut sh = Server {
@@ -78,6 +79,14 @@ impl russh::server::Handler for Server {
 		Ok(true)
 	}
 
+	async fn auth_none(&mut self, _user: &str) -> Result<Auth, Self::Error> {
+		Ok(Auth::Accept)
+	}
+
+	async fn auth_password(&mut self, _user: &str, _password: &str) -> Result<Auth, Self::Error> {
+		Ok(Auth::Accept)
+	}
+
 	async fn auth_publickey(
 		&mut self,
 		_: &str,
@@ -90,6 +99,15 @@ impl russh::server::Handler for Server {
 		&mut self,
 		_user: &str,
 		_certificate: &Certificate,
+	) -> Result<Auth, Self::Error> {
+		Ok(Auth::Accept)
+	}
+
+	async fn auth_keyboard_interactive(
+		&mut self,
+		_user: &str,
+		_submethods: &str,
+		_response: Option<Response<'_>>
 	) -> Result<Auth, Self::Error> {
 		Ok(Auth::Accept)
 	}
@@ -190,6 +208,81 @@ impl russh::server::Handler for Server {
 
 		Ok(())
 	}
+}
+
+trait Write {
+	type Error;
+
+	fn write(&mut self, buf: &[u8]) -> Result<(), Self::Error>;
+	fn write_fmt(&mut self, fmt: std::fmt::Arguments) -> Result<(), Self::Error>;
+}
+
+impl<W: std::io::Write> Write for W {
+	type Error = std::io::Error;
+
+	fn write(&mut self, buf: &[u8]) -> Result<(), Self::Error> {
+		self.write_all(buf)
+	}
+
+	fn write_fmt(&mut self, fmt: std::fmt::Arguments) -> Result<(), Self::Error> {
+		struct Adapter<'a, T: ?Sized + 'a> {
+			inner: &'a mut T,
+			error: Result<(), std::io::Error>,
+		}
+
+		impl<T: std::io::Write + ?Sized> std::fmt::Write for Adapter<'_, T> {
+			fn write_str(&mut self, s: &str) -> std::fmt::Result {
+				self.inner.write_all(s.as_bytes()).map_err(|e| {
+					self.error = Err(e);
+					std::fmt::Error
+				})
+			}
+		}
+
+		let mut output = Adapter { inner: self, error: Ok(()) };
+		std::fmt::write(&mut output, fmt).map_err(|_| output.error.unwrap_err())
+	}
+}
+
+struct Terminal<W: Write>(W);
+
+impl<W: Write> Terminal<W> {
+	/// CUP
+	fn set_cursor_pos(&mut self, row: u32, col: u32) -> Result<(), W::Error> {
+		match (row, col) {
+			(1, 1) => write!(self.0, "\x1b[H"),
+			(_, 1) => write!(self.0, "\x1b[{}H", row),
+			(_, _) => write!(self.0, "\x1b[{};{}H", row, col),
+		}
+	}
+}
+
+fn render2() {
+	/*struct Logo {
+		lines: Vec<&'static str>,
+	}
+
+	trait Comp {
+
+	}
+
+	fn center_h(component: impl Comp) -> impl Comp {
+
+	}
+
+	let logo = center_h(Logo { lines: vec![
+		"█▀▀▀ █▀▀▀ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▄ █▀▀█ █▀▀█ █▀▀▄ █▀▀▄",
+		"▀▀▀█ █    █  █ █▀▀▄ █▀▀▀ █▀▀▄ █  █ █▀▀█ █▀▀▄ █  █",
+		"▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀  ▀▀▀▀ ▀  ▀ ▀  ▀ ▀▀▀ ",
+	] });
+
+	let eligibility = ButtonSet {
+		buttons: vec![
+			Button { text: "Eligible", color: Color::Blue },
+			Button { text: "Open", color: Color::Green },
+			Button { text: "All", color: Color::Black },
+		],
+	}*/
 }
 
 fn render(session: &mut Session, channel: ChannelId, client: ClientData, tooltip_only: bool) -> Result<(), russh::Error> {
