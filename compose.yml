@@ -1,7 +1,5 @@
-version: '3.8'
-
 volumes:
-    db:
+  db:
 
 services:
   db:
@@ -29,6 +27,12 @@ services:
     networks:
       - caddy-network
       - default
+
+  scoreboard-ssh:
+    restart: unless-stopped
+    build: ./scoreboard-ssh
+    ports:
+      - "2025:2025"
 
 networks:
   caddy-network:

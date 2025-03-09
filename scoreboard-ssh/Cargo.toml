@@ -1,0 +1,10 @@
+[package]
+name = "scoreboard"
+version = "0.0.0"
+edition = "2024"
+
+[dependencies]
+json = "0.12.4"
+rand = "0.8.5"
+russh = "0.50.4"
+tokio = "1.44.0"

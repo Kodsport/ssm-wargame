@@ -1,0 +1,1288 @@
+[
+    {
+        "name": "418. I'm a teapot",
+        "id": 193,
+        "eligibility_class": "Eligible",
+        "score": 6600,
+        "solves": {
+            "102": {
+                "time": 1741424354,
+                "user": "",
+                "tries": 1
+            },
+            "107": {
+                "time": 1741424916,
+                "user": "",
+                "tries": 2
+            },
+            "114": {
+                "time": 1741425332,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741427159,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741427432,
+                "user": "",
+                "tries": 1
+            },
+            "104": {
+                "time": 1741431377,
+                "user": "",
+                "tries": 1
+            },
+            "103": {
+                "time": 1741433523,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741434539,
+                "user": "",
+                "tries": 1
+            },
+            "123": {
+                "time": 1741435079,
+                "user": "",
+                "tries": 1
+            },
+            "101": {
+                "time": 1741437381,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741438321,
+                "user": "",
+                "tries": 1
+            },
+            "110": {
+                "time": 1741440098,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741443181,
+                "user": "",
+                "tries": 1
+            },
+            "109": {
+                "time": 1741450206,
+                "user": "",
+                "tries": 1
+            },
+            "124": {
+                "time": 1741450411,
+                "user": "",
+                "tries": 1
+            },
+            "119": {
+                "time": 1741451579,
+                "user": "",
+                "tries": 1
+            },
+            "120": {
+                "time": 1741459459,
+                "user": "",
+                "tries": 1
+            },
+            "121": {
+                "time": 1741464463,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 193,
+                "school": "NTI Gymnasiet Helsingborg",
+                "grade": 2
+            },
+            {
+                "team_id": 193,
+                "school": "H\u00f6gakusten Teoretiska Gymnasium",
+                "grade": 3
+            },
+            {
+                "team_id": 193
+            }
+        ]
+    },
+    {
+        "name": "bankar b\u00e5t f\u00f6r biffar",
+        "id": 200,
+        "eligibility_class": "Eligible",
+        "score": 4350,
+        "solves": {
+            "114": {
+                "time": 1741424950,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741427736,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741428995,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741429828,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741431952,
+                "user": "",
+                "tries": 1
+            },
+            "107": {
+                "time": 1741433514,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741433563,
+                "user": "",
+                "tries": 3
+            },
+            "110": {
+                "time": 1741436233,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741442956,
+                "user": "",
+                "tries": 1
+            },
+            "109": {
+                "time": 1741451961,
+                "user": "",
+                "tries": 1
+            },
+            "115": {
+                "time": 1741460051,
+                "user": "",
+                "tries": 2
+            },
+            "103": {
+                "time": 1741462068,
+                "user": "",
+                "tries": 1
+            },
+            "117": {
+                "time": 1741465297,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 200,
+                "school": "Kungsholmens Gymnasium",
+                "grade": 1
+            },
+            {
+                "team_id": 200
+            },
+            {
+                "team_id": 200
+            }
+        ]
+    },
+    {
+        "name": "3LostBraincells",
+        "id": 191,
+        "eligibility_class": "Eligible",
+        "score": 4260,
+        "solves": {
+            "114": {
+                "time": 1741424005,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741424676,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741426048,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741426342,
+                "user": "",
+                "tries": 1
+            },
+            "123": {
+                "time": 1741435860,
+                "user": "",
+                "tries": 1
+            },
+            "110": {
+                "time": 1741436566,
+                "user": "",
+                "tries": 1
+            },
+            "103": {
+                "time": 1741443754,
+                "user": "",
+                "tries": 1
+            },
+            "119": {
+                "time": 1741449440,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741450178,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741453930,
+                "user": "",
+                "tries": 1
+            },
+            "118": {
+                "time": 1741458460,
+                "user": "",
+                "tries": 1
+            },
+            "109": {
+                "time": 1741467094,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741468159,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 191,
+                "school": "Minervagymnasium",
+                "grade": 3
+            },
+            {
+                "team_id": 191,
+                "school": "NTI-Gymnasiet Helsingborg",
+                "grade": 2
+            },
+            {
+                "team_id": 191
+            }
+        ]
+    },
+    {
+        "name": "#1 on the scorbor",
+        "id": 198,
+        "eligibility_class": "Eligible",
+        "score": 3910,
+        "solves": {
+            "111": {
+                "time": 1741428550,
+                "user": ".db",
+                "tries": 2
+            },
+            "102": {
+                "time": 1741431016,
+                "user": ".db",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741436453,
+                "user": "",
+                "tries": 2
+            },
+            "116": {
+                "time": 1741442755,
+                "user": "",
+                "tries": 1
+            },
+            "121": {
+                "time": 1741445769,
+                "user": ".db",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741445871,
+                "user": "",
+                "tries": 1
+            },
+            "104": {
+                "time": 1741450259,
+                "user": ".db",
+                "tries": 1
+            },
+            "119": {
+                "time": 1741452129,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741454905,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741457517,
+                "user": "",
+                "tries": 1
+            },
+            "123": {
+                "time": 1741462006,
+                "user": ".db",
+                "tries": 2
+            },
+            "103": {
+                "time": 1741463688,
+                "user": ".db",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 198,
+                "school": "Franklins gymnasium",
+                "grade": 3
+            },
+            {
+                "team_id": 198,
+                "school": "Franklins Gymnasium",
+                "grade": 3
+            },
+            {
+                "team_id": 198,
+                "school": "Franklins gymnasium",
+                "grade": 3
+            }
+        ]
+    },
+    {
+        "name": "kn\u00e4ckebr\u00f6derna",
+        "id": 192,
+        "eligibility_class": "Eligible",
+        "score": 3890,
+        "solves": {
+            "114": {
+                "time": 1741424158,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741426474,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741427456,
+                "user": "",
+                "tries": 2
+            },
+            "111": {
+                "time": 1741432069,
+                "user": "",
+                "tries": 1
+            },
+            "123": {
+                "time": 1741434480,
+                "user": "",
+                "tries": 1
+            },
+            "107": {
+                "time": 1741435862,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741443391,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741444163,
+                "user": "",
+                "tries": 1
+            },
+            "110": {
+                "time": 1741445934,
+                "user": "",
+                "tries": 1
+            },
+            "119": {
+                "time": 1741453171,
+                "user": "",
+                "tries": 5
+            },
+            "113": {
+                "time": 1741465055,
+                "user": "",
+                "tries": 2
+            },
+            "106": {
+                "time": 1741465181,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 192,
+                "school": "Curt Nicolin Gymnasiet",
+                "grade": 2
+            },
+            {
+                "team_id": 192,
+                "school": "S\u00f6derv\u00e4rn skolan",
+                "grade": 9
+            },
+            {
+                "team_id": 192,
+                "school": "Jensen Gymnasium Norra",
+                "grade": 2
+            }
+        ]
+    },
+    {
+        "name": "F\u00f6rvirrade Samskoliter",
+        "id": 295,
+        "eligibility_class": "Eligible",
+        "score": 2920,
+        "solves": {
+            "125": {
+                "time": 1741459674,
+                "user": "",
+                "tries": 3
+            },
+            "103": {
+                "time": 1741451537,
+                "user": "",
+                "tries": 1
+            },
+            "119": {
+                "time": 1741445106,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741436096,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741435606,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741423787,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741466848,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741465937,
+                "user": "",
+                "tries": 1
+            },
+            "110": {
+                "time": 1741462531,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741460852,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 295,
+                "school": "G\u00f6teborgs H\u00f6gre Samskola",
+                "grade": 1
+            },
+            {
+                "team_id": 295,
+                "school": "samskolan",
+                "grade": 1
+            }
+        ]
+    },
+    {
+        "name": "Palt_0verflow",
+        "id": 183,
+        "eligibility_class": "Eligible",
+        "score": 2820,
+        "solves": {
+            "110": {
+                "time": 1741467051,
+                "user": "",
+                "tries": 2
+            },
+            "103": {
+                "time": 1741458294,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741449816,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741439776,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741428022,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741424744,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741445179,
+                "user": "",
+                "tries": 1
+            },
+            "107": {
+                "time": 1741438798,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741430281,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 183
+            },
+            {
+                "team_id": 183
+            }
+        ]
+    },
+    {
+        "name": "Fiskm\u00e5sarna",
+        "id": 288,
+        "eligibility_class": "Eligible",
+        "score": 2780,
+        "solves": {
+            "102": {
+                "time": 1741427152,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741427309,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741431048,
+                "user": "",
+                "tries": 1
+            },
+            "106": {
+                "time": 1741431415,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741437727,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741442959,
+                "user": "",
+                "tries": 2
+            },
+            "113": {
+                "time": 1741453027,
+                "user": "",
+                "tries": 1
+            },
+            "119": {
+                "time": 1741460167,
+                "user": "",
+                "tries": 4
+            },
+            "103": {
+                "time": 1741466000,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 288
+            },
+            {
+                "team_id": 288,
+                "school": "LBS G\u00f6teborg",
+                "grade": 2
+            },
+            {
+                "team_id": 288
+            }
+        ]
+    },
+    {
+        "name": "Underflow",
+        "id": 257,
+        "eligibility_class": "Eligible",
+        "score": 2620,
+        "solves": {
+            "115": {
+                "time": 1741467724,
+                "user": "",
+                "tries": 2
+            },
+            "117": {
+                "time": 1741463704,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741443089,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741438422,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741430679,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741429065,
+                "user": "",
+                "tries": 3
+            },
+            "114": {
+                "time": 1741424253,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741453389,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 257,
+                "school": "Nti Gymnasiet V\u00e4ster\u00e5s",
+                "grade": 1
+            },
+            {
+                "team_id": 257
+            },
+            {
+                "team_id": 257,
+                "school": "NTI gymnasiet V\u00e4ster\u00e5s",
+                "grade": 2
+            }
+        ]
+    },
+    {
+        "name": "V\u00e5r Herres Knektar",
+        "id": 207,
+        "eligibility_class": "Eligible",
+        "score": 2570,
+        "solves": {
+            "103": {
+                "time": 1741470128,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741444779,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741430486,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741429108,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741423883,
+                "user": "",
+                "tries": 2
+            },
+            "113": {
+                "time": 1741457634,
+                "user": "bin/sp\u00f6ke",
+                "tries": 1
+            },
+            "110": {
+                "time": 1741435827,
+                "user": "bin/sp\u00f6ke",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741433389,
+                "user": "bin/sp\u00f6ke",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741436421,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 207,
+                "school": "Hitachigymnasiet",
+                "grade": 2
+            },
+            {
+                "team_id": 207
+            },
+            {
+                "team_id": 207
+            }
+        ]
+    },
+    {
+        "name": "Gunket",
+        "id": 327,
+        "eligibility_class": "Eligible",
+        "score": 2410,
+        "solves": {
+            "115": {
+                "time": 1741468326,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741446568,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741443373,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741438067,
+                "user": "",
+                "tries": 2
+            },
+            "116": {
+                "time": 1741433167,
+                "user": "",
+                "tries": 1
+            },
+            "103": {
+                "time": 1741431660,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741426987,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741426693,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 327
+            },
+            {
+                "team_id": 327
+            },
+            {
+                "team_id": 327,
+                "school": "T\u00e4by Enskilda Gymnasium",
+                "grade": 1
+            }
+        ]
+    },
+    {
+        "name": "Os\u00e4kert",
+        "id": 286,
+        "eligibility_class": "Eligible",
+        "score": 2330,
+        "solves": {
+            "102": {
+                "time": 1741427924,
+                "user": "",
+                "tries": 2
+            },
+            "114": {
+                "time": 1741428782,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741443043,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741444862,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741448547,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741457893,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741459642,
+                "user": "",
+                "tries": 1
+            },
+            "107": {
+                "time": 1741464253,
+                "user": "",
+                "tries": 4
+            }
+        },
+        "members": [
+            {
+                "team_id": 286
+            },
+            {
+                "team_id": 286
+            },
+            {
+                "team_id": 286,
+                "school": "Klara Teoretiska S\u00f6dra",
+                "grade": 3
+            }
+        ]
+    },
+    {
+        "name": "Black Mesa",
+        "id": 233,
+        "eligibility_class": "Eligible",
+        "score": 2240,
+        "solves": {
+            "107": {
+                "time": 1741504874,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741452436,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741451469,
+                "user": "",
+                "tries": 1
+            },
+            "119": {
+                "time": 1741447914,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741451272,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741435623,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741433806,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 233,
+                "school": "Hitachigymnasiet",
+                "grade": 3
+            },
+            {
+                "team_id": 233
+            },
+            {
+                "team_id": 233
+            }
+        ]
+    },
+    {
+        "name": "Gurad3",
+        "id": 280,
+        "eligibility_class": "Eligible",
+        "score": 2060,
+        "solves": {
+            "113": {
+                "time": 1741436691,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741430657,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741429095,
+                "user": "",
+                "tries": 1
+            },
+            "123": {
+                "time": 1741426613,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741444453,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741440562,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741425426,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 280
+            },
+            {
+                "team_id": 280
+            }
+        ]
+    },
+    {
+        "name": "GTGrub",
+        "id": 287,
+        "eligibility_class": "Eligible",
+        "score": 1950,
+        "solves": {
+            "113": {
+                "time": 1741453679,
+                "user": "",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741443232,
+                "user": "",
+                "tries": 4
+            },
+            "102": {
+                "time": 1741429007,
+                "user": "",
+                "tries": 1
+            },
+            "112": {
+                "time": 1741466046,
+                "user": "",
+                "tries": 1
+            },
+            "111": {
+                "time": 1741436942,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741428142,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741425095,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 287,
+                "school": "g\u00f6teborgregionens tekniska gymnasium",
+                "grade": 3
+            },
+            {
+                "team_id": 287,
+                "school": "g\u00f6teborgsregionens tekniska gymnasiumGTG",
+                "grade": 3
+            }
+        ]
+    },
+    {
+        "name": "Hvit Hacking",
+        "id": 195,
+        "eligibility_class": "Eligible",
+        "score": 1780,
+        "solves": {
+            "102": {
+                "time": 1741424893,
+                "user": "",
+                "tries": 1
+            },
+            "113": {
+                "time": 1741427194,
+                "user": " Zhang",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741431088,
+                "user": " Zhang",
+                "tries": 1
+            },
+            "125": {
+                "time": 1741443408,
+                "user": "",
+                "tries": 6
+            },
+            "116": {
+                "time": 1741445612,
+                "user": " Zhang",
+                "tries": 2
+            },
+            "103": {
+                "time": 1741448169,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 195,
+                "school": "Hvitfeldtska gymnasiet",
+                "grade": 2
+            },
+            {
+                "team_id": 195,
+                "school": "Hvitfeldtska Gymnasiet",
+                "grade": 2
+            },
+            {
+                "team_id": 195,
+                "school": "Hvitfeldtska gymnasiet",
+                "grade": 2
+            }
+        ]
+    },
+    {
+        "name": "it's bine",
+        "id": 224,
+        "eligibility_class": "Eligible",
+        "score": 1530,
+        "solves": {
+            "102": {
+                "time": 1741462933,
+                "user": "",
+                "tries": 3
+            },
+            "125": {
+                "time": 1741445452,
+                "user": "",
+                "tries": 3
+            },
+            "111": {
+                "time": 1741434321,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741426680,
+                "user": "",
+                "tries": 1
+            },
+            "114": {
+                "time": 1741424823,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 224
+            }
+        ]
+    },
+    {
+        "name": "Morrnor",
+        "id": 247,
+        "eligibility_class": "Eligible",
+        "score": 1360,
+        "solves": {
+            "125": {
+                "time": 1741443308,
+                "user": "",
+                "tries": 1
+            },
+            "116": {
+                "time": 1741440591,
+                "user": "",
+                "tries": 4
+            },
+            "114": {
+                "time": 1741429261,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741423660,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 247,
+                "school": "H\u00e4lsingegymnasiet",
+                "grade": 2
+            }
+        ]
+    },
+    {
+        "name": "Kominter",
+        "id": 210,
+        "eligibility_class": "Eligible",
+        "score": 490,
+        "solves": {
+            "123": {
+                "time": 1741451070,
+                "user": "",
+                "tries": 1
+            },
+            "102": {
+                "time": 1741435802,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 210
+            },
+            {
+                "team_id": 210
+            },
+            {
+                "team_id": 210,
+                "school": "NTI Odenplan",
+                "grade": 1
+            }
+        ]
+    },
+    {
+        "name": "Authors",
+        "id": 341,
+        "eligibility_class": "Open",
+        "score": 480,
+        "solves": {
+            "121": {
+                "time": 1741445797,
+                "user": "",
+                "tries": 1
+            }
+        },
+        "members": [
+            {
+                "team_id": 341
+            }
+        ]
+    },
+    {
+        "name": "Lars Liam Loke",
+        "id": 343,
+        "eligibility_class": "Open",
+        "score": 150,
+        "solves": {
+            "113": {
+                "time": 1741431927,
+                "user": "",
+                "tries": 2
+            }
+        },
+        "members": [
+            {
+                "team_id": 343
+            }
+        ]
+    },
+    {
+        "name": "Toiso",
+        "id": 254,
+        "eligibility_class": "Eligible",
+        "score": 0,
+        "solves": {},
+        "members": [
+            {
+                "team_id": 254
+            }
+        ]
+    },
+    {
+        "name": "Cybercampus",
+        "id": 342,
+        "eligibility_class": "Open",
+        "score": 0,
+        "solves": {},
+        "members": [
+            {
+                "team_id": 342
+            }
+        ]
+    }
+]

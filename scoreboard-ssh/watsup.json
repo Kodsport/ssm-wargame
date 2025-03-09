@@ -1,0 +1,1272 @@
+{
+    "announcements": [
+        {
+            "title": "Blockchain instancer fix",
+            "description": "The instancer for the blockchain challs has been updated to display the correct RPC endpoint and the [ip] placeholder has been changed to [addr] to make it more clear. The handout has not been updated. Now solve blockchain on skibidi \ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11",
+            "time": 1741426439,
+            "id": 30
+        },
+        {
+            "title": "Unintended l\u00f6sning i \"webshell, not well\" patchad",
+            "description": "Challen \"webshell, not well\" hade en unintended l\u00f6sning som har blivit patchad, ifall ni har en korrekt l\u00f6sning  kan l\u00f6sa om den och submitta nya flaggan, annars f\u00e5r ni l\u00f6sa den, po\u00e4ngen blir rollbackade.",
+            "time": 1741427439,
+            "id": 31
+        },
+        {
+            "title": "Premium Cryptor fixed",
+            "description": "The Premium Cryptor service had a hosting issue which is now fixed. Nothing has been changed with the handout.",
+            "time": 1741431965,
+            "id": 32
+        },
+        {
+            "title": "Kliserhinken fixad",
+            "description": "Klisterhinken gav ett felmeddelande ibland n\u00e4r man f\u00f6rs\u00f6kte skapa en post men detta b\u00f6r nu vara \u00e5tg\u00e4rdat.",
+            "time": 1741434356,
+            "id": 33
+        },
+        {
+            "title": "GRASS TOUCHING SPEEDRUN CHALLENGE SL\u00c4PPT!!!1!!1!",
+            "description": "En ny misc-chall \u201cGrass touching speedrun\u201d har sl\u00e4ppts, den kommer ha en statisk po\u00e4ng p\u00e5 1000!!!\ud83e\udd11\ud83e\udd11\ud83e\udd11\ud83e\udd11 S\u00e5 ta med dig <b>hela</b> ditt lag och g\u00e5 p\u00e5 en rundvandring runt KTH Campus och f\u00e5 massor av fina po\u00e4ng!!!!1!\ud83d\ude0e\ud83d\ude0e\ud83d\ude0e",
+            "time": 1741440920,
+            "id": 34
+        },
+        {
+            "title": "Challenge hints info collection",
+            "description": "Vi t\u00e4nker sl\u00e4ppa hints snart och beh\u00f6ver veta hur l\u00e5ngt ni kommit p\u00e5 de ol\u00f6sta challsen. Om du tror att du gjort framsteg p\u00e5 n\u00e5gon av nedanst\u00e5ende challs, DM:a respektive problemskapare med din progress.\r\n\r\nHardware\r\nOpening the vault lockbox - @mateuszdrwal \r\nOpening the maximum security vault - @mateuszdrwal \r\n\r\nRev\r\nQRGB - @winterwolfsv \r\nV\u00e4linslagen - @blupper \r\n\r\nForensics\r\nCertifierbart s\u00e4kert - @liamooo s\u00e5 f\u00f6r jag vidare det till FRA\r\n\r\nPwn\r\nAlfred's Marketplace - @opcode86 \r\nWindows Web Defender - @opcode86 \r\n\r\nBlockchain\r\nSL - @liamooo",
+            "time": 1741445170,
+            "id": 35
+        },
+        {
+            "title": "Hint for Premium Cryptor",
+            "description": "We have released the source code for Premium Cryptor to make solving it a bit easier. Re-download the files to get it. Good luck!",
+            "time": 1741448912,
+            "id": 36
+        },
+        {
+            "title": "Bruteforcea inte \"VoiceOfNature\" tack\ud83d\ude4f",
+            "description": "Bruteforcea inte \"VoiceOfNature\", den g\u00e5r att l\u00f6sa genom maximalt n\u00e5gra f\u00e5 requests. Utmaningen kr\u00e4ver ingen skripting s\u00e5 fokusera p\u00e5 OSINT-delen ist\u00e4llet \ud83d\ude0a",
+            "time": 1741450221,
+            "id": 37
+        },
+        {
+            "title": "Hint f\u00f6r \"Opening the vault lockbox\" och \"Opening the maximum security vault\"",
+            "description": "Bit banging \u00e4r er v\u00e4n",
+            "time": 1741450503,
+            "id": 38
+        },
+        {
+            "title": "Hint f\u00f6r Alfred's Marketplace",
+            "description": "jag elskar virtuellt bord",
+            "time": 1741452800,
+            "id": 39
+        },
+        {
+            "title": "Blockchain \"SL\" Hint!!1!",
+            "description": "vuln likamed TOCTOU minus race condition",
+            "time": 1741454739,
+            "id": 40
+        },
+        {
+            "title": "Scoreboard fryst!",
+            "description": "Som p\u00e5 kvalet s\u00e5 kan ni fortfarande skicka in flaggor som r\u00e4knas till slutresultatet, men ni kommer inte kunna se flaggor som andra skickar in efter freeze.\n\nDet finns ocks\u00e5 mat att h\u00e4mta i \"baren\".",
+            "time": 1741455003,
+            "id": 41
+        },
+        {
+            "title": "Hint f\u00f6r Windows Web Defender",
+            "description": "https://apr.apache.org/docs/apr/1.6/group__apr__pools.html#ga78d1aa2d9fa842d83eaffccb0f0c0c5c\nhttps://github.com/omnigroup/Apache/blob/master/apr/tables/apr_hash.c#L106",
+            "time": 1741456902,
+            "id": 42
+        },
+        {
+            "title": "Tidigare t\u00e4vlingsslut",
+            "description": "Eftersom att vi beh\u00f6ver vara ute ur byggnaden kl 23:00 s\u00e5 kommer vi att avsluta t\u00e4vlingen 10 minuter tidigt, allts\u00e5 klockan 22:50. Se till att st\u00e4da fint och packa ihop direkt efter vi avslutar.",
+            "time": 1741464365,
+            "id": 43
+        }
+    ],
+    "challenges": [
+        {
+            "categories": [
+                "blockchain",
+                "medium"
+            ],
+            "authors": [
+                "LiamoOo"
+            ],
+            "score": null,
+            "order": 61,
+            "id": 106,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 2,
+            "eligible_solves": 2,
+            "top_solved_teams": [
+                {
+                    "id": 288,
+                    "name": "Fiskm\u00e5sarna",
+                    "time": 1741431415
+                },
+                {
+                    "id": 192,
+                    "name": "kn\u00e4ckebr\u00f6derna",
+                    "time": 1741465181
+                }
+            ],
+            "description": "Det verkar som att kebaben \u00e4r tillbaks i stan och f\u00f6rhoppningsvis har den l\u00e4rt sig fr\u00e5n sina tidigare misstag... \ud83e\udd76\ud83c\udf89\ud83e\udd73\ud83e\udd73\ud83d\udc94\ud83e\udd40\ud83d\udc94\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83d\ude08\ud83d\udc7b\ud83d\udc7b\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83d\udc87\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83d\udea8\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40\ud83e\udd40",
+            "services": [
+                {
+                    "user_display": "ncat --ssl kebabbanken-2.ctfchall.se 50000",
+                    "hyperlink": false
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/0014efab12ad00f59d84eac7800c6171745623311c9c5b7c22e44669b937608c/KebabBanken2.sol",
+                "https://storage.googleapis.com/ssm-2025/0014efab12ad00f59d84eac7800c6171745623311c9c5b7c22e44669b937608c/Setup.sol"
+            ],
+            "title": "KebabBanken 2",
+            "status": 0
+        },
+        {
+            "categories": [
+                "web",
+                "medium"
+            ],
+            "authors": [
+                "ntomsic"
+            ],
+            "score": null,
+            "order": 12,
+            "id": 112,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 10,
+            "eligible_solves": 10,
+            "top_solved_teams": [
+                {
+                    "id": 191,
+                    "name": "3LostBraincells",
+                    "time": 1741426048
+                },
+                {
+                    "id": 207,
+                    "name": "V\u00e5r Herres Knektar",
+                    "time": 1741433389
+                },
+                {
+                    "id": 200,
+                    "name": "bankar b\u00e5t f\u00f6r biffar",
+                    "time": 1741433563
+                }
+            ],
+            "description": "P\u00e5 klisterhinken kan man skriva anteckningar och dela dem med andra!",
+            "services": [
+                {
+                    "user_display": "https://klisterhinken.ctfchall.se:50000",
+                    "hyperlink": true
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/e939db5d9b1543e81bef59fbf7ebf074c1d459bee81dc1dc4ec4bf68bf534111/klisterhinken.Dockerfile",
+                "https://storage.googleapis.com/ssm-2025/e939db5d9b1543e81bef59fbf7ebf074c1d459bee81dc1dc4ec4bf68bf534111/app.py",
+                "https://storage.googleapis.com/ssm-2025/e939db5d9b1543e81bef59fbf7ebf074c1d459bee81dc1dc4ec4bf68bf534111/requirements.txt",
+                "https://storage.googleapis.com/ssm-2025/e939db5d9b1543e81bef59fbf7ebf074c1d459bee81dc1dc4ec4bf68bf534111/index.html",
+                "https://storage.googleapis.com/ssm-2025/e939db5d9b1543e81bef59fbf7ebf074c1d459bee81dc1dc4ec4bf68bf534111/note.html",
+                "https://storage.googleapis.com/ssm-2025/e939db5d9b1543e81bef59fbf7ebf074c1d459bee81dc1dc4ec4bf68bf534111/win.html"
+            ],
+            "title": "klisterhinken",
+            "status": 0
+        },
+        {
+            "categories": [
+                "reversing",
+                "medium"
+            ],
+            "authors": [
+                "Valter Wik"
+            ],
+            "score": null,
+            "order": 23,
+            "id": 118,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 1,
+            "eligible_solves": 1,
+            "top_solved_teams": [
+                {
+                    "id": 191,
+                    "name": "3LostBraincells",
+                    "time": 1741458460
+                }
+            ],
+            "description": "Jag har alltid varit s\u00e5 d\u00e5lig p\u00e5 att sl\u00e5 in paket, men med s\u00e5 h\u00e4r m\u00e5nga lager torde det v\u00e4l h\u00e5lla?",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/3ba4dff6120919976fa3533527cf5b61e8c93b4bbc319ad437e61e5839883ab6/paket"
+            ],
+            "title": "V\u00e4linslagen",
+            "status": 0
+        },
+        {
+            "categories": [
+                "pwn",
+                "enkel"
+            ],
+            "authors": [
+                "ZetaTwo"
+            ],
+            "score": null,
+            "order": 51,
+            "id": 124,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 1,
+            "eligible_solves": 1,
+            "top_solved_teams": [
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741450411
+                }
+            ],
+            "description": "A hot new encryption program has just been released. Do you want to try it out?",
+            "services": [
+                {
+                    "user_display": "ncat --ssl premium-cryptor.ctfchall.se 50000",
+                    "hyperlink": false
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/e5d1fc1b9ad8a4f2b0bd6492cc457d6bbf19325c38e9ad969f1ca94c5901af1e/chall",
+                "https://storage.googleapis.com/ssm-2025/e5d1fc1b9ad8a4f2b0bd6492cc457d6bbf19325c38e9ad969f1ca94c5901af1e/challenge.c"
+            ],
+            "title": "Premium Cryptor",
+            "status": 0
+        },
+        {
+            "categories": [
+                "pwn",
+                "sv\u00e5r"
+            ],
+            "authors": [
+                "opcode86"
+            ],
+            "score": null,
+            "order": 55,
+            "id": 100,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 0,
+            "eligible_solves": 0,
+            "top_solved_teams": [],
+            "description": "Microsoft dialed up their bros at Apache and asked for a new Antivirus product. They delievered to say the least \ud83e\udd75\ud83e\udd75. No more leaked flags. \ud83d\ude0e\ud83d\ude0e\ud83d\ude0e",
+            "services": [
+                {
+                    "user_display": "https://windows-web-defender.ctfchall.se:50000",
+                    "hyperlink": true
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/451a271ba60d24983d2aea05842e8d65f58487b49db790fa8d57519090d99439/chall.zip"
+            ],
+            "title": "Windows Web Defender",
+            "status": 0
+        },
+        {
+            "categories": [
+                "crypto",
+                "sv\u00e5r"
+            ],
+            "authors": [
+                "Leonard Jarlskog"
+            ],
+            "score": null,
+            "order": 44,
+            "id": 101,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 1,
+            "eligible_solves": 1,
+            "top_solved_teams": [
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741437381
+                }
+            ],
+            "description": "<img src=\"data:image/png;base64,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\" />",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/55c4618e393fa56fa451b1880c9d3cfe97ee38bf6b6a9b5c837b671e79bd69ee/alfreds_magic_tool.py",
+                "https://storage.googleapis.com/ssm-2025/55c4618e393fa56fa451b1880c9d3cfe97ee38bf6b6a9b5c837b671e79bd69ee/borts_secrets.txt"
+            ],
+            "title": "Spr\u00e4ngdeg",
+            "status": 0
+        },
+        {
+            "categories": [
+                "forensics",
+                "medium"
+            ],
+            "authors": [
+                "MSAB"
+            ],
+            "score": null,
+            "order": 31,
+            "id": 107,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 6,
+            "eligible_solves": 6,
+            "top_solved_teams": [
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741424916
+                },
+                {
+                    "id": 200,
+                    "name": "bankar b\u00e5t f\u00f6r biffar",
+                    "time": 1741433514
+                },
+                {
+                    "id": 192,
+                    "name": "kn\u00e4ckebr\u00f6derna",
+                    "time": 1741435862
+                }
+            ],
+            "description": "We've captured a suspected flag stealer and extracted their phone. We suspect they have hidden the stolen flag in their Whatsapp backup. Can you help us find it?\n",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/9a30e46411a6ca99734817d79415b728cb9350e1b3a964ad2efd0d9f9b8810d0/phone_root.zip"
+            ],
+            "title": "MSAB - What's Up?",
+            "status": 0
+        },
+        {
+            "categories": [
+                "reversing",
+                "enkel"
+            ],
+            "authors": [
+                "ZetaTwo"
+            ],
+            "score": null,
+            "order": 21,
+            "id": 119,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 7,
+            "eligible_solves": 7,
+            "top_solved_teams": [
+                {
+                    "id": 295,
+                    "name": "F\u00f6rvirrade Samskoliter",
+                    "time": 1741445106
+                },
+                {
+                    "id": 233,
+                    "name": "Black Mesa",
+                    "time": 1741447914
+                },
+                {
+                    "id": 191,
+                    "name": "3LostBraincells",
+                    "time": 1741449440
+                }
+            ],
+            "description": "I forgot my password again but I remember that I used this other tool to check if it is correct. Can you help me recover it?",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/7722af02a0fba5fa97ff17203f970a849ea5f126f7aef35028c2d233c91a30a7/crackme2"
+            ],
+            "title": "Crackme 2",
+            "status": 0
+        },
+        {
+            "categories": [
+                "misc",
+                "speedrun",
+                "enkel"
+            ],
+            "authors": [
+                "LiamoOo",
+                "Freeranger"
+            ],
+            "score": 1000,
+            "order": 10000000,
+            "id": 125,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 18,
+            "eligible_solves": 18,
+            "top_solved_teams": [
+                {
+                    "id": 200,
+                    "name": "bankar b\u00e5t f\u00f6r biffar",
+                    "time": 1741442956
+                },
+                {
+                    "id": 288,
+                    "name": "Fiskm\u00e5sarna",
+                    "time": 1741442959
+                },
+                {
+                    "id": 286,
+                    "name": "Os\u00e4kert",
+                    "time": 1741443043
+                }
+            ],
+            "description": "G\u00e5 ut med hela laget p\u00e5 en liten rundtur p\u00e5 KTH Campus och f\u00e5 en flagga p\u00e5 k\u00f6pet! Flaggan \u00e4r uppdelad i <b>tre delar</b> som kan f\u00e5s genom att hitta och g\u00e5 till specifika platser p\u00e5 KTH Campus.\n\nFlagg-del 1:\nF\u00f6r att hitta f\u00f6rsta flagg-delen m\u00e5ste du hitta platsen d\u00e4r bilden <code>del1.jpg</code> togs, i n\u00e4rheten utbildas \u00e4ven M\u00d6P:ar. Vid denna plats kommer flagg-delen uppenbara sig!\n\nFlagg-del 2:\nKTH Campus nog st\u00f6rsta park, stor nog att rymma vilken <em>maskin</em> som helst. Mot mitten av denna plats kommer den andra flagg-delen uppenbara sig!\n\nFlagg-del 3:\nTa en bild med <b>hela laget</b> utanf\u00f6r n\u00e5gon av KTHs sektionslokaler! Allts\u00e5 om ni \u00e4r tre stycken i laget m\u00e5ste alla tre synas p\u00e5 bilden osv. Bilden ska inneh\u00e5lla <b>tydliga tecken</b> som visar att ni \u00e4r utanf\u00f6r den specifika sektionslokalen. DM:a bilden p\u00e5 discord till @liamooo eller annan organisat\u00f6r och skriv \u00e4ven vilken sektion lokalen tillh\u00f6r, f\u00f6r att f\u00e5 den tredje flagg-delen.",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/627447f4a12b7ed8835e735e8eb59f7360c952228735aef3c562a76ccc93606b/del1.jpg"
+            ],
+            "title": "Grass touching speedrun (KTH edition)",
+            "status": 0
+        },
+        {
+            "categories": [
+                "misc",
+                "osint",
+                "medium"
+            ],
+            "authors": [
+                "AndreasLonn"
+            ],
+            "score": null,
+            "order": 72,
+            "id": 113,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 17,
+            "eligible_solves": 16,
+            "top_solved_teams": [
+                {
+                    "id": 195,
+                    "name": "Hvit Hacking",
+                    "time": 1741427194
+                },
+                {
+                    "id": 200,
+                    "name": "bankar b\u00e5t f\u00f6r biffar",
+                    "time": 1741429828
+                },
+                {
+                    "id": 343,
+                    "name": "Lars Liam Loke",
+                    "time": 1741431927
+                }
+            ],
+            "description": "I just found a website <a href=\"https://voiceofnature.github.io\">https://voiceofnature.github.io</a> and I would like to know who that person is. Perhaps I can use the new search engine MrStalker?",
+            "services": [
+                {
+                    "user_display": "https://voiceofnature.ctfchall.se:50000",
+                    "hyperlink": true
+                }
+            ],
+            "file_urls": [],
+            "title": "VoiceOfNature",
+            "status": 0
+        },
+        {
+            "categories": [
+                "forensics",
+                "sv\u00e5r"
+            ],
+            "authors": [
+                "F\u00f6rsvarets Radioanstalt"
+            ],
+            "score": null,
+            "order": 32,
+            "id": 108,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 0,
+            "eligible_solves": 0,
+            "top_solved_teams": [],
+            "description": "OMG, en sjukt sus hotakt\u00f6r har f\u00f6rs\u00f6kt hacka svenska myndigheter \ud83d\ude31\ud83c\uddf8\ud83c\uddea. De k\u00f6r tydligen en admin-konsol som snackar via TLS \ud83d\udd12\ud83e\udd2f. Vi hittade dessutom en Docker-container \ud83d\udc33 som verkar ha anv\u00e4nts f\u00f6r att mecka fram TLS-certet. S\u00e5 shady! \u26a0\ufe0f\ud83d\udc40 \n",
+            "services": [
+                {
+                    "user_display": "ncat --ssl certifierbart-sakert.ctfchall.se 50000",
+                    "hyperlink": false
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/3c5a51d7e39c7fb49b020825e37405b22b5862e2a982421b3a56e7453b6ec777/container.tar.gz",
+                "https://storage.googleapis.com/ssm-2025/3c5a51d7e39c7fb49b020825e37405b22b5862e2a982421b3a56e7453b6ec777/client.go"
+            ],
+            "title": "Certifierbart s\u00e4kert\ud83d\udda8\ufe0f\u274c \ud83e\udde2",
+            "status": 0
+        },
+        {
+            "categories": [
+                "reversing",
+                "medium"
+            ],
+            "authors": [
+                "Theo"
+            ],
+            "score": null,
+            "order": 22,
+            "id": 120,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 1,
+            "eligible_solves": 1,
+            "top_solved_teams": [
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741459459
+                }
+            ],
+            "description": "Svensk tv fattade det redan 1967.",
+            "services": [
+                {
+                    "user_display": "https://qrgb.ctfchall.se:50000",
+                    "hyperlink": true
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/77e4c31e98e97e3313ba93b599c0c14f962f5212fa746e5330fc24a2d02b2b9d/flag.png"
+            ],
+            "title": "QRGB",
+            "status": 0
+        },
+        {
+            "categories": [
+                "crypto",
+                "enkel"
+            ],
+            "authors": [
+                "Leonard Jarlskog"
+            ],
+            "score": null,
+            "order": 41,
+            "id": 102,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 19,
+            "eligible_solves": 19,
+            "top_solved_teams": [
+                {
+                    "id": 247,
+                    "name": "Morrnor",
+                    "time": 1741423660
+                },
+                {
+                    "id": 295,
+                    "name": "F\u00f6rvirrade Samskoliter",
+                    "time": 1741423787
+                },
+                {
+                    "id": 207,
+                    "name": "V\u00e5r Herres Knektar",
+                    "time": 1741423883
+                }
+            ],
+            "description": "treAf ym epovuirs dseitras hwit lxgFrao, I eedanlr ot ypoeplrr mcabersl my glsaf. SRA si oytamerrp, but ym agfl si elnaert!",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/04544dd8d44d879f6403ebb1bb5eeafd2afdb6a3189ae7978d5efff03331a373/main.py",
+                "https://storage.googleapis.com/ssm-2025/04544dd8d44d879f6403ebb1bb5eeafd2afdb6a3189ae7978d5efff03331a373/output.txt"
+            ],
+            "title": "clmrebaS nad rBambel",
+            "status": 0
+        },
+        {
+            "categories": [
+                "hardware",
+                "enkel"
+            ],
+            "authors": [
+                "Mateusz Drwal"
+            ],
+            "score": null,
+            "order": 1,
+            "id": 114,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 18,
+            "eligible_solves": 18,
+            "top_solved_teams": [
+                {
+                    "id": 191,
+                    "name": "3LostBraincells",
+                    "time": 1741424005
+                },
+                {
+                    "id": 192,
+                    "name": "kn\u00e4ckebr\u00f6derna",
+                    "time": 1741424158
+                },
+                {
+                    "id": 257,
+                    "name": "Underflow",
+                    "time": 1741424253
+                }
+            ],
+            "description": "You notice a building in the distance. Perhaps it could be something interesting.\n\nWelcome to the 2025 hardware challenge! You should have or will shortly receive the challenge from an admin. This year, there is a <a href=\"https://www.raspberrypi.com/products/raspberry-pi-pico/\">Raspberry Pi Pico</a> mounted on the board which you will program and use to communicate with the challenge.\n\nYour pico is pre-flashed with <a href=\"https://micropython.org/\">MicroPython</a>, a version of python made to run on microcontrollers. The easiest way to get started from the command line is to install <a href=\"https://docs.micropython.org/en/latest/reference/mpremote.html\">mpremote</a>. Create a <code>main.py</code> file with the following contents:\n<div style=\"background-color: #002c36;padding: 0.3rem 0.7rem;border-radius: 0.2rem;margin-bottom:0.5rem;\"><code>from machine import Pin\nimport time\n\nled = Pin(\"LED\", Pin.OUT)\n\nwhile True:\n  led.toggle()\n  time.sleep(0.5)\n</code></div>Now run <code>mpremote run main.py</code> in order to upload the code to the Pico and run it on the board. You should see a green LED on the Pico blinking. If you prefer you can also use various IDEs to work with the Pico, or upload different fimware to program in a different language. The ecosystem is very well documented with many getting started tutorials available online.\n\nFor this first part, see what the challenge has to say over serial (UART) at a 9600 baudrate. The challenge transmits data into pin 1 of the Pico after the RESET button is pressed. It is also listening to Pico pin 0. The schematic is available if needed.\n\nIf you manage to brick the challenge at some point, find Mateusz and he will reset it for you.\n\nGood luck!\n",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/2574551a98be62591fbe8709faa6d5588c29bed69404aee255b28aafa08311d7/schematic.pdf"
+            ],
+            "title": "Approaching the vault",
+            "status": 0
+        },
+        {
+            "categories": [
+                "crypto",
+                "web",
+                "medium"
+            ],
+            "authors": [
+                "Theo"
+            ],
+            "score": null,
+            "order": 43,
+            "id": 103,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 10,
+            "eligible_solves": 10,
+            "top_solved_teams": [
+                {
+                    "id": 327,
+                    "name": "Gunket",
+                    "time": 1741431660
+                },
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741433523
+                },
+                {
+                    "id": 191,
+                    "name": "3LostBraincells",
+                    "time": 1741443754
+                }
+            ],
+            "description": "We have the ultimate robot defense system for our flag. It's so secure that we don't even know its location.",
+            "services": [
+                {
+                    "user_display": "https://303-see-other.ctfchall.se:50000",
+                    "hyperlink": true
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/0df71fca37ba1bd20e430276fd11521103851b9e16382d2b670ff6da92e34812/server.py"
+            ],
+            "title": "303 See Other",
+            "status": 0
+        },
+        {
+            "categories": [
+                "web",
+                "sv\u00e5r"
+            ],
+            "authors": [
+                "LiamoOo"
+            ],
+            "score": null,
+            "order": 14,
+            "id": 109,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 3,
+            "eligible_solves": 3,
+            "top_solved_teams": [
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741450206
+                },
+                {
+                    "id": 200,
+                    "name": "bankar b\u00e5t f\u00f6r biffar",
+                    "time": 1741451961
+                },
+                {
+                    "id": 191,
+                    "name": "3LostBraincells",
+                    "time": 1741467094
+                }
+            ],
+            "description": "Your friend is in <em>desperate need</em> \u2014 he's got a <em>totally-not-illegal</em> package that <strong>must</strong> get through customs \ud83e\udd2f\ud83d\ude08!!! He's counting on you to finesse the paperwork and make it look <em>legit</em>\ud83d\ude07\ud83e\udd76!!! If you succeed, there's a <strong>special reward</strong> waiting for you \ud83e\udd73\ud83c\udf89",
+            "services": [
+                {
+                    "user_display": "https://customs-conundrum-the-package-predicamentvis-friendship.ctfchall.se:50000",
+                    "hyperlink": true
+                },
+                {
+                    "user_display": "https://customs-conundrum-the-package-predicamentvis-friendship.ctfchall.se:50001",
+                    "hyperlink": true
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/8c47208caa423d394741e4dfe828f51ad2c02312af4753111065d6a63b702a96/handout.zip"
+            ],
+            "title": "\ud83e\udd40Customs Conundrum: The Package Predicamentvis - Friendship, Favors, and Falsified Import Documents\ud83e\udd40",
+            "status": 0
+        },
+        {
+            "categories": [
+                "hardware",
+                "medium"
+            ],
+            "authors": [
+                "Mateusz Drwal"
+            ],
+            "score": null,
+            "order": 3,
+            "id": 115,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 3,
+            "eligible_solves": 3,
+            "top_solved_teams": [
+                {
+                    "id": 200,
+                    "name": "bankar b\u00e5t f\u00f6r biffar",
+                    "time": 1741460051
+                },
+                {
+                    "id": 257,
+                    "name": "Underflow",
+                    "time": 1741467724
+                },
+                {
+                    "id": 327,
+                    "name": "Gunket",
+                    "time": 1741468326
+                }
+            ],
+            "description": "Some random lockbox surely has what i need...\n\nFor this part, the SPI bus might be useful. The pin mapping to the Pico's pins is below. The schematic is also available if needed.\nSCLK: 18\nMOSI: 19\nMISO: 20\nCS: 21\n",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/565082f77d7f6bd9c33a67b529b23ad66a8522571b53e440d7bcfd5b5b2d43d5/schematic.pdf"
+            ],
+            "title": "Opening the vault lockbox",
+            "status": 0
+        },
+        {
+            "categories": [
+                "misc",
+                "pwn",
+                "medium"
+            ],
+            "authors": [
+                "Valter Mann"
+            ],
+            "score": null,
+            "order": 71,
+            "id": 121,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 3,
+            "eligible_solves": 2,
+            "top_solved_teams": [
+                {
+                    "id": 198,
+                    "name": "#1 on the scorbor",
+                    "time": 1741445769
+                },
+                {
+                    "id": 341,
+                    "name": "Authors",
+                    "time": 1741445797
+                },
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741464463
+                }
+            ],
+            "description": "i love chatting with gcc \ud83d\udc9e\ud83d\udc9e\ud83d\udc9e\ud83d\udc9e (NOTE flag is in /flag.txt) good luck \ud83e\udd11",
+            "services": [
+                {
+                    "user_display": "ncat --ssl chatgcc.ctfchall.se 50000",
+                    "hyperlink": false
+                }
+            ],
+            "file_urls": [],
+            "title": "ChatGCC",
+            "status": 0
+        },
+        {
+            "categories": [
+                "web",
+                "sv\u00e5r"
+            ],
+            "authors": [
+                "Movitz Sunar"
+            ],
+            "score": null,
+            "order": 13,
+            "id": 110,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 7,
+            "eligible_solves": 7,
+            "top_solved_teams": [
+                {
+                    "id": 207,
+                    "name": "V\u00e5r Herres Knektar",
+                    "time": 1741435827
+                },
+                {
+                    "id": 200,
+                    "name": "bankar b\u00e5t f\u00f6r biffar",
+                    "time": 1741436233
+                },
+                {
+                    "id": 191,
+                    "name": "3LostBraincells",
+                    "time": 1741436566
+                }
+            ],
+            "description": "Att skicka vykort g\u00f6rs enklare med v\u00e5ra trevliga mallar. Flaggan ligger i /flag.txt :)",
+            "services": [
+                {
+                    "user_display": "https://vykortinjektion.ctfchall.se:50000",
+                    "hyperlink": true
+                }
+            ],
+            "file_urls": [],
+            "title": "Vykort-injektion",
+            "status": 0
+        },
+        {
+            "categories": [
+                "hardware",
+                "enkel"
+            ],
+            "authors": [
+                "Mateusz Drwal"
+            ],
+            "score": null,
+            "order": 2,
+            "id": 116,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 17,
+            "eligible_solves": 17,
+            "top_solved_teams": [
+                {
+                    "id": 191,
+                    "name": "3LostBraincells",
+                    "time": 1741424676
+                },
+                {
+                    "id": 224,
+                    "name": "it's bine",
+                    "time": 1741426680
+                },
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741427159
+                }
+            ],
+            "description": "The receptionist hates robots. You are not a robot, right?\n\nFor this part, communicate with the challenge over serial (UART) at a 9600 baudrate. The challenge is transmits data into pin 1 of the Pico after the RESET button is pressed. It is also listening to Pico pin 0. The schematic is available if needed.\n",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/585aea9cd75e4f44a6bfd956b3daa27077a65f339927fb0c9c46c48b03a93e05/schematic.pdf"
+            ],
+            "title": "The vault receptionist",
+            "status": 0
+        },
+        {
+            "categories": [
+                "crypto",
+                "medium"
+            ],
+            "authors": [
+                "Leonard Jarlskog"
+            ],
+            "score": null,
+            "order": 42,
+            "id": 104,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 2,
+            "eligible_solves": 2,
+            "top_solved_teams": [
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741431377
+                },
+                {
+                    "id": 198,
+                    "name": "#1 on the scorbor",
+                    "time": 1741450259
+                }
+            ],
+            "description": "you say, pointing towards the shelf in front of you.\nThe man in front of you smiles and turns around, but as his eyes trace where you were pointing his expression changes.\n\n\"Ah yes, you may have this fish,\" he replies, taking the fish next to the one you pointed at.\n\n\"I want that fish.\" you respond, still pointing at the fish.\n\n\"Oh sorry, this fish?\" the man grabs another fish next to the you pointed at.\n\n\"I want <i>that</i> fish!\" you point aggressively.\n\n\"I'm not giving you that fish. Pick another.\" the man continues, starting to get somewhat annoyed.\n\n\"But I <i>need</i> the flagfish!\" you almost yell at the man.\n\n\"You may <i>not</i> have that fish, understand!?\" the man also raises his voice, seemingly taken aback by the fact that you know the name of the fish.\n\n\"I <i>need that</i> fish!\" you continue.\n\nYou and the man stare at each other for several seconds, not breaking eye contact.\n\nEventually the man yields.\n\n\"You know what? I'll give you the flagfish on one condition.\" the man begins.\n\nYou look at him expectantly.\n\n\"The apple merchant over there has a magical transmutation apparatus. I will put the fish into the apparatus, and if you can reverse the magic it will be yours, free of charge. It's a fair deal.\"\n\nYou nod vigorously. All for the fish!\n\nLeft unspoken \u2014 and not on your mind, full as it is of the flagfish \u2014 is the fact that the man will keep watch, and finding out how to reverse the apple merchant's transmutations might just be worth the price of a flagfish.\n\nThe man sighs. You watch him \u2014 carefully scrutinizing his every move \u2014 as he picks up the flagfish and walks over to the transmutation apparatus.\n\nSuddenly you start to feel a headache brewing as you witness the man put the fish into the endlessly complicated apparatus...",
+            "services": [
+                {
+                    "user_display": "ncat --ssl i-want-that-fish.ctfchall.se 50000",
+                    "hyperlink": false
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/4b702dbba6639e32d63a7ec3333e772d91e71ec9fa58e4c5a0acdcf364a3609a/apparatus.py"
+            ],
+            "title": "\"I want that fish\"",
+            "status": 0
+        },
+        {
+            "categories": [
+                "pwn",
+                "sv\u00e5r"
+            ],
+            "authors": [
+                "opcode86"
+            ],
+            "score": null,
+            "order": 54,
+            "id": 122,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 0,
+            "eligible_solves": 0,
+            "top_solved_teams": [],
+            "description": "Alfred's good friend, Kevin, was recently scammed on Tradera while trying to buy an iPhone. To ensure his friend is never scammed again, Alfred decided to create his own super-secure marketplace.",
+            "services": [
+                {
+                    "user_display": "ncat --ssl alfreds-marketplace.ctfchall.se 50000",
+                    "hyperlink": false
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/c7ceaee9119b10931308eab2005c15623fcdc9af3f1c4ad57882a9ae02b90091/chall",
+                "https://storage.googleapis.com/ssm-2025/c7ceaee9119b10931308eab2005c15623fcdc9af3f1c4ad57882a9ae02b90091/libc.so.6",
+                "https://storage.googleapis.com/ssm-2025/c7ceaee9119b10931308eab2005c15623fcdc9af3f1c4ad57882a9ae02b90091/chall.cpp"
+            ],
+            "title": "Alfred's Marketplace",
+            "status": 0
+        },
+        {
+            "categories": [
+                "blockchain",
+                "sv\u00e5r"
+            ],
+            "authors": [
+                "LiamoOo"
+            ],
+            "score": null,
+            "order": 62,
+            "id": 105,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 0,
+            "eligible_solves": 0,
+            "top_solved_teams": [],
+            "description": "StockholmsLokaltrafik utvecklar nya s\u00e4tt f\u00f6r resen\u00e4rer att b\u00e5de k\u00f6pa biljetter och resa kollektivt. Genom att anv\u00e4nda Ethereum-blockkedjan kan StockholmsLokaltrafik skapa en decentraliserad l\u00f6sning d\u00e4r resen\u00e4rer enkelt kan k\u00f6pa och hantera sina biljetter utan att g\u00e5 via traditionella mellanled. Smart contractet kan hantera betalningar i realtid, verifiera resen\u00e4rers giltighet och till och med m\u00f6jligg\u00f6ra \u00e5terbetalningar vid exempelvis f\u00f6rseningar - allt p\u00e5 ett transparent och automatiserat s\u00e4tt. Detta kan dessutom \u00f6ppna upp f\u00f6r anv\u00e4ndning av kryptovalutor eller tokens som betalmedel, vilket g\u00f6r systemet b\u00e5de modernt och flexibelt.",
+            "services": [
+                {
+                    "user_display": "ncat --ssl sl.ctfchall.se 50000",
+                    "hyperlink": false
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/e76288cbae522870fd3a7434b0b16a00f0deb90fb0589b786d4cbf076cf2207c/SL.sol",
+                "https://storage.googleapis.com/ssm-2025/e76288cbae522870fd3a7434b0b16a00f0deb90fb0589b786d4cbf076cf2207c/Setup.sol"
+            ],
+            "title": "SL",
+            "status": 0
+        },
+        {
+            "categories": [
+                "hardware",
+                "sv\u00e5r"
+            ],
+            "authors": [
+                "Mateusz Drwal"
+            ],
+            "score": null,
+            "order": 4,
+            "id": 117,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 2,
+            "eligible_solves": 2,
+            "top_solved_teams": [
+                {
+                    "id": 257,
+                    "name": "Underflow",
+                    "time": 1741463704
+                },
+                {
+                    "id": 200,
+                    "name": "bankar b\u00e5t f\u00f6r biffar",
+                    "time": 1741465297
+                }
+            ],
+            "description": "How did you get here?\n\nFor this part, the SPI bus might be useful. The pin mapping to the Pico's pins is below. The schematic is also available if needed.\nSCLK: 18\nMOSI: 19\nMISO: 20\nCS: 21\n",
+            "services": [],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/c62a412db7665b7c1938d7868afd27d0fade5c33b42bcc7408880c387e5129d2/schematic.pdf"
+            ],
+            "title": "Opening the maximum security vault",
+            "status": 0
+        },
+        {
+            "categories": [
+                "pwn",
+                "medium"
+            ],
+            "authors": [
+                "Valter Wik"
+            ],
+            "score": null,
+            "order": 53,
+            "id": 123,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 6,
+            "eligible_solves": 6,
+            "top_solved_teams": [
+                {
+                    "id": 280,
+                    "name": "Gurad3",
+                    "time": 1741426613
+                },
+                {
+                    "id": 192,
+                    "name": "kn\u00e4ckebr\u00f6derna",
+                    "time": 1741434480
+                },
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741435079
+                }
+            ],
+            "description": "Jag tog en kurs i cybers\u00e4kerhet och har nu gjort mitt andra program!",
+            "services": [
+                {
+                    "user_display": "ncat --ssl mitt-andra-program.ctfchall.se 50000",
+                    "hyperlink": false
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/3f0ff67f8fe375725056a7dcf7335e759ab923cb0dc951368fa6629940651a88/chall",
+                "https://storage.googleapis.com/ssm-2025/3f0ff67f8fe375725056a7dcf7335e759ab923cb0dc951368fa6629940651a88/libc.so.6",
+                "https://storage.googleapis.com/ssm-2025/3f0ff67f8fe375725056a7dcf7335e759ab923cb0dc951368fa6629940651a88/chall.c"
+            ],
+            "title": "Mitt andra program",
+            "status": 0
+        },
+        {
+            "categories": [
+                "web",
+                "enkel"
+            ],
+            "authors": [
+                "Movitz Sunar"
+            ],
+            "score": null,
+            "order": 11,
+            "id": 111,
+            "unlocked_by": null,
+            "unsolved_rating_count": 0,
+            "unsolved_rating_sum": 0,
+            "solved_rating_count": 0,
+            "solved_rating_sum": 0,
+            "solves": 15,
+            "eligible_solves": 15,
+            "top_solved_teams": [
+                {
+                    "id": 288,
+                    "name": "Fiskm\u00e5sarna",
+                    "time": 1741427309
+                },
+                {
+                    "id": 193,
+                    "name": "418. I'm a teapot",
+                    "time": 1741427432
+                },
+                {
+                    "id": 183,
+                    "name": "Palt_0verflow",
+                    "time": 1741428022
+                }
+            ],
+            "description": "Staketmyndigheten har f\u00e5tt en fil som heter c99.php p\u00e5 sin server, \u00e4r detta en risk f\u00f6r oss? \n N\u00e5gra verkar redan forskat p\u00e5 detta: https://labs.watchtowr.com/more-governments-backdoors-in-your-backdoors/",
+            "services": [
+                {
+                    "user_display": "https://webshell-not-well.ctfchall.se:50000",
+                    "hyperlink": true
+                }
+            ],
+            "file_urls": [
+                "https://storage.googleapis.com/ssm-2025/ab6c7fc7c787b506b84fe925c187ea39bfad0bdaf8bacc96df26f12a1e361114/c99.php"
+            ],
+            "title": "webshell, not well",
+            "status": 0
+        }
+    ],
+    "user": {
+        "username": "mosu",
+        "team_id": null,
+        "oauth_providers": [
+            "Github"
+        ],
+        "superuser": true,
+        "permissions": [
+            "core.view_rating",
+            "core.view_user",
+            "core.manage_announcements",
+            "core.change_flagsubmission",
+            "sessions.add_session",
+            "core.change_user",
+            "core.view_ip",
+            "core.change_challenge",
+            "contenttypes.change_contenttype",
+            "core.add_rating",
+            "contenttypes.view_contenttype",
+            "contenttypes.add_contenttype",
+            "core.delete_service",
+            "core.view_oauthlogin",
+            "auth.delete_permission",
+            "core.delete_config",
+            "core.change_oauthlogin",
+            "core.add_flagsubmission",
+            "auth.change_group",
+            "core.add_flag",
+            "auth.add_group",
+            "contenttypes.delete_contenttype",
+            "core.view_service",
+            "core.add_user",
+            "core.add_service",
+            "core.delete_rating",
+            "core.add_oauthprovider",
+            "auth.view_permission",
+            "auth.delete_group",
+            "core.add_challenge",
+            "core.change_rating",
+            "sessions.delete_session",
+            "core.delete_flag",
+            "core.change_oauthprovider",
+            "admin.add_logentry",
+            "core.add_team",
+            "core.change_team",
+            "core.change_config",
+            "core.delete_ip",
+            "auth.add_permission",
+            "core.delete_challenge",
+            "admin.change_logentry",
+            "core.delete_user",
+            "core.change_service",
+            "core.delete_team",
+            "core.delete_announcement",
+            "core.add_announcement",
+            "core.change_announcement",
+            "core.delete_oauthlogin",
+            "sessions.view_session",
+            "core.view_announcement",
+            "core.force_unfrozen_scoreboard",
+            "core.add_config",
+            "sessions.change_session",
+            "core.add_ip",
+            "core.push_challenge",
+            "auth.change_permission",
+            "core.change_flag",
+            "core.add_oauthlogin",
+            "core.delete_flagsubmission",
+            "core.change_ip",
+            "core.view_config",
+            "core.view_team",
+            "admin.delete_logentry",
+            "core.delete_oauthprovider",
+            "core.view_flag",
+            "core.view_flagsubmission",
+            "core.view_challenge",
+            "admin.view_logentry",
+            "core.view_oauthprovider",
+            "auth.view_group"
+        ]
+    },
+    "team": null,
+    "scoreboard_frozen": false,
+    "scoreboard_freeze_time": null,
+    "config_hash": "a0e487db459e1ca7d8ca052b44b86879"
+}
