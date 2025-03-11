@@ -26,5 +26,5 @@ www.sakerhetssm.se, xn--skerhetssm-q5a.se, www.xn--skerhetssm-q5a.se {
 }
 
 monthly.sakerhetssm.se {
-	https://sakerhetssm.se/monthly
+	redir https://sakerhetssm.se/monthly
 }
