@@ -59,6 +59,13 @@ type GetUserResponseBody struct {
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 }
 
+// GetUserSolvesResponseBody is the type of the "ctf" service "GetUserSolves"
+// endpoint HTTP response body.
+type GetUserSolvesResponseBody struct {
+	Username *string                     `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
+	Solves   []*CTFUserSolveResponseBody `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+}
+
 // ListChallengesResponseBody is the type of the "ctf" service "ListChallenges"
 // endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmChallengeResponse
@@ -185,6 +192,12 @@ type SubmitFlagCtfNotActiveResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// CTFUserSolveResponseBody is used to define fields on response body types.
+type CTFUserSolveResponseBody struct {
+	ChallengeID *string `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
+	SolvedAt    *string `form:"solved_at,omitempty" json:"solved_at,omitempty" xml:"solved_at,omitempty"`
+}
+
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
 	// ID of a file
@@ -244,6 +257,7 @@ type SsmSolverResponse struct {
 
 // CTFScoreResponse is used to define fields on response body types.
 type CTFScoreResponse struct {
+	ID       *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	Username *string  `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
 	Score    *int64   `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
 	Solves   []string `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
@@ -354,6 +368,20 @@ func NewGetUserInvalidPassword(body *GetUserInvalidPasswordResponseBody) *goa.Se
 		Temporary: *body.Temporary,
 		Timeout:   *body.Timeout,
 		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetUserSolvesCTFUserSolvesOK builds a "ctf" service "GetUserSolves"
+// endpoint result from a HTTP "OK" response.
+func NewGetUserSolvesCTFUserSolvesOK(body *GetUserSolvesResponseBody) *ctf.CTFUserSolves {
+	v := &ctf.CTFUserSolves{
+		Username: *body.Username,
+	}
+	v.Solves = make([]*ctf.CTFUserSolve, len(body.Solves))
+	for i, val := range body.Solves {
+		v.Solves[i] = unmarshalCTFUserSolveResponseBodyToCtfCTFUserSolve(val)
 	}
 
 	return v
@@ -498,6 +526,25 @@ func ValidateGetUserResponseBody(body *GetUserResponseBody) (err error) {
 	}
 	if body.Password == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
+	}
+	return
+}
+
+// ValidateGetUserSolvesResponseBody runs the validations defined on
+// GetUserSolvesResponseBody
+func ValidateGetUserSolvesResponseBody(body *GetUserSolvesResponseBody) (err error) {
+	if body.Username == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("username", "body"))
+	}
+	if body.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
+	}
+	for _, e := range body.Solves {
+		if e != nil {
+			if err2 := ValidateCTFUserSolveResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
 	}
 	return
 }
@@ -667,6 +714,18 @@ func ValidateSubmitFlagCtfNotActiveResponseBody(body *SubmitFlagCtfNotActiveResp
 	return
 }
 
+// ValidateCTFUserSolveResponseBody runs the validations defined on
+// CTFUserSolveResponseBody
+func ValidateCTFUserSolveResponseBody(body *CTFUserSolveResponseBody) (err error) {
+	if body.ChallengeID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "body"))
+	}
+	if body.SolvedAt == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved_at", "body"))
+	}
+	return
+}
+
 // ValidateSsmChallengeResponse runs the validations defined on
 // SsmChallengeResponse
 func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
@@ -797,6 +856,9 @@ func ValidateSsmSolverResponse(body *SsmSolverResponse) (err error) {
 
 // ValidateCTFScoreResponse runs the validations defined on CTFScoreResponse
 func ValidateCTFScoreResponse(body *CTFScoreResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
 	if body.Username == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("username", "body"))
 	}

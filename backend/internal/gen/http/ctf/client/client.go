@@ -28,6 +28,10 @@ type Client struct {
 	// endpoint.
 	GetUserDoer goahttp.Doer
 
+	// GetUserSolves Doer is the HTTP client used to make requests to the
+	// GetUserSolves endpoint.
+	GetUserSolvesDoer goahttp.Doer
+
 	// ListChallenges Doer is the HTTP client used to make requests to the
 	// ListChallenges endpoint.
 	ListChallengesDoer goahttp.Doer
@@ -63,6 +67,7 @@ func NewClient(
 		GetDoer:             doer,
 		RegisterUserDoer:    doer,
 		GetUserDoer:         doer,
+		GetUserSolvesDoer:   doer,
 		ListChallengesDoer:  doer,
 		ScoreboardDoer:      doer,
 		SubmitFlagDoer:      doer,
@@ -136,6 +141,25 @@ func (c *Client) GetUser() goa.Endpoint {
 		resp, err := c.GetUserDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("ctf", "GetUser", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// GetUserSolves returns an endpoint that makes HTTP requests to the ctf
+// service GetUserSolves server.
+func (c *Client) GetUserSolves() goa.Endpoint {
+	var (
+		decodeResponse = DecodeGetUserSolvesResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildGetUserSolvesRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.GetUserSolvesDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("ctf", "GetUserSolves", err)
 		}
 		return decodeResponse(resp)
 	}

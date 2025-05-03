@@ -26,6 +26,11 @@ func GetUserCtfPath(slug string) string {
 	return fmt.Sprintf("/ctfs/%v/user", slug)
 }
 
+// GetUserSolvesCtfPath returns the URL path to the ctf service GetUserSolves HTTP endpoint.
+func GetUserSolvesCtfPath(slug string, id string) string {
+	return fmt.Sprintf("/ctfs/%v/user/%v/solves", slug, id)
+}
+
 // ListChallengesCtfPath returns the URL path to the ctf service ListChallenges HTTP endpoint.
 func ListChallengesCtfPath(slug string) string {
 	return fmt.Sprintf("/ctfs/%v/challenges", slug)

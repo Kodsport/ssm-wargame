@@ -421,7 +421,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 	{
 		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"custom\": {\n         \"chall_namespace\": \"Nihil quia ipsa eos fuga.\",\n         \"publish\": false,\n         \"publish_at\": \"Nisi non consequuntur unde exercitationem laudantium adipisci.\",\n         \"slug\": \"Voluptatem veritatis voluptas nostrum.\"\n      },\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"Fugit doloremque earum non cumque.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"custom\": {\n         \"chall_namespace\": \"Aut fugit magni recusandae impedit.\",\n         \"publish\": true,\n         \"publish_at\": \"Ut quas aliquam sit sint ut.\",\n         \"slug\": \"Aspernatur reprehenderit reprehenderit.\"\n      },\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"Est sunt rerum provident.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 
@@ -551,7 +551,7 @@ func BuildCreateCTFEventImportTokenPayload(adminCreateCTFEventImportTokenBody st
 	{
 		err = json.Unmarshal([]byte(adminCreateCTFEventImportTokenBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"expires_in\": \"week\",\n      \"name\": \"e3bb4dc5-9479-42ce-aed3-b41e8139fccb\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"expires_in\": \"year\",\n      \"name\": \"e3bb4dc5-9479-42ce-aed3-b41e8139fccb\"\n   }'")
 		}
 		if !(body.ExpiresIn == "hour" || body.ExpiresIn == "week" || body.ExpiresIn == "year") {
 			err = goa.MergeErrors(err, goa.InvalidEnumValueError("body.expires_in", body.ExpiresIn, []interface{}{"hour", "week", "year"}))
@@ -672,7 +672,7 @@ func BuildCreateCTFPayload(adminCreateCTFBody string, adminCreateCTFToken string
 	{
 		err = json.Unmarshal([]byte(adminCreateCTFBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Sunt rerum provident dolorum dolorum ut.\",\n         \"Aliquam sit sint ut omnis aspernatur reprehenderit.\"\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 5010374527257424173,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 4632396498776312880\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Suscipit aut id impedit rerum quae reiciendis.\",\n         \"Et consectetur voluptatem debitis aspernatur.\"\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 1176461308145378113,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 847986025727651164\n   }'")
 		}
 		if body.ChallengeIds == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
@@ -713,7 +713,7 @@ func BuildUpdateCTFPayload(adminUpdateCTFBody string, adminUpdateCTFID string, a
 	{
 		err = json.Unmarshal([]byte(adminUpdateCTFBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Minus necessitatibus libero perspiciatis harum.\",\n         \"Aut repellat assumenda et voluptatem molestias facere.\"\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 5958330127633505646,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 4609820159884949380\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Sed impedit necessitatibus totam rerum ut beatae.\",\n         \"Quam et blanditiis nesciunt labore unde.\",\n         \"Sit eaque voluptatem.\"\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 5471689306976668311,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 3425551218013837558\n   }'")
 		}
 		if body.ChallengeIds == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
@@ -801,7 +801,7 @@ func BuildCreateChallengeGroupPayload(adminCreateChallengeGroupBody string, admi
 	{
 		err = json.Unmarshal([]byte(adminCreateChallengeGroupBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"In vel sit quam at qui.\",\n         \"Pariatur voluptatem.\"\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Possimus deserunt sunt ut autem.\",\n         \"Consequuntur asperiores enim sed esse autem.\",\n         \"Impedit inventore.\",\n         \"Voluptatum eius temporibus est ut culpa.\"\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
 		}
 		if body.ChallengeIds == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
@@ -837,7 +837,7 @@ func BuildUpdateChallengeGroupPayload(adminUpdateChallengeGroupBody string, admi
 	{
 		err = json.Unmarshal([]byte(adminUpdateChallengeGroupBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Omnis eius aperiam saepe.\",\n         \"Itaque commodi.\",\n         \"Quidem repellat.\"\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Optio aut reiciendis aliquid.\",\n         \"Vel ut.\",\n         \"Exercitationem corrupti ut fugit distinctio.\",\n         \"Voluptas voluptatem natus aut.\"\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
 		}
 		if body.ChallengeIds == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
@@ -961,7 +961,7 @@ func BuildUpdateCTFUserPayload(adminUpdateCTFUserBody string, adminUpdateCTFUser
 	{
 		err = json.Unmarshal([]byte(adminUpdateCTFUserBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"username\": \"Vel dolor.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"username\": \"Mollitia earum.\"\n   }'")
 		}
 	}
 	var ctfID string

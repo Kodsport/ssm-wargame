@@ -194,6 +194,36 @@ func EncodeGetUserError(encoder func(context.Context, http.ResponseWriter) goaht
 	}
 }
 
+// EncodeGetUserSolvesResponse returns an encoder for responses returned by the
+// ctf GetUserSolves endpoint.
+func EncodeGetUserSolvesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.(*ctf.CTFUserSolves)
+		enc := encoder(ctx, w)
+		body := NewGetUserSolvesResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeGetUserSolvesRequest returns a decoder for requests sent to the ctf
+// GetUserSolves endpoint.
+func DecodeGetUserSolvesRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			slug string
+			id   string
+
+			params = mux.Vars(r)
+		)
+		slug = params["slug"]
+		id = params["id"]
+		payload := NewGetUserSolvesPayload(slug, id)
+
+		return payload, nil
+	}
+}
+
 // EncodeListChallengesResponse returns an encoder for responses returned by
 // the ctf ListChallenges endpoint.
 func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -351,6 +381,17 @@ func EncodeSubmitFlagError(encoder func(context.Context, http.ResponseWriter) go
 	}
 }
 
+// marshalCtfCTFUserSolveToCTFUserSolveResponseBody builds a value of type
+// *CTFUserSolveResponseBody from a value of type *ctf.CTFUserSolve.
+func marshalCtfCTFUserSolveToCTFUserSolveResponseBody(v *ctf.CTFUserSolve) *CTFUserSolveResponseBody {
+	res := &CTFUserSolveResponseBody{
+		ChallengeID: v.ChallengeID,
+		SolvedAt:    v.SolvedAt,
+	}
+
+	return res
+}
+
 // marshalCtfviewsSsmChallengeViewToSsmChallengeResponse builds a value of type
 // *SsmChallengeResponse from a value of type *ctfviews.SsmChallengeView.
 func marshalCtfviewsSsmChallengeViewToSsmChallengeResponse(v *ctfviews.SsmChallengeView) *SsmChallengeResponse {
@@ -462,6 +503,7 @@ func marshalCtfviewsSsmSolverViewToSsmSolverResponse(v *ctfviews.SsmSolverView) 
 // *CTFScoreResponse from a value of type *ctf.CTFScore.
 func marshalCtfCTFScoreToCTFScoreResponse(v *ctf.CTFScore) *CTFScoreResponse {
 	res := &CTFScoreResponse{
+		ID:       v.ID,
 		Username: v.Username,
 		Score:    v.Score,
 	}

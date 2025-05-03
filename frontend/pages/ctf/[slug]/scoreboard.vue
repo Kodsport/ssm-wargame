@@ -21,6 +21,7 @@
             'scoreboard-bronze': i === 2,
             'scoreboard-user': auth.ctfUser.username === row.username && i > 2,
           }"
+          @click="$router.push(`/ctf/${route.params.slug}/user/${row.id}`)"
         >
           <td class="fw-bold">{{ i + 1 }}</td>
           <td>{{ row.username }}</td>
@@ -49,6 +50,9 @@ const auth = useAuthStore();
 </script>
 
 <style scoped>
+tbody > tr {
+  cursor: pointer;
+}
 .scoreboard-table {
   font-size: 1.1rem;
   border-radius: 12px 12px 0 0;

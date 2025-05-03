@@ -57,7 +57,20 @@ var _ = Service("ctf", func() {
 			Response("invalid_password", StatusUnauthorized)
 		})
 	})
-
+	Method("GetUserSolves", func() {
+		Description("Get a user's solves for a ctf.")
+		Payload(func() {
+			Attribute("slug", String)
+			Attribute("id", String)
+			Required("slug", "id")
+		})
+		Result(CTFUserSolves)
+		HTTP(func() {
+			GET("/{slug}/user/{id}/solves")
+			Param("id")
+			Response(StatusOK)
+		})
+	})
 	Method("ListChallenges", func() {
 		Description("List challenges for a ctf.")
 		Payload(func() {

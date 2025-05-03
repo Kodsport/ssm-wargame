@@ -18,6 +18,7 @@ type Endpoints struct {
 	Get            goa.Endpoint
 	RegisterUser   goa.Endpoint
 	GetUser        goa.Endpoint
+	GetUserSolves  goa.Endpoint
 	ListChallenges goa.Endpoint
 	Scoreboard     goa.Endpoint
 	SubmitFlag     goa.Endpoint
@@ -29,6 +30,7 @@ func NewEndpoints(s Service) *Endpoints {
 		Get:            NewGetEndpoint(s),
 		RegisterUser:   NewRegisterUserEndpoint(s),
 		GetUser:        NewGetUserEndpoint(s),
+		GetUserSolves:  NewGetUserSolvesEndpoint(s),
 		ListChallenges: NewListChallengesEndpoint(s),
 		Scoreboard:     NewScoreboardEndpoint(s),
 		SubmitFlag:     NewSubmitFlagEndpoint(s),
@@ -40,6 +42,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.Get = m(e.Get)
 	e.RegisterUser = m(e.RegisterUser)
 	e.GetUser = m(e.GetUser)
+	e.GetUserSolves = m(e.GetUserSolves)
 	e.ListChallenges = m(e.ListChallenges)
 	e.Scoreboard = m(e.Scoreboard)
 	e.SubmitFlag = m(e.SubmitFlag)
@@ -69,6 +72,15 @@ func NewGetUserEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
 		p := req.(*GetUserPayload)
 		return s.GetUser(ctx, p)
+	}
+}
+
+// NewGetUserSolvesEndpoint returns an endpoint function that calls the method
+// "GetUserSolves" of service "ctf".
+func NewGetUserSolvesEndpoint(s Service) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*GetUserSolvesPayload)
+		return s.GetUserSolves(ctx, p)
 	}
 }
 

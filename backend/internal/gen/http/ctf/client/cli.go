@@ -34,7 +34,7 @@ func BuildRegisterUserPayload(ctfRegisterUserBody string, ctfRegisterUserSlug st
 	{
 		err = json.Unmarshal([]byte(ctfRegisterUserBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"username\": \"Ut corporis magni omnis.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"username\": \"Corporis neque hic quo.\"\n   }'")
 		}
 	}
 	var slug string
@@ -63,6 +63,24 @@ func BuildGetUserPayload(ctfGetUserSlug string, ctfGetUserPassword string) (*ctf
 	v := &ctf.GetUserPayload{}
 	v.Slug = slug
 	v.Password = password
+
+	return v, nil
+}
+
+// BuildGetUserSolvesPayload builds the payload for the ctf GetUserSolves
+// endpoint from CLI flags.
+func BuildGetUserSolvesPayload(ctfGetUserSolvesSlug string, ctfGetUserSolvesID string) (*ctf.GetUserSolvesPayload, error) {
+	var slug string
+	{
+		slug = ctfGetUserSolvesSlug
+	}
+	var id string
+	{
+		id = ctfGetUserSolvesID
+	}
+	v := &ctf.GetUserSolvesPayload{}
+	v.Slug = slug
+	v.ID = id
 
 	return v, nil
 }

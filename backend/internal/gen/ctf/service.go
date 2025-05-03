@@ -22,6 +22,8 @@ type Service interface {
 	RegisterUser(context.Context, *RegisterUserPayload) (res *CTFUser, err error)
 	// Get a user for a ctf.
 	GetUser(context.Context, *GetUserPayload) (res *CTFUser, err error)
+	// Get a user's solves for a ctf.
+	GetUserSolves(context.Context, *GetUserSolvesPayload) (res *CTFUserSolves, err error)
 	// List challenges for a ctf.
 	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, err error)
 	// Get scoreboard for a ctf.
@@ -38,7 +40,7 @@ const ServiceName = "ctf"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [6]string{"Get", "RegisterUser", "GetUser", "ListChallenges", "Scoreboard", "SubmitFlag"}
+var MethodNames = [7]string{"Get", "RegisterUser", "GetUser", "GetUserSolves", "ListChallenges", "Scoreboard", "SubmitFlag"}
 
 // GetPayload is the payload type of the ctf service Get method.
 type GetPayload struct {
@@ -79,6 +81,19 @@ type GetUserPayload struct {
 	Slug     string
 }
 
+// GetUserSolvesPayload is the payload type of the ctf service GetUserSolves
+// method.
+type GetUserSolvesPayload struct {
+	Slug string
+	ID   string
+}
+
+// CTFUserSolves is the result type of the ctf service GetUserSolves method.
+type CTFUserSolves struct {
+	Username string
+	Solves   []*CTFUserSolve
+}
+
 // ListChallengesPayload is the payload type of the ctf service ListChallenges
 // method.
 type ListChallengesPayload struct {
@@ -108,6 +123,11 @@ type CTFSolve struct {
 	ID          string
 	CtfID       string
 	UserID      string
+	ChallengeID string
+	SolvedAt    string
+}
+
+type CTFUserSolve struct {
 	ChallengeID string
 	SolvedAt    string
 }
@@ -166,6 +186,7 @@ type SsmSolver struct {
 }
 
 type CTFScore struct {
+	ID       string
 	Username string
 	Score    int64
 	Solves   []string

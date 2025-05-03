@@ -2,7 +2,7 @@
   <div class="container">
     <h1>{{ ctfStore?.ctf.name || "CTF" }}</h1>
     <p>{{ ctfStore?.ctf.description || "" }}</p>
-    <div class="border-primary border-bottom border-2 mb-4 mt-4"></div>
+    <div class="gradient-border mb-4 mt-4"></div>
     <client-only>
       <section v-if="!auth.ctfUser.id">
         <h2>Registrera dig</h2>
@@ -142,5 +142,9 @@ function copyPassword() {
   color: white;
   background: #0000003b;
   transition: all 0.2s ease-in-out;
+}
+.gradient-border {
+  border-bottom: 3px solid;
+  border-image: linear-gradient(to right, var(--bs-primary), #ffc869) 1;
 }
 </style>

@@ -22,6 +22,7 @@ type Server struct {
 	Get            http.Handler
 	RegisterUser   http.Handler
 	GetUser        http.Handler
+	GetUserSolves  http.Handler
 	ListChallenges http.Handler
 	Scoreboard     http.Handler
 	SubmitFlag     http.Handler
@@ -63,6 +64,7 @@ func New(
 			{"Get", "GET", "/ctfs/{slug}"},
 			{"RegisterUser", "POST", "/ctfs/{slug}/users"},
 			{"GetUser", "GET", "/ctfs/{slug}/user"},
+			{"GetUserSolves", "GET", "/ctfs/{slug}/user/{id}/solves"},
 			{"ListChallenges", "GET", "/ctfs/{slug}/challenges"},
 			{"Scoreboard", "GET", "/ctfs/{slug}/scoreboard"},
 			{"SubmitFlag", "POST", "/ctfs/{slug}/attempt"},
@@ -70,6 +72,7 @@ func New(
 		Get:            NewGetHandler(e.Get, mux, decoder, encoder, errhandler, formatter),
 		RegisterUser:   NewRegisterUserHandler(e.RegisterUser, mux, decoder, encoder, errhandler, formatter),
 		GetUser:        NewGetUserHandler(e.GetUser, mux, decoder, encoder, errhandler, formatter),
+		GetUserSolves:  NewGetUserSolvesHandler(e.GetUserSolves, mux, decoder, encoder, errhandler, formatter),
 		ListChallenges: NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		Scoreboard:     NewScoreboardHandler(e.Scoreboard, mux, decoder, encoder, errhandler, formatter),
 		SubmitFlag:     NewSubmitFlagHandler(e.SubmitFlag, mux, decoder, encoder, errhandler, formatter),
@@ -84,6 +87,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.Get = m(s.Get)
 	s.RegisterUser = m(s.RegisterUser)
 	s.GetUser = m(s.GetUser)
+	s.GetUserSolves = m(s.GetUserSolves)
 	s.ListChallenges = m(s.ListChallenges)
 	s.Scoreboard = m(s.Scoreboard)
 	s.SubmitFlag = m(s.SubmitFlag)
@@ -94,6 +98,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountGetHandler(mux, h.Get)
 	MountRegisterUserHandler(mux, h.RegisterUser)
 	MountGetUserHandler(mux, h.GetUser)
+	MountGetUserSolvesHandler(mux, h.GetUserSolves)
 	MountListChallengesHandler(mux, h.ListChallenges)
 	MountScoreboardHandler(mux, h.Scoreboard)
 	MountSubmitFlagHandler(mux, h.SubmitFlag)
@@ -230,6 +235,57 @@ func NewGetUserHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "GetUser")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "ctf")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountGetUserSolvesHandler configures the mux to serve the "ctf" service
+// "GetUserSolves" endpoint.
+func MountGetUserSolvesHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/ctfs/{slug}/user/{id}/solves", f)
+}
+
+// NewGetUserSolvesHandler creates a HTTP handler which loads the HTTP request
+// and calls the "ctf" service "GetUserSolves" endpoint.
+func NewGetUserSolvesHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeGetUserSolvesRequest(mux, decoder)
+		encodeResponse = EncodeGetUserSolvesResponse(encoder)
+		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "GetUserSolves")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "ctf")
 		payload, err := decodeRequest(r)
 		if err != nil {

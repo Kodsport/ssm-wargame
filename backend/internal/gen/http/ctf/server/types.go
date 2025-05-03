@@ -59,6 +59,13 @@ type GetUserResponseBody struct {
 	Password string `form:"password" json:"password" xml:"password"`
 }
 
+// GetUserSolvesResponseBody is the type of the "ctf" service "GetUserSolves"
+// endpoint HTTP response body.
+type GetUserSolvesResponseBody struct {
+	Username string                      `form:"username" json:"username" xml:"username"`
+	Solves   []*CTFUserSolveResponseBody `form:"solves" json:"solves" xml:"solves"`
+}
+
 // SsmChallengeResponseCollection is the type of the "ctf" service
 // "ListChallenges" endpoint HTTP response body.
 type SsmChallengeResponseCollection []*SsmChallengeResponse
@@ -185,6 +192,12 @@ type SubmitFlagCtfNotActiveResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// CTFUserSolveResponseBody is used to define fields on response body types.
+type CTFUserSolveResponseBody struct {
+	ChallengeID string `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
+	SolvedAt    string `form:"solved_at" json:"solved_at" xml:"solved_at"`
+}
+
 // SsmChallengeResponse is used to define fields on response body types.
 type SsmChallengeResponse struct {
 	// ID of a file
@@ -244,6 +257,7 @@ type SsmSolverResponse struct {
 
 // CTFScoreResponse is used to define fields on response body types.
 type CTFScoreResponse struct {
+	ID       string   `form:"id" json:"id" xml:"id"`
 	Username string   `form:"username" json:"username" xml:"username"`
 	Score    int64    `form:"score" json:"score" xml:"score"`
 	Solves   []string `form:"solves" json:"solves" xml:"solves"`
@@ -290,6 +304,21 @@ func NewGetUserResponseBody(res *ctf.CTFUser) *GetUserResponseBody {
 		CtfID:    res.CtfID,
 		Username: res.Username,
 		Password: res.Password,
+	}
+	return body
+}
+
+// NewGetUserSolvesResponseBody builds the HTTP response body from the result
+// of the "GetUserSolves" endpoint of the "ctf" service.
+func NewGetUserSolvesResponseBody(res *ctf.CTFUserSolves) *GetUserSolvesResponseBody {
+	body := &GetUserSolvesResponseBody{
+		Username: res.Username,
+	}
+	if res.Solves != nil {
+		body.Solves = make([]*CTFUserSolveResponseBody, len(res.Solves))
+		for i, val := range res.Solves {
+			body.Solves[i] = marshalCtfCTFUserSolveToCTFUserSolveResponseBody(val)
+		}
 	}
 	return body
 }
@@ -434,6 +463,15 @@ func NewGetUserPayload(slug string, password string) *ctf.GetUserPayload {
 	v := &ctf.GetUserPayload{}
 	v.Slug = slug
 	v.Password = password
+
+	return v
+}
+
+// NewGetUserSolvesPayload builds a ctf service GetUserSolves endpoint payload.
+func NewGetUserSolvesPayload(slug string, id string) *ctf.GetUserSolvesPayload {
+	v := &ctf.GetUserSolvesPayload{}
+	v.Slug = slug
+	v.ID = id
 
 	return v
 }

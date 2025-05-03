@@ -124,6 +124,35 @@ func (s *Service) GetUser(ctx context.Context, req *spec.GetUserPayload) (*spec.
 	}, nil
 }
 
+func (s *Service) GetUserSolves(ctx context.Context, req *spec.GetUserSolvesPayload) (*spec.CTFUserSolves, error) {
+	ctf, err := models.CTFS(models.CTFWhere.Slug.EQ(req.Slug)).One(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+	user, err := models.CTFUsers(models.CTFUserWhere.ID.EQ(req.ID), models.CTFUserWhere.CTFID.EQ(ctf.ID)).One(ctx, s.db)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errors.New("user not found for this ctf")
+		}
+		return nil, err
+	}
+	solves, err := models.CTFSolves(models.CTFSolfWhere.UserID.EQ(user.ID), models.CTFSolfWhere.CTFID.EQ(ctf.ID)).All(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]*spec.CTFUserSolve, len(solves))
+	for i, solve := range solves {
+		res[i] = &spec.CTFUserSolve{
+			ChallengeID: solve.ChallengeID,
+			SolvedAt:    solve.CreatedAt.Format(time.RFC3339),
+		}
+	}
+	return &spec.CTFUserSolves{
+		Username: user.Username,
+		Solves:   res,
+	}, nil
+}
+
 func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
 	ctf, err := models.CTFS(models.CTFWhere.Slug.EQ(req.Slug)).One(ctx, s.db)
 	if err != nil {
@@ -266,7 +295,7 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 	}
 
 	rows, err := s.db.QueryContext(ctx, `
-		SELECT u.username, COALESCE(SUM(COALESCE(cc.custom_score, ch.static_score)), 0) as score,
+		SELECT u.id, u.username, COALESCE(SUM(COALESCE(cc.custom_score, ch.static_score)), 0) as score,
 			MIN(s.created_at) as first_solve
 		FROM ctf_users u
 		LEFT JOIN ctf_solves s ON u.id = s.user_id AND s.ctf_id = $1
@@ -282,10 +311,11 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 	defer rows.Close()
 	var scores []*spec.CTFScore
 	for rows.Next() {
+		var userID string
 		var username string
 		var score int64
 		var firstSolve sql.NullTime
-		if err := rows.Scan(&username, &score, &firstSolve); err != nil {
+		if err := rows.Scan(&userID, &username, &score, &firstSolve); err != nil {
 			return nil, err
 		}
 		solvesRows, err := s.db.QueryContext(ctx, `
@@ -308,6 +338,7 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 		}
 		solvesRows.Close()
 		scores = append(scores, &spec.CTFScore{
+			ID:       userID,
 			Username: username,
 			Score:    score,
 			Solves:   solves,

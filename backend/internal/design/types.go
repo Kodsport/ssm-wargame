@@ -288,10 +288,11 @@ var CTFUser = Type("CTFUser", func() {
 })
 
 var CTFScore = Type("CTFScore", func() {
+	Attribute("id", String)
 	Attribute("username", String)
 	Attribute("score", Int64)
 	Attribute("solves", ArrayOf(String))
-	Required("username", "score", "solves")
+	Required("id", "username", "score", "solves")
 })
 
 var CTFSolve = Type("CTFSolve", func() {
@@ -301,6 +302,18 @@ var CTFSolve = Type("CTFSolve", func() {
 	Attribute("challenge_id", String)
 	Attribute("solved_at", String)
 	Required("id", "ctf_id", "user_id", "challenge_id", "solved_at")
+})
+
+var CTFUserSolve = Type("CTFUserSolve", func() {
+	Attribute("challenge_id", String)
+	Attribute("solved_at", String)
+	Required("challenge_id", "solved_at")
+})
+
+var CTFUserSolves = Type("CTFUserSolves", func() {
+	Attribute("username", String)
+	Attribute("solves", ArrayOf(CTFUserSolve))
+	Required("username", "solves")
 })
 
 var CTFCreate = Type("CTFCreate", func() {

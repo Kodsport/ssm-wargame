@@ -295,6 +295,73 @@ func DecodeGetUserResponse(decoder func(*http.Response) goahttp.Decoder, restore
 	}
 }
 
+// BuildGetUserSolvesRequest instantiates a HTTP request object with method and
+// path set to call the "ctf" service "GetUserSolves" endpoint
+func (c *Client) BuildGetUserSolvesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		slug string
+		id   string
+	)
+	{
+		p, ok := v.(*ctf.GetUserSolvesPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("ctf", "GetUserSolves", "*ctf.GetUserSolvesPayload", v)
+		}
+		slug = p.Slug
+		id = p.ID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetUserSolvesCtfPath(slug, id)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("ctf", "GetUserSolves", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// DecodeGetUserSolvesResponse returns a decoder for responses returned by the
+// ctf GetUserSolves endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+func DecodeGetUserSolvesResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body GetUserSolvesResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("ctf", "GetUserSolves", err)
+			}
+			err = ValidateGetUserSolvesResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("ctf", "GetUserSolves", err)
+			}
+			res := NewGetUserSolvesCTFUserSolvesOK(&body)
+			return res, nil
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("ctf", "GetUserSolves", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildListChallengesRequest instantiates a HTTP request object with method
 // and path set to call the "ctf" service "ListChallenges" endpoint
 func (c *Client) BuildListChallengesRequest(ctx context.Context, v interface{}) (*http.Request, error) {
@@ -578,6 +645,17 @@ func DecodeSubmitFlagResponse(decoder func(*http.Response) goahttp.Decoder, rest
 	}
 }
 
+// unmarshalCTFUserSolveResponseBodyToCtfCTFUserSolve builds a value of type
+// *ctf.CTFUserSolve from a value of type *CTFUserSolveResponseBody.
+func unmarshalCTFUserSolveResponseBodyToCtfCTFUserSolve(v *CTFUserSolveResponseBody) *ctf.CTFUserSolve {
+	res := &ctf.CTFUserSolve{
+		ChallengeID: *v.ChallengeID,
+		SolvedAt:    *v.SolvedAt,
+	}
+
+	return res
+}
+
 // unmarshalSsmChallengeResponseToCtfviewsSsmChallengeView builds a value of
 // type *ctfviews.SsmChallengeView from a value of type *SsmChallengeResponse.
 func unmarshalSsmChallengeResponseToCtfviewsSsmChallengeView(v *SsmChallengeResponse) *ctfviews.SsmChallengeView {
@@ -689,6 +767,7 @@ func unmarshalSsmSolverResponseToCtfviewsSsmSolverView(v *SsmSolverResponse) *ct
 // from a value of type *CTFScoreResponse.
 func unmarshalCTFScoreResponseToCtfCTFScore(v *CTFScoreResponse) *ctf.CTFScore {
 	res := &ctf.CTFScore{
+		ID:       *v.ID,
 		Username: *v.Username,
 		Score:    *v.Score,
 	}

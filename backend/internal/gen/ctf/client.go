@@ -18,17 +18,19 @@ type Client struct {
 	GetEndpoint            goa.Endpoint
 	RegisterUserEndpoint   goa.Endpoint
 	GetUserEndpoint        goa.Endpoint
+	GetUserSolvesEndpoint  goa.Endpoint
 	ListChallengesEndpoint goa.Endpoint
 	ScoreboardEndpoint     goa.Endpoint
 	SubmitFlagEndpoint     goa.Endpoint
 }
 
 // NewClient initializes a "ctf" service client given the endpoints.
-func NewClient(get, registerUser, getUser, listChallenges, scoreboard, submitFlag goa.Endpoint) *Client {
+func NewClient(get, registerUser, getUser, getUserSolves, listChallenges, scoreboard, submitFlag goa.Endpoint) *Client {
 	return &Client{
 		GetEndpoint:            get,
 		RegisterUserEndpoint:   registerUser,
 		GetUserEndpoint:        getUser,
+		GetUserSolvesEndpoint:  getUserSolves,
 		ListChallengesEndpoint: listChallenges,
 		ScoreboardEndpoint:     scoreboard,
 		SubmitFlagEndpoint:     submitFlag,
@@ -70,6 +72,16 @@ func (c *Client) GetUser(ctx context.Context, p *GetUserPayload) (res *CTFUser, 
 		return
 	}
 	return ires.(*CTFUser), nil
+}
+
+// GetUserSolves calls the "GetUserSolves" endpoint of the "ctf" service.
+func (c *Client) GetUserSolves(ctx context.Context, p *GetUserSolvesPayload) (res *CTFUserSolves, err error) {
+	var ires interface{}
+	ires, err = c.GetUserSolvesEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*CTFUserSolves), nil
 }
 
 // ListChallenges calls the "ListChallenges" endpoint of the "ctf" service.
