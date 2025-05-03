@@ -130,3 +130,58 @@ func CreateCourseAdminPath() string {
 func UpdateCourseAdminPath(id string) string {
 	return fmt.Sprintf("/admin/courses/%v", id)
 }
+
+// CreateCTFAdminPath returns the URL path to the admin service CreateCTF HTTP endpoint.
+func CreateCTFAdminPath() string {
+	return "/admin/ctfs"
+}
+
+// UpdateCTFAdminPath returns the URL path to the admin service UpdateCTF HTTP endpoint.
+func UpdateCTFAdminPath(id string) string {
+	return fmt.Sprintf("/admin/ctfs/%v", id)
+}
+
+// DeleteCTFAdminPath returns the URL path to the admin service DeleteCTF HTTP endpoint.
+func DeleteCTFAdminPath(id string) string {
+	return fmt.Sprintf("/admin/ctfs/%v", id)
+}
+
+// ListCTFsAdminPath returns the URL path to the admin service ListCTFs HTTP endpoint.
+func ListCTFsAdminPath() string {
+	return "/admin/ctfs"
+}
+
+// CreateChallengeGroupAdminPath returns the URL path to the admin service CreateChallengeGroup HTTP endpoint.
+func CreateChallengeGroupAdminPath() string {
+	return "/admin/challenge_groups"
+}
+
+// UpdateChallengeGroupAdminPath returns the URL path to the admin service UpdateChallengeGroup HTTP endpoint.
+func UpdateChallengeGroupAdminPath(id string) string {
+	return fmt.Sprintf("/admin/challenge_groups/%v", id)
+}
+
+// DeleteChallengeGroupAdminPath returns the URL path to the admin service DeleteChallengeGroup HTTP endpoint.
+func DeleteChallengeGroupAdminPath(id string) string {
+	return fmt.Sprintf("/admin/challenge_groups/%v", id)
+}
+
+// ListChallengeGroupsAdminPath returns the URL path to the admin service ListChallengeGroups HTTP endpoint.
+func ListChallengeGroupsAdminPath() string {
+	return "/admin/challenge_groups"
+}
+
+// ListCTFUsersAdminPath returns the URL path to the admin service ListCTFUsers HTTP endpoint.
+func ListCTFUsersAdminPath(ctfID string) string {
+	return fmt.Sprintf("/admin/ctfs/%v/users", ctfID)
+}
+
+// DeleteCTFUserAdminPath returns the URL path to the admin service DeleteCTFUser HTTP endpoint.
+func DeleteCTFUserAdminPath(ctfID string, userID string) string {
+	return fmt.Sprintf("/admin/ctfs/%v/users/%v", ctfID, userID)
+}
+
+// UpdateCTFUserAdminPath returns the URL path to the admin service UpdateCTFUser HTTP endpoint.
+func UpdateCTFUserAdminPath(ctfID string, userID string) string {
+	return fmt.Sprintf("/admin/ctfs/%v/users/%v", ctfID, userID)
+}

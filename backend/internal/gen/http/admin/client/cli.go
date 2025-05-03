@@ -421,7 +421,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 	{
 		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"custom\": {\n         \"chall_namespace\": \"Voluptas sunt sit aut consequatur hic repellendus.\",\n         \"publish\": false,\n         \"publish_at\": \"Et distinctio accusantium.\",\n         \"slug\": \"Et libero qui laborum vel eos.\"\n      },\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"Harum ab eos tenetur itaque omnis itaque.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"custom\": {\n         \"chall_namespace\": \"Nihil quia ipsa eos fuga.\",\n         \"publish\": false,\n         \"publish_at\": \"Nisi non consequuntur unde exercitationem laudantium adipisci.\",\n         \"slug\": \"Voluptatem veritatis voluptas nostrum.\"\n      },\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"Fugit doloremque earum non cumque.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 
@@ -551,7 +551,7 @@ func BuildCreateCTFEventImportTokenPayload(adminCreateCTFEventImportTokenBody st
 	{
 		err = json.Unmarshal([]byte(adminCreateCTFEventImportTokenBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"expires_in\": \"year\",\n      \"name\": \"e3bb4dc5-9479-42ce-aed3-b41e8139fccb\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"expires_in\": \"week\",\n      \"name\": \"e3bb4dc5-9479-42ce-aed3-b41e8139fccb\"\n   }'")
 		}
 		if !(body.ExpiresIn == "hour" || body.ExpiresIn == "week" || body.ExpiresIn == "year") {
 			err = goa.MergeErrors(err, goa.InvalidEnumValueError("body.expires_in", body.ExpiresIn, []interface{}{"hour", "week", "year"}))
@@ -659,6 +659,328 @@ func BuildUpdateCoursePayload(adminUpdateCourseBody string, adminUpdateCourseID 
 		}
 	}
 	v.ID = id
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildCreateCTFPayload builds the payload for the admin CreateCTF endpoint
+// from CLI flags.
+func BuildCreateCTFPayload(adminCreateCTFBody string, adminCreateCTFToken string) (*admin.CreateCTFPayload, error) {
+	var err error
+	var body CreateCTFRequestBody
+	{
+		err = json.Unmarshal([]byte(adminCreateCTFBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Sunt rerum provident dolorum dolorum ut.\",\n         \"Aliquam sit sint ut omnis aspernatur reprehenderit.\"\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 5010374527257424173,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 4632396498776312880\n   }'")
+		}
+		if body.ChallengeIds == nil {
+			err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminCreateCTFToken
+	}
+	v := &admin.CreateCTFPayload{
+		Name:        body.Name,
+		Description: body.Description,
+		StartTime:   body.StartTime,
+		EndTime:     body.EndTime,
+		Slug:        body.Slug,
+		Private:     body.Private,
+		Password:    body.Password,
+	}
+	if body.ChallengeIds != nil {
+		v.ChallengeIds = make([]string, len(body.ChallengeIds))
+		for i, val := range body.ChallengeIds {
+			v.ChallengeIds[i] = val
+		}
+	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildUpdateCTFPayload builds the payload for the admin UpdateCTF endpoint
+// from CLI flags.
+func BuildUpdateCTFPayload(adminUpdateCTFBody string, adminUpdateCTFID string, adminUpdateCTFToken string) (*admin.UpdateCTFPayload, error) {
+	var err error
+	var body UpdateCTFRequestBody
+	{
+		err = json.Unmarshal([]byte(adminUpdateCTFBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Minus necessitatibus libero perspiciatis harum.\",\n         \"Aut repellat assumenda et voluptatem molestias facere.\"\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 5958330127633505646,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 4609820159884949380\n   }'")
+		}
+		if body.ChallengeIds == nil {
+			err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	var id string
+	{
+		id = adminUpdateCTFID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminUpdateCTFToken
+	}
+	v := &admin.UpdateCTFPayload{
+		Name:        body.Name,
+		Description: body.Description,
+		StartTime:   body.StartTime,
+		EndTime:     body.EndTime,
+		Slug:        body.Slug,
+		Private:     body.Private,
+		Password:    body.Password,
+	}
+	if body.ChallengeIds != nil {
+		v.ChallengeIds = make([]string, len(body.ChallengeIds))
+		for i, val := range body.ChallengeIds {
+			v.ChallengeIds[i] = val
+		}
+	}
+	v.ID = id
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteCTFPayload builds the payload for the admin DeleteCTF endpoint
+// from CLI flags.
+func BuildDeleteCTFPayload(adminDeleteCTFID string, adminDeleteCTFToken string) (*admin.DeleteCTFPayload, error) {
+	var err error
+	var id string
+	{
+		id = adminDeleteCTFID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminDeleteCTFToken
+	}
+	v := &admin.DeleteCTFPayload{}
+	v.ID = id
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListCTFsPayload builds the payload for the admin ListCTFs endpoint from
+// CLI flags.
+func BuildListCTFsPayload(adminListCTFsToken string) (*admin.ListCTFsPayload, error) {
+	var token string
+	{
+		token = adminListCTFsToken
+	}
+	v := &admin.ListCTFsPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildCreateChallengeGroupPayload builds the payload for the admin
+// CreateChallengeGroup endpoint from CLI flags.
+func BuildCreateChallengeGroupPayload(adminCreateChallengeGroupBody string, adminCreateChallengeGroupToken string) (*admin.CreateChallengeGroupPayload, error) {
+	var err error
+	var body CreateChallengeGroupRequestBody
+	{
+		err = json.Unmarshal([]byte(adminCreateChallengeGroupBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"In vel sit quam at qui.\",\n         \"Pariatur voluptatem.\"\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
+		}
+		if body.ChallengeIds == nil {
+			err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminCreateChallengeGroupToken
+	}
+	v := &admin.CreateChallengeGroupPayload{
+		Name:        body.Name,
+		Description: body.Description,
+	}
+	if body.ChallengeIds != nil {
+		v.ChallengeIds = make([]string, len(body.ChallengeIds))
+		for i, val := range body.ChallengeIds {
+			v.ChallengeIds[i] = val
+		}
+	}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildUpdateChallengeGroupPayload builds the payload for the admin
+// UpdateChallengeGroup endpoint from CLI flags.
+func BuildUpdateChallengeGroupPayload(adminUpdateChallengeGroupBody string, adminUpdateChallengeGroupID string, adminUpdateChallengeGroupToken string) (*admin.UpdateChallengeGroupPayload, error) {
+	var err error
+	var body UpdateChallengeGroupRequestBody
+	{
+		err = json.Unmarshal([]byte(adminUpdateChallengeGroupBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenge_ids\": [\n         \"Omnis eius aperiam saepe.\",\n         \"Itaque commodi.\",\n         \"Quidem repellat.\"\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
+		}
+		if body.ChallengeIds == nil {
+			err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	var id string
+	{
+		id = adminUpdateChallengeGroupID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminUpdateChallengeGroupToken
+	}
+	v := &admin.UpdateChallengeGroupPayload{
+		Name:        body.Name,
+		Description: body.Description,
+	}
+	if body.ChallengeIds != nil {
+		v.ChallengeIds = make([]string, len(body.ChallengeIds))
+		for i, val := range body.ChallengeIds {
+			v.ChallengeIds[i] = val
+		}
+	}
+	v.ID = id
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteChallengeGroupPayload builds the payload for the admin
+// DeleteChallengeGroup endpoint from CLI flags.
+func BuildDeleteChallengeGroupPayload(adminDeleteChallengeGroupID string, adminDeleteChallengeGroupToken string) (*admin.DeleteChallengeGroupPayload, error) {
+	var err error
+	var id string
+	{
+		id = adminDeleteChallengeGroupID
+		err = goa.MergeErrors(err, goa.ValidateFormat("id", id, goa.FormatUUID))
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	var token string
+	{
+		token = adminDeleteChallengeGroupToken
+	}
+	v := &admin.DeleteChallengeGroupPayload{}
+	v.ID = id
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListChallengeGroupsPayload builds the payload for the admin
+// ListChallengeGroups endpoint from CLI flags.
+func BuildListChallengeGroupsPayload(adminListChallengeGroupsToken string) (*admin.ListChallengeGroupsPayload, error) {
+	var token string
+	{
+		token = adminListChallengeGroupsToken
+	}
+	v := &admin.ListChallengeGroupsPayload{}
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListCTFUsersPayload builds the payload for the admin ListCTFUsers
+// endpoint from CLI flags.
+func BuildListCTFUsersPayload(adminListCTFUsersCtfID string, adminListCTFUsersToken string) (*admin.ListCTFUsersPayload, error) {
+	var ctfID string
+	{
+		ctfID = adminListCTFUsersCtfID
+	}
+	var token string
+	{
+		token = adminListCTFUsersToken
+	}
+	v := &admin.ListCTFUsersPayload{}
+	v.CtfID = ctfID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteCTFUserPayload builds the payload for the admin DeleteCTFUser
+// endpoint from CLI flags.
+func BuildDeleteCTFUserPayload(adminDeleteCTFUserCtfID string, adminDeleteCTFUserUserID string, adminDeleteCTFUserToken string) (*admin.DeleteCTFUserPayload, error) {
+	var ctfID string
+	{
+		ctfID = adminDeleteCTFUserCtfID
+	}
+	var userID string
+	{
+		userID = adminDeleteCTFUserUserID
+	}
+	var token string
+	{
+		token = adminDeleteCTFUserToken
+	}
+	v := &admin.DeleteCTFUserPayload{}
+	v.CtfID = ctfID
+	v.UserID = userID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildUpdateCTFUserPayload builds the payload for the admin UpdateCTFUser
+// endpoint from CLI flags.
+func BuildUpdateCTFUserPayload(adminUpdateCTFUserBody string, adminUpdateCTFUserCtfID string, adminUpdateCTFUserUserID string, adminUpdateCTFUserToken string) (*admin.UpdateCTFUserPayload, error) {
+	var err error
+	var body UpdateCTFUserRequestBody
+	{
+		err = json.Unmarshal([]byte(adminUpdateCTFUserBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"username\": \"Vel dolor.\"\n   }'")
+		}
+	}
+	var ctfID string
+	{
+		ctfID = adminUpdateCTFUserCtfID
+	}
+	var userID string
+	{
+		userID = adminUpdateCTFUserUserID
+	}
+	var token string
+	{
+		token = adminUpdateCTFUserToken
+	}
+	v := &admin.UpdateCTFUserPayload{
+		Username: body.Username,
+	}
+	v.CtfID = ctfID
+	v.UserID = userID
 	v.Token = token
 
 	return v, nil

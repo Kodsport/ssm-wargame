@@ -316,4 +316,128 @@ var _ = Service("admin", func() {
 		})
 	})
 
+	Method("CreateCTF", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(CTFCreate)
+		})
+		Result(CTF)
+		HTTP(func() {
+			POST("/ctfs")
+			Response(StatusCreated)
+		})
+	})
+	Method("UpdateCTF", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(IDArtifact)
+			Extend(CTFUpdate)
+		})
+		Result(CTF)
+		HTTP(func() {
+			PUT("/ctfs/{id}")
+			Response(StatusOK)
+		})
+	})
+	Method("DeleteCTF", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(IDArtifact)
+		})
+		HTTP(func() {
+			DELETE("/ctfs/{id}")
+			Response(StatusOK)
+		})
+	})
+	Method("ListCTFs", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+		})
+		Result(ArrayOf(CTF))
+		HTTP(func() {
+			GET("/ctfs")
+			Response(StatusOK)
+		})
+	})
+	Method("CreateChallengeGroup", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(CreateChallengeGroup)
+		})
+		Result(ChallengeGroup)
+		HTTP(func() {
+			POST("/challenge_groups")
+			Response(StatusCreated)
+		})
+	})
+	Method("UpdateChallengeGroup", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(IDArtifact)
+			Extend(UpdateChallengeGroup)
+		})
+		Result(ChallengeGroup)
+		HTTP(func() {
+			PUT("/challenge_groups/{id}")
+			Response(StatusOK)
+		})
+	})
+	Method("DeleteChallengeGroup", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+			Extend(IDArtifact)
+		})
+		HTTP(func() {
+			DELETE("/challenge_groups/{id}")
+			Response(StatusOK)
+		})
+	})
+	Method("ListChallengeGroups", func() {
+		Payload(func() {
+			Extend(TokenPayload)
+		})
+		Result(ArrayOf(ChallengeGroup))
+		HTTP(func() {
+			GET("/challenge_groups")
+			Response(StatusOK)
+		})
+	})
+	Method("ListCTFUsers", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Required("ctf_id")
+			Extend(TokenPayload)
+		})
+		Result(ArrayOf(CTFUser))
+		HTTP(func() {
+			GET("/ctfs/{ctf_id}/users")
+			Response(StatusOK)
+		})
+	})
+	Method("DeleteCTFUser", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Attribute("user_id", String)
+			Required("ctf_id", "user_id")
+			Extend(TokenPayload)
+		})
+		HTTP(func() {
+			DELETE("/ctfs/{ctf_id}/users/{user_id}")
+			Response(StatusOK)
+		})
+	})
+	Method("UpdateCTFUser", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Attribute("user_id", String)
+			Attribute("username", String)
+			Required("ctf_id", "user_id", "username")
+			Extend(TokenPayload)
+		})
+		Result(CTFUser)
+		HTTP(func() {
+			PATCH("/ctfs/{ctf_id}/users/{user_id}")
+			Response(StatusOK)
+		})
+	})
 })

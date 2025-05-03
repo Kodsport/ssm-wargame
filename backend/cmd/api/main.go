@@ -35,6 +35,10 @@ import (
 	user_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/user/server"
 	user_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/user"
 
+	ctf_service "github.com/sakerhetsm/ssm-wargame/internal/api/ctf"
+	ctf_transport "github.com/sakerhetsm/ssm-wargame/internal/gen/ctf"
+	ctf_server "github.com/sakerhetsm/ssm-wargame/internal/gen/http/ctf/server"
+
 	goahttp "goa.design/goa/v3/http"
 	goahttpmid "goa.design/goa/v3/http/middleware"
 )
@@ -111,27 +115,33 @@ func realMain() error {
 		s.Use(goahttpmid.RequestID())
 		user_server.Mount(mux, s)
 	}
+	{
+		svc := ctf_service.NewService(db)
+		endpoints := ctf_transport.NewEndpoints(svc)
+		s := ctf_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
+		s.Use(goahttpmid.RequestID())
+		ctf_server.Mount(mux, s)
+	}
 
 	var handler http.Handler = mux
 
-	// oops this is dev only
-	// Uncomment when cors needs to be modified, ex. when api is on localhost:8000 and app is on localhost:3000
-	// handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// 	w.Header().Add("access-control-allow-origin", `*`)
-	// 	w.Header().Add("access-control-allow-headers", r.Header.Get("Access-Control-Request-Headers"))
-	//
-	// 	if r.Method == http.MethodOptions {
-	// 		w.WriteHeader(http.StatusNoContent)
-	// 		return
-	// 	}
-	//
-	// 	mux.ServeHTTP(w, r)
-	// })
-	//
-	//	handler = cors.New(cors.Options{
-	//		AllowedOrigins: []string{"sakerhetssm.se"},
-	//		MaxAge:         60 * 60 * 24,
-	//	}).Handler(handler)
+	handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("access-control-allow-origin", `*`)
+		w.Header().Add("access-control-allow-headers", r.Header.Get("Access-Control-Request-Headers"))
+		w.Header().Add("access-control-allow-methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		mux.ServeHTTP(w, r)
+	})
+
+	/* handler = cors.New(cors.Options{
+		AllowedOrigins: []string{"sakerhetssm.se"},
+		MaxAge:         60 * 60 * 24,
+	}).Handler(handler) */
 
 	srv := &http.Server{
 		Addr:    "0.0.0.0:8000",

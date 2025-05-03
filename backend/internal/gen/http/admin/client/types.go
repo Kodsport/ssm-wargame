@@ -138,6 +138,70 @@ type UpdateCourseRequestBody struct {
 	AuthorIds   []string `form:"author_ids,omitempty" json:"author_ids,omitempty" xml:"author_ids,omitempty"`
 }
 
+// CreateCTFRequestBody is the type of the "admin" service "CreateCTF" endpoint
+// HTTP request body.
+type CreateCTFRequestBody struct {
+	// CTF name
+	Name string `form:"name" json:"name" xml:"name"`
+	// CTF description
+	Description string `form:"description" json:"description" xml:"description"`
+	// CTF start time
+	StartTime int64 `form:"start_time" json:"start_time" xml:"start_time"`
+	// CTF end time
+	EndTime int64 `form:"end_time" json:"end_time" xml:"end_time"`
+	// Unique slug
+	Slug string `form:"slug" json:"slug" xml:"slug"`
+	// Challenge IDs
+	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
+	// Is the CTF private?
+	Private *bool `form:"private,omitempty" json:"private,omitempty" xml:"private,omitempty"`
+	// CTF password
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
+
+// UpdateCTFRequestBody is the type of the "admin" service "UpdateCTF" endpoint
+// HTTP request body.
+type UpdateCTFRequestBody struct {
+	// CTF name
+	Name string `form:"name" json:"name" xml:"name"`
+	// CTF description
+	Description string `form:"description" json:"description" xml:"description"`
+	// CTF start time
+	StartTime int64 `form:"start_time" json:"start_time" xml:"start_time"`
+	// CTF end time
+	EndTime int64 `form:"end_time" json:"end_time" xml:"end_time"`
+	// Unique slug
+	Slug string `form:"slug" json:"slug" xml:"slug"`
+	// Challenge IDs
+	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
+	// Is the CTF private?
+	Private *bool `form:"private,omitempty" json:"private,omitempty" xml:"private,omitempty"`
+	// CTF password
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
+
+// CreateChallengeGroupRequestBody is the type of the "admin" service
+// "CreateChallengeGroup" endpoint HTTP request body.
+type CreateChallengeGroupRequestBody struct {
+	Name         string   `form:"name" json:"name" xml:"name"`
+	Description  string   `form:"description" json:"description" xml:"description"`
+	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
+}
+
+// UpdateChallengeGroupRequestBody is the type of the "admin" service
+// "UpdateChallengeGroup" endpoint HTTP request body.
+type UpdateChallengeGroupRequestBody struct {
+	Name         string   `form:"name" json:"name" xml:"name"`
+	Description  string   `form:"description" json:"description" xml:"description"`
+	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
+}
+
+// UpdateCTFUserRequestBody is the type of the "admin" service "UpdateCTFUser"
+// endpoint HTTP request body.
+type UpdateCTFUserRequestBody struct {
+	Username string `form:"username" json:"username" xml:"username"`
+}
+
 // ListChallengesResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
 type ListChallengesResponseBody []*SsmAdminChallengeResponse
@@ -185,6 +249,69 @@ type CreateCTFEventImportTokenResponseBody struct {
 // ListCoursesResponseBody is the type of the "admin" service "ListCourses"
 // endpoint HTTP response body.
 type ListCoursesResponseBody []*SsmAdminCourseResponse
+
+// CreateCTFResponseBody is the type of the "admin" service "CreateCTF"
+// endpoint HTTP response body.
+type CreateCTFResponseBody struct {
+	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	StartTime    *string  `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
+	EndTime      *string  `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
+	Slug         *string  `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+}
+
+// UpdateCTFResponseBody is the type of the "admin" service "UpdateCTF"
+// endpoint HTTP response body.
+type UpdateCTFResponseBody struct {
+	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	StartTime    *string  `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
+	EndTime      *string  `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
+	Slug         *string  `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+}
+
+// ListCTFsResponseBody is the type of the "admin" service "ListCTFs" endpoint
+// HTTP response body.
+type ListCTFsResponseBody []*CTFResponse
+
+// CreateChallengeGroupResponseBody is the type of the "admin" service
+// "CreateChallengeGroup" endpoint HTTP response body.
+type CreateChallengeGroupResponseBody struct {
+	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+}
+
+// UpdateChallengeGroupResponseBody is the type of the "admin" service
+// "UpdateChallengeGroup" endpoint HTTP response body.
+type UpdateChallengeGroupResponseBody struct {
+	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+}
+
+// ListChallengeGroupsResponseBody is the type of the "admin" service
+// "ListChallengeGroups" endpoint HTTP response body.
+type ListChallengeGroupsResponseBody []*ChallengeGroupResponse
+
+// ListCTFUsersResponseBody is the type of the "admin" service "ListCTFUsers"
+// endpoint HTTP response body.
+type ListCTFUsersResponseBody []*CTFUserResponse
+
+// UpdateCTFUserResponseBody is the type of the "admin" service "UpdateCTFUser"
+// endpoint HTTP response body.
+type UpdateCTFUserResponseBody struct {
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	CtfID    *string `form:"ctf_id,omitempty" json:"ctf_id,omitempty" xml:"ctf_id,omitempty"`
+	Username *string `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+}
 
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body for the "unauthorized" error.
@@ -1497,6 +1624,608 @@ type UpdateCourseBadRequestResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// CreateCTFUnauthorizedResponseBody is the type of the "admin" service
+// "CreateCTF" endpoint HTTP response body for the "unauthorized" error.
+type CreateCTFUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCTFNotFoundResponseBody is the type of the "admin" service "CreateCTF"
+// endpoint HTTP response body for the "not_found" error.
+type CreateCTFNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateCTFBadRequestResponseBody is the type of the "admin" service
+// "CreateCTF" endpoint HTTP response body for the "bad_request" error.
+type CreateCTFBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCTFUnauthorizedResponseBody is the type of the "admin" service
+// "UpdateCTF" endpoint HTTP response body for the "unauthorized" error.
+type UpdateCTFUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCTFNotFoundResponseBody is the type of the "admin" service "UpdateCTF"
+// endpoint HTTP response body for the "not_found" error.
+type UpdateCTFNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCTFBadRequestResponseBody is the type of the "admin" service
+// "UpdateCTF" endpoint HTTP response body for the "bad_request" error.
+type UpdateCTFBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCTFUnauthorizedResponseBody is the type of the "admin" service
+// "DeleteCTF" endpoint HTTP response body for the "unauthorized" error.
+type DeleteCTFUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCTFNotFoundResponseBody is the type of the "admin" service "DeleteCTF"
+// endpoint HTTP response body for the "not_found" error.
+type DeleteCTFNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCTFBadRequestResponseBody is the type of the "admin" service
+// "DeleteCTF" endpoint HTTP response body for the "bad_request" error.
+type DeleteCTFBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCTFsUnauthorizedResponseBody is the type of the "admin" service
+// "ListCTFs" endpoint HTTP response body for the "unauthorized" error.
+type ListCTFsUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCTFsNotFoundResponseBody is the type of the "admin" service "ListCTFs"
+// endpoint HTTP response body for the "not_found" error.
+type ListCTFsNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCTFsBadRequestResponseBody is the type of the "admin" service "ListCTFs"
+// endpoint HTTP response body for the "bad_request" error.
+type ListCTFsBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateChallengeGroupUnauthorizedResponseBody is the type of the "admin"
+// service "CreateChallengeGroup" endpoint HTTP response body for the
+// "unauthorized" error.
+type CreateChallengeGroupUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateChallengeGroupNotFoundResponseBody is the type of the "admin" service
+// "CreateChallengeGroup" endpoint HTTP response body for the "not_found" error.
+type CreateChallengeGroupNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// CreateChallengeGroupBadRequestResponseBody is the type of the "admin"
+// service "CreateChallengeGroup" endpoint HTTP response body for the
+// "bad_request" error.
+type CreateChallengeGroupBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateChallengeGroupUnauthorizedResponseBody is the type of the "admin"
+// service "UpdateChallengeGroup" endpoint HTTP response body for the
+// "unauthorized" error.
+type UpdateChallengeGroupUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateChallengeGroupNotFoundResponseBody is the type of the "admin" service
+// "UpdateChallengeGroup" endpoint HTTP response body for the "not_found" error.
+type UpdateChallengeGroupNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateChallengeGroupBadRequestResponseBody is the type of the "admin"
+// service "UpdateChallengeGroup" endpoint HTTP response body for the
+// "bad_request" error.
+type UpdateChallengeGroupBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteChallengeGroupUnauthorizedResponseBody is the type of the "admin"
+// service "DeleteChallengeGroup" endpoint HTTP response body for the
+// "unauthorized" error.
+type DeleteChallengeGroupUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteChallengeGroupNotFoundResponseBody is the type of the "admin" service
+// "DeleteChallengeGroup" endpoint HTTP response body for the "not_found" error.
+type DeleteChallengeGroupNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteChallengeGroupBadRequestResponseBody is the type of the "admin"
+// service "DeleteChallengeGroup" endpoint HTTP response body for the
+// "bad_request" error.
+type DeleteChallengeGroupBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListChallengeGroupsUnauthorizedResponseBody is the type of the "admin"
+// service "ListChallengeGroups" endpoint HTTP response body for the
+// "unauthorized" error.
+type ListChallengeGroupsUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListChallengeGroupsNotFoundResponseBody is the type of the "admin" service
+// "ListChallengeGroups" endpoint HTTP response body for the "not_found" error.
+type ListChallengeGroupsNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListChallengeGroupsBadRequestResponseBody is the type of the "admin" service
+// "ListChallengeGroups" endpoint HTTP response body for the "bad_request"
+// error.
+type ListChallengeGroupsBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCTFUsersUnauthorizedResponseBody is the type of the "admin" service
+// "ListCTFUsers" endpoint HTTP response body for the "unauthorized" error.
+type ListCTFUsersUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCTFUsersNotFoundResponseBody is the type of the "admin" service
+// "ListCTFUsers" endpoint HTTP response body for the "not_found" error.
+type ListCTFUsersNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// ListCTFUsersBadRequestResponseBody is the type of the "admin" service
+// "ListCTFUsers" endpoint HTTP response body for the "bad_request" error.
+type ListCTFUsersBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCTFUserUnauthorizedResponseBody is the type of the "admin" service
+// "DeleteCTFUser" endpoint HTTP response body for the "unauthorized" error.
+type DeleteCTFUserUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCTFUserNotFoundResponseBody is the type of the "admin" service
+// "DeleteCTFUser" endpoint HTTP response body for the "not_found" error.
+type DeleteCTFUserNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// DeleteCTFUserBadRequestResponseBody is the type of the "admin" service
+// "DeleteCTFUser" endpoint HTTP response body for the "bad_request" error.
+type DeleteCTFUserBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCTFUserUnauthorizedResponseBody is the type of the "admin" service
+// "UpdateCTFUser" endpoint HTTP response body for the "unauthorized" error.
+type UpdateCTFUserUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCTFUserNotFoundResponseBody is the type of the "admin" service
+// "UpdateCTFUser" endpoint HTTP response body for the "not_found" error.
+type UpdateCTFUserNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// UpdateCTFUserBadRequestResponseBody is the type of the "admin" service
+// "UpdateCTFUser" endpoint HTTP response body for the "bad_request" error.
+type UpdateCTFUserBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
 	// ID of a file
@@ -1643,6 +2372,33 @@ type SsmAdminCourseResponse struct {
 	Description *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
 	Publish     *bool    `form:"publish,omitempty" json:"publish,omitempty" xml:"publish,omitempty"`
 	AuthorIds   []string `form:"author_ids,omitempty" json:"author_ids,omitempty" xml:"author_ids,omitempty"`
+}
+
+// CTFResponse is used to define fields on response body types.
+type CTFResponse struct {
+	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	StartTime    *string  `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
+	EndTime      *string  `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
+	Slug         *string  `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+}
+
+// ChallengeGroupResponse is used to define fields on response body types.
+type ChallengeGroupResponse struct {
+	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+}
+
+// CTFUserResponse is used to define fields on response body types.
+type CTFUserResponse struct {
+	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	CtfID    *string `form:"ctf_id,omitempty" json:"ctf_id,omitempty" xml:"ctf_id,omitempty"`
+	Username *string `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
+	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 }
 
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
@@ -1834,6 +2590,89 @@ func NewUpdateCourseRequestBody(p *admin.UpdateCoursePayload) *UpdateCourseReque
 		for i, val := range p.AuthorIds {
 			body.AuthorIds[i] = val
 		}
+	}
+	return body
+}
+
+// NewCreateCTFRequestBody builds the HTTP request body from the payload of the
+// "CreateCTF" endpoint of the "admin" service.
+func NewCreateCTFRequestBody(p *admin.CreateCTFPayload) *CreateCTFRequestBody {
+	body := &CreateCTFRequestBody{
+		Name:        p.Name,
+		Description: p.Description,
+		StartTime:   p.StartTime,
+		EndTime:     p.EndTime,
+		Slug:        p.Slug,
+		Private:     p.Private,
+		Password:    p.Password,
+	}
+	if p.ChallengeIds != nil {
+		body.ChallengeIds = make([]string, len(p.ChallengeIds))
+		for i, val := range p.ChallengeIds {
+			body.ChallengeIds[i] = val
+		}
+	}
+	return body
+}
+
+// NewUpdateCTFRequestBody builds the HTTP request body from the payload of the
+// "UpdateCTF" endpoint of the "admin" service.
+func NewUpdateCTFRequestBody(p *admin.UpdateCTFPayload) *UpdateCTFRequestBody {
+	body := &UpdateCTFRequestBody{
+		Name:        p.Name,
+		Description: p.Description,
+		StartTime:   p.StartTime,
+		EndTime:     p.EndTime,
+		Slug:        p.Slug,
+		Private:     p.Private,
+		Password:    p.Password,
+	}
+	if p.ChallengeIds != nil {
+		body.ChallengeIds = make([]string, len(p.ChallengeIds))
+		for i, val := range p.ChallengeIds {
+			body.ChallengeIds[i] = val
+		}
+	}
+	return body
+}
+
+// NewCreateChallengeGroupRequestBody builds the HTTP request body from the
+// payload of the "CreateChallengeGroup" endpoint of the "admin" service.
+func NewCreateChallengeGroupRequestBody(p *admin.CreateChallengeGroupPayload) *CreateChallengeGroupRequestBody {
+	body := &CreateChallengeGroupRequestBody{
+		Name:        p.Name,
+		Description: p.Description,
+	}
+	if p.ChallengeIds != nil {
+		body.ChallengeIds = make([]string, len(p.ChallengeIds))
+		for i, val := range p.ChallengeIds {
+			body.ChallengeIds[i] = val
+		}
+	}
+	return body
+}
+
+// NewUpdateChallengeGroupRequestBody builds the HTTP request body from the
+// payload of the "UpdateChallengeGroup" endpoint of the "admin" service.
+func NewUpdateChallengeGroupRequestBody(p *admin.UpdateChallengeGroupPayload) *UpdateChallengeGroupRequestBody {
+	body := &UpdateChallengeGroupRequestBody{
+		Name:        p.Name,
+		Description: p.Description,
+	}
+	if p.ChallengeIds != nil {
+		body.ChallengeIds = make([]string, len(p.ChallengeIds))
+		for i, val := range p.ChallengeIds {
+			body.ChallengeIds[i] = val
+		}
+	}
+	return body
+}
+
+// NewUpdateCTFUserRequestBody builds the HTTP request body from the payload of
+// the "UpdateCTFUser" endpoint of the "admin" service.
+func NewUpdateCTFUserRequestBody(p *admin.UpdateCTFUserPayload) *UpdateCTFUserRequestBody {
+	body := &UpdateCTFUserRequestBody{
+		Username: p.Username,
 	}
 	return body
 }
@@ -3030,6 +3869,616 @@ func NewUpdateCourseBadRequest(body *UpdateCourseBadRequestResponseBody) *goa.Se
 	return v
 }
 
+// NewCreateCTFCTFCreated builds a "admin" service "CreateCTF" endpoint result
+// from a HTTP "Created" response.
+func NewCreateCTFCTFCreated(body *CreateCTFResponseBody) *admin.CTF {
+	v := &admin.CTF{
+		ID:          *body.ID,
+		Name:        *body.Name,
+		Description: *body.Description,
+		StartTime:   *body.StartTime,
+		EndTime:     *body.EndTime,
+		Slug:        *body.Slug,
+	}
+	v.ChallengeIds = make([]string, len(body.ChallengeIds))
+	for i, val := range body.ChallengeIds {
+		v.ChallengeIds[i] = val
+	}
+
+	return v
+}
+
+// NewCreateCTFUnauthorized builds a admin service CreateCTF endpoint
+// unauthorized error.
+func NewCreateCTFUnauthorized(body *CreateCTFUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateCTFNotFound builds a admin service CreateCTF endpoint not_found
+// error.
+func NewCreateCTFNotFound(body *CreateCTFNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateCTFBadRequest builds a admin service CreateCTF endpoint bad_request
+// error.
+func NewCreateCTFBadRequest(body *CreateCTFBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCTFCTFOK builds a "admin" service "UpdateCTF" endpoint result from
+// a HTTP "OK" response.
+func NewUpdateCTFCTFOK(body *UpdateCTFResponseBody) *admin.CTF {
+	v := &admin.CTF{
+		ID:          *body.ID,
+		Name:        *body.Name,
+		Description: *body.Description,
+		StartTime:   *body.StartTime,
+		EndTime:     *body.EndTime,
+		Slug:        *body.Slug,
+	}
+	v.ChallengeIds = make([]string, len(body.ChallengeIds))
+	for i, val := range body.ChallengeIds {
+		v.ChallengeIds[i] = val
+	}
+
+	return v
+}
+
+// NewUpdateCTFUnauthorized builds a admin service UpdateCTF endpoint
+// unauthorized error.
+func NewUpdateCTFUnauthorized(body *UpdateCTFUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCTFNotFound builds a admin service UpdateCTF endpoint not_found
+// error.
+func NewUpdateCTFNotFound(body *UpdateCTFNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCTFBadRequest builds a admin service UpdateCTF endpoint bad_request
+// error.
+func NewUpdateCTFBadRequest(body *UpdateCTFBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteCTFUnauthorized builds a admin service DeleteCTF endpoint
+// unauthorized error.
+func NewDeleteCTFUnauthorized(body *DeleteCTFUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteCTFNotFound builds a admin service DeleteCTF endpoint not_found
+// error.
+func NewDeleteCTFNotFound(body *DeleteCTFNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteCTFBadRequest builds a admin service DeleteCTF endpoint bad_request
+// error.
+func NewDeleteCTFBadRequest(body *DeleteCTFBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCTFsCTFOK builds a "admin" service "ListCTFs" endpoint result from a
+// HTTP "OK" response.
+func NewListCTFsCTFOK(body []*CTFResponse) []*admin.CTF {
+	v := make([]*admin.CTF, len(body))
+	for i, val := range body {
+		v[i] = unmarshalCTFResponseToAdminCTF(val)
+	}
+
+	return v
+}
+
+// NewListCTFsUnauthorized builds a admin service ListCTFs endpoint
+// unauthorized error.
+func NewListCTFsUnauthorized(body *ListCTFsUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCTFsNotFound builds a admin service ListCTFs endpoint not_found error.
+func NewListCTFsNotFound(body *ListCTFsNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCTFsBadRequest builds a admin service ListCTFs endpoint bad_request
+// error.
+func NewListCTFsBadRequest(body *ListCTFsBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateChallengeGroupChallengeGroupCreated builds a "admin" service
+// "CreateChallengeGroup" endpoint result from a HTTP "Created" response.
+func NewCreateChallengeGroupChallengeGroupCreated(body *CreateChallengeGroupResponseBody) *admin.ChallengeGroup {
+	v := &admin.ChallengeGroup{
+		ID:          *body.ID,
+		Name:        *body.Name,
+		Description: *body.Description,
+	}
+	v.ChallengeIds = make([]string, len(body.ChallengeIds))
+	for i, val := range body.ChallengeIds {
+		v.ChallengeIds[i] = val
+	}
+
+	return v
+}
+
+// NewCreateChallengeGroupUnauthorized builds a admin service
+// CreateChallengeGroup endpoint unauthorized error.
+func NewCreateChallengeGroupUnauthorized(body *CreateChallengeGroupUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateChallengeGroupNotFound builds a admin service CreateChallengeGroup
+// endpoint not_found error.
+func NewCreateChallengeGroupNotFound(body *CreateChallengeGroupNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewCreateChallengeGroupBadRequest builds a admin service
+// CreateChallengeGroup endpoint bad_request error.
+func NewCreateChallengeGroupBadRequest(body *CreateChallengeGroupBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateChallengeGroupChallengeGroupOK builds a "admin" service
+// "UpdateChallengeGroup" endpoint result from a HTTP "OK" response.
+func NewUpdateChallengeGroupChallengeGroupOK(body *UpdateChallengeGroupResponseBody) *admin.ChallengeGroup {
+	v := &admin.ChallengeGroup{
+		ID:          *body.ID,
+		Name:        *body.Name,
+		Description: *body.Description,
+	}
+	v.ChallengeIds = make([]string, len(body.ChallengeIds))
+	for i, val := range body.ChallengeIds {
+		v.ChallengeIds[i] = val
+	}
+
+	return v
+}
+
+// NewUpdateChallengeGroupUnauthorized builds a admin service
+// UpdateChallengeGroup endpoint unauthorized error.
+func NewUpdateChallengeGroupUnauthorized(body *UpdateChallengeGroupUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateChallengeGroupNotFound builds a admin service UpdateChallengeGroup
+// endpoint not_found error.
+func NewUpdateChallengeGroupNotFound(body *UpdateChallengeGroupNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateChallengeGroupBadRequest builds a admin service
+// UpdateChallengeGroup endpoint bad_request error.
+func NewUpdateChallengeGroupBadRequest(body *UpdateChallengeGroupBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteChallengeGroupUnauthorized builds a admin service
+// DeleteChallengeGroup endpoint unauthorized error.
+func NewDeleteChallengeGroupUnauthorized(body *DeleteChallengeGroupUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteChallengeGroupNotFound builds a admin service DeleteChallengeGroup
+// endpoint not_found error.
+func NewDeleteChallengeGroupNotFound(body *DeleteChallengeGroupNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteChallengeGroupBadRequest builds a admin service
+// DeleteChallengeGroup endpoint bad_request error.
+func NewDeleteChallengeGroupBadRequest(body *DeleteChallengeGroupBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListChallengeGroupsChallengeGroupOK builds a "admin" service
+// "ListChallengeGroups" endpoint result from a HTTP "OK" response.
+func NewListChallengeGroupsChallengeGroupOK(body []*ChallengeGroupResponse) []*admin.ChallengeGroup {
+	v := make([]*admin.ChallengeGroup, len(body))
+	for i, val := range body {
+		v[i] = unmarshalChallengeGroupResponseToAdminChallengeGroup(val)
+	}
+
+	return v
+}
+
+// NewListChallengeGroupsUnauthorized builds a admin service
+// ListChallengeGroups endpoint unauthorized error.
+func NewListChallengeGroupsUnauthorized(body *ListChallengeGroupsUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListChallengeGroupsNotFound builds a admin service ListChallengeGroups
+// endpoint not_found error.
+func NewListChallengeGroupsNotFound(body *ListChallengeGroupsNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListChallengeGroupsBadRequest builds a admin service ListChallengeGroups
+// endpoint bad_request error.
+func NewListChallengeGroupsBadRequest(body *ListChallengeGroupsBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCTFUsersCTFUserOK builds a "admin" service "ListCTFUsers" endpoint
+// result from a HTTP "OK" response.
+func NewListCTFUsersCTFUserOK(body []*CTFUserResponse) []*admin.CTFUser {
+	v := make([]*admin.CTFUser, len(body))
+	for i, val := range body {
+		v[i] = unmarshalCTFUserResponseToAdminCTFUser(val)
+	}
+
+	return v
+}
+
+// NewListCTFUsersUnauthorized builds a admin service ListCTFUsers endpoint
+// unauthorized error.
+func NewListCTFUsersUnauthorized(body *ListCTFUsersUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCTFUsersNotFound builds a admin service ListCTFUsers endpoint
+// not_found error.
+func NewListCTFUsersNotFound(body *ListCTFUsersNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewListCTFUsersBadRequest builds a admin service ListCTFUsers endpoint
+// bad_request error.
+func NewListCTFUsersBadRequest(body *ListCTFUsersBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteCTFUserUnauthorized builds a admin service DeleteCTFUser endpoint
+// unauthorized error.
+func NewDeleteCTFUserUnauthorized(body *DeleteCTFUserUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteCTFUserNotFound builds a admin service DeleteCTFUser endpoint
+// not_found error.
+func NewDeleteCTFUserNotFound(body *DeleteCTFUserNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewDeleteCTFUserBadRequest builds a admin service DeleteCTFUser endpoint
+// bad_request error.
+func NewDeleteCTFUserBadRequest(body *DeleteCTFUserBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCTFUserCTFUserOK builds a "admin" service "UpdateCTFUser" endpoint
+// result from a HTTP "OK" response.
+func NewUpdateCTFUserCTFUserOK(body *UpdateCTFUserResponseBody) *admin.CTFUser {
+	v := &admin.CTFUser{
+		ID:       *body.ID,
+		CtfID:    *body.CtfID,
+		Username: *body.Username,
+		Password: *body.Password,
+	}
+
+	return v
+}
+
+// NewUpdateCTFUserUnauthorized builds a admin service UpdateCTFUser endpoint
+// unauthorized error.
+func NewUpdateCTFUserUnauthorized(body *UpdateCTFUserUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCTFUserNotFound builds a admin service UpdateCTFUser endpoint
+// not_found error.
+func NewUpdateCTFUserNotFound(body *UpdateCTFUserNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewUpdateCTFUserBadRequest builds a admin service UpdateCTFUser endpoint
+// bad_request error.
+func NewUpdateCTFUserBadRequest(body *UpdateCTFUserBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
 // ValidateGetChallengeMetaResponseBody runs the validations defined on
 // GetChallengeMetaResponseBody
 func ValidateGetChallengeMetaResponseBody(body *GetChallengeMetaResponseBody) (err error) {
@@ -3070,6 +4519,114 @@ func ValidatePresignChallFileUploadResponseBody(body *PresignChallFileUploadResp
 func ValidateCreateCTFEventImportTokenResponseBody(body *CreateCTFEventImportTokenResponseBody) (err error) {
 	if body.Token == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("token", "body"))
+	}
+	return
+}
+
+// ValidateCreateCTFResponseBody runs the validations defined on
+// CreateCTFResponseBody
+func ValidateCreateCTFResponseBody(body *CreateCTFResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.StartTime == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start_time", "body"))
+	}
+	if body.EndTime == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end_time", "body"))
+	}
+	if body.ChallengeIds == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFResponseBody runs the validations defined on
+// UpdateCTFResponseBody
+func ValidateUpdateCTFResponseBody(body *UpdateCTFResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.StartTime == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start_time", "body"))
+	}
+	if body.EndTime == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end_time", "body"))
+	}
+	if body.ChallengeIds == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	}
+	return
+}
+
+// ValidateCreateChallengeGroupResponseBody runs the validations defined on
+// CreateChallengeGroupResponseBody
+func ValidateCreateChallengeGroupResponseBody(body *CreateChallengeGroupResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.ChallengeIds == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	}
+	return
+}
+
+// ValidateUpdateChallengeGroupResponseBody runs the validations defined on
+// UpdateChallengeGroupResponseBody
+func ValidateUpdateChallengeGroupResponseBody(body *UpdateChallengeGroupResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.ChallengeIds == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFUserResponseBody runs the validations defined on
+// UpdateCTFUserResponseBody
+func ValidateUpdateCTFUserResponseBody(body *UpdateCTFUserResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.CtfID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("ctf_id", "body"))
+	}
+	if body.Username == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("username", "body"))
+	}
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
 	}
 	return
 }
@@ -4802,6 +6359,798 @@ func ValidateUpdateCourseBadRequestResponseBody(body *UpdateCourseBadRequestResp
 	return
 }
 
+// ValidateCreateCTFUnauthorizedResponseBody runs the validations defined on
+// CreateCTF_unauthorized_Response_Body
+func ValidateCreateCTFUnauthorizedResponseBody(body *CreateCTFUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCTFNotFoundResponseBody runs the validations defined on
+// CreateCTF_not_found_Response_Body
+func ValidateCreateCTFNotFoundResponseBody(body *CreateCTFNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateCTFBadRequestResponseBody runs the validations defined on
+// CreateCTF_bad_request_Response_Body
+func ValidateCreateCTFBadRequestResponseBody(body *CreateCTFBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFUnauthorizedResponseBody runs the validations defined on
+// UpdateCTF_unauthorized_Response_Body
+func ValidateUpdateCTFUnauthorizedResponseBody(body *UpdateCTFUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFNotFoundResponseBody runs the validations defined on
+// UpdateCTF_not_found_Response_Body
+func ValidateUpdateCTFNotFoundResponseBody(body *UpdateCTFNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFBadRequestResponseBody runs the validations defined on
+// UpdateCTF_bad_request_Response_Body
+func ValidateUpdateCTFBadRequestResponseBody(body *UpdateCTFBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCTFUnauthorizedResponseBody runs the validations defined on
+// DeleteCTF_unauthorized_Response_Body
+func ValidateDeleteCTFUnauthorizedResponseBody(body *DeleteCTFUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCTFNotFoundResponseBody runs the validations defined on
+// DeleteCTF_not_found_Response_Body
+func ValidateDeleteCTFNotFoundResponseBody(body *DeleteCTFNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCTFBadRequestResponseBody runs the validations defined on
+// DeleteCTF_bad_request_Response_Body
+func ValidateDeleteCTFBadRequestResponseBody(body *DeleteCTFBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCTFsUnauthorizedResponseBody runs the validations defined on
+// ListCTFs_unauthorized_Response_Body
+func ValidateListCTFsUnauthorizedResponseBody(body *ListCTFsUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCTFsNotFoundResponseBody runs the validations defined on
+// ListCTFs_not_found_Response_Body
+func ValidateListCTFsNotFoundResponseBody(body *ListCTFsNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCTFsBadRequestResponseBody runs the validations defined on
+// ListCTFs_bad_request_Response_Body
+func ValidateListCTFsBadRequestResponseBody(body *ListCTFsBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateChallengeGroupUnauthorizedResponseBody runs the validations
+// defined on CreateChallengeGroup_unauthorized_Response_Body
+func ValidateCreateChallengeGroupUnauthorizedResponseBody(body *CreateChallengeGroupUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateChallengeGroupNotFoundResponseBody runs the validations
+// defined on CreateChallengeGroup_not_found_Response_Body
+func ValidateCreateChallengeGroupNotFoundResponseBody(body *CreateChallengeGroupNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateCreateChallengeGroupBadRequestResponseBody runs the validations
+// defined on CreateChallengeGroup_bad_request_Response_Body
+func ValidateCreateChallengeGroupBadRequestResponseBody(body *CreateChallengeGroupBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateChallengeGroupUnauthorizedResponseBody runs the validations
+// defined on UpdateChallengeGroup_unauthorized_Response_Body
+func ValidateUpdateChallengeGroupUnauthorizedResponseBody(body *UpdateChallengeGroupUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateChallengeGroupNotFoundResponseBody runs the validations
+// defined on UpdateChallengeGroup_not_found_Response_Body
+func ValidateUpdateChallengeGroupNotFoundResponseBody(body *UpdateChallengeGroupNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateChallengeGroupBadRequestResponseBody runs the validations
+// defined on UpdateChallengeGroup_bad_request_Response_Body
+func ValidateUpdateChallengeGroupBadRequestResponseBody(body *UpdateChallengeGroupBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteChallengeGroupUnauthorizedResponseBody runs the validations
+// defined on DeleteChallengeGroup_unauthorized_Response_Body
+func ValidateDeleteChallengeGroupUnauthorizedResponseBody(body *DeleteChallengeGroupUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteChallengeGroupNotFoundResponseBody runs the validations
+// defined on DeleteChallengeGroup_not_found_Response_Body
+func ValidateDeleteChallengeGroupNotFoundResponseBody(body *DeleteChallengeGroupNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteChallengeGroupBadRequestResponseBody runs the validations
+// defined on DeleteChallengeGroup_bad_request_Response_Body
+func ValidateDeleteChallengeGroupBadRequestResponseBody(body *DeleteChallengeGroupBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListChallengeGroupsUnauthorizedResponseBody runs the validations
+// defined on ListChallengeGroups_unauthorized_Response_Body
+func ValidateListChallengeGroupsUnauthorizedResponseBody(body *ListChallengeGroupsUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListChallengeGroupsNotFoundResponseBody runs the validations defined
+// on ListChallengeGroups_not_found_Response_Body
+func ValidateListChallengeGroupsNotFoundResponseBody(body *ListChallengeGroupsNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListChallengeGroupsBadRequestResponseBody runs the validations
+// defined on ListChallengeGroups_bad_request_Response_Body
+func ValidateListChallengeGroupsBadRequestResponseBody(body *ListChallengeGroupsBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCTFUsersUnauthorizedResponseBody runs the validations defined on
+// ListCTFUsers_unauthorized_Response_Body
+func ValidateListCTFUsersUnauthorizedResponseBody(body *ListCTFUsersUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCTFUsersNotFoundResponseBody runs the validations defined on
+// ListCTFUsers_not_found_Response_Body
+func ValidateListCTFUsersNotFoundResponseBody(body *ListCTFUsersNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateListCTFUsersBadRequestResponseBody runs the validations defined on
+// ListCTFUsers_bad_request_Response_Body
+func ValidateListCTFUsersBadRequestResponseBody(body *ListCTFUsersBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCTFUserUnauthorizedResponseBody runs the validations defined
+// on DeleteCTFUser_unauthorized_Response_Body
+func ValidateDeleteCTFUserUnauthorizedResponseBody(body *DeleteCTFUserUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCTFUserNotFoundResponseBody runs the validations defined on
+// DeleteCTFUser_not_found_Response_Body
+func ValidateDeleteCTFUserNotFoundResponseBody(body *DeleteCTFUserNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateDeleteCTFUserBadRequestResponseBody runs the validations defined on
+// DeleteCTFUser_bad_request_Response_Body
+func ValidateDeleteCTFUserBadRequestResponseBody(body *DeleteCTFUserBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFUserUnauthorizedResponseBody runs the validations defined
+// on UpdateCTFUser_unauthorized_Response_Body
+func ValidateUpdateCTFUserUnauthorizedResponseBody(body *UpdateCTFUserUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFUserNotFoundResponseBody runs the validations defined on
+// UpdateCTFUser_not_found_Response_Body
+func ValidateUpdateCTFUserNotFoundResponseBody(body *UpdateCTFUserNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFUserBadRequestResponseBody runs the validations defined on
+// UpdateCTFUser_bad_request_Response_Body
+func ValidateUpdateCTFUserBadRequestResponseBody(body *UpdateCTFUserBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateSsmAdminChallengeResponse runs the validations defined on
 // SsmAdminChallengeResponse
 func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err error) {
@@ -5067,6 +7416,67 @@ func ValidateSsmAdminCourseResponse(body *SsmAdminCourseResponse) (err error) {
 	}
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateCTFResponse runs the validations defined on CTFResponse
+func ValidateCTFResponse(body *CTFResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.Slug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("slug", "body"))
+	}
+	if body.StartTime == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("start_time", "body"))
+	}
+	if body.EndTime == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("end_time", "body"))
+	}
+	if body.ChallengeIds == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	}
+	return
+}
+
+// ValidateChallengeGroupResponse runs the validations defined on
+// ChallengeGroupResponse
+func ValidateChallengeGroupResponse(body *ChallengeGroupResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.Description == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
+	}
+	if body.ChallengeIds == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	}
+	return
+}
+
+// ValidateCTFUserResponse runs the validations defined on CTFUserResponse
+func ValidateCTFUserResponse(body *CTFUserResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.CtfID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("ctf_id", "body"))
+	}
+	if body.Username == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("username", "body"))
+	}
+	if body.Password == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
 	}
 	return
 }
