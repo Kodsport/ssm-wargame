@@ -20,7 +20,7 @@ export const useCTFStore = defineStore("ctf", {
         console.error(e);
       }
     },
-    async getChallenges(slug: string, password?: string) {
+    async getChallenges(slug: string, password?: string, tryAgain = true) {
       try {
         const challs = await http("/ctfs/" + slug + "/challenges", {
           method: "GET",
@@ -33,6 +33,9 @@ export const useCTFStore = defineStore("ctf", {
         this.challenges = challs;
       } catch (e) {
         console.error(e);
+        // If the password stored in local storage is invalid, we need to refetch the challenges
+        if (tryAgain)
+          setTimeout(() => this.getChallenges(slug, undefined, false), 1000);
       }
     },
     async getScoreboard(slug: string) {

@@ -11,21 +11,21 @@ import (
 	goa "goa.design/goa/v3/pkg"
 )
 
-// SsmChallengeCollection is the viewed result type that is projected based on
-// a view.
-type SsmChallengeCollection struct {
+// SsmCtfChallengeCollection is the viewed result type that is projected based
+// on a view.
+type SsmCtfChallengeCollection struct {
 	// Type to project
-	Projected SsmChallengeCollectionView
+	Projected SsmCtfChallengeCollectionView
 	// View to render
 	View string
 }
 
-// SsmChallengeCollectionView is a type that runs validations on a projected
+// SsmCtfChallengeCollectionView is a type that runs validations on a projected
 // type.
-type SsmChallengeCollectionView []*SsmChallengeView
+type SsmCtfChallengeCollectionView []*SsmCtfChallengeView
 
-// SsmChallengeView is a type that runs validations on a projected type.
-type SsmChallengeView struct {
+// SsmCtfChallengeView is a type that runs validations on a projected type.
+type SsmCtfChallengeView struct {
 	// ID of a file
 	ID *string
 	// A unique string that can be used in URLs
@@ -44,10 +44,11 @@ type SsmChallengeView struct {
 	CtfEventID     *string
 	ChallNamespace *string
 	// whether the user has solved the challenge or not
-	Solved   *bool
-	Category *string
-	Authors  []*AuthorView
-	Solvers  []*SsmSolverView
+	Solved       *bool
+	Category     *string
+	Authors      []*AuthorView
+	Solvers      []*SsmSolverView
+	DisplayOrder *int
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -82,9 +83,9 @@ type SsmSolverView struct {
 }
 
 var (
-	// SsmChallengeCollectionMap is a map indexing the attribute names of
-	// SsmChallengeCollection by view name.
-	SsmChallengeCollectionMap = map[string][]string{
+	// SsmCtfChallengeCollectionMap is a map indexing the attribute names of
+	// SsmCtfChallengeCollection by view name.
+	SsmCtfChallengeCollectionMap = map[string][]string{
 		"default": {
 			"id",
 			"slug",
@@ -100,11 +101,12 @@ var (
 			"category",
 			"authors",
 			"solvers",
+			"display_order",
 		},
 	}
-	// SsmChallengeMap is a map indexing the attribute names of SsmChallenge by
-	// view name.
-	SsmChallengeMap = map[string][]string{
+	// SsmCtfChallengeMap is a map indexing the attribute names of SsmCtfChallenge
+	// by view name.
+	SsmCtfChallengeMap = map[string][]string{
 		"default": {
 			"id",
 			"slug",
@@ -120,6 +122,7 @@ var (
 			"category",
 			"authors",
 			"solvers",
+			"display_order",
 		},
 	}
 	// SsmSolverMap is a map indexing the attribute names of SsmSolver by view name.
@@ -132,37 +135,43 @@ var (
 	}
 )
 
-// ValidateSsmChallengeCollection runs the validations defined on the viewed
-// result type SsmChallengeCollection.
-func ValidateSsmChallengeCollection(result SsmChallengeCollection) (err error) {
+// ValidateSsmCtfChallengeCollection runs the validations defined on the viewed
+// result type SsmCtfChallengeCollection.
+func ValidateSsmCtfChallengeCollection(result SsmCtfChallengeCollection) (err error) {
 	switch result.View {
 	case "default", "":
-		err = ValidateSsmChallengeCollectionView(result.Projected)
+		err = ValidateSsmCtfChallengeCollectionView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
 	return
 }
 
-// ValidateSsmChallengeCollectionView runs the validations defined on
-// SsmChallengeCollectionView using the "default" view.
-func ValidateSsmChallengeCollectionView(result SsmChallengeCollectionView) (err error) {
+// ValidateSsmCtfChallengeCollectionView runs the validations defined on
+// SsmCtfChallengeCollectionView using the "default" view.
+func ValidateSsmCtfChallengeCollectionView(result SsmCtfChallengeCollectionView) (err error) {
 	for _, item := range result {
-		if err2 := ValidateSsmChallengeView(item); err2 != nil {
+		if err2 := ValidateSsmCtfChallengeView(item); err2 != nil {
 			err = goa.MergeErrors(err, err2)
 		}
 	}
 	return
 }
 
-// ValidateSsmChallengeView runs the validations defined on SsmChallengeView
-// using the "default" view.
-func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
+// ValidateSsmCtfChallengeView runs the validations defined on
+// SsmCtfChallengeView using the "default" view.
+func ValidateSsmCtfChallengeView(result *SsmCtfChallengeView) (err error) {
 	if result.Solved == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solved", "result"))
 	}
 	if result.Category == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("category", "result"))
+	}
+	if result.DisplayOrder == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_order", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
 	if result.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "result"))
@@ -178,9 +187,6 @@ func ValidateSsmChallengeView(result *SsmChallengeView) (err error) {
 	}
 	if result.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "result"))
-	}
-	if result.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
 	}
 	if result.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))

@@ -645,6 +645,8 @@ type CTFChallenge struct {
 	ID string
 	// Challenge custom score
 	CustomScore *int
+	// Challenge display order
+	DisplayOrder int
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.

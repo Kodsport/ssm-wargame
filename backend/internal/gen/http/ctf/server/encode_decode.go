@@ -228,9 +228,9 @@ func DecodeGetUserSolvesRequest(mux goahttp.Muxer, decoder func(*http.Request) g
 // the ctf ListChallenges endpoint.
 func EncodeListChallengesResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(ctfviews.SsmChallengeCollection)
+		res := v.(ctfviews.SsmCtfChallengeCollection)
 		enc := encoder(ctx, w)
-		body := NewSsmChallengeResponseCollection(res.Projected)
+		body := NewSsmCtfChallengeResponseCollection(res.Projected)
 		w.WriteHeader(http.StatusOK)
 		return enc.Encode(body)
 	}
@@ -392,10 +392,11 @@ func marshalCtfCTFUserSolveToCTFUserSolveResponseBody(v *ctf.CTFUserSolve) *CTFU
 	return res
 }
 
-// marshalCtfviewsSsmChallengeViewToSsmChallengeResponse builds a value of type
-// *SsmChallengeResponse from a value of type *ctfviews.SsmChallengeView.
-func marshalCtfviewsSsmChallengeViewToSsmChallengeResponse(v *ctfviews.SsmChallengeView) *SsmChallengeResponse {
-	res := &SsmChallengeResponse{
+// marshalCtfviewsSsmCtfChallengeViewToSsmCtfChallengeResponse builds a value
+// of type *SsmCtfChallengeResponse from a value of type
+// *ctfviews.SsmCtfChallengeView.
+func marshalCtfviewsSsmCtfChallengeViewToSsmCtfChallengeResponse(v *ctfviews.SsmCtfChallengeView) *SsmCtfChallengeResponse {
+	res := &SsmCtfChallengeResponse{
 		ID:             *v.ID,
 		Slug:           *v.Slug,
 		Title:          *v.Title,
@@ -406,6 +407,7 @@ func marshalCtfviewsSsmChallengeViewToSsmChallengeResponse(v *ctfviews.SsmChalle
 		ChallNamespace: v.ChallNamespace,
 		Solved:         *v.Solved,
 		Category:       *v.Category,
+		DisplayOrder:   *v.DisplayOrder,
 	}
 	if v.Services != nil {
 		res.Services = make([]*ChallengeServiceResponse, len(v.Services))

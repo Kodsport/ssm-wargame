@@ -21,7 +21,8 @@
             <div
               v-for="chall in ctfStore.challenges
                 .filter((c) => c.category == category)
-                .sort((a, b) => a.score - b.score)"
+                .sort((a, b) => a.score - b.score)
+                .sort((a, b) => a.display_order - b.display_order)"
               :key="chall.id"
             >
               <CTFChallengePreview

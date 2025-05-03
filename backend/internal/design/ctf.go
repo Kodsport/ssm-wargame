@@ -78,7 +78,7 @@ var _ = Service("ctf", func() {
 			Attribute("password", String)
 			Required("slug")
 		})
-		Result(CollectionOf(ResultChallenge))
+		Result(CollectionOf(ResultCTFChallenge))
 		HTTP(func() {
 			GET("/{slug}/challenges")
 			Param("password")

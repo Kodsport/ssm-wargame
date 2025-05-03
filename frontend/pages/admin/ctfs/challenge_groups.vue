@@ -74,7 +74,11 @@ const groups = ref<any[]>([]);
 const form = ref({
   name: "",
   description: "",
-  challenges: [] as [] as Array<{ id: string; custom_score: number }>,
+  challenges: [] as [] as Array<{
+    id: string;
+    custom_score: number;
+    display_order: number;
+  }>,
 });
 const error = ref("");
 const edit = ref(false);

@@ -85,13 +85,13 @@ func (c *Client) GetUserSolves(ctx context.Context, p *GetUserSolvesPayload) (re
 }
 
 // ListChallenges calls the "ListChallenges" endpoint of the "ctf" service.
-func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (res SsmChallengeCollection, err error) {
+func (c *Client) ListChallenges(ctx context.Context, p *ListChallengesPayload) (res SsmCtfChallengeCollection, err error) {
 	var ires interface{}
 	ires, err = c.ListChallengesEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(SsmChallengeCollection), nil
+	return ires.(SsmCtfChallengeCollection), nil
 }
 
 // Scoreboard calls the "Scoreboard" endpoint of the "ctf" service.

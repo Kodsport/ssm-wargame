@@ -5,7 +5,7 @@
         <label
           class="form-label d-flex justify-content-between align-items-center"
         >
-          <span>Challenges - Right click challenge for more info</span>
+          <span>Challenges - Right click a challenge for more info</span>
 
           <span>
             <span v-if="selectedChallenges.length === 0" class="text-muted">
@@ -21,6 +21,24 @@
           v-model="searchChall"
           placeholder="Search for challenge name..."
         />
+        <div class="mt-2 d-flex align-items-center">
+          <div>
+            <span class="form-label me-2">Show selected only</span>
+            <input
+              type="checkbox"
+              class="form-check-input"
+              v-model="showSelectedOnly"
+              @change="toggleShowSelectedOnly"
+            />
+          </div>
+          <button
+            class="btn btn-info btn-sm ms-4"
+            type="button"
+            @click="selectedChallenges = []"
+          >
+            Deselect all
+          </button>
+        </div>
       </div>
 
       <div v-for="cat in categories" :key="cat.id" class="g-0 row">
@@ -59,9 +77,11 @@
             @contextmenu="showFlagModal(chall, $event)"
             style="cursor: pointer"
           >
-            <div class="card-body py-1 px-2">
+            <div
+              class="card-body py-1 px-2 d-flex flex-column justify-content-between"
+            >
               <div class="d-flex justify-content-between align-items-center">
-                <span class="fw-bold">{{ chall.title }}</span>
+                <span class="fw-bold pe-1">{{ chall.title }}</span>
                 <span class="badge bg-secondary">
                   {{ chall.category }}
                 </span>
@@ -82,11 +102,19 @@
                       ?.custom_score ?? chall.static_score
                   }}</span
                 >
-                <span
-                  v-if="chall.hide"
-                  class="material-symbols-outlined text-secondary"
-                >
-                  visibility_off
+                <span>
+                  <span class="small text-muted">
+                    {{
+                      selectedChallenges?.find((e) => e.id == chall.id)
+                        ?.display_order ?? ""
+                    }}
+                  </span>
+                  <span
+                    v-if="chall.hide"
+                    class="material-symbols-outlined text-secondary ms-2"
+                  >
+                    visibility_off
+                  </span>
                 </span>
               </div>
             </div>
@@ -113,8 +141,20 @@
             <input
               class="form-control"
               v-model="flagModal.custom_score"
-              @input="applyCustomScore(flagModal.custom_score)"
+              @input="applyModalFields"
               placeholder="69"
+            />
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="form-group">
+            <label>Display order (0 is first)</label>
+            <input
+              class="form-control"
+              v-model.number="flagModal.display_order"
+              @input="applyModalFields"
+              placeholder="69"
+              type="number"
             />
           </div>
         </div>
@@ -136,14 +176,14 @@ const flagModal = ref<{
   flag: string;
   title: string;
   custom_score: number | null;
+  display_order: number;
 } | null>(null);
 
 onMounted(async () => {
   await challStore.getChallenges();
   await challStore.getCategories();
-  challenges.value = challStore.challenges;
   categories.value = challStore.categories;
-  challenges.value = challenges.value.map((chall) => {
+  challenges.value = challStore.challenges.map((chall) => {
     const category = challStore.getCategory(chall.category_id);
     return {
       ...chall,
@@ -158,8 +198,10 @@ function toggle(id: string) {
     selectedChallenges.value?.push({
       id: id,
       custom_score: null,
+      display_order: 0,
     });
   else selectedChallenges.value.splice(idx, 1);
+  toggleShowSelectedOnly();
 }
 
 function showFlagModal(chall: any, event: MouseEvent) {
@@ -170,24 +212,57 @@ function showFlagModal(chall: any, event: MouseEvent) {
   const custom_score = selectedChallenges.value.find(
     (e) => e.id === chall.id
   )?.custom_score;
+  const display_order = selectedChallenges.value.find(
+    (e) => e.id === chall.id
+  )?.display_order;
   flagModal.value = {
     id: chall.id,
     flag: flags,
     title: chall.title,
     custom_score: custom_score ?? null,
+    display_order: display_order ?? 0,
   };
 }
 
-function applyCustomScore(score: string | null) {
+function applyModalFields() {
   if (flagModal.value) {
     const idx = selectedChallenges.value.findIndex(
       (e) => e.id === flagModal.value?.id
     );
-    if (idx !== -1 && score !== null && score !== "") {
-      selectedChallenges.value[idx].custom_score = Number(score) ?? null;
+    if (
+      idx !== -1 &&
+      flagModal.value.custom_score !== null &&
+      flagModal.value.custom_score !== ""
+    ) {
+      selectedChallenges.value[idx].custom_score =
+        Number(flagModal.value.custom_score) ?? null;
     } else {
       selectedChallenges.value[idx].custom_score = null;
     }
+
+    if (idx !== -1 && flagModal.value.display_order !== null) {
+      selectedChallenges.value[idx].display_order =
+        Number(flagModal.value.display_order) ?? 0;
+    } else {
+      selectedChallenges.value[idx].display_order = 0;
+    }
+  }
+}
+
+const showSelectedOnly = ref(false);
+function toggleShowSelectedOnly() {
+  if (showSelectedOnly.value) {
+    challenges.value = challenges.value.filter((chall) =>
+      selectedChallenges.value.find((e) => e.id === chall.id)
+    );
+  } else {
+    challenges.value = challStore.challenges.map((chall) => {
+      const category = challStore.getCategory(chall.category_id);
+      return {
+        ...chall,
+        category: category ? category.name : "???",
+      };
+    });
   }
 }
 
@@ -205,7 +280,7 @@ function closeFlagModal() {
 }
 .box {
   overflow-y: auto;
-  height: 300px;
+  height: 350px;
   scrollbar-width: thin;
   scrollbar-color: #b0b0b0 #0000;
 }

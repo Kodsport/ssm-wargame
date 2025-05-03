@@ -25,7 +25,7 @@ type Service interface {
 	// Get a user's solves for a ctf.
 	GetUserSolves(context.Context, *GetUserSolvesPayload) (res *CTFUserSolves, err error)
 	// List challenges for a ctf.
-	ListChallenges(context.Context, *ListChallengesPayload) (res SsmChallengeCollection, err error)
+	ListChallenges(context.Context, *ListChallengesPayload) (res SsmCtfChallengeCollection, err error)
 	// Get scoreboard for a ctf.
 	Scoreboard(context.Context, *ScoreboardPayload) (res []*CTFScore, err error)
 	// Submit a flag for a user in a ctf.
@@ -101,9 +101,9 @@ type ListChallengesPayload struct {
 	Password *string
 }
 
-// SsmChallengeCollection is the result type of the ctf service ListChallenges
-// method.
-type SsmChallengeCollection []*SsmChallenge
+// SsmCtfChallengeCollection is the result type of the ctf service
+// ListChallenges method.
+type SsmCtfChallengeCollection []*SsmCtfChallenge
 
 // ScoreboardPayload is the payload type of the ctf service Scoreboard method.
 type ScoreboardPayload struct {
@@ -132,8 +132,8 @@ type CTFUserSolve struct {
 	SolvedAt    string
 }
 
-// A Wargame challenge
-type SsmChallenge struct {
+// A CTF Wargame challenge
+type SsmCtfChallenge struct {
 	// ID of a file
 	ID string
 	// A unique string that can be used in URLs
@@ -152,10 +152,11 @@ type SsmChallenge struct {
 	CtfEventID     *string
 	ChallNamespace *string
 	// whether the user has solved the challenge or not
-	Solved   bool
-	Category string
-	Authors  []*Author
-	Solvers  []*SsmSolver
+	Solved       bool
+	Category     string
+	Authors      []*Author
+	Solvers      []*SsmSolver
+	DisplayOrder int
 }
 
 type ChallengeService struct {
@@ -246,44 +247,45 @@ func MakeCtfNotActive(err error) *goa.ServiceError {
 	}
 }
 
-// NewSsmChallengeCollection initializes result type SsmChallengeCollection
-// from viewed result type SsmChallengeCollection.
-func NewSsmChallengeCollection(vres ctfviews.SsmChallengeCollection) SsmChallengeCollection {
-	return newSsmChallengeCollection(vres.Projected)
+// NewSsmCtfChallengeCollection initializes result type
+// SsmCtfChallengeCollection from viewed result type SsmCtfChallengeCollection.
+func NewSsmCtfChallengeCollection(vres ctfviews.SsmCtfChallengeCollection) SsmCtfChallengeCollection {
+	return newSsmCtfChallengeCollection(vres.Projected)
 }
 
-// NewViewedSsmChallengeCollection initializes viewed result type
-// SsmChallengeCollection from result type SsmChallengeCollection using the
-// given view.
-func NewViewedSsmChallengeCollection(res SsmChallengeCollection, view string) ctfviews.SsmChallengeCollection {
-	p := newSsmChallengeCollectionView(res)
-	return ctfviews.SsmChallengeCollection{Projected: p, View: "default"}
+// NewViewedSsmCtfChallengeCollection initializes viewed result type
+// SsmCtfChallengeCollection from result type SsmCtfChallengeCollection using
+// the given view.
+func NewViewedSsmCtfChallengeCollection(res SsmCtfChallengeCollection, view string) ctfviews.SsmCtfChallengeCollection {
+	p := newSsmCtfChallengeCollectionView(res)
+	return ctfviews.SsmCtfChallengeCollection{Projected: p, View: "default"}
 }
 
-// newSsmChallengeCollection converts projected type SsmChallengeCollection to
-// service type SsmChallengeCollection.
-func newSsmChallengeCollection(vres ctfviews.SsmChallengeCollectionView) SsmChallengeCollection {
-	res := make(SsmChallengeCollection, len(vres))
+// newSsmCtfChallengeCollection converts projected type
+// SsmCtfChallengeCollection to service type SsmCtfChallengeCollection.
+func newSsmCtfChallengeCollection(vres ctfviews.SsmCtfChallengeCollectionView) SsmCtfChallengeCollection {
+	res := make(SsmCtfChallengeCollection, len(vres))
 	for i, n := range vres {
-		res[i] = newSsmChallenge(n)
+		res[i] = newSsmCtfChallenge(n)
 	}
 	return res
 }
 
-// newSsmChallengeCollectionView projects result type SsmChallengeCollection to
-// projected type SsmChallengeCollectionView using the "default" view.
-func newSsmChallengeCollectionView(res SsmChallengeCollection) ctfviews.SsmChallengeCollectionView {
-	vres := make(ctfviews.SsmChallengeCollectionView, len(res))
+// newSsmCtfChallengeCollectionView projects result type
+// SsmCtfChallengeCollection to projected type SsmCtfChallengeCollectionView
+// using the "default" view.
+func newSsmCtfChallengeCollectionView(res SsmCtfChallengeCollection) ctfviews.SsmCtfChallengeCollectionView {
+	vres := make(ctfviews.SsmCtfChallengeCollectionView, len(res))
 	for i, n := range res {
-		vres[i] = newSsmChallengeView(n)
+		vres[i] = newSsmCtfChallengeView(n)
 	}
 	return vres
 }
 
-// newSsmChallenge converts projected type SsmChallenge to service type
-// SsmChallenge.
-func newSsmChallenge(vres *ctfviews.SsmChallengeView) *SsmChallenge {
-	res := &SsmChallenge{
+// newSsmCtfChallenge converts projected type SsmCtfChallenge to service type
+// SsmCtfChallenge.
+func newSsmCtfChallenge(vres *ctfviews.SsmCtfChallengeView) *SsmCtfChallenge {
+	res := &SsmCtfChallenge{
 		CtfEventID:     vres.CtfEventID,
 		ChallNamespace: vres.ChallNamespace,
 	}
@@ -310,6 +312,9 @@ func newSsmChallenge(vres *ctfviews.SsmChallengeView) *SsmChallenge {
 	}
 	if vres.Category != nil {
 		res.Category = *vres.Category
+	}
+	if vres.DisplayOrder != nil {
+		res.DisplayOrder = *vres.DisplayOrder
 	}
 	if vres.Services != nil {
 		res.Services = make([]*ChallengeService, len(vres.Services))
@@ -338,10 +343,10 @@ func newSsmChallenge(vres *ctfviews.SsmChallengeView) *SsmChallenge {
 	return res
 }
 
-// newSsmChallengeView projects result type SsmChallenge to projected type
-// SsmChallengeView using the "default" view.
-func newSsmChallengeView(res *SsmChallenge) *ctfviews.SsmChallengeView {
-	vres := &ctfviews.SsmChallengeView{
+// newSsmCtfChallengeView projects result type SsmCtfChallenge to projected
+// type SsmCtfChallengeView using the "default" view.
+func newSsmCtfChallengeView(res *SsmCtfChallenge) *ctfviews.SsmCtfChallengeView {
+	vres := &ctfviews.SsmCtfChallengeView{
 		ID:             &res.ID,
 		Slug:           &res.Slug,
 		Title:          &res.Title,
@@ -352,6 +357,7 @@ func newSsmChallengeView(res *SsmChallenge) *ctfviews.SsmChallengeView {
 		ChallNamespace: res.ChallNamespace,
 		Solved:         &res.Solved,
 		Category:       &res.Category,
+		DisplayOrder:   &res.DisplayOrder,
 	}
 	if res.Services != nil {
 		vres.Services = make([]*ctfviews.ChallengeServiceView, len(res.Services))

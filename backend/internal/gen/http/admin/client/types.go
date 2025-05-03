@@ -2386,6 +2386,8 @@ type CTFChallengeRequestBody struct {
 	ID string `form:"id" json:"id" xml:"id"`
 	// Challenge custom score
 	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
+	// Challenge display order
+	DisplayOrder int `form:"display_order" json:"display_order" xml:"display_order"`
 }
 
 // CTFChallengeResponseBody is used to define fields on response body types.
@@ -2394,6 +2396,8 @@ type CTFChallengeResponseBody struct {
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// Challenge custom score
 	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
+	// Challenge display order
+	DisplayOrder *int `form:"display_order,omitempty" json:"display_order,omitempty" xml:"display_order,omitempty"`
 }
 
 // CTFResponse is used to define fields on response body types.
@@ -2414,6 +2418,8 @@ type CTFChallengeResponse struct {
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// Challenge custom score
 	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
+	// Challenge display order
+	DisplayOrder *int `form:"display_order,omitempty" json:"display_order,omitempty" xml:"display_order,omitempty"`
 }
 
 // ChallengeGroupResponse is used to define fields on response body types.
@@ -7486,6 +7492,9 @@ func ValidateCTFChallengeResponseBody(body *CTFChallengeResponseBody) (err error
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
+	if body.DisplayOrder == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_order", "body"))
+	}
 	return
 }
 
@@ -7527,6 +7536,9 @@ func ValidateCTFResponse(body *CTFResponse) (err error) {
 func ValidateCTFChallengeResponse(body *CTFChallengeResponse) (err error) {
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.DisplayOrder == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_order", "body"))
 	}
 	return
 }

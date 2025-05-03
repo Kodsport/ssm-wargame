@@ -68,7 +68,7 @@ type GetUserSolvesResponseBody struct {
 
 // ListChallengesResponseBody is the type of the "ctf" service "ListChallenges"
 // endpoint HTTP response body.
-type ListChallengesResponseBody []*SsmChallengeResponse
+type ListChallengesResponseBody []*SsmCtfChallengeResponse
 
 // ScoreboardResponseBody is the type of the "ctf" service "Scoreboard"
 // endpoint HTTP response body.
@@ -198,8 +198,8 @@ type CTFUserSolveResponseBody struct {
 	SolvedAt    *string `form:"solved_at,omitempty" json:"solved_at,omitempty" xml:"solved_at,omitempty"`
 }
 
-// SsmChallengeResponse is used to define fields on response body types.
-type SsmChallengeResponse struct {
+// SsmCtfChallengeResponse is used to define fields on response body types.
+type SsmCtfChallengeResponse struct {
 	// ID of a file
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// A unique string that can be used in URLs
@@ -218,10 +218,11 @@ type SsmChallengeResponse struct {
 	CtfEventID     *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	ChallNamespace *string `form:"chall_namespace,omitempty" json:"chall_namespace,omitempty" xml:"chall_namespace,omitempty"`
 	// whether the user has solved the challenge or not
-	Solved   *bool                `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
-	Category *string              `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
-	Authors  []*AuthorResponse    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
-	Solvers  []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+	Solved       *bool                `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
+	Category     *string              `form:"category,omitempty" json:"category,omitempty" xml:"category,omitempty"`
+	Authors      []*AuthorResponse    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Solvers      []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+	DisplayOrder *int                 `form:"display_order,omitempty" json:"display_order,omitempty" xml:"display_order,omitempty"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -387,12 +388,12 @@ func NewGetUserSolvesCTFUserSolvesOK(body *GetUserSolvesResponseBody) *ctf.CTFUs
 	return v
 }
 
-// NewListChallengesSsmChallengeCollectionOK builds a "ctf" service
+// NewListChallengesSsmCtfChallengeCollectionOK builds a "ctf" service
 // "ListChallenges" endpoint result from a HTTP "OK" response.
-func NewListChallengesSsmChallengeCollectionOK(body ListChallengesResponseBody) ctfviews.SsmChallengeCollectionView {
-	v := make([]*ctfviews.SsmChallengeView, len(body))
+func NewListChallengesSsmCtfChallengeCollectionOK(body ListChallengesResponseBody) ctfviews.SsmCtfChallengeCollectionView {
+	v := make([]*ctfviews.SsmCtfChallengeView, len(body))
 	for i, val := range body {
-		v[i] = unmarshalSsmChallengeResponseToCtfviewsSsmChallengeView(val)
+		v[i] = unmarshalSsmCtfChallengeResponseToCtfviewsSsmCtfChallengeView(val)
 	}
 
 	return v
@@ -726,14 +727,20 @@ func ValidateCTFUserSolveResponseBody(body *CTFUserSolveResponseBody) (err error
 	return
 }
 
-// ValidateSsmChallengeResponse runs the validations defined on
-// SsmChallengeResponse
-func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
+// ValidateSsmCtfChallengeResponse runs the validations defined on
+// SsmCtfChallengeResponse
+func ValidateSsmCtfChallengeResponse(body *SsmCtfChallengeResponse) (err error) {
 	if body.Solved == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solved", "body"))
 	}
 	if body.Category == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("category", "body"))
+	}
+	if body.DisplayOrder == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_order", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.Title == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("title", "body"))
@@ -749,9 +756,6 @@ func ValidateSsmChallengeResponse(body *SsmChallengeResponse) (err error) {
 	}
 	if body.Solves == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
-	}
-	if body.ID == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	if body.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.id", *body.ID, goa.FormatUUID))

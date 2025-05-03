@@ -2360,6 +2360,8 @@ type CTFChallengeResponseBody struct {
 	ID string `form:"id" json:"id" xml:"id"`
 	// Challenge custom score
 	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
+	// Challenge display order
+	DisplayOrder int `form:"display_order" json:"display_order" xml:"display_order"`
 }
 
 // CTFResponse is used to define fields on response body types.
@@ -2380,6 +2382,8 @@ type CTFChallengeResponse struct {
 	ID string `form:"id" json:"id" xml:"id"`
 	// Challenge custom score
 	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
+	// Challenge display order
+	DisplayOrder int `form:"display_order" json:"display_order" xml:"display_order"`
 }
 
 // ChallengeGroupResponse is used to define fields on response body types.
@@ -2431,6 +2435,8 @@ type CTFChallengeRequestBody struct {
 	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
 	// Challenge custom score
 	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
+	// Challenge display order
+	DisplayOrder *int `form:"display_order,omitempty" json:"display_order,omitempty" xml:"display_order,omitempty"`
 }
 
 // NewSsmAdminChallengeResponseCollection builds the HTTP response body from
@@ -4988,6 +4994,9 @@ func ValidateImportChallServiceRequestBody(body *ImportChallServiceRequestBody) 
 func ValidateCTFChallengeRequestBody(body *CTFChallengeRequestBody) (err error) {
 	if body.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.DisplayOrder == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("display_order", "body"))
 	}
 	return
 }

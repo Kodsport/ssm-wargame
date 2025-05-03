@@ -47,6 +47,7 @@ function apply(challenges: Record<string, unknown>[]) {
       selectedChallenges.value.push({
         id: chall.id,
         custom_score: chall.custom_score,
+        display_order: chall.display_order,
       });
     }
   }

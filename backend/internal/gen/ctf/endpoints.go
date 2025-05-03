@@ -93,7 +93,7 @@ func NewListChallengesEndpoint(s Service) goa.Endpoint {
 		if err != nil {
 			return nil, err
 		}
-		vres := NewViewedSsmChallengeCollection(res, "default")
+		vres := NewViewedSsmCtfChallengeCollection(res, "default")
 		return vres, nil
 	}
 }

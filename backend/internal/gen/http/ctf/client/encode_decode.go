@@ -431,13 +431,13 @@ func DecodeListChallengesResponse(decoder func(*http.Response) goahttp.Decoder, 
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("ctf", "ListChallenges", err)
 			}
-			p := NewListChallengesSsmChallengeCollectionOK(body)
+			p := NewListChallengesSsmCtfChallengeCollectionOK(body)
 			view := "default"
-			vres := ctfviews.SsmChallengeCollection{Projected: p, View: view}
-			if err = ctfviews.ValidateSsmChallengeCollection(vres); err != nil {
+			vres := ctfviews.SsmCtfChallengeCollection{Projected: p, View: view}
+			if err = ctfviews.ValidateSsmCtfChallengeCollection(vres); err != nil {
 				return nil, goahttp.ErrValidationError("ctf", "ListChallenges", err)
 			}
-			res := ctf.NewSsmChallengeCollection(vres)
+			res := ctf.NewSsmCtfChallengeCollection(vres)
 			return res, nil
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
@@ -656,10 +656,11 @@ func unmarshalCTFUserSolveResponseBodyToCtfCTFUserSolve(v *CTFUserSolveResponseB
 	return res
 }
 
-// unmarshalSsmChallengeResponseToCtfviewsSsmChallengeView builds a value of
-// type *ctfviews.SsmChallengeView from a value of type *SsmChallengeResponse.
-func unmarshalSsmChallengeResponseToCtfviewsSsmChallengeView(v *SsmChallengeResponse) *ctfviews.SsmChallengeView {
-	res := &ctfviews.SsmChallengeView{
+// unmarshalSsmCtfChallengeResponseToCtfviewsSsmCtfChallengeView builds a value
+// of type *ctfviews.SsmCtfChallengeView from a value of type
+// *SsmCtfChallengeResponse.
+func unmarshalSsmCtfChallengeResponseToCtfviewsSsmCtfChallengeView(v *SsmCtfChallengeResponse) *ctfviews.SsmCtfChallengeView {
+	res := &ctfviews.SsmCtfChallengeView{
 		ID:             v.ID,
 		Slug:           v.Slug,
 		Title:          v.Title,
@@ -670,6 +671,7 @@ func unmarshalSsmChallengeResponseToCtfviewsSsmChallengeView(v *SsmChallengeResp
 		ChallNamespace: v.ChallNamespace,
 		Solved:         v.Solved,
 		Category:       v.Category,
+		DisplayOrder:   v.DisplayOrder,
 	}
 	if v.Services != nil {
 		res.Services = make([]*ctfviews.ChallengeServiceView, len(v.Services))

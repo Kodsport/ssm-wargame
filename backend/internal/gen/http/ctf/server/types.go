@@ -66,9 +66,9 @@ type GetUserSolvesResponseBody struct {
 	Solves   []*CTFUserSolveResponseBody `form:"solves" json:"solves" xml:"solves"`
 }
 
-// SsmChallengeResponseCollection is the type of the "ctf" service
+// SsmCtfChallengeResponseCollection is the type of the "ctf" service
 // "ListChallenges" endpoint HTTP response body.
-type SsmChallengeResponseCollection []*SsmChallengeResponse
+type SsmCtfChallengeResponseCollection []*SsmCtfChallengeResponse
 
 // ScoreboardResponseBody is the type of the "ctf" service "Scoreboard"
 // endpoint HTTP response body.
@@ -198,8 +198,8 @@ type CTFUserSolveResponseBody struct {
 	SolvedAt    string `form:"solved_at" json:"solved_at" xml:"solved_at"`
 }
 
-// SsmChallengeResponse is used to define fields on response body types.
-type SsmChallengeResponse struct {
+// SsmCtfChallengeResponse is used to define fields on response body types.
+type SsmCtfChallengeResponse struct {
 	// ID of a file
 	ID string `form:"id" json:"id" xml:"id"`
 	// A unique string that can be used in URLs
@@ -218,10 +218,11 @@ type SsmChallengeResponse struct {
 	CtfEventID     *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	ChallNamespace *string `form:"chall_namespace,omitempty" json:"chall_namespace,omitempty" xml:"chall_namespace,omitempty"`
 	// whether the user has solved the challenge or not
-	Solved   bool                 `form:"solved" json:"solved" xml:"solved"`
-	Category string               `form:"category" json:"category" xml:"category"`
-	Authors  []*AuthorResponse    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
-	Solvers  []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+	Solved       bool                 `form:"solved" json:"solved" xml:"solved"`
+	Category     string               `form:"category" json:"category" xml:"category"`
+	Authors      []*AuthorResponse    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Solvers      []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+	DisplayOrder int                  `form:"display_order" json:"display_order" xml:"display_order"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -323,12 +324,12 @@ func NewGetUserSolvesResponseBody(res *ctf.CTFUserSolves) *GetUserSolvesResponse
 	return body
 }
 
-// NewSsmChallengeResponseCollection builds the HTTP response body from the
+// NewSsmCtfChallengeResponseCollection builds the HTTP response body from the
 // result of the "ListChallenges" endpoint of the "ctf" service.
-func NewSsmChallengeResponseCollection(res ctfviews.SsmChallengeCollectionView) SsmChallengeResponseCollection {
-	body := make([]*SsmChallengeResponse, len(res))
+func NewSsmCtfChallengeResponseCollection(res ctfviews.SsmCtfChallengeCollectionView) SsmCtfChallengeResponseCollection {
+	body := make([]*SsmCtfChallengeResponse, len(res))
 	for i, val := range res {
-		body[i] = marshalCtfviewsSsmChallengeViewToSsmChallengeResponse(val)
+		body[i] = marshalCtfviewsSsmCtfChallengeViewToSsmCtfChallengeResponse(val)
 	}
 	return body
 }

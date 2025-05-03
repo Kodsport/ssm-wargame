@@ -16,6 +16,7 @@ CREATE TABLE ctf_challenges (
     ctf_id UUID NOT NULL REFERENCES ctfs(id) ON DELETE CASCADE,
     challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
     custom_score INT,
+    display_order INT NOT NULL,
     PRIMARY KEY (ctf_id, challenge_id)
 );
 
@@ -48,5 +49,6 @@ CREATE TABLE challenge_group_challenges (
     challenge_group_id UUID NOT NULL REFERENCES challenge_groups(id) ON DELETE CASCADE,
     challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
     custom_score INT,
+    display_order INT NOT NULL,
     PRIMARY KEY (challenge_group_id, challenge_id)
 );

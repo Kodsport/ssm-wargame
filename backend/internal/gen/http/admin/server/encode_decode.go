@@ -3721,8 +3721,9 @@ func marshalAdminviewsSsmAdminCourseViewToSsmAdminCourseResponse(v *adminviews.S
 // *admin.CTFChallenge from a value of type *CTFChallengeRequestBody.
 func unmarshalCTFChallengeRequestBodyToAdminCTFChallenge(v *CTFChallengeRequestBody) *admin.CTFChallenge {
 	res := &admin.CTFChallenge{
-		ID:          *v.ID,
-		CustomScore: v.CustomScore,
+		ID:           *v.ID,
+		CustomScore:  v.CustomScore,
+		DisplayOrder: *v.DisplayOrder,
 	}
 
 	return res
@@ -3732,8 +3733,9 @@ func unmarshalCTFChallengeRequestBodyToAdminCTFChallenge(v *CTFChallengeRequestB
 // *CTFChallengeResponseBody from a value of type *admin.CTFChallenge.
 func marshalAdminCTFChallengeToCTFChallengeResponseBody(v *admin.CTFChallenge) *CTFChallengeResponseBody {
 	res := &CTFChallengeResponseBody{
-		ID:          v.ID,
-		CustomScore: v.CustomScore,
+		ID:           v.ID,
+		CustomScore:  v.CustomScore,
+		DisplayOrder: v.DisplayOrder,
 	}
 
 	return res
@@ -3764,8 +3766,9 @@ func marshalAdminCTFToCTFResponse(v *admin.CTF) *CTFResponse {
 // *CTFChallengeResponse from a value of type *admin.CTFChallenge.
 func marshalAdminCTFChallengeToCTFChallengeResponse(v *admin.CTFChallenge) *CTFChallengeResponse {
 	res := &CTFChallengeResponse{
-		ID:          v.ID,
-		CustomScore: v.CustomScore,
+		ID:           v.ID,
+		CustomScore:  v.CustomScore,
+		DisplayOrder: v.DisplayOrder,
 	}
 
 	return res

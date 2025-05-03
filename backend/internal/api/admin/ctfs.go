@@ -29,9 +29,9 @@ func (s *service) CreateCTF(ctx context.Context, req *spec.CreateCTFPayload) (*s
 	}
 	for _, chall := range req.Challenges {
 		if chall.CustomScore != nil {
-			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id, custom_score) VALUES ($1, $2, $3)`, id, chall.ID, *chall.CustomScore)
+			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id, custom_score, display_order) VALUES ($1, $2, $3, $4)`, id, chall.ID, *chall.CustomScore, chall.DisplayOrder)
 		} else {
-			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id) VALUES ($1, $2)`, id, chall.ID)
+			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id, display_order) VALUES ($1, $2, $3)`, id, chall.ID, chall.DisplayOrder)
 		}
 		if err != nil {
 			return nil, err
@@ -55,7 +55,7 @@ func (s *service) ListCTFs(ctx context.Context, req *spec.ListCTFsPayload) ([]*s
 	}
 	var result []*spec.CTF
 	for _, ctf := range ctfs {
-		rows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
+		rows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score, display_order FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -63,7 +63,8 @@ func (s *service) ListCTFs(ctx context.Context, req *spec.ListCTFsPayload) ([]*s
 		for rows.Next() {
 			var cid string
 			var customScore sql.NullInt64
-			if err := rows.Scan(&cid, &customScore); err != nil {
+			var displayOrder int
+			if err := rows.Scan(&cid, &customScore, &displayOrder); err != nil {
 				rows.Close()
 				return nil, err
 			}
@@ -73,8 +74,9 @@ func (s *service) ListCTFs(ctx context.Context, req *spec.ListCTFsPayload) ([]*s
 				csPtr = &v
 			}
 			challenges = append(challenges, &spec.CTFChallenge{
-				ID:          cid,
-				CustomScore: csPtr,
+				ID:           cid,
+				CustomScore:  csPtr,
+				DisplayOrder: displayOrder,
 			})
 		}
 		rows.Close()
@@ -121,9 +123,9 @@ func (s *service) UpdateCTF(ctx context.Context, req *spec.UpdateCTFPayload) (*s
 	}
 	for _, chall := range req.Challenges {
 		if chall.CustomScore != nil {
-			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id, custom_score) VALUES ($1, $2, $3)`, ctf.ID, chall.ID, *chall.CustomScore)
+			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id, custom_score, display_order) VALUES ($1, $2, $3, $4)`, ctf.ID, chall.ID, *chall.CustomScore, chall.DisplayOrder)
 		} else {
-			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id) VALUES ($1, $2)`, ctf.ID, chall.ID)
+			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id, display_order) VALUES ($1, $2, $3)`, ctf.ID, chall.ID, chall.DisplayOrder)
 		}
 		if err != nil {
 			return nil, err
@@ -158,9 +160,9 @@ func (s *service) CreateChallengeGroup(ctx context.Context, req *spec.CreateChal
 	}
 	for _, chall := range req.Challenges {
 		if chall.CustomScore != nil {
-			_, err = s.db.ExecContext(ctx, `INSERT INTO challenge_group_challenges (challenge_group_id, challenge_id, custom_score) VALUES ($1, $2, $3)`, id, chall.ID, *chall.CustomScore)
+			_, err = s.db.ExecContext(ctx, `INSERT INTO challenge_group_challenges (challenge_group_id, challenge_id, custom_score, display_order) VALUES ($1, $2, $3, $4)`, id, chall.ID, *chall.CustomScore, chall.DisplayOrder)
 		} else {
-			_, err = s.db.ExecContext(ctx, `INSERT INTO challenge_group_challenges (challenge_group_id, challenge_id) VALUES ($1, $2)`, id, chall.ID)
+			_, err = s.db.ExecContext(ctx, `INSERT INTO challenge_group_challenges (challenge_group_id, challenge_id, display_order) VALUES ($1, $2, $3)`, id, chall.ID, chall.DisplayOrder)
 		}
 		if err != nil {
 			return nil, err
@@ -191,9 +193,9 @@ func (s *service) UpdateChallengeGroup(ctx context.Context, req *spec.UpdateChal
 	}
 	for _, chall := range req.Challenges {
 		if chall.CustomScore != nil {
-			_, err = s.db.ExecContext(ctx, `INSERT INTO challenge_group_challenges (challenge_group_id, challenge_id, custom_score) VALUES ($1, $2, $3)`, group.ID, chall.ID, *chall.CustomScore)
+			_, err = s.db.ExecContext(ctx, `INSERT INTO challenge_group_challenges (challenge_group_id, challenge_id, custom_score, display_order) VALUES ($1, $2, $3, $4)`, group.ID, chall.ID, *chall.CustomScore, chall.DisplayOrder)
 		} else {
-			_, err = s.db.ExecContext(ctx, `INSERT INTO challenge_group_challenges (challenge_group_id, challenge_id) VALUES ($1, $2)`, group.ID, chall.ID)
+			_, err = s.db.ExecContext(ctx, `INSERT INTO challenge_group_challenges (challenge_group_id, challenge_id, display_order) VALUES ($1, $2, $3)`, group.ID, chall.ID, chall.DisplayOrder)
 		}
 		if err != nil {
 			return nil, err
@@ -219,7 +221,7 @@ func (s *service) ListChallengeGroups(ctx context.Context, req *spec.ListChallen
 	}
 	var result []*spec.ChallengeGroup
 	for _, group := range groups {
-		rows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score FROM challenge_group_challenges WHERE challenge_group_id = $1`, group.ID)
+		rows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score, display_order FROM challenge_group_challenges WHERE challenge_group_id = $1`, group.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -227,7 +229,8 @@ func (s *service) ListChallengeGroups(ctx context.Context, req *spec.ListChallen
 		for rows.Next() {
 			var cid string
 			var customScore sql.NullInt64
-			if err := rows.Scan(&cid, &customScore); err != nil {
+			var displayOrder int
+			if err := rows.Scan(&cid, &customScore, &displayOrder); err != nil {
 				rows.Close()
 				return nil, err
 			}
@@ -237,8 +240,9 @@ func (s *service) ListChallengeGroups(ctx context.Context, req *spec.ListChallen
 				csPtr = &v
 			}
 			challenges = append(challenges, &spec.CTFChallenge{
-				ID:          cid,
-				CustomScore: csPtr,
+				ID:           cid,
+				CustomScore:  csPtr,
+				DisplayOrder: displayOrder,
 			})
 		}
 		rows.Close()

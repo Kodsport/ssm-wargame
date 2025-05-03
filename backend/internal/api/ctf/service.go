@@ -153,7 +153,7 @@ func (s *Service) GetUserSolves(ctx context.Context, req *spec.GetUserSolvesPayl
 	}, nil
 }
 
-func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmChallengeCollection, error) {
+func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPayload) (spec.SsmCtfChallengeCollection, error) {
 	ctf, err := models.CTFS(models.CTFWhere.Slug.EQ(req.Slug)).One(ctx, s.db)
 	if err != nil {
 		return nil, err
@@ -163,16 +163,18 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		return nil, errors.New("ctf not started yet")
 	}
 
-	rows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
+	rows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score, display_order FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
 	if err != nil {
 		return nil, err
 	}
 
 	customScores := make(map[string]*int)
+	displayOrders := make(map[string]int)
 	for rows.Next() {
 		var cid string
 		var customScore sql.NullInt64
-		if err := rows.Scan(&cid, &customScore); err != nil {
+		var displayOrder int
+		if err := rows.Scan(&cid, &customScore, &displayOrder); err != nil {
 			return nil, err
 		}
 		if customScore.Valid {
@@ -181,6 +183,7 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		} else {
 			customScores[cid] = nil
 		}
+		displayOrders[cid] = displayOrder
 	}
 	rows.Close()
 
@@ -220,7 +223,7 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	if err != nil {
 		return nil, err
 	}
-	res := make(spec.SsmChallengeCollection, len(challs))
+	res := make(spec.SsmCtfChallengeCollection, len(challs))
 
 	for i, chall := range challs {
 		score := chall.StaticScore.Int
@@ -230,7 +233,7 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			score = dynamicScore(500, 100, float64(chall.NumSolves))
 		}
 
-		res[i] = &spec.SsmChallenge{
+		res[i] = &spec.SsmCtfChallenge{
 			ID:          chall.ID,
 			Slug:        chall.Slug,
 			Title:       chall.Title,
@@ -242,6 +245,7 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Category:       chall.Category,
 			CtfEventID:     chall.CTFEventID.Ptr(),
 			ChallNamespace: chall.ChallNamespace.Ptr(),
+			DisplayOrder:   displayOrders[chall.ID],
 		}
 
 		res[i].Files = make([]*spec.ChallengeFiles, len(chall.R.ChallengeFiles))

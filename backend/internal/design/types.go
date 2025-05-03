@@ -331,7 +331,8 @@ var CTFCreate = Type("CTFCreate", func() {
 var CTFChallenge = Type("CTFChallenge", func() {
 	Attribute("id", String, "Challenge ID", func() { Example("85163218-8735-42ed-a7a6-42a9de2294df") })
 	Attribute("custom_score", Int, "Challenge custom score", func() { Example(50) })
-	Required("id")
+	Attribute("display_order", Int, "Challenge display order", func() { Example(1) })
+	Required("id", "display_order")
 })
 
 var CTFUpdate = Type("CTFUpdate", func() {
@@ -388,4 +389,11 @@ var FlagSubmission = Type("FlagSubmission", func() {
 		Example("user-password")
 	})
 	Required("flag", "slug", "challenge_id", "password")
+})
+
+var CTFListChallenge = Type("CTFListChallenge", func() {
+	Extend(IDArtifact)
+	Extend(Challenge)
+	Attribute("display_order", Int)
+	Required("display_order")
 })

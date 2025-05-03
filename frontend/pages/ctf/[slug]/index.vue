@@ -147,4 +147,7 @@ function copyPassword() {
   border-bottom: 3px solid;
   border-image: linear-gradient(to right, var(--bs-primary), #ffc869) 1;
 }
+.form-control {
+  background: #00000000 !important;
+}
 </style>
