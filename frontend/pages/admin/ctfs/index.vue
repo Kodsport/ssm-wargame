@@ -102,7 +102,7 @@
           </td>
           <td class="text-end">
             <button class="btn btn-info me-2" @click="viewUsers(ctf.id)">
-              View users
+              Manage users
             </button>
             <button class="btn btn-info me-2" @click="editCTF(ctf.id)">
               Edit

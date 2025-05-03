@@ -5,7 +5,13 @@
         <label
           class="form-label d-flex justify-content-between align-items-center"
         >
-          <span>Challenges - Right click a challenge for more info</span>
+          <span
+            >Challenges
+            <span class="small text-muted"
+              >Right click a challenge to edit custom score, edit display order
+              and view flag</span
+            >
+          </span>
 
           <span>
             <span v-if="selectedChallenges.length === 0" class="text-muted">

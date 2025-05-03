@@ -2,8 +2,13 @@
   <div class="form-group mt-2">
     <div class="challenge-picker-outer box card shadow-sm mb-2 p-2">
       <p class="mb-2">
-        Challenge groups -
-        <nuxt-link to="/admin/ctfs/challenge_groups">View all</nuxt-link>
+        Challenge groups
+        <span class="small text-muted"
+          >Only appends not already selected challenges.
+          <nuxt-link to="/admin/ctfs/challenge_groups"
+            >View all groups</nuxt-link
+          >.</span
+        >
       </p>
       <div
         v-for="group in groups"

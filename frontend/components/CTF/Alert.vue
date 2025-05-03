@@ -40,20 +40,19 @@ const hasEnded = computed(() => {
 
 const hasNotStarted = computed(() => {
   if (!ctfStore.ctf.slug) return false;
-  const nowDate = new Date();
   return new Date(ctfStore.ctf.start_time).getTime() > now.value;
 });
 
 const text = computed(() => {
   if (hasNotStarted.value)
     return (
-      "Tävlingen har inte börjat ännu! Den börjar " +
+      "CTF:en har inte börjat ännu! Den börjar " +
       moment
         .default(new Date(ctfStore.ctf.start_time))
         .format("YYYY-MM-DD HH:mm:ss") +
       "."
     );
-  if (hasEnded.value) return "Tävlingen har avslutats!";
+  if (hasEnded.value) return "CTF:en har avslutats!";
   return "";
 });
 

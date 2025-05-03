@@ -67,17 +67,17 @@ tbody > tr {
 }
 .scoreboard-gold td {
   background: #a1862a !important;
-  color: #ffe88e !important;
+  color: #fff6d3 !important;
   font-weight: bold;
 }
 .scoreboard-silver td {
   background: #52575c !important;
-  color: #dadada !important;
+  color: #e7e7e7 !important;
   font-weight: bold;
 }
 .scoreboard-bronze td {
   background: #7a4e21 !important;
-  color: #f1be86 !important;
+  color: #ffe3c6 !important;
   font-weight: bold;
 }
 .scoreboard-user td {
