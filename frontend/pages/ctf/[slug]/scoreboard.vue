@@ -1,0 +1,83 @@
+<template>
+  <div class="container">
+    <h1>Poängtavla</h1>
+    <CTFAlert v-if="ctfStore?.ctf" />
+    <table class="table table-hover align-middle scoreboard-table mt-4">
+      <thead class="table-active">
+        <tr>
+          <th>#</th>
+          <th>Namn</th>
+          <th>Poäng</th>
+          <th>Lösningar</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(row, i) in ctfStore.scoreboard"
+          :key="row.username"
+          :class="{
+            'scoreboard-gold': i === 0,
+            'scoreboard-silver': i === 1,
+            'scoreboard-bronze': i === 2,
+            'scoreboard-user': auth.ctfUser.username === row.username && i > 2,
+          }"
+        >
+          <td class="fw-bold">{{ i + 1 }}</td>
+          <td>{{ row.username }}</td>
+          <td class="fw-bold">{{ row.score }}</td>
+          <td>{{ row.solves ? row.solves.length : 0 }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useCTFStore } from "../../../store/ctf";
+import { useAuthStore } from "../../../store/auth";
+
+definePageMeta({
+  layout: "ctf",
+  middleware: "ctf",
+});
+
+const route = useRoute();
+const ctfStore = useCTFStore();
+const auth = useAuthStore();
+</script>
+
+<style scoped>
+.scoreboard-table {
+  font-size: 1.1rem;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+.table > :not(caption) > * > * {
+  background-color: #00000000;
+}
+.scoreboard-table th,
+.scoreboard-table td {
+  vertical-align: middle;
+}
+.scoreboard-gold td {
+  background: #a1862a !important;
+  color: #ffe88e !important;
+  font-weight: bold;
+}
+.scoreboard-silver td {
+  background: #52575c !important;
+  color: #dadada !important;
+  font-weight: bold;
+}
+.scoreboard-bronze td {
+  background: #7a4e21 !important;
+  color: #f1be86 !important;
+  font-weight: bold;
+}
+.scoreboard-user td {
+  background: #0000002d !important;
+  font-weight: bold;
+}
+</style>
