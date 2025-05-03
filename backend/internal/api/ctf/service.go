@@ -163,20 +163,31 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		return nil, errors.New("ctf not started yet")
 	}
 
-	rows, err := s.db.QueryContext(ctx, `SELECT challenge_id FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
+	rows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	var challengeIDs []string
+	customScores := make(map[string]*int)
 	for rows.Next() {
 		var cid string
-		if err := rows.Scan(&cid); err != nil {
+		var customScore sql.NullInt64
+		if err := rows.Scan(&cid, &customScore); err != nil {
 			return nil, err
 		}
-		challengeIDs = append(challengeIDs, cid)
+		if customScore.Valid {
+			v := int(customScore.Int64)
+			customScores[cid] = &v
+		} else {
+			customScores[cid] = nil
+		}
 	}
 	rows.Close()
+
+	var challengeIDs []string
+	for cid := range customScores {
+		challengeIDs = append(challengeIDs, cid)
+	}
 
 	challs := make([]*custommodels.UserChall, 0)
 	q := models.NewQuery(
@@ -213,7 +224,9 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 	for i, chall := range challs {
 		score := chall.StaticScore.Int
-		if !chall.StaticScore.Valid {
+		if cs, ok := customScores[chall.ID]; ok && cs != nil {
+			score = *cs
+		} else if !chall.StaticScore.Valid {
 			score = dynamicScore(500, 100, float64(chall.NumSolves))
 		}
 

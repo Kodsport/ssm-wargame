@@ -376,8 +376,8 @@ type CreateCTFPayload struct {
 	EndTime int64
 	// Unique slug
 	Slug string
-	// Challenge IDs
-	ChallengeIds []string
+	// Challenges
+	Challenges []*CTFChallenge
 	// Is the CTF private?
 	Private *bool
 	// CTF password
@@ -386,13 +386,14 @@ type CreateCTFPayload struct {
 
 // CTF is the result type of the admin service CreateCTF method.
 type CTF struct {
-	ID           string
-	Name         string
-	Description  string
-	StartTime    string
-	EndTime      string
-	Slug         string
-	ChallengeIds []string
+	ID          string
+	Name        string
+	Description string
+	StartTime   string
+	EndTime     string
+	Slug        string
+	// Challenges
+	Challenges []*CTFChallenge
 }
 
 // UpdateCTFPayload is the payload type of the admin service UpdateCTF method.
@@ -410,8 +411,8 @@ type UpdateCTFPayload struct {
 	EndTime int64
 	// Unique slug
 	Slug string
-	// Challenge IDs
-	ChallengeIds []string
+	// Challenges
+	Challenges []*CTFChallenge
 	// Is the CTF private?
 	Private *bool
 	// CTF password
@@ -433,19 +434,21 @@ type ListCTFsPayload struct {
 // CreateChallengeGroupPayload is the payload type of the admin service
 // CreateChallengeGroup method.
 type CreateChallengeGroupPayload struct {
-	Token        string
-	Name         string
-	Description  string
-	ChallengeIds []string
+	Token       string
+	Name        string
+	Description string
+	// Challenges
+	Challenges []*CTFChallenge
 }
 
 // ChallengeGroup is the result type of the admin service CreateChallengeGroup
 // method.
 type ChallengeGroup struct {
-	ID           string
-	Name         string
-	Description  string
-	ChallengeIds []string
+	ID          string
+	Name        string
+	Description string
+	// Challenges
+	Challenges []*CTFChallenge
 }
 
 // UpdateChallengeGroupPayload is the payload type of the admin service
@@ -453,10 +456,11 @@ type ChallengeGroup struct {
 type UpdateChallengeGroupPayload struct {
 	Token string
 	// ID of a file
-	ID           string
-	Name         string
-	Description  string
-	ChallengeIds []string
+	ID          string
+	Name        string
+	Description string
+	// Challenges
+	Challenges []*CTFChallenge
 }
 
 // DeleteChallengeGroupPayload is the payload type of the admin service
@@ -634,6 +638,13 @@ type SsmAdminCourse struct {
 	Description string
 	Publish     bool
 	AuthorIds   []string
+}
+
+type CTFChallenge struct {
+	// Challenge ID
+	ID string
+	// Challenge custom score
+	CustomScore *int
 }
 
 // MakeUnauthorized builds a goa.ServiceError from an error.

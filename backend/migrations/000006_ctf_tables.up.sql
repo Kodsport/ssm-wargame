@@ -47,5 +47,6 @@ CREATE TABLE challenge_groups (
 CREATE TABLE challenge_group_challenges (
     challenge_group_id UUID NOT NULL REFERENCES challenge_groups(id) ON DELETE CASCADE,
     challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
+    custom_score INT,
     PRIMARY KEY (challenge_group_id, challenge_id)
 );

@@ -263,8 +263,8 @@ var CTF = Type("CTF", func() {
 	Attribute("start_time", String)
 	Attribute("end_time", String)
 	Attribute("slug", String)
-	Attribute("challenge_ids", ArrayOf(String))
-	Required("id", "name", "description", "slug", "start_time", "end_time", "challenge_ids")
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Required("id", "name", "description", "slug", "start_time", "end_time", "challenges")
 })
 
 var CTFInfo = Type("CTFInfo", func() {
@@ -322,10 +322,16 @@ var CTFCreate = Type("CTFCreate", func() {
 	Attribute("start_time", Int64, "CTF start time")
 	Attribute("end_time", Int64, "CTF end time")
 	Attribute("slug", String, "Unique slug", func() { Example("school-ctf-2025") })
-	Attribute("challenge_ids", ArrayOf(String), "Challenge IDs")
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
 	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
 	Attribute("password", String, "CTF password", func() { Example("password") })
-	Required("name", "description", "start_time", "end_time", "slug", "challenge_ids")
+	Required("name", "description", "start_time", "end_time", "slug", "challenges")
+})
+
+var CTFChallenge = Type("CTFChallenge", func() {
+	Attribute("id", String, "Challenge ID", func() { Example("85163218-8735-42ed-a7a6-42a9de2294df") })
+	Attribute("custom_score", Int, "Challenge custom score", func() { Example(50) })
+	Required("id")
 })
 
 var CTFUpdate = Type("CTFUpdate", func() {
@@ -334,18 +340,18 @@ var CTFUpdate = Type("CTFUpdate", func() {
 	Attribute("start_time", Int64, "CTF start time")
 	Attribute("end_time", Int64, "CTF end time")
 	Attribute("slug", String, "Unique slug", func() { Example("school-ctf-2025") })
-	Attribute("challenge_ids", ArrayOf(String), "Challenge IDs")
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
 	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
 	Attribute("password", String, "CTF password", func() { Example("password") })
-	Required("name", "description", "start_time", "end_time", "slug", "challenge_ids")
+	Required("name", "description", "start_time", "end_time", "slug", "challenges")
 })
 
 var ChallengeGroup = Type("ChallengeGroup", func() {
 	Attribute("id", String)
 	Attribute("name", String)
 	Attribute("description", String)
-	Attribute("challenge_ids", ArrayOf(String))
-	Required("id", "name", "description", "challenge_ids")
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Required("id", "name", "description", "challenges")
 })
 
 var CreateChallengeGroup = Type("CreateChallengeGroup", func() {
@@ -355,8 +361,8 @@ var CreateChallengeGroup = Type("CreateChallengeGroup", func() {
 	Attribute("description", String, func() {
 		Example("This is a group of challenges")
 	})
-	Attribute("challenge_ids", ArrayOf(String))
-	Required("name", "description", "challenge_ids")
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Required("name", "description", "challenges")
 })
 
 var UpdateChallengeGroup = Type("UpdateChallengeGroup", func() {
@@ -366,8 +372,8 @@ var UpdateChallengeGroup = Type("UpdateChallengeGroup", func() {
 	Attribute("description", String, func() {
 		Example("This is a group of challenges")
 	})
-	Attribute("challenge_ids", ArrayOf(String))
-	Required("name", "description", "challenge_ids")
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Required("name", "description", "challenges")
 })
 
 var FlagSubmission = Type("FlagSubmission", func() {

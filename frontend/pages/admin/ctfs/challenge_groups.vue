@@ -22,7 +22,7 @@
           required
         />
       </div>
-      <ChallengePicker v-model="form.challenge_ids"></ChallengePicker>
+      <ChallengePicker v-model="form.challenges"></ChallengePicker>
       <button class="btn btn-primary mt-2" type="submit">
         {{ edit ? "Save" : "Create Group" }}
       </button>
@@ -74,7 +74,7 @@ const groups = ref<any[]>([]);
 const form = ref({
   name: "",
   description: "",
-  challenge_ids: [] as string[],
+  challenges: [] as [] as Array<{ id: string; custom_score: number }>,
 });
 const error = ref("");
 const edit = ref(false);
@@ -86,6 +86,7 @@ onMounted(async () => {
   await challStore.getChallenges();
   challenges.value = challStore.challenges;
   groups.value = await http("/admin/challenge_groups");
+  fixGroups();
 });
 
 async function createCG() {
@@ -107,6 +108,7 @@ async function createCG() {
     } else {
       groups.value.push(ctf);
     }
+    fixGroups();
     clearForm();
   } catch (e: any) {
     error.value = "Failed to create/edit Group: " + e.response._data.message;
@@ -117,7 +119,7 @@ function clearForm() {
   form.value = {
     name: "",
     description: "",
-    challenge_ids: [],
+    challenges: [],
   };
 }
 
@@ -142,8 +144,20 @@ function editGroup(id: string) {
     form.value = {
       name: ctf.name,
       description: ctf.description,
-      challenge_ids: JSON.parse(JSON.stringify(ctf.challenge_ids)),
+      challenges: JSON.parse(JSON.stringify(ctf.challenges)),
     };
   }
+}
+
+function fixGroups() {
+  groups.value = groups.value.map((group) => {
+    group.challenges = group.challenges.map((chall: any) => {
+      if (chall.custom_score === undefined) {
+        chall.custom_score = null;
+      }
+      return chall;
+    });
+    return group;
+  });
 }
 </script>

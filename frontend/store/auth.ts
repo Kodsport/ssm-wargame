@@ -79,6 +79,7 @@ export const useAuthStore = defineStore("auth", {
       try {
         await this.loginCTFUser(slug, password);
       } catch (e) {
+        localStorage.removeItem("ctf_password");
         this.ctfUser = {} as CTFUser;
         return;
       }

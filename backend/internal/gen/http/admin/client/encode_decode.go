@@ -4687,6 +4687,39 @@ func unmarshalSsmAdminCourseResponseToAdminviewsSsmAdminCourseView(v *SsmAdminCo
 	return res
 }
 
+// marshalAdminCTFChallengeToCTFChallengeRequestBody builds a value of type
+// *CTFChallengeRequestBody from a value of type *admin.CTFChallenge.
+func marshalAdminCTFChallengeToCTFChallengeRequestBody(v *admin.CTFChallenge) *CTFChallengeRequestBody {
+	res := &CTFChallengeRequestBody{
+		ID:          v.ID,
+		CustomScore: v.CustomScore,
+	}
+
+	return res
+}
+
+// marshalCTFChallengeRequestBodyToAdminCTFChallenge builds a value of type
+// *admin.CTFChallenge from a value of type *CTFChallengeRequestBody.
+func marshalCTFChallengeRequestBodyToAdminCTFChallenge(v *CTFChallengeRequestBody) *admin.CTFChallenge {
+	res := &admin.CTFChallenge{
+		ID:          v.ID,
+		CustomScore: v.CustomScore,
+	}
+
+	return res
+}
+
+// unmarshalCTFChallengeResponseBodyToAdminCTFChallenge builds a value of type
+// *admin.CTFChallenge from a value of type *CTFChallengeResponseBody.
+func unmarshalCTFChallengeResponseBodyToAdminCTFChallenge(v *CTFChallengeResponseBody) *admin.CTFChallenge {
+	res := &admin.CTFChallenge{
+		ID:          *v.ID,
+		CustomScore: v.CustomScore,
+	}
+
+	return res
+}
+
 // unmarshalCTFResponseToAdminCTF builds a value of type *admin.CTF from a
 // value of type *CTFResponse.
 func unmarshalCTFResponseToAdminCTF(v *CTFResponse) *admin.CTF {
@@ -4698,9 +4731,20 @@ func unmarshalCTFResponseToAdminCTF(v *CTFResponse) *admin.CTF {
 		EndTime:     *v.EndTime,
 		Slug:        *v.Slug,
 	}
-	res.ChallengeIds = make([]string, len(v.ChallengeIds))
-	for i, val := range v.ChallengeIds {
-		res.ChallengeIds[i] = val
+	res.Challenges = make([]*admin.CTFChallenge, len(v.Challenges))
+	for i, val := range v.Challenges {
+		res.Challenges[i] = unmarshalCTFChallengeResponseToAdminCTFChallenge(val)
+	}
+
+	return res
+}
+
+// unmarshalCTFChallengeResponseToAdminCTFChallenge builds a value of type
+// *admin.CTFChallenge from a value of type *CTFChallengeResponse.
+func unmarshalCTFChallengeResponseToAdminCTFChallenge(v *CTFChallengeResponse) *admin.CTFChallenge {
+	res := &admin.CTFChallenge{
+		ID:          *v.ID,
+		CustomScore: v.CustomScore,
 	}
 
 	return res
@@ -4714,9 +4758,9 @@ func unmarshalChallengeGroupResponseToAdminChallengeGroup(v *ChallengeGroupRespo
 		Name:        *v.Name,
 		Description: *v.Description,
 	}
-	res.ChallengeIds = make([]string, len(v.ChallengeIds))
-	for i, val := range v.ChallengeIds {
-		res.ChallengeIds[i] = val
+	res.Challenges = make([]*admin.CTFChallenge, len(v.Challenges))
+	for i, val := range v.Challenges {
+		res.Challenges[i] = unmarshalCTFChallengeResponseToAdminCTFChallenge(val)
 	}
 
 	return res

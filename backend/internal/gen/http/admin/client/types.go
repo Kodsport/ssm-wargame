@@ -151,8 +151,8 @@ type CreateCTFRequestBody struct {
 	EndTime int64 `form:"end_time" json:"end_time" xml:"end_time"`
 	// Unique slug
 	Slug string `form:"slug" json:"slug" xml:"slug"`
-	// Challenge IDs
-	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
+	// Challenges
+	Challenges []*CTFChallengeRequestBody `form:"challenges" json:"challenges" xml:"challenges"`
 	// Is the CTF private?
 	Private *bool `form:"private,omitempty" json:"private,omitempty" xml:"private,omitempty"`
 	// CTF password
@@ -172,8 +172,8 @@ type UpdateCTFRequestBody struct {
 	EndTime int64 `form:"end_time" json:"end_time" xml:"end_time"`
 	// Unique slug
 	Slug string `form:"slug" json:"slug" xml:"slug"`
-	// Challenge IDs
-	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
+	// Challenges
+	Challenges []*CTFChallengeRequestBody `form:"challenges" json:"challenges" xml:"challenges"`
 	// Is the CTF private?
 	Private *bool `form:"private,omitempty" json:"private,omitempty" xml:"private,omitempty"`
 	// CTF password
@@ -183,17 +183,19 @@ type UpdateCTFRequestBody struct {
 // CreateChallengeGroupRequestBody is the type of the "admin" service
 // "CreateChallengeGroup" endpoint HTTP request body.
 type CreateChallengeGroupRequestBody struct {
-	Name         string   `form:"name" json:"name" xml:"name"`
-	Description  string   `form:"description" json:"description" xml:"description"`
-	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
+	Name        string `form:"name" json:"name" xml:"name"`
+	Description string `form:"description" json:"description" xml:"description"`
+	// Challenges
+	Challenges []*CTFChallengeRequestBody `form:"challenges" json:"challenges" xml:"challenges"`
 }
 
 // UpdateChallengeGroupRequestBody is the type of the "admin" service
 // "UpdateChallengeGroup" endpoint HTTP request body.
 type UpdateChallengeGroupRequestBody struct {
-	Name         string   `form:"name" json:"name" xml:"name"`
-	Description  string   `form:"description" json:"description" xml:"description"`
-	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
+	Name        string `form:"name" json:"name" xml:"name"`
+	Description string `form:"description" json:"description" xml:"description"`
+	// Challenges
+	Challenges []*CTFChallengeRequestBody `form:"challenges" json:"challenges" xml:"challenges"`
 }
 
 // UpdateCTFUserRequestBody is the type of the "admin" service "UpdateCTFUser"
@@ -253,25 +255,27 @@ type ListCoursesResponseBody []*SsmAdminCourseResponse
 // CreateCTFResponseBody is the type of the "admin" service "CreateCTF"
 // endpoint HTTP response body.
 type CreateCTFResponseBody struct {
-	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	StartTime    *string  `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
-	EndTime      *string  `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
-	Slug         *string  `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
-	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	StartTime   *string `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
+	EndTime     *string `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
+	Slug        *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Challenges
+	Challenges []*CTFChallengeResponseBody `form:"challenges,omitempty" json:"challenges,omitempty" xml:"challenges,omitempty"`
 }
 
 // UpdateCTFResponseBody is the type of the "admin" service "UpdateCTF"
 // endpoint HTTP response body.
 type UpdateCTFResponseBody struct {
-	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	StartTime    *string  `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
-	EndTime      *string  `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
-	Slug         *string  `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
-	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	StartTime   *string `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
+	EndTime     *string `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
+	Slug        *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Challenges
+	Challenges []*CTFChallengeResponseBody `form:"challenges,omitempty" json:"challenges,omitempty" xml:"challenges,omitempty"`
 }
 
 // ListCTFsResponseBody is the type of the "admin" service "ListCTFs" endpoint
@@ -281,19 +285,21 @@ type ListCTFsResponseBody []*CTFResponse
 // CreateChallengeGroupResponseBody is the type of the "admin" service
 // "CreateChallengeGroup" endpoint HTTP response body.
 type CreateChallengeGroupResponseBody struct {
-	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	// Challenges
+	Challenges []*CTFChallengeResponseBody `form:"challenges,omitempty" json:"challenges,omitempty" xml:"challenges,omitempty"`
 }
 
 // UpdateChallengeGroupResponseBody is the type of the "admin" service
 // "UpdateChallengeGroup" endpoint HTTP response body.
 type UpdateChallengeGroupResponseBody struct {
-	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	// Challenges
+	Challenges []*CTFChallengeResponseBody `form:"challenges,omitempty" json:"challenges,omitempty" xml:"challenges,omitempty"`
 }
 
 // ListChallengeGroupsResponseBody is the type of the "admin" service
@@ -2374,23 +2380,49 @@ type SsmAdminCourseResponse struct {
 	AuthorIds   []string `form:"author_ids,omitempty" json:"author_ids,omitempty" xml:"author_ids,omitempty"`
 }
 
+// CTFChallengeRequestBody is used to define fields on request body types.
+type CTFChallengeRequestBody struct {
+	// Challenge ID
+	ID string `form:"id" json:"id" xml:"id"`
+	// Challenge custom score
+	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
+}
+
+// CTFChallengeResponseBody is used to define fields on response body types.
+type CTFChallengeResponseBody struct {
+	// Challenge ID
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Challenge custom score
+	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
+}
+
 // CTFResponse is used to define fields on response body types.
 type CTFResponse struct {
-	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	StartTime    *string  `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
-	EndTime      *string  `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
-	Slug         *string  `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
-	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	StartTime   *string `form:"start_time,omitempty" json:"start_time,omitempty" xml:"start_time,omitempty"`
+	EndTime     *string `form:"end_time,omitempty" json:"end_time,omitempty" xml:"end_time,omitempty"`
+	Slug        *string `form:"slug,omitempty" json:"slug,omitempty" xml:"slug,omitempty"`
+	// Challenges
+	Challenges []*CTFChallengeResponse `form:"challenges,omitempty" json:"challenges,omitempty" xml:"challenges,omitempty"`
+}
+
+// CTFChallengeResponse is used to define fields on response body types.
+type CTFChallengeResponse struct {
+	// Challenge ID
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Challenge custom score
+	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
 }
 
 // ChallengeGroupResponse is used to define fields on response body types.
 type ChallengeGroupResponse struct {
-	ID           *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Name         *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Description  *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	ChallengeIds []string `form:"challenge_ids,omitempty" json:"challenge_ids,omitempty" xml:"challenge_ids,omitempty"`
+	ID          *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description *string `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	// Challenges
+	Challenges []*CTFChallengeResponse `form:"challenges,omitempty" json:"challenges,omitempty" xml:"challenges,omitempty"`
 }
 
 // CTFUserResponse is used to define fields on response body types.
@@ -2606,10 +2638,10 @@ func NewCreateCTFRequestBody(p *admin.CreateCTFPayload) *CreateCTFRequestBody {
 		Private:     p.Private,
 		Password:    p.Password,
 	}
-	if p.ChallengeIds != nil {
-		body.ChallengeIds = make([]string, len(p.ChallengeIds))
-		for i, val := range p.ChallengeIds {
-			body.ChallengeIds[i] = val
+	if p.Challenges != nil {
+		body.Challenges = make([]*CTFChallengeRequestBody, len(p.Challenges))
+		for i, val := range p.Challenges {
+			body.Challenges[i] = marshalAdminCTFChallengeToCTFChallengeRequestBody(val)
 		}
 	}
 	return body
@@ -2627,10 +2659,10 @@ func NewUpdateCTFRequestBody(p *admin.UpdateCTFPayload) *UpdateCTFRequestBody {
 		Private:     p.Private,
 		Password:    p.Password,
 	}
-	if p.ChallengeIds != nil {
-		body.ChallengeIds = make([]string, len(p.ChallengeIds))
-		for i, val := range p.ChallengeIds {
-			body.ChallengeIds[i] = val
+	if p.Challenges != nil {
+		body.Challenges = make([]*CTFChallengeRequestBody, len(p.Challenges))
+		for i, val := range p.Challenges {
+			body.Challenges[i] = marshalAdminCTFChallengeToCTFChallengeRequestBody(val)
 		}
 	}
 	return body
@@ -2643,10 +2675,10 @@ func NewCreateChallengeGroupRequestBody(p *admin.CreateChallengeGroupPayload) *C
 		Name:        p.Name,
 		Description: p.Description,
 	}
-	if p.ChallengeIds != nil {
-		body.ChallengeIds = make([]string, len(p.ChallengeIds))
-		for i, val := range p.ChallengeIds {
-			body.ChallengeIds[i] = val
+	if p.Challenges != nil {
+		body.Challenges = make([]*CTFChallengeRequestBody, len(p.Challenges))
+		for i, val := range p.Challenges {
+			body.Challenges[i] = marshalAdminCTFChallengeToCTFChallengeRequestBody(val)
 		}
 	}
 	return body
@@ -2659,10 +2691,10 @@ func NewUpdateChallengeGroupRequestBody(p *admin.UpdateChallengeGroupPayload) *U
 		Name:        p.Name,
 		Description: p.Description,
 	}
-	if p.ChallengeIds != nil {
-		body.ChallengeIds = make([]string, len(p.ChallengeIds))
-		for i, val := range p.ChallengeIds {
-			body.ChallengeIds[i] = val
+	if p.Challenges != nil {
+		body.Challenges = make([]*CTFChallengeRequestBody, len(p.Challenges))
+		for i, val := range p.Challenges {
+			body.Challenges[i] = marshalAdminCTFChallengeToCTFChallengeRequestBody(val)
 		}
 	}
 	return body
@@ -3880,9 +3912,9 @@ func NewCreateCTFCTFCreated(body *CreateCTFResponseBody) *admin.CTF {
 		EndTime:     *body.EndTime,
 		Slug:        *body.Slug,
 	}
-	v.ChallengeIds = make([]string, len(body.ChallengeIds))
-	for i, val := range body.ChallengeIds {
-		v.ChallengeIds[i] = val
+	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
+	for i, val := range body.Challenges {
+		v.Challenges[i] = unmarshalCTFChallengeResponseBodyToAdminCTFChallenge(val)
 	}
 
 	return v
@@ -3944,9 +3976,9 @@ func NewUpdateCTFCTFOK(body *UpdateCTFResponseBody) *admin.CTF {
 		EndTime:     *body.EndTime,
 		Slug:        *body.Slug,
 	}
-	v.ChallengeIds = make([]string, len(body.ChallengeIds))
-	for i, val := range body.ChallengeIds {
-		v.ChallengeIds[i] = val
+	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
+	for i, val := range body.Challenges {
+		v.Challenges[i] = unmarshalCTFChallengeResponseBodyToAdminCTFChallenge(val)
 	}
 
 	return v
@@ -4105,9 +4137,9 @@ func NewCreateChallengeGroupChallengeGroupCreated(body *CreateChallengeGroupResp
 		Name:        *body.Name,
 		Description: *body.Description,
 	}
-	v.ChallengeIds = make([]string, len(body.ChallengeIds))
-	for i, val := range body.ChallengeIds {
-		v.ChallengeIds[i] = val
+	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
+	for i, val := range body.Challenges {
+		v.Challenges[i] = unmarshalCTFChallengeResponseBodyToAdminCTFChallenge(val)
 	}
 
 	return v
@@ -4166,9 +4198,9 @@ func NewUpdateChallengeGroupChallengeGroupOK(body *UpdateChallengeGroupResponseB
 		Name:        *body.Name,
 		Description: *body.Description,
 	}
-	v.ChallengeIds = make([]string, len(body.ChallengeIds))
-	for i, val := range body.ChallengeIds {
-		v.ChallengeIds[i] = val
+	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
+	for i, val := range body.Challenges {
+		v.Challenges[i] = unmarshalCTFChallengeResponseBodyToAdminCTFChallenge(val)
 	}
 
 	return v
@@ -4544,8 +4576,15 @@ func ValidateCreateCTFResponseBody(body *CreateCTFResponseBody) (err error) {
 	if body.EndTime == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("end_time", "body"))
 	}
-	if body.ChallengeIds == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	if body.Challenges == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
+	}
+	for _, e := range body.Challenges {
+		if e != nil {
+			if err2 := ValidateCTFChallengeResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
 	}
 	return
 }
@@ -4571,8 +4610,15 @@ func ValidateUpdateCTFResponseBody(body *UpdateCTFResponseBody) (err error) {
 	if body.EndTime == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("end_time", "body"))
 	}
-	if body.ChallengeIds == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	if body.Challenges == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
+	}
+	for _, e := range body.Challenges {
+		if e != nil {
+			if err2 := ValidateCTFChallengeResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
 	}
 	return
 }
@@ -4589,8 +4635,15 @@ func ValidateCreateChallengeGroupResponseBody(body *CreateChallengeGroupResponse
 	if body.Description == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
 	}
-	if body.ChallengeIds == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	if body.Challenges == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
+	}
+	for _, e := range body.Challenges {
+		if e != nil {
+			if err2 := ValidateCTFChallengeResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
 	}
 	return
 }
@@ -4607,8 +4660,15 @@ func ValidateUpdateChallengeGroupResponseBody(body *UpdateChallengeGroupResponse
 	if body.Description == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
 	}
-	if body.ChallengeIds == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	if body.Challenges == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
+	}
+	for _, e := range body.Challenges {
+		if e != nil {
+			if err2 := ValidateCTFChallengeResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
 	}
 	return
 }
@@ -7420,6 +7480,15 @@ func ValidateSsmAdminCourseResponse(body *SsmAdminCourseResponse) (err error) {
 	return
 }
 
+// ValidateCTFChallengeResponseBody runs the validations defined on
+// CTFChallengeResponseBody
+func ValidateCTFChallengeResponseBody(body *CTFChallengeResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	return
+}
+
 // ValidateCTFResponse runs the validations defined on CTFResponse
 func ValidateCTFResponse(body *CTFResponse) (err error) {
 	if body.ID == nil {
@@ -7440,8 +7509,24 @@ func ValidateCTFResponse(body *CTFResponse) (err error) {
 	if body.EndTime == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("end_time", "body"))
 	}
-	if body.ChallengeIds == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	if body.Challenges == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
+	}
+	for _, e := range body.Challenges {
+		if e != nil {
+			if err2 := ValidateCTFChallengeResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// ValidateCTFChallengeResponse runs the validations defined on
+// CTFChallengeResponse
+func ValidateCTFChallengeResponse(body *CTFChallengeResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
 	}
 	return
 }
@@ -7458,8 +7543,15 @@ func ValidateChallengeGroupResponse(body *ChallengeGroupResponse) (err error) {
 	if body.Description == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("description", "body"))
 	}
-	if body.ChallengeIds == nil {
-		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_ids", "body"))
+	if body.Challenges == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
+	}
+	for _, e := range body.Challenges {
+		if e != nil {
+			if err2 := ValidateCTFChallengeResponse(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
 	}
 	return
 }

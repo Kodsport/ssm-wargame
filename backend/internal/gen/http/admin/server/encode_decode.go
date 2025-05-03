@@ -3717,6 +3717,28 @@ func marshalAdminviewsSsmAdminCourseViewToSsmAdminCourseResponse(v *adminviews.S
 	return res
 }
 
+// unmarshalCTFChallengeRequestBodyToAdminCTFChallenge builds a value of type
+// *admin.CTFChallenge from a value of type *CTFChallengeRequestBody.
+func unmarshalCTFChallengeRequestBodyToAdminCTFChallenge(v *CTFChallengeRequestBody) *admin.CTFChallenge {
+	res := &admin.CTFChallenge{
+		ID:          *v.ID,
+		CustomScore: v.CustomScore,
+	}
+
+	return res
+}
+
+// marshalAdminCTFChallengeToCTFChallengeResponseBody builds a value of type
+// *CTFChallengeResponseBody from a value of type *admin.CTFChallenge.
+func marshalAdminCTFChallengeToCTFChallengeResponseBody(v *admin.CTFChallenge) *CTFChallengeResponseBody {
+	res := &CTFChallengeResponseBody{
+		ID:          v.ID,
+		CustomScore: v.CustomScore,
+	}
+
+	return res
+}
+
 // marshalAdminCTFToCTFResponse builds a value of type *CTFResponse from a
 // value of type *admin.CTF.
 func marshalAdminCTFToCTFResponse(v *admin.CTF) *CTFResponse {
@@ -3728,11 +3750,22 @@ func marshalAdminCTFToCTFResponse(v *admin.CTF) *CTFResponse {
 		EndTime:     v.EndTime,
 		Slug:        v.Slug,
 	}
-	if v.ChallengeIds != nil {
-		res.ChallengeIds = make([]string, len(v.ChallengeIds))
-		for i, val := range v.ChallengeIds {
-			res.ChallengeIds[i] = val
+	if v.Challenges != nil {
+		res.Challenges = make([]*CTFChallengeResponse, len(v.Challenges))
+		for i, val := range v.Challenges {
+			res.Challenges[i] = marshalAdminCTFChallengeToCTFChallengeResponse(val)
 		}
+	}
+
+	return res
+}
+
+// marshalAdminCTFChallengeToCTFChallengeResponse builds a value of type
+// *CTFChallengeResponse from a value of type *admin.CTFChallenge.
+func marshalAdminCTFChallengeToCTFChallengeResponse(v *admin.CTFChallenge) *CTFChallengeResponse {
+	res := &CTFChallengeResponse{
+		ID:          v.ID,
+		CustomScore: v.CustomScore,
 	}
 
 	return res
@@ -3746,10 +3779,10 @@ func marshalAdminChallengeGroupToChallengeGroupResponse(v *admin.ChallengeGroup)
 		Name:        v.Name,
 		Description: v.Description,
 	}
-	if v.ChallengeIds != nil {
-		res.ChallengeIds = make([]string, len(v.ChallengeIds))
-		for i, val := range v.ChallengeIds {
-			res.ChallengeIds[i] = val
+	if v.Challenges != nil {
+		res.Challenges = make([]*CTFChallengeResponse, len(v.Challenges))
+		for i, val := range v.Challenges {
+			res.Challenges[i] = marshalAdminCTFChallengeToCTFChallengeResponse(val)
 		}
 	}
 

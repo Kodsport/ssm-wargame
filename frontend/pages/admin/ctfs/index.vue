@@ -58,9 +58,9 @@
         </div>
       </div>
 
-      <ChallengeGroupPicker v-model="form.challenge_ids"></ChallengeGroupPicker>
+      <ChallengeGroupPicker v-model="form.challenges"></ChallengeGroupPicker>
 
-      <ChallengePicker v-model="form.challenge_ids"></ChallengePicker>
+      <ChallengePicker v-model="form.challenges"></ChallengePicker>
 
       <button class="btn btn-primary mt-2" type="submit">
         {{ edit ? "Save" : "Create CTF" }}
@@ -132,7 +132,7 @@ const form = ref({
   start_time: "",
   end_time: "",
   slug: "",
-  challenge_ids: [] as string[],
+  challenges: [] as Array<{ id: string; custom_score: number }>,
 });
 const error = ref("");
 const edit = ref(false);
@@ -143,6 +143,7 @@ const challenges = ref<any[]>([]);
 onMounted(async () => {
   challenges.value = challStore.challenges;
   ctfs.value = await http("/admin/ctfs");
+  fixCTFs();
 });
 
 async function createCTF() {
@@ -166,6 +167,7 @@ async function createCTF() {
     } else {
       ctfs.value.push(ctf);
     }
+    fixCTFs();
     clearForm();
   } catch (e: any) {
     error.value = "Failed to create/edit CTF: " + e.response._data.message;
@@ -179,7 +181,7 @@ function clearForm() {
     start_time: "",
     end_time: "",
     slug: "",
-    challenge_ids: [],
+    challenges: [],
   };
 }
 
@@ -205,12 +207,24 @@ function editCTF(id: string) {
       start_time: new Date(ctf.start_time).toLocaleString(),
       end_time: new Date(ctf.end_time).toLocaleString(),
       slug: ctf.slug,
-      challenge_ids: JSON.parse(JSON.stringify(ctf.challenge_ids)),
+      challenges: JSON.parse(JSON.stringify(ctf.challenges)),
     };
   }
 }
 
 function viewUsers(id: string) {
   router.push(`/admin/ctfs/${id}/users`);
+}
+
+function fixCTFs() {
+  ctfs.value = ctfs.value.map((ctf) => {
+    ctf.challenges = ctf.challenges.map((chall: any) => {
+      if (chall.custom_score === undefined) {
+        chall.custom_score = null;
+      }
+      return chall;
+    });
+    return ctf;
+  });
 }
 </script>

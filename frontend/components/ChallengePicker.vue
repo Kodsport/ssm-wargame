@@ -5,13 +5,14 @@
         <label
           class="form-label d-flex justify-content-between align-items-center"
         >
-          <span>Challenges</span>
+          <span>Challenges - Right click challenge for more info</span>
+
           <span>
-            <span v-if="challenge_ids.length === 0" class="text-muted">
+            <span v-if="selectedChallenges.length === 0" class="text-muted">
               No challenges selected
             </span>
             <span v-else class="text-primary">
-              {{ challenge_ids.length }} challenges selected
+              {{ selectedChallenges.length }} challenges selected
             </span>
           </span>
         </label>
@@ -21,6 +22,7 @@
           placeholder="Search for challenge name..."
         />
       </div>
+
       <div v-for="cat in categories" :key="cat.id" class="g-0 row">
         <h6
           class="text-primary pt-2 mb-0"
@@ -46,8 +48,12 @@
           <div
             class="card h-100 challenge-picker-item border-2"
             :class="{
-              'border-primary': challenge_ids.includes(chall.id),
-              'border-secondary': !challenge_ids.includes(chall.id),
+              'border-primary': !!selectedChallenges?.find(
+                (e) => e.id === chall.id
+              ),
+              'border-secondary': !selectedChallenges?.find(
+                (e) => e.id === chall.id
+              ),
             }"
             @click="toggle(chall.id)"
             @contextmenu="showFlagModal(chall, $event)"
@@ -61,7 +67,21 @@
                 </span>
               </div>
               <div class="d-flex justify-content-between align-items-center">
-                <span class="text-muted small">{{ chall.static_score }}</span>
+                <span
+                  class="small"
+                  :class="{
+                    'text-primary': !!selectedChallenges?.find(
+                      (e) => e.id == chall.id
+                    )?.custom_score,
+                    'text-muted': !selectedChallenges?.find(
+                      (e) => e.id == chall.id
+                    )?.custom_score,
+                  }"
+                  >{{
+                    selectedChallenges?.find((e) => e.id == chall.id)
+                      ?.custom_score ?? chall.static_score
+                  }}</span
+                >
                 <span
                   v-if="chall.hide"
                   class="material-symbols-outlined text-secondary"
@@ -84,8 +104,19 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
           <strong>{{ flagModal.title }}</strong>
         </div>
-        <div>
+        <div class="mt-2">
           <span class="text-monospace">{{ flagModal.flag }}</span>
+        </div>
+        <div class="mt-2">
+          <div class="form-group">
+            <label>Custom score (Leave blank for default)</label>
+            <input
+              class="form-control"
+              v-model="flagModal.custom_score"
+              @input="applyCustomScore(flagModal.custom_score)"
+              placeholder="69"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -96,11 +127,16 @@ import { ref, onMounted, defineModel } from "vue";
 import { useChallengeStore } from "@/store/admin/challenges";
 
 const challStore = useChallengeStore();
-const challenge_ids = defineModel<any[]>();
+const selectedChallenges = defineModel<any[]>();
 const challenges = ref<any[]>([]);
 const categories = ref<any[]>([]);
 const searchChall = ref<string>("");
-const flagModal = ref<{ flag: string; title: string } | null>(null);
+const flagModal = ref<{
+  id: string;
+  flag: string;
+  title: string;
+  custom_score: number | null;
+} | null>(null);
 
 onMounted(async () => {
   await challStore.getChallenges();
@@ -117,9 +153,13 @@ onMounted(async () => {
 });
 
 function toggle(id: string) {
-  const idx = challenge_ids.value.indexOf(id);
-  if (idx === -1) challenge_ids.value.push(id);
-  else challenge_ids.value.splice(idx, 1);
+  const idx = selectedChallenges.value.findIndex((e) => e.id === id);
+  if (idx === -1)
+    selectedChallenges.value?.push({
+      id: id,
+      custom_score: null,
+    });
+  else selectedChallenges.value.splice(idx, 1);
 }
 
 function showFlagModal(chall: any, event: MouseEvent) {
@@ -127,10 +167,28 @@ function showFlagModal(chall: any, event: MouseEvent) {
   const flags = chall.flags
     .map((flag: any) => "SSM{" + flag.flag + "}")
     .join(", ");
+  const custom_score = selectedChallenges.value.find(
+    (e) => e.id === chall.id
+  )?.custom_score;
   flagModal.value = {
+    id: chall.id,
     flag: flags,
     title: chall.title,
+    custom_score: custom_score ?? null,
   };
+}
+
+function applyCustomScore(score: string | null) {
+  if (flagModal.value) {
+    const idx = selectedChallenges.value.findIndex(
+      (e) => e.id === flagModal.value?.id
+    );
+    if (idx !== -1 && score !== null && score !== "") {
+      selectedChallenges.value[idx].custom_score = Number(score) ?? null;
+    } else {
+      selectedChallenges.value[idx].custom_score = null;
+    }
+  }
 }
 
 function closeFlagModal() {

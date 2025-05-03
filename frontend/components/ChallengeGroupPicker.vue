@@ -12,7 +12,7 @@
       >
         <div
           class="card h-100 challenge-picker-item border-2 border-secondary"
-          @click="apply(group.challenge_ids)"
+          @click="apply(group.challenges)"
           style="cursor: pointer"
         >
           <div class="card-body py-1 px-2">
@@ -33,7 +33,7 @@ import { ref, onMounted, defineModel } from "vue";
 import { useChallengeStore } from "@/store/admin/challenges";
 import useHttp from "@/composables/use-http";
 
-const challenge_ids = defineModel<any[]>();
+const selectedChallenges = defineModel<any[]>();
 const groups = ref<any[]>([]);
 const http = useHttp();
 
@@ -41,10 +41,13 @@ onMounted(async () => {
   groups.value = await http("/admin/challenge_groups");
 });
 
-function apply(challengeIds: string[]) {
-  for (const id of challengeIds) {
-    if (!challenge_ids.value.includes(id)) {
-      challenge_ids.value.push(id);
+function apply(challenges: Record<string, unknown>[]) {
+  for (const chall of challenges) {
+    if (!selectedChallenges.value?.find((e) => e.id === chall.id)) {
+      selectedChallenges.value.push({
+        id: chall.id,
+        custom_score: chall.custom_score,
+      });
     }
   }
 }
