@@ -255,3 +255,145 @@ var CourseItem = Type("CourseItem", func() {
 	})
 	Required("position")
 })
+
+var CTF = Type("CTF", func() {
+	Attribute("id", String)
+	Attribute("name", String)
+	Attribute("description", String)
+	Attribute("start_time", String)
+	Attribute("end_time", String)
+	Attribute("slug", String)
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Required("id", "name", "description", "slug", "start_time", "end_time", "challenges")
+})
+
+var CTFInfo = Type("CTFInfo", func() {
+	Attribute("id", String)
+	Attribute("name", String)
+	Attribute("description", String)
+	Attribute("start_time", String)
+	Attribute("end_time", String)
+	Attribute("slug", String)
+	Attribute("challenge_ids", ArrayOf(String))
+	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
+	Required("id", "name", "description", "slug", "start_time", "end_time", "challenge_ids")
+})
+
+var CTFUser = Type("CTFUser", func() {
+	Attribute("id", String)
+	Attribute("ctf_id", String)
+	Attribute("username", String)
+	Attribute("password", String)
+	Required("id", "ctf_id", "username", "password")
+})
+
+var CTFScore = Type("CTFScore", func() {
+	Attribute("id", String)
+	Attribute("username", String)
+	Attribute("score", Int64)
+	Attribute("solves", ArrayOf(String))
+	Required("id", "username", "score", "solves")
+})
+
+var CTFSolve = Type("CTFSolve", func() {
+	Attribute("id", String)
+	Attribute("ctf_id", String)
+	Attribute("user_id", String)
+	Attribute("challenge_id", String)
+	Attribute("solved_at", String)
+	Required("id", "ctf_id", "user_id", "challenge_id", "solved_at")
+})
+
+var CTFUserSolve = Type("CTFUserSolve", func() {
+	Attribute("challenge_id", String)
+	Attribute("solved_at", String)
+	Required("challenge_id", "solved_at")
+})
+
+var CTFUserSolves = Type("CTFUserSolves", func() {
+	Attribute("username", String)
+	Attribute("solves", ArrayOf(CTFUserSolve))
+	Required("username", "solves")
+})
+
+var CTFCreate = Type("CTFCreate", func() {
+	Attribute("name", String, "CTF name", func() { Example("School CTF 2025") })
+	Attribute("description", String, "CTF description", func() { Example("A fun CTF for school") })
+	Attribute("start_time", Int64, "CTF start time")
+	Attribute("end_time", Int64, "CTF end time")
+	Attribute("slug", String, "Unique slug", func() { Example("school-ctf-2025") })
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
+	Attribute("password", String, "CTF password", func() { Example("password") })
+	Required("name", "description", "start_time", "end_time", "slug", "challenges")
+})
+
+var CTFChallenge = Type("CTFChallenge", func() {
+	Attribute("id", String, "Challenge ID", func() { Example("85163218-8735-42ed-a7a6-42a9de2294df") })
+	Attribute("custom_score", Int, "Challenge custom score", func() { Example(50) })
+	Attribute("display_order", Int, "Challenge display order", func() { Example(1) })
+	Required("id", "display_order")
+})
+
+var CTFUpdate = Type("CTFUpdate", func() {
+	Attribute("name", String, "CTF name", func() { Example("School CTF 2025") })
+	Attribute("description", String, "CTF description", func() { Example("A fun CTF for school") })
+	Attribute("start_time", Int64, "CTF start time")
+	Attribute("end_time", Int64, "CTF end time")
+	Attribute("slug", String, "Unique slug", func() { Example("school-ctf-2025") })
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
+	Attribute("password", String, "CTF password", func() { Example("password") })
+	Required("name", "description", "start_time", "end_time", "slug", "challenges")
+})
+
+var ChallengeGroup = Type("ChallengeGroup", func() {
+	Attribute("id", String)
+	Attribute("name", String)
+	Attribute("description", String)
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Required("id", "name", "description", "challenges")
+})
+
+var CreateChallengeGroup = Type("CreateChallengeGroup", func() {
+	Attribute("name", String, func() {
+		Example("Group 1")
+	})
+	Attribute("description", String, func() {
+		Example("This is a group of challenges")
+	})
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Required("name", "description", "challenges")
+})
+
+var UpdateChallengeGroup = Type("UpdateChallengeGroup", func() {
+	Attribute("name", String, func() {
+		Example("Group 1")
+	})
+	Attribute("description", String, func() {
+		Example("This is a group of challenges")
+	})
+	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
+	Required("name", "description", "challenges")
+})
+
+var FlagSubmission = Type("FlagSubmission", func() {
+	Attribute("flag", String, func() {
+		Example("SSM{yo}")
+	})
+	Attribute("challenge_id", String, func() {
+		Example("85163218-8735-42ed-a7a6-42a9de2294df")
+	})
+	Attribute("slug")
+	Attribute("password", String, func() {
+		Example("user-password")
+	})
+	Required("flag", "slug", "challenge_id", "password")
+})
+
+var CTFListChallenge = Type("CTFListChallenge", func() {
+	Extend(IDArtifact)
+	Extend(Challenge)
+	Attribute("display_order", Int)
+	Required("display_order")
+})

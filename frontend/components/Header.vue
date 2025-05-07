@@ -217,6 +217,15 @@
                       Authors
                     </nuxt-link>
                   </li>
+                  <li class="nav-item">
+                    <nuxt-link
+                      active-class="active-drop-down-el"
+                      class="text-primary dropdown-item"
+                      to="/admin/ctfs"
+                    >
+                      CTFs
+                    </nuxt-link>
+                  </li>
                 </ul>
               </li>
             </template>

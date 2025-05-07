@@ -10,12 +10,20 @@ interface User {
   role: string;
 }
 
+interface CTFUser {
+  id: string;
+  username: string;
+  password: string;
+  ctfSlug: string;
+}
+
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     token: "",
     user: <User>{},
     knackKodenPassword: "",
     knackKodenData: null,
+    ctfUser: <CTFUser>{},
   }),
 
   actions: {
@@ -47,6 +55,64 @@ export const useAuthStore = defineStore("auth", {
       if (pw) {
         this.knackKodenPassword = pw;
       }
+    },
+    async loginCTFUser(slug: string, password: string) {
+      const http = useHttp();
+      const user = await http(`/ctfs/${slug}/user`, {
+        method: "GET",
+        params: {
+          password: password,
+        },
+      });
+      this.ctfUser = {
+        id: user.id,
+        username: user.username,
+        password: password,
+        ctfSlug: slug,
+      };
+      localStorage.setItem("ctf_password", password);
+    },
+    async getCTFUser(slug: string) {
+      const password = localStorage.getItem("ctf_password");
+      if (!password) return;
+
+      try {
+        await this.loginCTFUser(slug, password);
+      } catch (e) {
+        localStorage.removeItem("ctf_password");
+        this.ctfUser = {} as CTFUser;
+        return;
+      }
+    },
+    async getCTFUserOnce(slug: string) {
+      if (!this.ctfUser.id) {
+        await this.getCTFUser(slug);
+      }
+    },
+    async registerCTFUser(slug: string, username: string) {
+      const http = useHttp();
+
+      const user = await http(`/ctfs/${slug}/users`, {
+        method: "POST",
+        body: { username: username },
+      });
+
+      const password = user.password;
+      if (!password) throw new Error("No password found");
+      localStorage.setItem("ctf_password", password);
+
+      this.ctfUser = {
+        id: user.id,
+        username: user.username,
+        password: user.password,
+        ctfSlug: slug,
+      };
+
+      return this.ctfUser;
+    },
+    logoutCTFUser() {
+      localStorage.removeItem("ctf_password");
+      this.ctfUser = {} as CTFUser;
     },
   },
 

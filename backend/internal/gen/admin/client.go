@@ -39,10 +39,21 @@ type Client struct {
 	ListCoursesEndpoint               goa.Endpoint
 	CreateCourseEndpoint              goa.Endpoint
 	UpdateCourseEndpoint              goa.Endpoint
+	CreateCTFEndpoint                 goa.Endpoint
+	UpdateCTFEndpoint                 goa.Endpoint
+	DeleteCTFEndpoint                 goa.Endpoint
+	ListCTFsEndpoint                  goa.Endpoint
+	CreateChallengeGroupEndpoint      goa.Endpoint
+	UpdateChallengeGroupEndpoint      goa.Endpoint
+	DeleteChallengeGroupEndpoint      goa.Endpoint
+	ListChallengeGroupsEndpoint       goa.Endpoint
+	ListCTFUsersEndpoint              goa.Endpoint
+	DeleteCTFUserEndpoint             goa.Endpoint
+	UpdateCTFUserEndpoint             goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse, createCTF, updateCTF, deleteCTF, listCTFs, createChallengeGroup, updateChallengeGroup, deleteChallengeGroup, listChallengeGroups, listCTFUsers, deleteCTFUser, updateCTFUser goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:            listChallenges,
 		GetChallengeMetaEndpoint:          getChallengeMeta,
@@ -68,6 +79,17 @@ func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFi
 		ListCoursesEndpoint:               listCourses,
 		CreateCourseEndpoint:              createCourse,
 		UpdateCourseEndpoint:              updateCourse,
+		CreateCTFEndpoint:                 createCTF,
+		UpdateCTFEndpoint:                 updateCTF,
+		DeleteCTFEndpoint:                 deleteCTF,
+		ListCTFsEndpoint:                  listCTFs,
+		CreateChallengeGroupEndpoint:      createChallengeGroup,
+		UpdateChallengeGroupEndpoint:      updateChallengeGroup,
+		DeleteChallengeGroupEndpoint:      deleteChallengeGroup,
+		ListChallengeGroupsEndpoint:       listChallengeGroups,
+		ListCTFUsersEndpoint:              listCTFUsers,
+		DeleteCTFUserEndpoint:             deleteCTFUser,
+		UpdateCTFUserEndpoint:             updateCTFUser,
 	}
 }
 
@@ -260,4 +282,106 @@ func (c *Client) CreateCourse(ctx context.Context, p *CreateCoursePayload) (err 
 func (c *Client) UpdateCourse(ctx context.Context, p *UpdateCoursePayload) (err error) {
 	_, err = c.UpdateCourseEndpoint(ctx, p)
 	return
+}
+
+// CreateCTF calls the "CreateCTF" endpoint of the "admin" service.
+func (c *Client) CreateCTF(ctx context.Context, p *CreateCTFPayload) (res *CTF, err error) {
+	var ires interface{}
+	ires, err = c.CreateCTFEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*CTF), nil
+}
+
+// UpdateCTF calls the "UpdateCTF" endpoint of the "admin" service.
+func (c *Client) UpdateCTF(ctx context.Context, p *UpdateCTFPayload) (res *CTF, err error) {
+	var ires interface{}
+	ires, err = c.UpdateCTFEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*CTF), nil
+}
+
+// DeleteCTF calls the "DeleteCTF" endpoint of the "admin" service.
+func (c *Client) DeleteCTF(ctx context.Context, p *DeleteCTFPayload) (err error) {
+	_, err = c.DeleteCTFEndpoint(ctx, p)
+	return
+}
+
+// ListCTFs calls the "ListCTFs" endpoint of the "admin" service.
+func (c *Client) ListCTFs(ctx context.Context, p *ListCTFsPayload) (res []*CTF, err error) {
+	var ires interface{}
+	ires, err = c.ListCTFsEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*CTF), nil
+}
+
+// CreateChallengeGroup calls the "CreateChallengeGroup" endpoint of the
+// "admin" service.
+func (c *Client) CreateChallengeGroup(ctx context.Context, p *CreateChallengeGroupPayload) (res *ChallengeGroup, err error) {
+	var ires interface{}
+	ires, err = c.CreateChallengeGroupEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*ChallengeGroup), nil
+}
+
+// UpdateChallengeGroup calls the "UpdateChallengeGroup" endpoint of the
+// "admin" service.
+func (c *Client) UpdateChallengeGroup(ctx context.Context, p *UpdateChallengeGroupPayload) (res *ChallengeGroup, err error) {
+	var ires interface{}
+	ires, err = c.UpdateChallengeGroupEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*ChallengeGroup), nil
+}
+
+// DeleteChallengeGroup calls the "DeleteChallengeGroup" endpoint of the
+// "admin" service.
+func (c *Client) DeleteChallengeGroup(ctx context.Context, p *DeleteChallengeGroupPayload) (err error) {
+	_, err = c.DeleteChallengeGroupEndpoint(ctx, p)
+	return
+}
+
+// ListChallengeGroups calls the "ListChallengeGroups" endpoint of the "admin"
+// service.
+func (c *Client) ListChallengeGroups(ctx context.Context, p *ListChallengeGroupsPayload) (res []*ChallengeGroup, err error) {
+	var ires interface{}
+	ires, err = c.ListChallengeGroupsEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*ChallengeGroup), nil
+}
+
+// ListCTFUsers calls the "ListCTFUsers" endpoint of the "admin" service.
+func (c *Client) ListCTFUsers(ctx context.Context, p *ListCTFUsersPayload) (res []*CTFUser, err error) {
+	var ires interface{}
+	ires, err = c.ListCTFUsersEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*CTFUser), nil
+}
+
+// DeleteCTFUser calls the "DeleteCTFUser" endpoint of the "admin" service.
+func (c *Client) DeleteCTFUser(ctx context.Context, p *DeleteCTFUserPayload) (err error) {
+	_, err = c.DeleteCTFUserEndpoint(ctx, p)
+	return
+}
+
+// UpdateCTFUser calls the "UpdateCTFUser" endpoint of the "admin" service.
+func (c *Client) UpdateCTFUser(ctx context.Context, p *UpdateCTFUserPayload) (res *CTFUser, err error) {
+	var ires interface{}
+	ires, err = c.UpdateCTFUserEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*CTFUser), nil
 }

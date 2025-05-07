@@ -43,6 +43,17 @@ type Server struct {
 	ListCourses               http.Handler
 	CreateCourse              http.Handler
 	UpdateCourse              http.Handler
+	CreateCTF                 http.Handler
+	UpdateCTF                 http.Handler
+	DeleteCTF                 http.Handler
+	ListCTFs                  http.Handler
+	CreateChallengeGroup      http.Handler
+	UpdateChallengeGroup      http.Handler
+	DeleteChallengeGroup      http.Handler
+	ListChallengeGroups       http.Handler
+	ListCTFUsers              http.Handler
+	DeleteCTFUser             http.Handler
+	UpdateCTFUser             http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -102,6 +113,17 @@ func New(
 			{"ListCourses", "GET", "/admin/courses"},
 			{"CreateCourse", "POST", "/admin/courses"},
 			{"UpdateCourse", "PUT", "/admin/courses/{id}"},
+			{"CreateCTF", "POST", "/admin/ctfs"},
+			{"UpdateCTF", "PUT", "/admin/ctfs/{id}"},
+			{"DeleteCTF", "DELETE", "/admin/ctfs/{id}"},
+			{"ListCTFs", "GET", "/admin/ctfs"},
+			{"CreateChallengeGroup", "POST", "/admin/challenge_groups"},
+			{"UpdateChallengeGroup", "PUT", "/admin/challenge_groups/{id}"},
+			{"DeleteChallengeGroup", "DELETE", "/admin/challenge_groups/{id}"},
+			{"ListChallengeGroups", "GET", "/admin/challenge_groups"},
+			{"ListCTFUsers", "GET", "/admin/ctfs/{ctf_id}/users"},
+			{"DeleteCTFUser", "DELETE", "/admin/ctfs/{ctf_id}/users/{user_id}"},
+			{"UpdateCTFUser", "PATCH", "/admin/ctfs/{ctf_id}/users/{user_id}"},
 		},
 		ListChallenges:            NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		GetChallengeMeta:          NewGetChallengeMetaHandler(e.GetChallengeMeta, mux, decoder, encoder, errhandler, formatter),
@@ -127,6 +149,17 @@ func New(
 		ListCourses:               NewListCoursesHandler(e.ListCourses, mux, decoder, encoder, errhandler, formatter),
 		CreateCourse:              NewCreateCourseHandler(e.CreateCourse, mux, decoder, encoder, errhandler, formatter),
 		UpdateCourse:              NewUpdateCourseHandler(e.UpdateCourse, mux, decoder, encoder, errhandler, formatter),
+		CreateCTF:                 NewCreateCTFHandler(e.CreateCTF, mux, decoder, encoder, errhandler, formatter),
+		UpdateCTF:                 NewUpdateCTFHandler(e.UpdateCTF, mux, decoder, encoder, errhandler, formatter),
+		DeleteCTF:                 NewDeleteCTFHandler(e.DeleteCTF, mux, decoder, encoder, errhandler, formatter),
+		ListCTFs:                  NewListCTFsHandler(e.ListCTFs, mux, decoder, encoder, errhandler, formatter),
+		CreateChallengeGroup:      NewCreateChallengeGroupHandler(e.CreateChallengeGroup, mux, decoder, encoder, errhandler, formatter),
+		UpdateChallengeGroup:      NewUpdateChallengeGroupHandler(e.UpdateChallengeGroup, mux, decoder, encoder, errhandler, formatter),
+		DeleteChallengeGroup:      NewDeleteChallengeGroupHandler(e.DeleteChallengeGroup, mux, decoder, encoder, errhandler, formatter),
+		ListChallengeGroups:       NewListChallengeGroupsHandler(e.ListChallengeGroups, mux, decoder, encoder, errhandler, formatter),
+		ListCTFUsers:              NewListCTFUsersHandler(e.ListCTFUsers, mux, decoder, encoder, errhandler, formatter),
+		DeleteCTFUser:             NewDeleteCTFUserHandler(e.DeleteCTFUser, mux, decoder, encoder, errhandler, formatter),
+		UpdateCTFUser:             NewUpdateCTFUserHandler(e.UpdateCTFUser, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -159,6 +192,17 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.ListCourses = m(s.ListCourses)
 	s.CreateCourse = m(s.CreateCourse)
 	s.UpdateCourse = m(s.UpdateCourse)
+	s.CreateCTF = m(s.CreateCTF)
+	s.UpdateCTF = m(s.UpdateCTF)
+	s.DeleteCTF = m(s.DeleteCTF)
+	s.ListCTFs = m(s.ListCTFs)
+	s.CreateChallengeGroup = m(s.CreateChallengeGroup)
+	s.UpdateChallengeGroup = m(s.UpdateChallengeGroup)
+	s.DeleteChallengeGroup = m(s.DeleteChallengeGroup)
+	s.ListChallengeGroups = m(s.ListChallengeGroups)
+	s.ListCTFUsers = m(s.ListCTFUsers)
+	s.DeleteCTFUser = m(s.DeleteCTFUser)
+	s.UpdateCTFUser = m(s.UpdateCTFUser)
 }
 
 // Mount configures the mux to serve the admin endpoints.
@@ -187,6 +231,17 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountListCoursesHandler(mux, h.ListCourses)
 	MountCreateCourseHandler(mux, h.CreateCourse)
 	MountUpdateCourseHandler(mux, h.UpdateCourse)
+	MountCreateCTFHandler(mux, h.CreateCTF)
+	MountUpdateCTFHandler(mux, h.UpdateCTF)
+	MountDeleteCTFHandler(mux, h.DeleteCTF)
+	MountListCTFsHandler(mux, h.ListCTFs)
+	MountCreateChallengeGroupHandler(mux, h.CreateChallengeGroup)
+	MountUpdateChallengeGroupHandler(mux, h.UpdateChallengeGroup)
+	MountDeleteChallengeGroupHandler(mux, h.DeleteChallengeGroup)
+	MountListChallengeGroupsHandler(mux, h.ListChallengeGroups)
+	MountListCTFUsersHandler(mux, h.ListCTFUsers)
+	MountDeleteCTFUserHandler(mux, h.DeleteCTFUser)
+	MountUpdateCTFUserHandler(mux, h.UpdateCTFUser)
 }
 
 // MountListChallengesHandler configures the mux to serve the "admin" service
@@ -1393,6 +1448,567 @@ func NewUpdateCourseHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateCourse")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateCTFHandler configures the mux to serve the "admin" service
+// "CreateCTF" endpoint.
+func MountCreateCTFHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/ctfs", f)
+}
+
+// NewCreateCTFHandler creates a HTTP handler which loads the HTTP request and
+// calls the "admin" service "CreateCTF" endpoint.
+func NewCreateCTFHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateCTFRequest(mux, decoder)
+		encodeResponse = EncodeCreateCTFResponse(encoder)
+		encodeError    = EncodeCreateCTFError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateCTF")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateCTFHandler configures the mux to serve the "admin" service
+// "UpdateCTF" endpoint.
+func MountUpdateCTFHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("PUT", "/admin/ctfs/{id}", f)
+}
+
+// NewUpdateCTFHandler creates a HTTP handler which loads the HTTP request and
+// calls the "admin" service "UpdateCTF" endpoint.
+func NewUpdateCTFHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateCTFRequest(mux, decoder)
+		encodeResponse = EncodeUpdateCTFResponse(encoder)
+		encodeError    = EncodeUpdateCTFError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateCTF")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteCTFHandler configures the mux to serve the "admin" service
+// "DeleteCTF" endpoint.
+func MountDeleteCTFHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/admin/ctfs/{id}", f)
+}
+
+// NewDeleteCTFHandler creates a HTTP handler which loads the HTTP request and
+// calls the "admin" service "DeleteCTF" endpoint.
+func NewDeleteCTFHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteCTFRequest(mux, decoder)
+		encodeResponse = EncodeDeleteCTFResponse(encoder)
+		encodeError    = EncodeDeleteCTFError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteCTF")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListCTFsHandler configures the mux to serve the "admin" service
+// "ListCTFs" endpoint.
+func MountListCTFsHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/ctfs", f)
+}
+
+// NewListCTFsHandler creates a HTTP handler which loads the HTTP request and
+// calls the "admin" service "ListCTFs" endpoint.
+func NewListCTFsHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListCTFsRequest(mux, decoder)
+		encodeResponse = EncodeListCTFsResponse(encoder)
+		encodeError    = EncodeListCTFsError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListCTFs")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountCreateChallengeGroupHandler configures the mux to serve the "admin"
+// service "CreateChallengeGroup" endpoint.
+func MountCreateChallengeGroupHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("POST", "/admin/challenge_groups", f)
+}
+
+// NewCreateChallengeGroupHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "CreateChallengeGroup" endpoint.
+func NewCreateChallengeGroupHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeCreateChallengeGroupRequest(mux, decoder)
+		encodeResponse = EncodeCreateChallengeGroupResponse(encoder)
+		encodeError    = EncodeCreateChallengeGroupError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "CreateChallengeGroup")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateChallengeGroupHandler configures the mux to serve the "admin"
+// service "UpdateChallengeGroup" endpoint.
+func MountUpdateChallengeGroupHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("PUT", "/admin/challenge_groups/{id}", f)
+}
+
+// NewUpdateChallengeGroupHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "UpdateChallengeGroup" endpoint.
+func NewUpdateChallengeGroupHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateChallengeGroupRequest(mux, decoder)
+		encodeResponse = EncodeUpdateChallengeGroupResponse(encoder)
+		encodeError    = EncodeUpdateChallengeGroupError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateChallengeGroup")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteChallengeGroupHandler configures the mux to serve the "admin"
+// service "DeleteChallengeGroup" endpoint.
+func MountDeleteChallengeGroupHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/admin/challenge_groups/{id}", f)
+}
+
+// NewDeleteChallengeGroupHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "DeleteChallengeGroup" endpoint.
+func NewDeleteChallengeGroupHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteChallengeGroupRequest(mux, decoder)
+		encodeResponse = EncodeDeleteChallengeGroupResponse(encoder)
+		encodeError    = EncodeDeleteChallengeGroupError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteChallengeGroup")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListChallengeGroupsHandler configures the mux to serve the "admin"
+// service "ListChallengeGroups" endpoint.
+func MountListChallengeGroupsHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/challenge_groups", f)
+}
+
+// NewListChallengeGroupsHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "ListChallengeGroups" endpoint.
+func NewListChallengeGroupsHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListChallengeGroupsRequest(mux, decoder)
+		encodeResponse = EncodeListChallengeGroupsResponse(encoder)
+		encodeError    = EncodeListChallengeGroupsError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListChallengeGroups")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountListCTFUsersHandler configures the mux to serve the "admin" service
+// "ListCTFUsers" endpoint.
+func MountListCTFUsersHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/ctfs/{ctf_id}/users", f)
+}
+
+// NewListCTFUsersHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "ListCTFUsers" endpoint.
+func NewListCTFUsersHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeListCTFUsersRequest(mux, decoder)
+		encodeResponse = EncodeListCTFUsersResponse(encoder)
+		encodeError    = EncodeListCTFUsersError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "ListCTFUsers")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountDeleteCTFUserHandler configures the mux to serve the "admin" service
+// "DeleteCTFUser" endpoint.
+func MountDeleteCTFUserHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("DELETE", "/admin/ctfs/{ctf_id}/users/{user_id}", f)
+}
+
+// NewDeleteCTFUserHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "DeleteCTFUser" endpoint.
+func NewDeleteCTFUserHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeDeleteCTFUserRequest(mux, decoder)
+		encodeResponse = EncodeDeleteCTFUserResponse(encoder)
+		encodeError    = EncodeDeleteCTFUserError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "DeleteCTFUser")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateCTFUserHandler configures the mux to serve the "admin" service
+// "UpdateCTFUser" endpoint.
+func MountUpdateCTFUserHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("PATCH", "/admin/ctfs/{ctf_id}/users/{user_id}", f)
+}
+
+// NewUpdateCTFUserHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "UpdateCTFUser" endpoint.
+func NewUpdateCTFUserHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateCTFUserRequest(mux, decoder)
+		encodeResponse = EncodeUpdateCTFUserResponse(encoder)
+		encodeError    = EncodeUpdateCTFUserError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateCTFUser")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

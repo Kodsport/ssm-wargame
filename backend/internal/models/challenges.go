@@ -203,8 +203,11 @@ var ChallengeRels = struct {
 	MonthlyChallenge  string
 	Authors           string
 	ChallengeFiles    string
+	ChallengeGroups   string
 	ChallengeServices string
 	CourseItems       string
+	CTFChallenges     string
+	CTFSolves         string
 	Flags             string
 	KnackKodenSolves  string
 	SchoolSolves      string
@@ -216,8 +219,11 @@ var ChallengeRels = struct {
 	MonthlyChallenge:  "MonthlyChallenge",
 	Authors:           "Authors",
 	ChallengeFiles:    "ChallengeFiles",
+	ChallengeGroups:   "ChallengeGroups",
 	ChallengeServices: "ChallengeServices",
 	CourseItems:       "CourseItems",
+	CTFChallenges:     "CTFChallenges",
+	CTFSolves:         "CTFSolves",
 	Flags:             "Flags",
 	KnackKodenSolves:  "KnackKodenSolves",
 	SchoolSolves:      "SchoolSolves",
@@ -232,8 +238,11 @@ type challengeR struct {
 	MonthlyChallenge  *MonthlyChallenge     `boil:"MonthlyChallenge" json:"MonthlyChallenge" toml:"MonthlyChallenge" yaml:"MonthlyChallenge"`
 	Authors           AuthorSlice           `boil:"Authors" json:"Authors" toml:"Authors" yaml:"Authors"`
 	ChallengeFiles    ChallengeFileSlice    `boil:"ChallengeFiles" json:"ChallengeFiles" toml:"ChallengeFiles" yaml:"ChallengeFiles"`
+	ChallengeGroups   ChallengeGroupSlice   `boil:"ChallengeGroups" json:"ChallengeGroups" toml:"ChallengeGroups" yaml:"ChallengeGroups"`
 	ChallengeServices ChallengeServiceSlice `boil:"ChallengeServices" json:"ChallengeServices" toml:"ChallengeServices" yaml:"ChallengeServices"`
 	CourseItems       CourseItemSlice       `boil:"CourseItems" json:"CourseItems" toml:"CourseItems" yaml:"CourseItems"`
+	CTFChallenges     CTFChallengeSlice     `boil:"CTFChallenges" json:"CTFChallenges" toml:"CTFChallenges" yaml:"CTFChallenges"`
+	CTFSolves         CTFSolfSlice          `boil:"CTFSolves" json:"CTFSolves" toml:"CTFSolves" yaml:"CTFSolves"`
 	Flags             FlagSlice             `boil:"Flags" json:"Flags" toml:"Flags" yaml:"Flags"`
 	KnackKodenSolves  KnackKodenSolfSlice   `boil:"KnackKodenSolves" json:"KnackKodenSolves" toml:"KnackKodenSolves" yaml:"KnackKodenSolves"`
 	SchoolSolves      SchoolSolfSlice       `boil:"SchoolSolves" json:"SchoolSolves" toml:"SchoolSolves" yaml:"SchoolSolves"`
@@ -281,6 +290,13 @@ func (r *challengeR) GetChallengeFiles() ChallengeFileSlice {
 	return r.ChallengeFiles
 }
 
+func (r *challengeR) GetChallengeGroups() ChallengeGroupSlice {
+	if r == nil {
+		return nil
+	}
+	return r.ChallengeGroups
+}
+
 func (r *challengeR) GetChallengeServices() ChallengeServiceSlice {
 	if r == nil {
 		return nil
@@ -293,6 +309,20 @@ func (r *challengeR) GetCourseItems() CourseItemSlice {
 		return nil
 	}
 	return r.CourseItems
+}
+
+func (r *challengeR) GetCTFChallenges() CTFChallengeSlice {
+	if r == nil {
+		return nil
+	}
+	return r.CTFChallenges
+}
+
+func (r *challengeR) GetCTFSolves() CTFSolfSlice {
+	if r == nil {
+		return nil
+	}
+	return r.CTFSolves
 }
 
 func (r *challengeR) GetFlags() FlagSlice {
@@ -708,6 +738,21 @@ func (o *Challenge) ChallengeFiles(mods ...qm.QueryMod) challengeFileQuery {
 	return ChallengeFiles(queryMods...)
 }
 
+// ChallengeGroups retrieves all the challenge_group's ChallengeGroups with an executor.
+func (o *Challenge) ChallengeGroups(mods ...qm.QueryMod) challengeGroupQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.InnerJoin("\"challenge_group_challenges\" on \"challenge_groups\".\"id\" = \"challenge_group_challenges\".\"challenge_group_id\""),
+		qm.Where("\"challenge_group_challenges\".\"challenge_id\"=?", o.ID),
+	)
+
+	return ChallengeGroups(queryMods...)
+}
+
 // ChallengeServices retrieves all the challenge_service's ChallengeServices with an executor.
 func (o *Challenge) ChallengeServices(mods ...qm.QueryMod) challengeServiceQuery {
 	var queryMods []qm.QueryMod
@@ -734,6 +779,34 @@ func (o *Challenge) CourseItems(mods ...qm.QueryMod) courseItemQuery {
 	)
 
 	return CourseItems(queryMods...)
+}
+
+// CTFChallenges retrieves all the ctf_challenge's CTFChallenges with an executor.
+func (o *Challenge) CTFChallenges(mods ...qm.QueryMod) ctfChallengeQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"ctf_challenges\".\"challenge_id\"=?", o.ID),
+	)
+
+	return CTFChallenges(queryMods...)
+}
+
+// CTFSolves retrieves all the ctf_solf's CTFSolves with an executor.
+func (o *Challenge) CTFSolves(mods ...qm.QueryMod) ctfSolfQuery {
+	var queryMods []qm.QueryMod
+	if len(mods) != 0 {
+		queryMods = append(queryMods, mods...)
+	}
+
+	queryMods = append(queryMods,
+		qm.Where("\"ctf_solves\".\"challenge_id\"=?", o.ID),
+	)
+
+	return CTFSolves(queryMods...)
 }
 
 // Flags retrieves all the flag's Flags with an executor.
@@ -1410,6 +1483,136 @@ func (challengeL) LoadChallengeFiles(ctx context.Context, e boil.ContextExecutor
 	return nil
 }
 
+// LoadChallengeGroups allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (challengeL) LoadChallengeGroups(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
+	var slice []*Challenge
+	var object *Challenge
+
+	if singular {
+		var ok bool
+		object, ok = maybeChallenge.(*Challenge)
+		if !ok {
+			object = new(Challenge)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeChallenge))
+			}
+		}
+	} else {
+		s, ok := maybeChallenge.(*[]*Challenge)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeChallenge))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &challengeR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &challengeR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.Select("\"challenge_groups\".\"id\", \"challenge_groups\".\"name\", \"challenge_groups\".\"description\", \"challenge_groups\".\"created_at\", \"challenge_groups\".\"updated_at\", \"a\".\"challenge_id\""),
+		qm.From("\"challenge_groups\""),
+		qm.InnerJoin("\"challenge_group_challenges\" as \"a\" on \"challenge_groups\".\"id\" = \"a\".\"challenge_group_id\""),
+		qm.WhereIn("\"a\".\"challenge_id\" in ?", argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load challenge_groups")
+	}
+
+	var resultSlice []*ChallengeGroup
+
+	var localJoinCols []string
+	for results.Next() {
+		one := new(ChallengeGroup)
+		var localJoinCol string
+
+		err = results.Scan(&one.ID, &one.Name, &one.Description, &one.CreatedAt, &one.UpdatedAt, &localJoinCol)
+		if err != nil {
+			return errors.Wrap(err, "failed to scan eager loaded results for challenge_groups")
+		}
+		if err = results.Err(); err != nil {
+			return errors.Wrap(err, "failed to plebian-bind eager loaded slice challenge_groups")
+		}
+
+		resultSlice = append(resultSlice, one)
+		localJoinCols = append(localJoinCols, localJoinCol)
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on challenge_groups")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for challenge_groups")
+	}
+
+	if len(challengeGroupAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.ChallengeGroups = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &challengeGroupR{}
+			}
+			foreign.R.Challenges = append(foreign.R.Challenges, object)
+		}
+		return nil
+	}
+
+	for i, foreign := range resultSlice {
+		localJoinCol := localJoinCols[i]
+		for _, local := range slice {
+			if local.ID == localJoinCol {
+				local.R.ChallengeGroups = append(local.R.ChallengeGroups, foreign)
+				if foreign.R == nil {
+					foreign.R = &challengeGroupR{}
+				}
+				foreign.R.Challenges = append(foreign.R.Challenges, local)
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
 // LoadChallengeServices allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
 func (challengeL) LoadChallengeServices(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
@@ -1626,6 +1829,232 @@ func (challengeL) LoadCourseItems(ctx context.Context, e boil.ContextExecutor, s
 				local.R.CourseItems = append(local.R.CourseItems, foreign)
 				if foreign.R == nil {
 					foreign.R = &courseItemR{}
+				}
+				foreign.R.Challenge = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadCTFChallenges allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (challengeL) LoadCTFChallenges(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
+	var slice []*Challenge
+	var object *Challenge
+
+	if singular {
+		var ok bool
+		object, ok = maybeChallenge.(*Challenge)
+		if !ok {
+			object = new(Challenge)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeChallenge))
+			}
+		}
+	} else {
+		s, ok := maybeChallenge.(*[]*Challenge)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeChallenge))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &challengeR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &challengeR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`ctf_challenges`),
+		qm.WhereIn(`ctf_challenges.challenge_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load ctf_challenges")
+	}
+
+	var resultSlice []*CTFChallenge
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice ctf_challenges")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on ctf_challenges")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for ctf_challenges")
+	}
+
+	if len(ctfChallengeAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.CTFChallenges = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &ctfChallengeR{}
+			}
+			foreign.R.Challenge = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.ChallengeID {
+				local.R.CTFChallenges = append(local.R.CTFChallenges, foreign)
+				if foreign.R == nil {
+					foreign.R = &ctfChallengeR{}
+				}
+				foreign.R.Challenge = local
+				break
+			}
+		}
+	}
+
+	return nil
+}
+
+// LoadCTFSolves allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-M or N-M relationship.
+func (challengeL) LoadCTFSolves(ctx context.Context, e boil.ContextExecutor, singular bool, maybeChallenge interface{}, mods queries.Applicator) error {
+	var slice []*Challenge
+	var object *Challenge
+
+	if singular {
+		var ok bool
+		object, ok = maybeChallenge.(*Challenge)
+		if !ok {
+			object = new(Challenge)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeChallenge))
+			}
+		}
+	} else {
+		s, ok := maybeChallenge.(*[]*Challenge)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeChallenge)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeChallenge))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &challengeR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &challengeR{}
+			}
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`ctf_solves`),
+		qm.WhereIn(`ctf_solves.challenge_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load ctf_solves")
+	}
+
+	var resultSlice []*CTFSolf
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice ctf_solves")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results in eager load on ctf_solves")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for ctf_solves")
+	}
+
+	if len(ctfSolfAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+	if singular {
+		object.R.CTFSolves = resultSlice
+		for _, foreign := range resultSlice {
+			if foreign.R == nil {
+				foreign.R = &ctfSolfR{}
+			}
+			foreign.R.Challenge = object
+		}
+		return nil
+	}
+
+	for _, foreign := range resultSlice {
+		for _, local := range slice {
+			if local.ID == foreign.ChallengeID {
+				local.R.CTFSolves = append(local.R.CTFSolves, foreign)
+				if foreign.R == nil {
+					foreign.R = &ctfSolfR{}
 				}
 				foreign.R.Challenge = local
 				break
@@ -2650,6 +3079,151 @@ func (o *Challenge) RemoveChallengeFiles(ctx context.Context, exec boil.ContextE
 	return nil
 }
 
+// AddChallengeGroups adds the given related objects to the existing relationships
+// of the challenge, optionally inserting them as new records.
+// Appends related to o.R.ChallengeGroups.
+// Sets related.R.Challenges appropriately.
+func (o *Challenge) AddChallengeGroups(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*ChallengeGroup) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		}
+	}
+
+	for _, rel := range related {
+		query := "insert into \"challenge_group_challenges\" (\"challenge_id\", \"challenge_group_id\") values ($1, $2)"
+		values := []interface{}{o.ID, rel.ID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, query)
+			fmt.Fprintln(writer, values)
+		}
+		_, err = exec.ExecContext(ctx, query, values...)
+		if err != nil {
+			return errors.Wrap(err, "failed to insert into join table")
+		}
+	}
+	if o.R == nil {
+		o.R = &challengeR{
+			ChallengeGroups: related,
+		}
+	} else {
+		o.R.ChallengeGroups = append(o.R.ChallengeGroups, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &challengeGroupR{
+				Challenges: ChallengeSlice{o},
+			}
+		} else {
+			rel.R.Challenges = append(rel.R.Challenges, o)
+		}
+	}
+	return nil
+}
+
+// SetChallengeGroups removes all previously related items of the
+// challenge replacing them completely with the passed
+// in related items, optionally inserting them as new records.
+// Sets o.R.Challenges's ChallengeGroups accordingly.
+// Replaces o.R.ChallengeGroups with related.
+// Sets related.R.Challenges's ChallengeGroups accordingly.
+func (o *Challenge) SetChallengeGroups(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*ChallengeGroup) error {
+	query := "delete from \"challenge_group_challenges\" where \"challenge_id\" = $1"
+	values := []interface{}{o.ID}
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err := exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+
+	removeChallengeGroupsFromChallengesSlice(o, related)
+	if o.R != nil {
+		o.R.ChallengeGroups = nil
+	}
+
+	return o.AddChallengeGroups(ctx, exec, insert, related...)
+}
+
+// RemoveChallengeGroups relationships from objects passed in.
+// Removes related items from R.ChallengeGroups (uses pointer comparison, removal does not keep order)
+// Sets related.R.Challenges.
+func (o *Challenge) RemoveChallengeGroups(ctx context.Context, exec boil.ContextExecutor, related ...*ChallengeGroup) error {
+	if len(related) == 0 {
+		return nil
+	}
+
+	var err error
+	query := fmt.Sprintf(
+		"delete from \"challenge_group_challenges\" where \"challenge_id\" = $1 and \"challenge_group_id\" in (%s)",
+		strmangle.Placeholders(dialect.UseIndexPlaceholders, len(related), 2, 1),
+	)
+	values := []interface{}{o.ID}
+	for _, rel := range related {
+		values = append(values, rel.ID)
+	}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, query)
+		fmt.Fprintln(writer, values)
+	}
+	_, err = exec.ExecContext(ctx, query, values...)
+	if err != nil {
+		return errors.Wrap(err, "failed to remove relationships before set")
+	}
+	removeChallengeGroupsFromChallengesSlice(o, related)
+	if o.R == nil {
+		return nil
+	}
+
+	for _, rel := range related {
+		for i, ri := range o.R.ChallengeGroups {
+			if rel != ri {
+				continue
+			}
+
+			ln := len(o.R.ChallengeGroups)
+			if ln > 1 && i < ln-1 {
+				o.R.ChallengeGroups[i] = o.R.ChallengeGroups[ln-1]
+			}
+			o.R.ChallengeGroups = o.R.ChallengeGroups[:ln-1]
+			break
+		}
+	}
+
+	return nil
+}
+
+func removeChallengeGroupsFromChallengesSlice(o *Challenge, related []*ChallengeGroup) {
+	for _, rel := range related {
+		if rel.R == nil {
+			continue
+		}
+		for i, ri := range rel.R.Challenges {
+			if o.ID != ri.ID {
+				continue
+			}
+
+			ln := len(rel.R.Challenges)
+			if ln > 1 && i < ln-1 {
+				rel.R.Challenges[i] = rel.R.Challenges[ln-1]
+			}
+			rel.R.Challenges = rel.R.Challenges[:ln-1]
+			break
+		}
+	}
+}
+
 // AddChallengeServices adds the given related objects to the existing relationships
 // of the challenge, optionally inserting them as new records.
 // Appends related to o.R.ChallengeServices.
@@ -2747,6 +3321,112 @@ func (o *Challenge) AddCourseItems(ctx context.Context, exec boil.ContextExecuto
 	for _, rel := range related {
 		if rel.R == nil {
 			rel.R = &courseItemR{
+				Challenge: o,
+			}
+		} else {
+			rel.R.Challenge = o
+		}
+	}
+	return nil
+}
+
+// AddCTFChallenges adds the given related objects to the existing relationships
+// of the challenge, optionally inserting them as new records.
+// Appends related to o.R.CTFChallenges.
+// Sets related.R.Challenge appropriately.
+func (o *Challenge) AddCTFChallenges(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*CTFChallenge) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.ChallengeID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"ctf_challenges\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"challenge_id"}),
+				strmangle.WhereClause("\"", "\"", 2, ctfChallengePrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.CTFID, rel.ChallengeID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.ChallengeID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &challengeR{
+			CTFChallenges: related,
+		}
+	} else {
+		o.R.CTFChallenges = append(o.R.CTFChallenges, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &ctfChallengeR{
+				Challenge: o,
+			}
+		} else {
+			rel.R.Challenge = o
+		}
+	}
+	return nil
+}
+
+// AddCTFSolves adds the given related objects to the existing relationships
+// of the challenge, optionally inserting them as new records.
+// Appends related to o.R.CTFSolves.
+// Sets related.R.Challenge appropriately.
+func (o *Challenge) AddCTFSolves(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*CTFSolf) error {
+	var err error
+	for _, rel := range related {
+		if insert {
+			rel.ChallengeID = o.ID
+			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
+				return errors.Wrap(err, "failed to insert into foreign table")
+			}
+		} else {
+			updateQuery := fmt.Sprintf(
+				"UPDATE \"ctf_solves\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"challenge_id"}),
+				strmangle.WhereClause("\"", "\"", 2, ctfSolfPrimaryKeyColumns),
+			)
+			values := []interface{}{o.ID, rel.ID}
+
+			if boil.IsDebug(ctx) {
+				writer := boil.DebugWriterFrom(ctx)
+				fmt.Fprintln(writer, updateQuery)
+				fmt.Fprintln(writer, values)
+			}
+			if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+				return errors.Wrap(err, "failed to update foreign table")
+			}
+
+			rel.ChallengeID = o.ID
+		}
+	}
+
+	if o.R == nil {
+		o.R = &challengeR{
+			CTFSolves: related,
+		}
+	} else {
+		o.R.CTFSolves = append(o.R.CTFSolves, related...)
+	}
+
+	for _, rel := range related {
+		if rel.R == nil {
+			rel.R = &ctfSolfR{
 				Challenge: o,
 			}
 		} else {

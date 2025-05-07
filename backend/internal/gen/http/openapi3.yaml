@@ -37,7 +37,28 @@ paths:
                   publish: true
                   slug: movitz
                   sponsor: true
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
               example:
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
               - description: Movitz gör saker
                 full_name: Movitz Sunar
                 id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -270,8 +291,6 @@ paths:
                   name: Forensics
                 - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   name: Forensics
-                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  name: Forensics
               example:
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                 name: Forensics
@@ -281,6 +300,378 @@ paths:
                 name: Forensics
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                 name: Forensics
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/challenge_groups:
+    get:
+      tags:
+      - admin
+      summary: ListChallengeGroups admin
+      operationId: admin#ListChallengeGroups
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChallengeGroup'
+                example:
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Optio fuga magnam autem aspernatur in.
+                  id: Nihil dolore libero.
+                  name: Et magnam qui.
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Optio fuga magnam autem aspernatur in.
+                  id: Nihil dolore libero.
+                  name: Et magnam qui.
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Optio fuga magnam autem aspernatur in.
+                  id: Nihil dolore libero.
+                  name: Et magnam qui.
+              example:
+              - challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Optio fuga magnam autem aspernatur in.
+                id: Nihil dolore libero.
+                name: Et magnam qui.
+              - challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Optio fuga magnam autem aspernatur in.
+                id: Nihil dolore libero.
+                name: Et magnam qui.
+              - challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Optio fuga magnam autem aspernatur in.
+                id: Nihil dolore libero.
+                name: Et magnam qui.
+              - challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Optio fuga magnam autem aspernatur in.
+                id: Nihil dolore libero.
+                name: Et magnam qui.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+    post:
+      tags:
+      - admin
+      summary: CreateChallengeGroup admin
+      operationId: admin#CreateChallengeGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChallengeGroupRequestBody'
+            example:
+              challenges:
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              description: This is a group of challenges
+              name: Group 1
+      responses:
+        "201":
+          description: Created response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeGroup'
+              example:
+                challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Ad consequuntur temporibus aut quo laudantium consequatur.
+                id: Consectetur voluptatem debitis aspernatur.
+                name: Iusto ex.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/challenge_groups/{id}:
+    delete:
+      tags:
+      - admin
+      summary: DeleteChallengeGroup admin
+      operationId: admin#DeleteChallengeGroup
+      parameters:
+      - name: id
+        in: path
+        description: ID of a file
+        required: true
+        schema:
+          type: string
+          description: ID of a file
+          example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          format: uuid
+        example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+    put:
+      tags:
+      - admin
+      summary: UpdateChallengeGroup admin
+      operationId: admin#UpdateChallengeGroup
+      parameters:
+      - name: id
+        in: path
+        description: ID of a file
+        required: true
+        schema:
+          type: string
+          description: ID of a file
+          example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          format: uuid
+        example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChallengeGroupRequestBody'
+            example:
+              challenges:
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              description: This is a group of challenges
+              name: Group 1
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChallengeGroup'
+              example:
+                challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Officia et fugiat qui.
+                id: Necessitatibus libero perspiciatis harum blanditiis aut repellat.
+                name: Et voluptatem molestias facere.
         "400":
           description: Resource not found
           content:
@@ -512,21 +903,24 @@ paths:
                 $ref: '#/components/schemas/ChallengeMeta'
               example:
                 solvers:
-                - solved_at: 3776329851919927555
+                - solved_at: 6278843443577027985
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 3776329851919927555
-                  user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 3776329851919927555
+                - solved_at: 6278843443577027985
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
                 submissions:
                 - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   input: SSM{wrong_flag}
-                  submitted_at: 6112979072062550665
+                  submitted_at: 1765359856371785050
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   input: SSM{wrong_flag}
-                  submitted_at: 6112979072062550665
+                  submitted_at: 1765359856371785050
+                  successful: false
+                  user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  input: SSM{wrong_flag}
+                  submitted_at: 1765359856371785050
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         "400":
@@ -944,6 +1338,600 @@ paths:
                 name: bad_request
       security:
       - jwt_header_Authorization: []
+  /admin/ctfs:
+    get:
+      tags:
+      - admin
+      summary: ListCTFs admin
+      operationId: admin#ListCTFs
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTF'
+                example:
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Aut fugit magni recusandae impedit.
+                  end_time: Modi ipsum et quasi aut omnis.
+                  id: Quas aliquam sit.
+                  name: Ut omnis aspernatur reprehenderit reprehenderit.
+                  slug: Ut eius ullam suscipit aut id.
+                  start_time: Modi molestiae ab repellat dolore.
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Aut fugit magni recusandae impedit.
+                  end_time: Modi ipsum et quasi aut omnis.
+                  id: Quas aliquam sit.
+                  name: Ut omnis aspernatur reprehenderit reprehenderit.
+                  slug: Ut eius ullam suscipit aut id.
+                  start_time: Modi molestiae ab repellat dolore.
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Aut fugit magni recusandae impedit.
+                  end_time: Modi ipsum et quasi aut omnis.
+                  id: Quas aliquam sit.
+                  name: Ut omnis aspernatur reprehenderit reprehenderit.
+                  slug: Ut eius ullam suscipit aut id.
+                  start_time: Modi molestiae ab repellat dolore.
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Aut fugit magni recusandae impedit.
+                  end_time: Modi ipsum et quasi aut omnis.
+                  id: Quas aliquam sit.
+                  name: Ut omnis aspernatur reprehenderit reprehenderit.
+                  slug: Ut eius ullam suscipit aut id.
+                  start_time: Modi molestiae ab repellat dolore.
+              example:
+              - challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Aut fugit magni recusandae impedit.
+                end_time: Modi ipsum et quasi aut omnis.
+                id: Quas aliquam sit.
+                name: Ut omnis aspernatur reprehenderit reprehenderit.
+                slug: Ut eius ullam suscipit aut id.
+                start_time: Modi molestiae ab repellat dolore.
+              - challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Aut fugit magni recusandae impedit.
+                end_time: Modi ipsum et quasi aut omnis.
+                id: Quas aliquam sit.
+                name: Ut omnis aspernatur reprehenderit reprehenderit.
+                slug: Ut eius ullam suscipit aut id.
+                start_time: Modi molestiae ab repellat dolore.
+              - challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Aut fugit magni recusandae impedit.
+                end_time: Modi ipsum et quasi aut omnis.
+                id: Quas aliquam sit.
+                name: Ut omnis aspernatur reprehenderit reprehenderit.
+                slug: Ut eius ullam suscipit aut id.
+                start_time: Modi molestiae ab repellat dolore.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+    post:
+      tags:
+      - admin
+      summary: CreateCTF admin
+      operationId: admin#CreateCTF
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCTFRequestBody'
+            example:
+              challenges:
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              description: A fun CTF for school
+              end_time: 205276042674887128
+              name: School CTF 2025
+              password: password
+              private: false
+              slug: school-ctf-2025
+              start_time: 6039843869835536091
+      responses:
+        "201":
+          description: Created response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTF'
+              example:
+                challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Error quia quia quibusdam voluptates delectus aut.
+                end_time: Temporibus eveniet vel beatae quibusdam et fugit.
+                id: Aperiam error ratione.
+                name: Voluptatem et repudiandae.
+                slug: Earum non cumque.
+                start_time: Maxime optio culpa.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/ctfs/{ctf_id}/users:
+    get:
+      tags:
+      - admin
+      summary: ListCTFUsers admin
+      operationId: admin#ListCTFUsers
+      parameters:
+      - name: ctf_id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Cupiditate omnis similique.
+        example: Et qui quia voluptatem aut.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTFUser'
+                example:
+                - ctf_id: Sit eaque voluptatem.
+                  id: Labore unde.
+                  password: Modi beatae velit quisquam.
+                  username: Velit deserunt occaecati tenetur et.
+                - ctf_id: Sit eaque voluptatem.
+                  id: Labore unde.
+                  password: Modi beatae velit quisquam.
+                  username: Velit deserunt occaecati tenetur et.
+              example:
+              - ctf_id: Sit eaque voluptatem.
+                id: Labore unde.
+                password: Modi beatae velit quisquam.
+                username: Velit deserunt occaecati tenetur et.
+              - ctf_id: Sit eaque voluptatem.
+                id: Labore unde.
+                password: Modi beatae velit quisquam.
+                username: Velit deserunt occaecati tenetur et.
+              - ctf_id: Sit eaque voluptatem.
+                id: Labore unde.
+                password: Modi beatae velit quisquam.
+                username: Velit deserunt occaecati tenetur et.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/ctfs/{ctf_id}/users/{user_id}:
+    delete:
+      tags:
+      - admin
+      summary: DeleteCTFUser admin
+      operationId: admin#DeleteCTFUser
+      parameters:
+      - name: ctf_id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Architecto laudantium.
+        example: Aliquam esse atque et voluptatem nesciunt quo.
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Earum deserunt at.
+        example: Voluptate sed hic dolorem.
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+    patch:
+      tags:
+      - admin
+      summary: UpdateCTFUser admin
+      operationId: admin#UpdateCTFUser
+      parameters:
+      - name: ctf_id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Consequuntur sed non quas.
+        example: Ex sint possimus.
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Odio voluptatem fugit.
+        example: Sapiente aut.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCTFUserRequestBody'
+            example:
+              username: Facilis magnam sit ducimus est.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTFUser'
+              example:
+                ctf_id: Consectetur fugit sunt dolorem aspernatur placeat.
+                id: Est pariatur ea totam expedita.
+                password: Pariatur voluptatem.
+                username: In vel sit quam at qui.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/ctfs/{id}:
+    delete:
+      tags:
+      - admin
+      summary: DeleteCTF admin
+      operationId: admin#DeleteCTF
+      parameters:
+      - name: id
+        in: path
+        description: ID of a file
+        required: true
+        schema:
+          type: string
+          description: ID of a file
+          example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          format: uuid
+        example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+      responses:
+        "200":
+          description: OK response.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+    put:
+      tags:
+      - admin
+      summary: UpdateCTF admin
+      operationId: admin#UpdateCTF
+      parameters:
+      - name: id
+        in: path
+        description: ID of a file
+        required: true
+        schema:
+          type: string
+          description: ID of a file
+          example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          format: uuid
+        example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCTFRequestBody'
+            example:
+              challenges:
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
+              description: A fun CTF for school
+              end_time: 3798013612609028327
+              name: School CTF 2025
+              password: password
+              private: false
+              slug: school-ctf-2025
+              start_time: 1834819382561110777
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTF'
+              example:
+                challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Nihil quia ipsa eos fuga.
+                end_time: Quisquam tenetur omnis delectus animi est sunt.
+                id: Unde exercitationem laudantium.
+                name: Repudiandae voluptatem veritatis voluptas nostrum.
+                slug: Provident dolorum.
+                start_time: Exercitationem facere harum saepe laboriosam temporibus
+                  doloremque.
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
   /admin/events:
     get:
       tags:
@@ -964,9 +1952,11 @@ paths:
                   name: Säkerhet-SM 2023
                 - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   name: Säkerhet-SM 2023
+                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  name: Säkerhet-SM 2023
+                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  name: Säkerhet-SM 2023
               example:
-              - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                name: Säkerhet-SM 2023
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                 name: Säkerhet-SM 2023
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -1178,7 +2168,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateCTFEventImportTokenResponseBody'
               example:
-                token: Soluta omnis omnis assumenda deserunt modi.
+                token: Quis iusto qui consequuntur praesentium.
         "400":
           description: Resource not found
           content:
@@ -1227,14 +2217,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/MonthlyChallenge'
                 example:
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  display_month: Januari/Februari
-                  end_date: 1690884841
-                  start_date: 1690874841
-                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  display_month: Januari/Februari
-                  end_date: 1690884841
-                  start_date: 1690874841
                 - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                   display_month: Januari/Februari
                   end_date: 1690884841
@@ -1425,10 +2407,10 @@ paths:
               - web
               challenge_id: 225ada44-3fde-460d-84a4-2f16ff579618
               custom:
-                chall_namespace: Voluptas sunt sit aut consequatur hic repellendus.
-                publish: false
-                publish_at: Et distinctio accusantium.
-                slug: Et libero qui laborum vel eos.
+                chall_namespace: Et eveniet velit et quisquam nemo.
+                publish: true
+                publish_at: Est harum iste excepturi.
+                slug: Voluptas tempora et adipisci.
               description: how to dns
               file_urls:
               - https://bucket/key
@@ -1440,12 +2422,10 @@ paths:
               - flag: fl4g_l0l
                 type: regex
               human_metadata:
-                event_name: Harum ab eos tenetur itaque omnis itaque.
+                event_name: Eius molestias.
               order: 5
               score: 100
               services:
-              - hyperlink: true
-                user_display: nc 0.0.0.0 1234
               - hyperlink: true
                 user_display: nc 0.0.0.0 1234
               - hyperlink: true
@@ -1512,17 +2492,7 @@ paths:
                   id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   role: admin
                   school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-                - email: movitz.sunar@ssm.example
-                  full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  role: admin
-                  school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               example:
-              - email: movitz.sunar@ssm.example
-                full_name: Movitz Sunar
-                id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                role: admin
-                school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               - email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
@@ -1654,13 +2624,6 @@ paths:
                 publish: true
                 slug: movitz
                 sponsor: true
-              - description: Movitz gör saker
-                full_name: Movitz Sunar
-                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                image_url: movitz
-                publish: true
-                slug: movitz
-                sponsor: true
       security:
       - jwt_header_Authorization: []
   /challenges:
@@ -1687,7 +2650,7 @@ paths:
           type: array
           items:
             type: string
-            example: Vel natus quod quidem nam similique.
+            example: Tempora rerum dolore.
           description: Selectivly take out certain challs
           example: []
         example: []
@@ -1870,7 +2833,7 @@ paths:
               $ref: '#/components/schemas/KnackKodenSubmitFlagRequestBody'
             example:
               flag: SSM{flag}
-              password: Quos maxime atque porro.
+              password: Voluptatem et dolor consequatur.
       responses:
         "200":
           description: OK response.
@@ -1927,26 +2890,6 @@ paths:
                     publish: true
                     slug: movitz
                     sponsor: true
-                  category: web
-                  completed: true
-                  course_items:
-                  - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    position: 0
-                  - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    position: 0
-                  - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    position: 0
-                  description: markdown text
-                  difficulty: advanced
-                  enrolled: false
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  publish: true
-                  slug: sqli
-                  title: SQL-Injektioner
-                - authors:
                   - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -1995,6 +2938,20 @@ paths:
                     publish: true
                     slug: movitz
                     sponsor: true
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
                   category: web
                   completed: true
                   course_items:
@@ -2015,6 +2972,68 @@ paths:
                   slug: sqli
                   title: SQL-Injektioner
                 - authors:
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  category: web
+                  completed: true
+                  course_items:
+                  - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    position: 0
+                  - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    position: 0
+                  - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    position: 0
+                  description: markdown text
+                  difficulty: advanced
+                  enrolled: false
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  publish: true
+                  slug: sqli
+                  title: SQL-Injektioner
+                - authors:
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
+                  - description: Movitz gör saker
+                    full_name: Movitz Sunar
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    image_url: movitz
+                    publish: true
+                    slug: movitz
+                    sponsor: true
                   - description: Movitz gör saker
                     full_name: Movitz Sunar
                     id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -2064,26 +3083,6 @@ paths:
                   publish: true
                   slug: movitz
                   sponsor: true
-                category: web
-                completed: true
-                course_items:
-                - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  position: 0
-                - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  position: 0
-                - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  position: 0
-                description: markdown text
-                difficulty: advanced
-                enrolled: false
-                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                publish: true
-                slug: sqli
-                title: SQL-Injektioner
-              - authors:
                 - description: Movitz gör saker
                   full_name: Movitz Sunar
                   id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -2118,6 +3117,20 @@ paths:
                 slug: sqli
                 title: SQL-Injektioner
               - authors:
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
                 - description: Movitz gör saker
                   full_name: Movitz Sunar
                   id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -2197,6 +3210,476 @@ paths:
           description: OK response.
       security:
       - jwt_header_Authorization: []
+  /ctfs/{slug}:
+    get:
+      tags:
+      - ctf
+      summary: Get ctf
+      description: Get info about a ctf.
+      operationId: ctf#Get
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Aliquam minima laudantium est inventore veniam.
+        example: Ea facere velit voluptates ratione.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTFInfo'
+              example:
+                challenge_ids:
+                - Commodi laboriosam quidem repellat ducimus voluptatem consectetur.
+                - Et quia.
+                - Assumenda repudiandae consequatur perferendis corporis quibusdam
+                  dolor.
+                - Voluptate et rerum quam.
+                description: Esse autem nam.
+                end_time: Est ut culpa aut molestiae omnis.
+                id: Molestias tenetur rerum nam omnis possimus deserunt.
+                name: Ut autem odio consequuntur asperiores enim.
+                private: false
+                slug: Aperiam saepe.
+                start_time: Inventore recusandae voluptatum eius.
+  /ctfs/{slug}/attempt:
+    post:
+      tags:
+      - ctf
+      summary: SubmitFlag ctf
+      description: Submit a flag for a user in a ctf.
+      operationId: ctf#SubmitFlag
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Officiis natus tenetur.
+        example: Qui et sint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitFlagRequestBody2'
+            example:
+              challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+              flag: SSM{yo}
+              password: user-password
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTFSolve'
+              example:
+                challenge_id: Ut fugit dolor culpa expedita qui earum.
+                ctf_id: Incidunt placeat asperiores ipsa aperiam.
+                id: Reprehenderit nihil molestiae animi et esse.
+                solved_at: Vel cumque sed itaque sapiente vel.
+                user_id: Neque non molestiae.
+        "400":
+          description: If the challenge is already solved
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: If the ctf is not active
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "409":
+          description: If the challenge is already solved
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+  /ctfs/{slug}/challenges:
+    get:
+      tags:
+      - ctf
+      summary: ListChallenges ctf
+      description: List challenges for a ctf.
+      operationId: ctf#ListChallenges
+      parameters:
+      - name: password
+        in: query
+        allowEmptyValue: true
+        schema:
+          type: string
+          example: Quo cupiditate reprehenderit in illum et omnis.
+        example: Voluptate sunt itaque asperiores commodi sint quo.
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Mollitia consequatur aut iure repellendus ut dicta.
+        example: Suscipit quaerat asperiores sint.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsmCtfChallengeCollection'
+              example:
+              - authors:
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                category: Misc
+                chall_namespace: knackkoden
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+                description: A heap overflow challenge
+                display_order: 1484757567978251850
+                files:
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                score: 50
+                services:
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                slug: pwnme
+                solved: true
+                solvers:
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                solves: 3
+                title: pwnme
+              - authors:
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                category: Misc
+                chall_namespace: knackkoden
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+                description: A heap overflow challenge
+                display_order: 1484757567978251850
+                files:
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                score: 50
+                services:
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                slug: pwnme
+                solved: true
+                solvers:
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                solves: 3
+                title: pwnme
+              - authors:
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                category: Misc
+                chall_namespace: knackkoden
+                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+                description: A heap overflow challenge
+                display_order: 1484757567978251850
+                files:
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                - filename: decryptor.exe
+                  url: https://s3/bucket/key?signature
+                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                score: 50
+                services:
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                - hyperlink: true
+                  user_display: nc 0.0.0.0 1234
+                slug: pwnme
+                solved: true
+                solvers:
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
+                solves: 3
+                title: pwnme
+  /ctfs/{slug}/scoreboard:
+    get:
+      tags:
+      - ctf
+      summary: Scoreboard ctf
+      description: Get scoreboard for a ctf.
+      operationId: ctf#Scoreboard
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Ducimus praesentium ipsam molestiae omnis.
+        example: Quis laboriosam ratione veritatis voluptas.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CTFScore'
+                example:
+                - id: Qui non ad.
+                  score: 2041665978582076541
+                  solves:
+                  - Amet ipsum deserunt doloremque.
+                  - Mollitia earum.
+                  username: Aut dolorem maiores reprehenderit velit.
+                - id: Qui non ad.
+                  score: 2041665978582076541
+                  solves:
+                  - Amet ipsum deserunt doloremque.
+                  - Mollitia earum.
+                  username: Aut dolorem maiores reprehenderit velit.
+              example:
+              - id: Qui non ad.
+                score: 2041665978582076541
+                solves:
+                - Amet ipsum deserunt doloremque.
+                - Mollitia earum.
+                username: Aut dolorem maiores reprehenderit velit.
+              - id: Qui non ad.
+                score: 2041665978582076541
+                solves:
+                - Amet ipsum deserunt doloremque.
+                - Mollitia earum.
+                username: Aut dolorem maiores reprehenderit velit.
+  /ctfs/{slug}/user:
+    get:
+      tags:
+      - ctf
+      summary: GetUser ctf
+      description: Get a user for a ctf.
+      operationId: ctf#GetUser
+      parameters:
+      - name: password
+        in: query
+        allowEmptyValue: true
+        required: true
+        schema:
+          type: string
+          example: Maiores rem corrupti et velit.
+        example: Rem culpa illo et.
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Corrupti labore dolorem repellendus eveniet maxime.
+        example: Vel animi qui ut.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTFUser'
+              example:
+                ctf_id: Sit aliquam aut qui molestiae ullam.
+                id: Soluta molestias sit facere.
+                password: Laborum mollitia id.
+                username: Molestias sed voluptatum.
+        "401":
+          description: Unauthorized response.
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Not Found response.
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+  /ctfs/{slug}/user/{id}/solves:
+    get:
+      tags:
+      - ctf
+      summary: GetUserSolves ctf
+      description: Get a user's solves for a ctf.
+      operationId: ctf#GetUserSolves
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Libero asperiores.
+        example: Omnis consequatur a illo voluptatem.
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Beatae mollitia et exercitationem itaque eos.
+        example: Illum aut.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTFUserSolves'
+              example:
+                solves:
+                - challenge_id: Quasi praesentium facilis ut est harum distinctio.
+                  solved_at: Soluta ullam et.
+                - challenge_id: Quasi praesentium facilis ut est harum distinctio.
+                  solved_at: Soluta ullam et.
+                username: Consequatur ducimus possimus atque quasi quo a.
+  /ctfs/{slug}/users:
+    post:
+      tags:
+      - ctf
+      summary: RegisterUser ctf
+      description: Register a user for a ctf with a unique username.
+      operationId: ctf#RegisterUser
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          example: Facilis rem.
+        example: Velit officiis atque quis dolor illo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCTFUserRequestBody'
+            example:
+              username: Reiciendis incidunt qui.
+      responses:
+        "201":
+          description: Created response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CTFUser'
+              example:
+                ctf_id: Voluptatem natus aut sed dolor maxime eos.
+                id: Sint exercitationem corrupti ut fugit distinctio dolorem.
+                password: Officia eligendi est est deleniti voluptas.
+                username: Minima non.
+        "409":
+          description: Conflict response.
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
   /current_monthly_challenge:
     get:
       tags:
@@ -2300,8 +3783,6 @@ paths:
                 name: Säkerhet-SM 2023
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                 name: Säkerhet-SM 2023
-              - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                name: Säkerhet-SM 2023
       security:
       - jwt_header_Authorization: []
   /knack_koden_get_class:
@@ -2317,7 +3798,7 @@ paths:
             schema:
               $ref: '#/components/schemas/KnackKodenRegisterClassResponseBody'
             example:
-              password: Dolores et in.
+              password: Temporibus est est consequuntur qui.
       responses:
         "200":
           description: OK response.
@@ -2326,10 +3807,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/KnackKodenGetClassResponseBody'
               example:
-                class_name: Repellendus et vel.
+                class_name: Corrupti suscipit id.
                 solves:
-                - Eum a.
-                - Voluptatem excepturi.
+                - Earum quam velit aut quo.
+                - Exercitationem repellat voluptatem velit doloribus voluptate omnis.
       security:
       - jwt_header_Authorization: []
   /knack_koden_register_class:
@@ -2345,12 +3826,12 @@ paths:
             schema:
               $ref: '#/components/schemas/KnackKodenRegisterClassRequestBody'
             example:
-              class_name: Voluptatum et quaerat nihil quia.
-              postal_code: Quia velit ut a sapiente earum.
-              school_name: Est corrupti et minima distinctio occaecati amet.
-              teacher_email: Accusantium architecto ut.
-              teacher_full_name: Quasi at aliquid cumque aut velit sapiente.
-              teacher_phonenr: Tempore blanditiis non id.
+              class_name: Quam est neque.
+              postal_code: Aut natus maxime sunt.
+              school_name: Non consequatur dolore magni.
+              teacher_email: Ad accusamus mollitia eveniet iusto.
+              teacher_full_name: Molestiae tenetur voluptatem ipsum odit qui.
+              teacher_phonenr: Itaque eum eveniet.
       responses:
         "200":
           description: OK response.
@@ -2359,7 +3840,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/KnackKodenRegisterClassResponseBody'
               example:
-                password: Quas nobis dolorem necessitatibus autem aut.
+                password: Iure eveniet vero eligendi necessitatibus veritatis quo.
       security:
       - jwt_header_Authorization: []
   /knack_koden_scoreboard:
@@ -2587,6 +4068,9 @@ paths:
                 - is_university: true
                   school_name: Stockholm Science and Innovation School
                   score: 1337
+                - is_university: true
+                  school_name: Stockholm Science and Innovation School
+                  score: 1337
       security:
       - jwt_header_Authorization: []
   /user/complete_onboarding:
@@ -2670,23 +4154,7 @@ paths:
                   is_university: true
                   municipality_name: Örebro
                   name: Engelbrektsskolan
-                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  is_university: true
-                  municipality_name: Örebro
-                  name: Engelbrektsskolan
-                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  is_university: true
-                  municipality_name: Örebro
-                  name: Engelbrektsskolan
               example:
-              - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                is_university: true
-                municipality_name: Örebro
-                name: Engelbrektsskolan
-              - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                is_university: true
-                municipality_name: Örebro
-                name: Engelbrektsskolan
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                 is_university: true
                 municipality_name: Örebro
@@ -2717,7 +4185,7 @@ paths:
                 onboarding_done: true
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-                school_name: Quaerat totam voluptates neque.
+                school_name: Ut corporis magni omnis.
       security:
       - jwt_header_Authorization: []
     post:
@@ -2753,6 +4221,10 @@ paths:
                 $ref: '#/components/schemas/SsmUserScoreboard'
               example:
                 scores:
+                - name: Movitz Sunar
+                  school_name: Stockholm Science and Innovation School
+                  score: 1337
+                  user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
                 - name: Movitz Sunar
                   school_name: Stockholm Science and Innovation School
                   score: 1337
@@ -2845,6 +4317,88 @@ components:
       - slug
       - publish
       - id
+    CTF:
+      type: object
+      properties:
+        challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTFChallenge'
+          description: Challenges
+          example:
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description:
+          type: string
+          example: A quia a.
+        end_time:
+          type: string
+          example: Et vel alias ex quia.
+        id:
+          type: string
+          example: Iste veritatis odio temporibus dolores rerum.
+        name:
+          type: string
+          example: Qui excepturi.
+        slug:
+          type: string
+          example: Qui dolores repellat error rem.
+        start_time:
+          type: string
+          example: Non expedita placeat debitis omnis saepe quae.
+      example:
+        challenges:
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description: Commodi veniam est.
+        end_time: Reiciendis ut quidem quod voluptates sapiente sed.
+        id: Autem eius ratione.
+        name: Quia odio qui expedita officiis dolorem consequatur.
+        slug: Dolor provident dolor et.
+        start_time: Veritatis dolore doloribus.
+      required:
+      - id
+      - name
+      - description
+      - slug
+      - start_time
+      - end_time
+      - challenges
+    CTFChallenge:
+      type: object
+      properties:
+        custom_score:
+          type: integer
+          description: Challenge custom score
+          example: 50
+          format: int64
+        display_order:
+          type: integer
+          description: Challenge display order
+          example: 1
+          format: int64
+        id:
+          type: string
+          description: Challenge ID
+          example: 85163218-8735-42ed-a7a6-42a9de2294df
+      example:
+        custom_score: 50
+        display_order: 1
+        id: 85163218-8735-42ed-a7a6-42a9de2294df
+      required:
+      - id
+      - display_order
     CTFEvent:
       type: object
       properties:
@@ -2862,6 +4416,190 @@ components:
       required:
       - name
       - id
+    CTFInfo:
+      type: object
+      properties:
+        challenge_ids:
+          type: array
+          items:
+            type: string
+            example: Et qui et sapiente voluptates minima.
+          example:
+          - Ut cum.
+          - Consectetur sed commodi est nobis praesentium voluptatem.
+        description:
+          type: string
+          example: Aut assumenda et iusto.
+        end_time:
+          type: string
+          example: Ut aspernatur modi totam.
+        id:
+          type: string
+          example: Omnis facilis quia eum aliquid magni et.
+        name:
+          type: string
+          example: Incidunt reiciendis consequatur sit eveniet quis.
+        private:
+          type: boolean
+          description: Is the CTF private?
+          example: false
+        slug:
+          type: string
+          example: Consequatur iste.
+        start_time:
+          type: string
+          example: Optio eius aut tenetur illum est cumque.
+      example:
+        challenge_ids:
+        - Aliquam minus architecto doloremque ex suscipit.
+        - Autem quis et dolorum.
+        description: Et inventore vel eius.
+        end_time: Debitis quia deleniti dolorem consequatur.
+        id: Neque nobis qui sit quo sit nihil.
+        name: Et in.
+        private: false
+        slug: Sunt quod voluptatem iure occaecati rem.
+        start_time: Ab veritatis accusamus.
+      required:
+      - id
+      - name
+      - description
+      - slug
+      - start_time
+      - end_time
+      - challenge_ids
+    CTFScore:
+      type: object
+      properties:
+        id:
+          type: string
+          example: Quia et ut dolores repudiandae ipsam error.
+        score:
+          type: integer
+          example: 2972532383800674063
+          format: int64
+        solves:
+          type: array
+          items:
+            type: string
+            example: Eligendi aut molestiae molestias quam aliquam eaque.
+          example:
+          - Quam blanditiis quo.
+          - Temporibus dolorem quisquam dolores numquam.
+        username:
+          type: string
+          example: Est minima tempora unde voluptatem.
+      example:
+        id: Qui ullam autem necessitatibus distinctio.
+        score: 9064746688188560955
+        solves:
+        - Cupiditate aperiam eligendi.
+        - Et dolores aut.
+        username: Sed rem dignissimos excepturi non occaecati beatae.
+      required:
+      - id
+      - username
+      - score
+      - solves
+    CTFSolve:
+      type: object
+      properties:
+        challenge_id:
+          type: string
+          example: Soluta voluptatibus aut laboriosam temporibus excepturi.
+        ctf_id:
+          type: string
+          example: Quo doloremque.
+        id:
+          type: string
+          example: Nisi explicabo inventore.
+        solved_at:
+          type: string
+          example: Quas esse.
+        user_id:
+          type: string
+          example: Illo nesciunt ad beatae ullam neque cupiditate.
+      example:
+        challenge_id: Nobis vitae et laborum sunt similique tenetur.
+        ctf_id: Autem assumenda earum debitis vitae quis.
+        id: Fugiat dolores quaerat incidunt.
+        solved_at: Voluptatem soluta id.
+        user_id: Iure earum nobis laborum vero.
+      required:
+      - id
+      - ctf_id
+      - user_id
+      - challenge_id
+      - solved_at
+    CTFUser:
+      type: object
+      properties:
+        ctf_id:
+          type: string
+          example: Et vel.
+        id:
+          type: string
+          example: Consectetur sed voluptas.
+        password:
+          type: string
+          example: Odio sit sed ex sapiente fugit aut.
+        username:
+          type: string
+          example: Et autem perspiciatis non et vitae tempore.
+      example:
+        ctf_id: Vero at.
+        id: Architecto et.
+        password: Est repellendus et ipsum.
+        username: Exercitationem consequuntur consequatur laborum ab.
+      required:
+      - id
+      - ctf_id
+      - username
+      - password
+    CTFUserSolve:
+      type: object
+      properties:
+        challenge_id:
+          type: string
+          example: Eos aliquid ut veritatis exercitationem sit consequuntur.
+        solved_at:
+          type: string
+          example: Accusantium aut.
+      example:
+        challenge_id: Quidem et repellendus ut aut officia fugit.
+        solved_at: Repellendus id.
+      required:
+      - challenge_id
+      - solved_at
+    CTFUserSolves:
+      type: object
+      properties:
+        solves:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTFUserSolve'
+          example:
+          - challenge_id: Quasi praesentium facilis ut est harum distinctio.
+            solved_at: Soluta ullam et.
+          - challenge_id: Quasi praesentium facilis ut est harum distinctio.
+            solved_at: Soluta ullam et.
+          - challenge_id: Quasi praesentium facilis ut est harum distinctio.
+            solved_at: Soluta ullam et.
+          - challenge_id: Quasi praesentium facilis ut est harum distinctio.
+            solved_at: Soluta ullam et.
+        username:
+          type: string
+          example: Illum et sunt occaecati.
+      example:
+        solves:
+        - challenge_id: Quasi praesentium facilis ut est harum distinctio.
+          solved_at: Soluta ullam et.
+        - challenge_id: Quasi praesentium facilis ut est harum distinctio.
+          solved_at: Soluta ullam et.
+        username: Rerum minus sit perferendis doloremque consectetur omnis.
+      required:
+      - username
+      - solves
     ChallengeFiles:
       type: object
       properties:
@@ -2877,6 +4615,52 @@ components:
       required:
       - filename
       - url
+    ChallengeGroup:
+      type: object
+      properties:
+        challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTFChallenge'
+          description: Challenges
+          example:
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description:
+          type: string
+          example: Deserunt quod est consectetur.
+        id:
+          type: string
+          example: Sit fuga cumque in.
+        name:
+          type: string
+          example: Quas voluptatem suscipit dolorum itaque.
+      example:
+        challenges:
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description: Et vel est labore qui.
+        id: Consequatur mollitia voluptas molestiae quia ipsa.
+        name: Quis quos.
+      required:
+      - id
+      - name
+      - description
+      - challenges
     ChallengeMeta:
       type: object
       properties:
@@ -2885,11 +4669,13 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeSolver'
           example:
-          - solved_at: 3776329851919927555
+          - solved_at: 6278843443577027985
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 3776329851919927555
+          - solved_at: 6278843443577027985
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 3776329851919927555
+          - solved_at: 6278843443577027985
+            user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+          - solved_at: 6278843443577027985
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
           type: array
@@ -2898,33 +4684,43 @@ components:
           example:
           - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
             input: SSM{wrong_flag}
-            submitted_at: 6112979072062550665
+            submitted_at: 1765359856371785050
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
           - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
             input: SSM{wrong_flag}
-            submitted_at: 6112979072062550665
+            submitted_at: 1765359856371785050
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 1765359856371785050
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 1765359856371785050
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       example:
         solvers:
-        - solved_at: 3776329851919927555
+        - solved_at: 6278843443577027985
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 3776329851919927555
+        - solved_at: 6278843443577027985
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 3776329851919927555
+        - solved_at: 6278843443577027985
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 3776329851919927555
+        - solved_at: 6278843443577027985
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
         - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           input: SSM{wrong_flag}
-          submitted_at: 6112979072062550665
+          submitted_at: 1765359856371785050
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           input: SSM{wrong_flag}
-          submitted_at: 6112979072062550665
+          submitted_at: 1765359856371785050
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -2950,14 +4746,14 @@ components:
       properties:
         solved_at:
           type: integer
-          example: 4107101037779788512
+          example: 599489404532810374
           format: int64
         user_id:
           type: string
           example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
           format: uuid
       example:
-        solved_at: 1104567667279379110
+        solved_at: 2710014051850522699
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       required:
       - user_id
@@ -2975,7 +4771,7 @@ components:
           example: SSM{wrong_flag}
         submitted_at:
           type: integer
-          example: 2655855935162289041
+          example: 3708284107701838769
           format: int64
         successful:
           type: boolean
@@ -2987,7 +4783,7 @@ components:
       example:
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
         input: SSM{wrong_flag}
-        submitted_at: 1569174435669149092
+        submitted_at: 6387123524683494048
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -3003,14 +4799,14 @@ components:
           type: array
           items:
             type: string
-            example: Sunt fugiat consequatur eos sint.
+            example: Blanditiis harum dolores dolores unde.
           example:
           - Movitz Sunar
         categories:
           type: array
           items:
             type: string
-            example: Alias sed itaque quaerat molestias exercitationem vel.
+            example: Animi aliquid quae commodi ab et.
           example:
           - web
         challenge_id:
@@ -3026,7 +4822,7 @@ components:
           type: array
           items:
             type: string
-            example: Aut ipsa iusto quis ullam non eum.
+            example: Consequatur vero ea saepe voluptate.
           example:
           - https://bucket/key
         flag_format_prefix:
@@ -3040,6 +4836,8 @@ components:
           items:
             $ref: '#/components/schemas/ImportChallFlag'
           example:
+          - flag: fl4g_l0l
+            type: regex
           - flag: fl4g_l0l
             type: regex
           - flag: fl4g_l0l
@@ -3079,10 +4877,10 @@ components:
         - web
         challenge_id: 225ada44-3fde-460d-84a4-2f16ff579618
         custom:
-          chall_namespace: Voluptas sunt sit aut consequatur hic repellendus.
-          publish: false
-          publish_at: Et distinctio accusantium.
-          slug: Et libero qui laborum vel eos.
+          chall_namespace: Et eveniet velit et quisquam nemo.
+          publish: true
+          publish_at: Est harum iste excepturi.
+          slug: Voluptas tempora et adipisci.
         description: how to dns
         file_urls:
         - https://bucket/key
@@ -3095,8 +4893,10 @@ components:
           type: regex
         - flag: fl4g_l0l
           type: regex
+        - flag: fl4g_l0l
+          type: regex
         human_metadata:
-          event_name: Harum ab eos tenetur itaque omnis itaque.
+          event_name: Eius molestias.
         order: 5
         score: 100
         services:
@@ -3138,13 +4938,6 @@ components:
             publish: true
             slug: movitz
             sponsor: true
-          - description: Movitz gör saker
-            full_name: Movitz Sunar
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            image_url: movitz
-            publish: true
-            slug: movitz
-            sponsor: true
         category:
           type: string
           example: web
@@ -3156,6 +4949,9 @@ components:
           items:
             $ref: '#/components/schemas/CourseItem'
           example:
+          - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
+            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            position: 0
           - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
             id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
             position: 0
@@ -3218,9 +5014,6 @@ components:
         category: web
         completed: true
         course_items:
-        - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          position: 0
         - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
           id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           position: 0
@@ -3313,7 +5106,7 @@ components:
       properties:
         expires_in:
           type: string
-          example: year
+          example: week
           enum:
           - hour
           - week
@@ -3322,7 +5115,7 @@ components:
           type: string
           example: e3bb4dc5-9479-42ce-aed3-b41e8139fccb
       example:
-        expires_in: year
+        expires_in: week
         name: e3bb4dc5-9479-42ce-aed3-b41e8139fccb
       required:
       - name
@@ -3332,9 +5125,9 @@ components:
       properties:
         token:
           type: string
-          example: Rem vel sunt commodi ab voluptate in.
+          example: Voluptatem placeat aut quasi sint nesciunt saepe.
       example:
-        token: Odit in.
+        token: Consectetur et.
       required:
       - token
     CreateCTFEventRequestBody:
@@ -3348,6 +5141,126 @@ components:
       required:
       - name
       - id
+    CreateCTFRequestBody:
+      type: object
+      properties:
+        challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTFChallenge'
+          description: Challenges
+          example:
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description:
+          type: string
+          description: CTF description
+          example: A fun CTF for school
+        end_time:
+          type: integer
+          description: CTF end time
+          example: 3963634553196814016
+          format: int64
+        name:
+          type: string
+          description: CTF name
+          example: School CTF 2025
+        password:
+          type: string
+          description: CTF password
+          example: password
+        private:
+          type: boolean
+          description: Is the CTF private?
+          example: false
+        slug:
+          type: string
+          description: Unique slug
+          example: school-ctf-2025
+        start_time:
+          type: integer
+          description: CTF start time
+          example: 5095427318855052436
+          format: int64
+      example:
+        challenges:
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description: A fun CTF for school
+        end_time: 8787188419300823859
+        name: School CTF 2025
+        password: password
+        private: false
+        slug: school-ctf-2025
+        start_time: 5218754818417658666
+      required:
+      - name
+      - description
+      - start_time
+      - end_time
+      - slug
+      - challenges
+    CreateChallengeGroupRequestBody:
+      type: object
+      properties:
+        challenges:
+          type: array
+          items:
+            $ref: '#/components/schemas/CTFChallenge'
+          description: Challenges
+          example:
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+          - custom_score: 50
+            display_order: 1
+            id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description:
+          type: string
+          example: This is a group of challenges
+        name:
+          type: string
+          example: Group 1
+      example:
+        challenges:
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description: This is a group of challenges
+        name: Group 1
+      required:
+      - name
+      - description
+      - challenges
     CreateChallengeRequestBody:
       type: object
       properties:
@@ -3355,7 +5268,7 @@ components:
           type: array
           items:
             type: string
-            example: Corporis neque hic quo.
+            example: Placeat voluptatem.
           example:
           - 1b678293-6737-4cc7-8eae-aa821100293f
         category_id:
@@ -3419,7 +5332,7 @@ components:
           type: array
           items:
             type: string
-            example: Nisi in sed.
+            example: Hic facilis.
           example:
           - b29869ec-6eef-451c-a389-249a6d6ac47b
         category:
@@ -3465,7 +5378,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: false
+          example: true
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -3487,7 +5400,7 @@ components:
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: false
+          example: true
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -3558,7 +5471,7 @@ components:
           example: a0b05541-9211-4faf-82cc-d3bd64370bf4
         school_name:
           type: string
-          example: In in quibusdam voluptatibus sed.
+          example: Omnis exercitationem voluptatem nihil.
       example:
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
@@ -3566,7 +5479,7 @@ components:
         onboarding_done: true
         role: admin
         school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-        school_name: Quos quidem voluptatum repudiandae.
+        school_name: Sint dolores magnam.
       required:
       - onboarding_done
       - id
@@ -3578,21 +5491,21 @@ components:
       properties:
         chall_namespace:
           type: string
-          example: Rem optio eius veniam molestiae dolorem et.
+          example: Fugiat magnam facilis voluptates rerum omnis dicta.
         publish:
           type: boolean
           example: false
         publish_at:
           type: string
-          example: Sunt reiciendis praesentium exercitationem dignissimos labore.
+          example: Delectus quod molestias accusantium rerum officiis.
         slug:
           type: string
-          example: Vel eos eveniet.
+          example: Amet ut et minima et est.
       example:
-        chall_namespace: Facere at consequatur velit.
+        chall_namespace: Consequatur itaque qui dicta.
         publish: true
-        publish_at: Quia non ea aut veritatis.
-        slug: Aut non voluptas eos consectetur eum delectus.
+        publish_at: Eum voluptatem quia et ad minima.
+        slug: Excepturi voluptates reiciendis et voluptatem totam autem.
     ImportChallFlag:
       type: object
       properties:
@@ -3613,9 +5526,9 @@ components:
       properties:
         event_name:
           type: string
-          example: Fuga quam sequi quia aut consequuntur et.
+          example: Quis et ut.
       example:
-        event_name: Et enim voluptates aliquam consequatur.
+        event_name: Enim quae animi ad perferendis.
     JoinSchoolRequestBody:
       type: object
       properties:
@@ -3631,20 +5544,23 @@ components:
       properties:
         class_name:
           type: string
-          example: Neque non molestiae.
+          example: Reprehenderit doloremque illum.
         solves:
           type: array
           items:
             type: string
-            example: Ut fugit dolor culpa expedita qui earum.
+            example: Repellendus voluptatem odit assumenda nobis.
           example:
-          - Cumque sed itaque sapiente vel vitae.
-          - Corporis magni omnis omnis et non vero.
+          - Sit a.
+          - Molestiae odit consequatur sint dolores perferendis.
+          - Quisquam assumenda.
       example:
-        class_name: Nostrum qui earum qui illo nemo.
+        class_name: Ipsa ut.
         solves:
-        - Sit quaerat est sed.
-        - Soluta quia.
+        - Soluta dolores eum eos aut.
+        - Sed ut ex.
+        - Et tempora tenetur qui rerum consequuntur alias.
+        - Eius temporibus omnis.
       required:
       - class_name
       - solves
@@ -3653,29 +5569,29 @@ components:
       properties:
         class_name:
           type: string
-          example: Qui non ad.
+          example: Sapiente nisi.
         postal_code:
           type: string
-          example: Aut dolorem maiores reprehenderit velit.
+          example: Sed tempora inventore reprehenderit cum sit aliquid.
         school_name:
           type: string
-          example: Ducimus cumque quo est praesentium.
+          example: Corrupti repudiandae.
         teacher_email:
           type: string
-          example: Ipsa sunt cumque et repellendus.
+          example: Beatae sapiente minima dolorem excepturi.
         teacher_full_name:
           type: string
-          example: Nihil impedit.
+          example: Quam aut nisi ut accusantium.
         teacher_phonenr:
           type: string
-          example: Quas pariatur ea est laboriosam harum.
+          example: Et laborum provident et necessitatibus ipsam.
       example:
-        class_name: Omnis placeat animi.
-        postal_code: Veniam ut.
-        school_name: Debitis maiores.
-        teacher_email: Deserunt doloremque id mollitia earum.
-        teacher_full_name: In voluptatem amet.
-        teacher_phonenr: Excepturi ipsum omnis.
+        class_name: Recusandae autem labore perferendis excepturi minus.
+        postal_code: Veritatis doloremque.
+        school_name: Cumque voluptatem sit.
+        teacher_email: Dicta sit mollitia aut.
+        teacher_full_name: Id vel tenetur praesentium nihil omnis.
+        teacher_phonenr: Possimus aut velit animi delectus autem voluptatem.
       required:
       - teacher_full_name
       - teacher_email
@@ -3688,9 +5604,9 @@ components:
       properties:
         password:
           type: string
-          example: Consequatur reprehenderit nihil molestiae animi et.
+          example: Quia qui provident.
       example:
-        password: Vero incidunt placeat asperiores ipsa aperiam.
+        password: Quas ipsam ab.
       required:
       - password
     KnackKodenSubmitFlagRequestBody:
@@ -3702,10 +5618,10 @@ components:
           maxLength: 200
         password:
           type: string
-          example: Dolor voluptatum consequatur.
+          example: Doloremque assumenda et excepturi non voluptatem.
       example:
         flag: SSM{flag}
-        password: Voluptatibus culpa amet.
+        password: Exercitationem labore laboriosam ut explicabo.
       required:
       - flag
       - password
@@ -3818,7 +5734,7 @@ components:
           type: array
           items:
             type: string
-            example: Ut temporibus repellat ipsum reiciendis modi eum.
+            example: Omnis adipisci voluptatem minima quia adipisci.
           example:
           - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id:
@@ -3845,15 +5761,14 @@ components:
           - filename: decryptor.exe
             id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
             url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            url: https://s3/bucket/key?signature
         flags:
           type: array
           items:
             $ref: '#/components/schemas/AdminChallengeFlag'
           example:
-          - flag: SSM{yo}
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          - flag: SSM{yo}
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           - flag: SSM{yo}
             id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           - flag: SSM{yo}
@@ -3876,6 +5791,8 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
@@ -3913,6 +5830,12 @@ components:
         - filename: decryptor.exe
           id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          url: https://s3/bucket/key?signature
         flags:
         - flag: SSM{yo}
           id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -3922,8 +5845,6 @@ components:
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
         publish_at: 1638384718
         services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -4025,7 +5946,7 @@ components:
           type: array
           items:
             type: string
-            example: Non aut.
+            example: Doloremque eos molestiae nostrum qui voluptas aut.
           example:
           - 46e0996b-3bee-4836-b5f8-afc2a62fc71b
         category:
@@ -4103,6 +6024,15 @@ components:
         publish: true
         slug: sqli
         title: SQL-Injektioner
+      - author_ids:
+        - 46e0996b-3bee-4836-b5f8-afc2a62fc71b
+        category: web
+        description: markdown text
+        difficulty: advanced
+        id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+        publish: true
+        slug: sqli
+        title: SQL-Injektioner
     SsmChallenge:
       type: object
       properties:
@@ -4111,13 +6041,6 @@ components:
           items:
             $ref: '#/components/schemas/Author'
           example:
-          - description: Movitz gör saker
-            full_name: Movitz Sunar
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            image_url: movitz
-            publish: true
-            slug: movitz
-            sponsor: true
           - description: Movitz gör saker
             full_name: Movitz Sunar
             id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -4165,8 +6088,6 @@ components:
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
         id:
           type: string
           description: ID of a file
@@ -4186,6 +6107,8 @@ components:
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -4199,9 +6122,6 @@ components:
           items:
             $ref: '#/components/schemas/SsmSolver'
           example:
-          - full_name: Movitz Sunar
-            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-            solved_at: 16123128
           - full_name: Movitz Sunar
             id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
@@ -4262,8 +6182,6 @@ components:
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
         score: 50
         services:
@@ -4273,11 +6191,12 @@ components:
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
@@ -4395,6 +6314,182 @@ components:
           solved_at: 16123128
         solves: 3
         title: pwnme
+    SsmCtfChallenge:
+      type: object
+      properties:
+        authors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+          example:
+          - description: Movitz gör saker
+            full_name: Movitz Sunar
+            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
+          - description: Movitz gör saker
+            full_name: Movitz Sunar
+            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            image_url: movitz
+            publish: true
+            slug: movitz
+            sponsor: true
+        category:
+          type: string
+          example: Misc
+        chall_namespace:
+          type: string
+          example: knackkoden
+        ctf_event_id:
+          type: string
+          description: The ID of the CTF the challenge was taken from
+          example: c397efb2-b171-4d77-9166-d105cf4f521a
+          format: uuid
+        description:
+          type: string
+          description: A short text describing the challenge
+          example: A heap overflow challenge
+        display_order:
+          type: integer
+          example: 5299923717101944420
+          format: int64
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeFiles'
+          example:
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+          - filename: decryptor.exe
+            url: https://s3/bucket/key?signature
+        id:
+          type: string
+          description: ID of a file
+          example: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          format: uuid
+        score:
+          type: integer
+          description: The number of points given to the solver
+          example: 50
+          format: int64
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeService'
+          example:
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+        slug:
+          type: string
+          description: A unique string that can be used in URLs
+          example: pwnme
+        solved:
+          type: boolean
+          description: whether the user has solved the challenge or not
+          example: true
+        solvers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SsmSolver'
+          example:
+          - full_name: Movitz Sunar
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+            solved_at: 16123128
+        solves:
+          type: integer
+          description: The numer of people who solved the challenge
+          example: 3
+          format: int64
+        title:
+          type: string
+          description: Title displayed to user
+          example: pwnme
+      description: A CTF Wargame challenge
+      example:
+        authors:
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        category: Misc
+        chall_namespace: knackkoden
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        display_order: 7704826931244433589
+        files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+        score: 50
+        services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        slug: pwnme
+        solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        solves: 3
+        title: pwnme
+      required:
+      - solved
+      - category
+      - display_order
+      - id
+      - title
+      - description
+      - score
+      - slug
+      - solves
+      - hide
+    SsmCtfChallengeCollection:
+      type: array
+      items:
+        $ref: '#/components/schemas/SsmCtfChallenge'
+      example:
       - authors:
         - description: Movitz gör saker
           full_name: Movitz Sunar
@@ -4414,6 +6509,7 @@ components:
         chall_namespace: knackkoden
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
+        display_order: 1484757567978251850
         files:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
@@ -4424,6 +6520,58 @@ components:
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
         score: 50
         services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        slug: pwnme
+        solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        solves: 3
+        title: pwnme
+      - authors:
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        category: Misc
+        chall_namespace: knackkoden
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        display_order: 1484757567978251850
+        files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+        score: 50
+        services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -4459,11 +6607,11 @@ components:
           - is_university: true
             school_name: Stockholm Science and Innovation School
             score: 1337
-          - is_university: true
-            school_name: Stockholm Science and Innovation School
-            score: 1337
       example:
         scores:
+        - is_university: true
+          school_name: Stockholm Science and Innovation School
+          score: 1337
         - is_university: true
           school_name: Stockholm Science and Innovation School
           score: 1337
@@ -4723,110 +6871,6 @@ components:
         display_month: Januari/Februari
         end_date: 1690884841
         start_date: 1690874841
-      - challenge:
-          authors:
-          - description: Movitz gör saker
-            full_name: Movitz Sunar
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            image_url: movitz
-            publish: true
-            slug: movitz
-            sponsor: true
-          - description: Movitz gör saker
-            full_name: Movitz Sunar
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            image_url: movitz
-            publish: true
-            slug: movitz
-            sponsor: true
-          category: Misc
-          chall_namespace: knackkoden
-          ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-          description: A heap overflow challenge
-          files:
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          score: 50
-          services:
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
-          slug: pwnme
-          solved: true
-          solvers:
-          - full_name: Movitz Sunar
-            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-            solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-            solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-            solved_at: 16123128
-          solves: 3
-          title: pwnme
-        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-        display_month: Januari/Februari
-        end_date: 1690884841
-        start_date: 1690874841
-      - challenge:
-          authors:
-          - description: Movitz gör saker
-            full_name: Movitz Sunar
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            image_url: movitz
-            publish: true
-            slug: movitz
-            sponsor: true
-          - description: Movitz gör saker
-            full_name: Movitz Sunar
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            image_url: movitz
-            publish: true
-            slug: movitz
-            sponsor: true
-          category: Misc
-          chall_namespace: knackkoden
-          ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-          description: A heap overflow challenge
-          files:
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          score: 50
-          services:
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
-          slug: pwnme
-          solved: true
-          solvers:
-          - full_name: Movitz Sunar
-            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-            solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-            solved_at: 16123128
-          - full_name: Movitz Sunar
-            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-            solved_at: 16123128
-          solves: 3
-          title: pwnme
-        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-        display_month: Januari/Februari
-        end_date: 1690884841
-        start_date: 1690874841
     SsmUserScoreboard:
       type: object
       properties:
@@ -4843,16 +6887,12 @@ components:
             school_name: Stockholm Science and Innovation School
             score: 1337
             user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+          - name: Movitz Sunar
+            school_name: Stockholm Science and Innovation School
+            score: 1337
+            user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
       example:
         scores:
-        - name: Movitz Sunar
-          school_name: Stockholm Science and Innovation School
-          score: 1337
-          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
-        - name: Movitz Sunar
-          school_name: Stockholm Science and Innovation School
-          score: 1337
-          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
         - name: Movitz Sunar
           school_name: Stockholm Science and Innovation School
           score: 1337
@@ -4874,6 +6914,26 @@ components:
         flag: SSM{flag}
       required:
       - flag
+    SubmitFlagRequestBody2:
+      type: object
+      properties:
+        challenge_id:
+          type: string
+          example: 85163218-8735-42ed-a7a6-42a9de2294df
+        flag:
+          type: string
+          example: SSM{yo}
+        password:
+          type: string
+          example: user-password
+      example:
+        challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+        flag: SSM{yo}
+        password: user-password
+      required:
+      - flag
+      - challenge_id
+      - password
     UpdateAuthorRequestBody:
       type: object
       properties:
@@ -4908,6 +6968,16 @@ components:
       - description
       - slug
       - publish
+    UpdateCTFUserRequestBody:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Omnis quidem consequatur qui est.
+      example:
+        username: Rerum suscipit ea repellat labore sed.
+      required:
+      - username
     UpdateCourseRequestBody:
       type: object
       properties:
@@ -4915,7 +6985,7 @@ components:
           type: array
           items:
             type: string
-            example: Placeat consequatur quisquam.
+            example: Debitis delectus consequatur ab eligendi tempora.
           example:
           - b29869ec-6eef-451c-a389-249a6d6ac47b
         category:
@@ -5001,4 +7071,6 @@ tags:
 - name: auth
 - name: challenge
 - name: admin
+- name: ctf
+  description: CTF mini-competition endpoints for school visits.
 - name: user

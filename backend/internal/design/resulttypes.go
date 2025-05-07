@@ -101,6 +101,39 @@ var ResultChallenge = ResultType("application/vnd.ssm.challenge", func() {
 	Required("solved", "category")
 })
 
+var ResultCTFChallenge = ResultType("application/vnd.ssm.ctf.challenge", func() {
+	Description("A CTF Wargame challenge")
+	Reference(CTFListChallenge)
+
+	Attribute("id")
+
+	Attribute("slug")
+	Attribute("title")
+	Attribute("description")
+	Attribute("score")
+	Attribute("services")
+	Attribute("files")
+	Attribute("solves")
+	Attribute("ctf_event_id")
+	Attribute("chall_namespace")
+
+	Attribute("solved", Boolean, func() {
+		Example(true)
+		Description("whether the user has solved the challenge or not")
+	})
+	Attribute("category", String, func() {
+		Example("Misc")
+	})
+
+	Attribute("authors", ArrayOf(Author))
+
+	Attribute("solvers", ArrayOf(Solver))
+
+	Attribute("display_order", Int)
+
+	Required("solved", "category")
+})
+
 var SchoolScoreboard = ResultType("application/vnd.ssm.school.scoreboard", func() {
 	Description("A scoreboard of schools")
 	Attribute("scores", ArrayOf(SchoolScoreboardScore))
