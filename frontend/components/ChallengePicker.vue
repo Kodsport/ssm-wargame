@@ -212,10 +212,10 @@ function toggle(id: string) {
 
 function showFlagModal(chall: any, event: MouseEvent) {
   event.preventDefault();
-  const idx = selectedChallenges.value.findIndex((e) => e.id === id);
+  const idx = selectedChallenges.value.findIndex((e) => e.id === chall.id);
   if (idx === -1)
     selectedChallenges.value?.push({
-      id: id,
+      id: chall.id,
       custom_score: null,
       display_order: 0,
     });
