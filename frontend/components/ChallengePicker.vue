@@ -212,6 +212,14 @@ function toggle(id: string) {
 
 function showFlagModal(chall: any, event: MouseEvent) {
   event.preventDefault();
+  const idx = selectedChallenges.value.findIndex((e) => e.id === id);
+  if (idx === -1)
+    selectedChallenges.value?.push({
+      id: id,
+      custom_score: null,
+      display_order: 0,
+    });
+
   const flags = chall.flags
     .map((flag: any) => "SSM{" + flag.flag + "}")
     .join(", ");

@@ -10,22 +10,24 @@
           >.</span
         >
       </p>
-      <div
-        v-for="group in groups"
-        :key="group.id"
-        class="col-12 col-sm-6 col-md-4 col-lg-3 g-2"
-      >
+      <div class="row g-0">
         <div
-          class="card h-100 challenge-picker-item border-2 border-secondary"
-          @click="apply(group.challenges)"
-          style="cursor: pointer"
+          v-for="group in groups"
+          :key="group.id"
+          class="col-12 col-sm-6 col-md-4 col-lg-3 g-2"
         >
-          <div class="card-body py-1 px-2">
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="fw-bold">{{ group.name }}</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="text-muted small">{{ group.description }}</span>
+          <div
+            class="card h-100 challenge-picker-item border-2 border-secondary"
+            @click="apply(group.challenges)"
+            style="cursor: pointer"
+          >
+            <div class="card-body py-1 px-2">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="fw-bold">{{ group.name }}</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted small">{{ group.description }}</span>
+              </div>
             </div>
           </div>
         </div>

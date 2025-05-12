@@ -58,7 +58,11 @@ const ctfStore = useCTFStore();
 
 const categories = computed(() =>
   ctfStore.challenges
-    ?.map((c) => c.category)
+    ?.filter((c) => c.category == "introduktion")
+    .concat(
+      ctfStore.challenges?.filter((c) => c.category != "introduktion") || []
+    )
+    .map((c) => c.category)
     .filter((v, i, a) => a.indexOf(v) == i)
 );
 
