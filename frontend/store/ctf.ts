@@ -17,6 +17,7 @@ export const useCTFStore = defineStore("ctf", {
         const ctf = await http("/ctfs/" + slug);
         this.ctf = ctf;
       } catch (e) {
+        this.ctf = {};
         console.error(e);
       }
     },
