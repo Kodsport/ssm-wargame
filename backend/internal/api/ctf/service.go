@@ -315,7 +315,12 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 		SELECT u.id, u.username, COALESCE(SUM(COALESCE(cc.custom_score, ch.static_score)), 0) as score,
 			MIN(s.created_at) as first_solve
 		FROM ctf_users u
-		LEFT JOIN ctf_solves s ON u.id = s.user_id AND s.ctf_id = $1
+		LEFT JOIN (
+			SELECT DISTINCT ON (user_id, challenge_id) *
+			FROM ctf_solves
+			WHERE ctf_id = $1
+			ORDER BY user_id, challenge_id, created_at ASC
+		) s ON u.id = s.user_id AND s.ctf_id = $1
 		LEFT JOIN challenges ch ON s.challenge_id = ch.id
 		LEFT JOIN ctf_challenges cc ON cc.ctf_id = $1 AND cc.challenge_id = ch.id
 		WHERE u.ctf_id = $1
@@ -336,7 +341,7 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 			return nil, err
 		}
 		solvesRows, err := s.db.QueryContext(ctx, `
-			SELECT s.challenge_id
+			SELECT DISTINCT s.challenge_id
 			FROM ctf_solves s
 			INNER JOIN ctf_users u ON u.id = s.user_id
 			WHERE s.ctf_id = $1 AND u.username = $2
