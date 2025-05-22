@@ -1,14 +1,12 @@
 package ctf
 
 import (
-	"bufio"
 	"context"
 	"database/sql"
 	"errors"
 	"fmt"
 	"math"
 	"math/rand"
-	"os"
 	"regexp"
 	"sort"
 	"strings"
@@ -453,28 +451,65 @@ func (s *Service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) (
 	}, nil
 }
 
-func getLine(filename string, lineNum int) (string, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
+// ...existing code...
+var words = []string{
+	"abacus",
+	"abdomen",
+	"abdominal",
+	"abide",
+	"abiding",
+	"ability",
+	"ablaze",
+	"able",
+	"abnormal",
+	"abrasion",
+	"abrasive",
+	"abreast",
+	"abridge",
+	"abroad",
+	"abruptly",
+	"absence",
+	"absentee",
+	"absently",
+	"absinthe",
+	"absolute",
+	"absolve",
+	"abstain",
+}
 
-	scanner := bufio.NewScanner(file)
-	currentLine := 0
-	for scanner.Scan() {
-		if currentLine == lineNum {
-			return scanner.Text(), nil
+// ...existing code...
+
+/*
+	 func getLine(filename string, lineNum int) (string, error) {
+		file, err := os.Open(filename)
+		if err != nil {
+			return "", err
 		}
-		currentLine++
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		currentLine := 0
+		for scanner.Scan() {
+			if currentLine == lineNum {
+				return scanner.Text(), nil
+			}
+			currentLine++
+		}
+		return "", fmt.Errorf("line %d not found", lineNum)
 	}
-	return "", fmt.Errorf("line %d not found", lineNum)
+*/
+func getLine(filename string, lineNum int) (string, error) {
+	// Ignore filename, use the words slice directly
+	if lineNum < 0 || lineNum >= len(words) {
+		return "", fmt.Errorf("line %d not found", lineNum)
+	}
+	return words[lineNum], nil
 }
 
 func generatePassphrase(numWords int) (string, error) {
 	rand.Seed(time.Now().UnixNano())
 
-	const totalWords = 7776
+	const totalWords = 20
 	words := make([]string, numWords)
 
 	for i := 0; i < numWords; i++ {
