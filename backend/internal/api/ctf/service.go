@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"math"
 	"math/rand"
 	"regexp"
@@ -451,75 +450,14 @@ func (s *Service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) (
 	}, nil
 }
 
-// ...existing code...
-var words = []string{
-	"abacus",
-	"abdomen",
-	"abdominal",
-	"abide",
-	"abiding",
-	"ability",
-	"ablaze",
-	"able",
-	"abnormal",
-	"abrasion",
-	"abrasive",
-	"abreast",
-	"abridge",
-	"abroad",
-	"abruptly",
-	"absence",
-	"absentee",
-	"absently",
-	"absinthe",
-	"absolute",
-	"absolve",
-	"abstain",
-}
-
-// ...existing code...
-
-/*
-	 func getLine(filename string, lineNum int) (string, error) {
-		file, err := os.Open(filename)
-		if err != nil {
-			return "", err
-		}
-		defer file.Close()
-
-		scanner := bufio.NewScanner(file)
-		currentLine := 0
-		for scanner.Scan() {
-			if currentLine == lineNum {
-				return scanner.Text(), nil
-			}
-			currentLine++
-		}
-		return "", fmt.Errorf("line %d not found", lineNum)
-	}
-*/
-func getLine(filename string, lineNum int) (string, error) {
-	// Ignore filename, use the words slice directly
-	if lineNum < 0 || lineNum >= len(words) {
-		return "", fmt.Errorf("line %d not found", lineNum)
-	}
-	return words[lineNum], nil
-}
-
 func generatePassphrase(numWords int) (string, error) {
 	rand.Seed(time.Now().UnixNano())
-
-	const totalWords = 20
-	words := make([]string, numWords)
+	passWords := make([]string, numWords)
 
 	for i := 0; i < numWords; i++ {
-		lineNum := rand.Intn(totalWords)
-		word, err := getLine("eff-long.txt", lineNum)
-		if err != nil {
-			return "", err
-		}
-		words[i] = word
+		lineNum := rand.Intn(len(words) - 1)
+		passWords[i] = words[lineNum]
 	}
 
-	return strings.Join(words, "-"), nil
+	return strings.Join(passWords, "-"), nil
 }
