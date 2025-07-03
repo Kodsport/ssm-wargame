@@ -50,10 +50,14 @@ type Client struct {
 	ListCTFUsersEndpoint              goa.Endpoint
 	DeleteCTFUserEndpoint             goa.Endpoint
 	UpdateCTFUserEndpoint             goa.Endpoint
+	ListCTFTeamsEndpoint              goa.Endpoint
+	CreateCTFTeamEndpoint             goa.Endpoint
+	DeleteCTFTeamEndpoint             goa.Endpoint
+	UpdateCTFTeamEndpoint             goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse, createCTF, updateCTF, deleteCTF, listCTFs, createChallengeGroup, updateChallengeGroup, deleteChallengeGroup, listChallengeGroups, listCTFUsers, deleteCTFUser, updateCTFUser goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse, createCTF, updateCTF, deleteCTF, listCTFs, createChallengeGroup, updateChallengeGroup, deleteChallengeGroup, listChallengeGroups, listCTFUsers, deleteCTFUser, updateCTFUser, listCTFTeams, createCTFTeam, deleteCTFTeam, updateCTFTeam goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:            listChallenges,
 		GetChallengeMetaEndpoint:          getChallengeMeta,
@@ -90,6 +94,10 @@ func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFi
 		ListCTFUsersEndpoint:              listCTFUsers,
 		DeleteCTFUserEndpoint:             deleteCTFUser,
 		UpdateCTFUserEndpoint:             updateCTFUser,
+		ListCTFTeamsEndpoint:              listCTFTeams,
+		CreateCTFTeamEndpoint:             createCTFTeam,
+		DeleteCTFTeamEndpoint:             deleteCTFTeam,
+		UpdateCTFTeamEndpoint:             updateCTFTeam,
 	}
 }
 
@@ -384,4 +392,40 @@ func (c *Client) UpdateCTFUser(ctx context.Context, p *UpdateCTFUserPayload) (re
 		return
 	}
 	return ires.(*CTFUser), nil
+}
+
+// ListCTFTeams calls the "ListCTFTeams" endpoint of the "admin" service.
+func (c *Client) ListCTFTeams(ctx context.Context, p *ListCTFTeamsPayload) (res []*CTFTeam, err error) {
+	var ires interface{}
+	ires, err = c.ListCTFTeamsEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*CTFTeam), nil
+}
+
+// CreateCTFTeam calls the "CreateCTFTeam" endpoint of the "admin" service.
+func (c *Client) CreateCTFTeam(ctx context.Context, p *CreateCTFTeamPayload) (res *CTFTeam, err error) {
+	var ires interface{}
+	ires, err = c.CreateCTFTeamEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*CTFTeam), nil
+}
+
+// DeleteCTFTeam calls the "DeleteCTFTeam" endpoint of the "admin" service.
+func (c *Client) DeleteCTFTeam(ctx context.Context, p *DeleteCTFTeamPayload) (err error) {
+	_, err = c.DeleteCTFTeamEndpoint(ctx, p)
+	return
+}
+
+// UpdateCTFTeam calls the "UpdateCTFTeam" endpoint of the "admin" service.
+func (c *Client) UpdateCTFTeam(ctx context.Context, p *UpdateCTFTeamPayload) (res *CTFTeam, err error) {
+	var ires interface{}
+	ires, err = c.UpdateCTFTeamEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.(*CTFTeam), nil
 }

@@ -6,7 +6,7 @@
       <thead class="table-active">
         <tr>
           <th>#</th>
-          <th>Namn</th>
+          <th>{{ ctfStore?.ctf.team_based ? "Lagnamn" : "Namn" }}</th>
           <th>Poäng</th>
           <th>Lösningar</th>
         </tr>

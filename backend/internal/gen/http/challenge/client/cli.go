@@ -253,7 +253,7 @@ func BuildKnackKodenSubmitFlagPayload(challengeKnackKodenSubmitFlagBody string, 
 	{
 		err = json.Unmarshal([]byte(challengeKnackKodenSubmitFlagBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"flag\": \"SSM{flag}\",\n      \"password\": \"Voluptatem et dolor consequatur.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"flag\": \"SSM{flag}\",\n      \"password\": \"Et corrupti suscipit.\"\n   }'")
 		}
 		if utf8.RuneCountInString(body.Flag) > 200 {
 			err = goa.MergeErrors(err, goa.InvalidLengthError("body.flag", body.Flag, utf8.RuneCountInString(body.Flag), 200, false))
@@ -310,7 +310,7 @@ func BuildKnackKodenRegisterClassPayload(challengeKnackKodenRegisterClassBody st
 	{
 		err = json.Unmarshal([]byte(challengeKnackKodenRegisterClassBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"class_name\": \"Quam est neque.\",\n      \"postal_code\": \"Aut natus maxime sunt.\",\n      \"school_name\": \"Non consequatur dolore magni.\",\n      \"teacher_email\": \"Ad accusamus mollitia eveniet iusto.\",\n      \"teacher_full_name\": \"Molestiae tenetur voluptatem ipsum odit qui.\",\n      \"teacher_phonenr\": \"Itaque eum eveniet.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"class_name\": \"Dolores itaque dolores sequi quia fugiat in.\",\n      \"postal_code\": \"Vero aut.\",\n      \"school_name\": \"Neque qui consectetur explicabo autem totam.\",\n      \"teacher_email\": \"Aut quo.\",\n      \"teacher_full_name\": \"Minima earum quam.\",\n      \"teacher_phonenr\": \"Exercitationem repellat voluptatem velit doloribus voluptate omnis.\"\n   }'")
 		}
 	}
 	var token *string
@@ -340,7 +340,7 @@ func BuildKnackKodenGetClassPayload(challengeKnackKodenGetClassBody string, chal
 	{
 		err = json.Unmarshal([]byte(challengeKnackKodenGetClassBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"password\": \"Temporibus est est consequuntur qui.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"password\": \"Optio eum est harum iste.\"\n   }'")
 		}
 	}
 	var token *string

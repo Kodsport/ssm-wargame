@@ -6051,6 +6051,7 @@ var words = []string{
 	"slinky",
 	"slip",
 	"slit",
+	"skibidi",
 	"sliver",
 	"slobbery",
 	"slogan",

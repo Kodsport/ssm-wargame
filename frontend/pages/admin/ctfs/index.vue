@@ -27,7 +27,6 @@
           />
         </div>
       </div>
-
       <div class="form-group">
         <label>Description</label>
         <input
@@ -57,11 +56,17 @@
           />
         </div>
       </div>
-
+      <div class="form-check mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="team_based"
+          v-model="form.team_based"
+        />
+        <label class="form-check-label" for="team_based"> Team based </label>
+      </div>
       <ChallengeGroupPicker v-model="form.challenges"></ChallengeGroupPicker>
-
       <ChallengePicker v-model="form.challenges"></ChallengePicker>
-
       <button class="btn btn-primary mt-2" type="submit">
         {{ edit ? "Save" : "Create CTF" }}
       </button>
@@ -75,7 +80,6 @@
       </button>
     </form>
     <p v-if="error" class="text-danger mt-2">{{ error }}</p>
-
     <table class="table mt-4">
       <thead>
         <tr>
@@ -103,6 +107,9 @@
           <td class="text-end">
             <button class="btn btn-info me-2" @click="viewUsers(ctf.id)">
               Manage users
+            </button>
+            <button class="btn btn-info me-2" @click="viewTeams(ctf.id)">
+              Manage teams
             </button>
             <button class="btn btn-info me-2" @click="editCTF(ctf.id)">
               Edit
@@ -132,6 +139,7 @@ const form = ref({
   start_time: "",
   end_time: "",
   slug: "",
+  team_based: false,
   challenges: [] as Array<{
     id: string;
     custom_score: number;
@@ -141,7 +149,6 @@ const form = ref({
 const error = ref("");
 const edit = ref(false);
 const editCTFId = ref("");
-
 const challenges = ref<any[]>([]);
 
 onMounted(async () => {
@@ -185,6 +192,7 @@ function clearForm() {
     start_time: "",
     end_time: "",
     slug: "",
+    team_based: false,
     challenges: [],
   };
 }
@@ -211,6 +219,7 @@ function editCTF(id: string) {
       start_time: new Date(ctf.start_time).toLocaleString(),
       end_time: new Date(ctf.end_time).toLocaleString(),
       slug: ctf.slug,
+      team_based: ctf.team_based,
       challenges: JSON.parse(JSON.stringify(ctf.challenges)),
     };
   }
@@ -219,7 +228,9 @@ function editCTF(id: string) {
 function viewUsers(id: string) {
   router.push(`/admin/ctfs/${id}/users`);
 }
-
+function viewTeams(id: string) {
+  router.push(`/admin/ctfs/${id}/teams`);
+}
 function fixCTFs() {
   ctfs.value = ctfs.value.map((ctf) => {
     ctf.challenges = ctf.challenges.map((chall: any) => {

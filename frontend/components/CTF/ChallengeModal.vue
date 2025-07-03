@@ -30,6 +30,25 @@
             </span>
           </div>
         </h5>
+        <div
+          class="d-flex justify-content-center"
+          v-if="props.chall.numUsersInYourTeamSolved !== undefined"
+        >
+          <span class="badge bg-secondary mx-1"
+            >{{ props.chall.numUsersInYourTeamSolved }} i ditt lag</span
+          >
+        </div>
+        <div
+          class="d-flex justify-content-center"
+          v-if="
+            props.chall.numUsersSolved !== undefined &&
+            props.chall.numTeamsSolved !== undefined
+          "
+        >
+          <span class="badge bg-info mx-1"
+            >{{ props.chall.numUsersSolved }} användare totalt</span
+          >
+        </div>
 
         <div class="modal-body">
           <div class="row">
@@ -70,28 +89,85 @@
               <div v-for="file in props.chall.files">
                 <FileDownload :file="file" />
               </div>
-              <div class="pt-3" v-if="props.chall.solvers">
-                <b>Första lösarna</b>
-                <ol>
-                  <li v-for="solver in props.chall.solvers">
-                    {{ solver.full_name }}
-                    <span class="badge bg-info">{{
-                      timeAgo(solver.solved_at)
-                    }}</span>
-                  </li>
-                </ol>
+              <div class="pt-2">
+                <div class="mb-2" v-if="chall.num_solves_in_team">
+                  <strong
+                    >Lösningar inom laget:
+                    {{ chall.num_solves_in_team }}</strong
+                  >
+                  <ol
+                    v-if="chall.solvers_in_team && chall.solvers_in_team.length"
+                    class="solver-list"
+                  >
+                    <li
+                      v-for="(user, idx) in chall.solvers_in_team"
+                      :key="user.id"
+                    >
+                      <span class="solver-rank">{{ idx + 1 }}.</span>
+                      {{ user.full_name }}
+                      <span v-if="user.solved_at" class="badge bg-info ms-2">{{
+                        timeAgo(user.solved_at)
+                      }}</span>
+                    </li>
+                  </ol>
+                </div>
+                <div class="mb-2" v-if="chall.num_team_solves">
+                  <strong>Lag som löst: {{ chall.num_team_solves }}</strong>
+                  <ol
+                    v-if="chall.team_solvers && chall.team_solvers.length"
+                    class="solver-list"
+                  >
+                    <li
+                      v-for="(team, idx) in chall.team_solvers"
+                      :key="team.id"
+                    >
+                      <span class="solver-rank">{{ idx + 1 }}.</span>
+                      {{ team.full_name }}
+                      <span v-if="team.solved_at" class="badge bg-info ms-2">{{
+                        timeAgo(team.solved_at)
+                      }}</span>
+                    </li>
+                  </ol>
+                </div>
+                <div class="mb-2" v-if="chall.solves">
+                  <strong>Totala lösningar: {{ chall.solves }}</strong>
+                  <ol
+                    v-if="chall.solvers && chall.solvers.length"
+                    class="solver-list"
+                  >
+                    <li v-for="(user, idx) in chall.solvers" :key="user.id">
+                      <span class="solver-rank">{{ idx + 1 }}.</span>
+                      {{ user.full_name }}
+                      <span v-if="user.solved_at" class="badge bg-info ms-2">{{
+                        timeAgo(user.solved_at)
+                      }}</span>
+                    </li>
+                  </ol>
+                </div>
               </div>
             </div>
+            <!-- <div class="pt-3" v-if="props.chall.solvers">
+              <b>Första lösarna</b>
+              <ol>
+                <li v-for="(solver, idx) in props.chall.solvers">
+                  <span class="solver-rank">{{ idx + 1 }}.</span>
+                  {{ solver.full_name }}
+                  <span class="badge bg-info">{{
+                    timeAgo(solver.solved_at)
+                  }}</span>
+                </li>
+              </ol>
+            </div>-->
           </div>
-          <div class="mt-3">
-            <div :class="{ wrong: warn }">
-              <CTFFlagInput
-                class=""
-                v-model="flag"
-                @keypress.enter="submitFlag"
-                :solved="props.chall.solved"
-              />
-            </div>
+        </div>
+        <div class="p-3">
+          <div :class="{ wrong: warn }">
+            <CTFFlagInput
+              class=""
+              v-model="flag"
+              @keypress.enter="submitFlag"
+              :solved="props.chall.solved"
+            />
           </div>
         </div>
       </div>
@@ -156,6 +232,7 @@ function goBack(event) {
 </script>
 
 <style scoped>
+@import "~/assets/styles/ctf-theme.css";
 .author:after {
   content: ",";
   padding-right: 0.5em;
@@ -176,5 +253,43 @@ function goBack(event) {
   background-color: #cf5631;
   border-color: #cf5631;
   color: #ffffff;
+}
+
+.first-list {
+  margin-top: 2px;
+  font-size: 0.95em;
+  color: #6c757d;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.first-item {
+  background: #e9ecef;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-right: 2px;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+.first-sep {
+  margin-right: 4px;
+  color: #adb5bd;
+}
+
+.solver-list {
+  margin: 0.25em 0 0.5em 0;
+  padding-left: 0.2em;
+  font-size: 1em;
+  color: var(--ctf-text, #fff);
+}
+.solver-list li {
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+}
+.solver-rank {
+  font-weight: bold;
+  margin-right: 0.4em;
+  color: var(--ctf-accent, #ffb300);
 }
 </style>

@@ -18,7 +18,8 @@ import (
 type Service interface {
 	// Get info about a ctf.
 	Get(context.Context, *GetPayload) (res *CTFInfo, err error)
-	// Register a user for a ctf with a unique username.
+	// Register a user for a ctf with a unique username. For team-based CTFs,
+	// provide a team_code to join a team.
 	RegisterUser(context.Context, *RegisterUserPayload) (res *CTFUser, err error)
 	// Get a user for a ctf.
 	GetUser(context.Context, *GetUserPayload) (res *CTFUser, err error)
@@ -58,6 +59,8 @@ type CTFInfo struct {
 	ChallengeIds []string
 	// Is the CTF private?
 	Private *bool
+	// Is the CTF team-based?
+	TeamBased bool
 }
 
 // RegisterUserPayload is the payload type of the ctf service RegisterUser
@@ -65,6 +68,8 @@ type CTFInfo struct {
 type RegisterUserPayload struct {
 	Slug     string
 	Username string
+	// Optional: Team code to join a team in team-based CTFs.
+	TeamCode *string
 }
 
 // CTFUser is the result type of the ctf service RegisterUser method.
@@ -73,6 +78,10 @@ type CTFUser struct {
 	CtfID    string
 	Username string
 	Password string
+	// Optional team ID for team-based CTFs
+	TeamID *string
+	// Optional team name for team-based CTFs
+	Teamname *string
 }
 
 // GetUserPayload is the payload type of the ctf service GetUser method.
@@ -147,16 +156,22 @@ type SsmCtfChallenge struct {
 	Services []*ChallengeService
 	Files    []*ChallengeFiles
 	// The numer of people who solved the challenge
-	Solves int
+	Solves          int
+	NumTeamSolves   *int
+	NumSolvesInTeam *int
 	// The ID of the CTF the challenge was taken from
 	CtfEventID     *string
 	ChallNamespace *string
 	// whether the user has solved the challenge or not
-	Solved       bool
-	Category     string
-	Authors      []*Author
-	Solvers      []*SsmSolver
-	DisplayOrder int
+	Solved bool
+	// whether the user has solved the challenge in their team or not
+	SolvedInTeam  *bool
+	Category      string
+	Authors       []*Author
+	Solvers       []*SsmSolver
+	TeamSolvers   []*SsmSolver
+	SolversInTeam []*SsmSolver
+	DisplayOrder  int
 }
 
 type ChallengeService struct {
@@ -191,6 +206,10 @@ type CTFScore struct {
 	Username string
 	Score    int64
 	Solves   []string
+	// Optional team ID for team-based CTFs
+	TeamID *string
+	// Optional team name for team-based CTFs
+	Teamname *string
 }
 
 // MakeUsernameTaken builds a goa.ServiceError from an error.
@@ -286,8 +305,11 @@ func newSsmCtfChallengeCollectionView(res SsmCtfChallengeCollection) ctfviews.Ss
 // SsmCtfChallenge.
 func newSsmCtfChallenge(vres *ctfviews.SsmCtfChallengeView) *SsmCtfChallenge {
 	res := &SsmCtfChallenge{
-		CtfEventID:     vres.CtfEventID,
-		ChallNamespace: vres.ChallNamespace,
+		NumTeamSolves:   vres.NumTeamSolves,
+		NumSolvesInTeam: vres.NumSolvesInTeam,
+		CtfEventID:      vres.CtfEventID,
+		ChallNamespace:  vres.ChallNamespace,
+		SolvedInTeam:    vres.SolvedInTeam,
 	}
 	if vres.ID != nil {
 		res.ID = *vres.ID
@@ -340,6 +362,18 @@ func newSsmCtfChallenge(vres *ctfviews.SsmCtfChallengeView) *SsmCtfChallenge {
 			res.Solvers[i] = transformCtfviewsSsmSolverViewToSsmSolver(val)
 		}
 	}
+	if vres.TeamSolvers != nil {
+		res.TeamSolvers = make([]*SsmSolver, len(vres.TeamSolvers))
+		for i, val := range vres.TeamSolvers {
+			res.TeamSolvers[i] = transformCtfviewsSsmSolverViewToSsmSolver(val)
+		}
+	}
+	if vres.SolversInTeam != nil {
+		res.SolversInTeam = make([]*SsmSolver, len(vres.SolversInTeam))
+		for i, val := range vres.SolversInTeam {
+			res.SolversInTeam[i] = transformCtfviewsSsmSolverViewToSsmSolver(val)
+		}
+	}
 	return res
 }
 
@@ -347,17 +381,20 @@ func newSsmCtfChallenge(vres *ctfviews.SsmCtfChallengeView) *SsmCtfChallenge {
 // type SsmCtfChallengeView using the "default" view.
 func newSsmCtfChallengeView(res *SsmCtfChallenge) *ctfviews.SsmCtfChallengeView {
 	vres := &ctfviews.SsmCtfChallengeView{
-		ID:             &res.ID,
-		Slug:           &res.Slug,
-		Title:          &res.Title,
-		Description:    &res.Description,
-		Score:          &res.Score,
-		Solves:         &res.Solves,
-		CtfEventID:     res.CtfEventID,
-		ChallNamespace: res.ChallNamespace,
-		Solved:         &res.Solved,
-		Category:       &res.Category,
-		DisplayOrder:   &res.DisplayOrder,
+		ID:              &res.ID,
+		Slug:            &res.Slug,
+		Title:           &res.Title,
+		Description:     &res.Description,
+		Score:           &res.Score,
+		Solves:          &res.Solves,
+		NumTeamSolves:   res.NumTeamSolves,
+		NumSolvesInTeam: res.NumSolvesInTeam,
+		CtfEventID:      res.CtfEventID,
+		ChallNamespace:  res.ChallNamespace,
+		Solved:          &res.Solved,
+		SolvedInTeam:    res.SolvedInTeam,
+		Category:        &res.Category,
+		DisplayOrder:    &res.DisplayOrder,
 	}
 	if res.Services != nil {
 		vres.Services = make([]*ctfviews.ChallengeServiceView, len(res.Services))
@@ -381,6 +418,18 @@ func newSsmCtfChallengeView(res *SsmCtfChallenge) *ctfviews.SsmCtfChallengeView 
 		vres.Solvers = make([]*ctfviews.SsmSolverView, len(res.Solvers))
 		for i, val := range res.Solvers {
 			vres.Solvers[i] = transformSsmSolverToCtfviewsSsmSolverView(val)
+		}
+	}
+	if res.TeamSolvers != nil {
+		vres.TeamSolvers = make([]*ctfviews.SsmSolverView, len(res.TeamSolvers))
+		for i, val := range res.TeamSolvers {
+			vres.TeamSolvers[i] = transformSsmSolverToCtfviewsSsmSolverView(val)
+		}
+	}
+	if res.SolversInTeam != nil {
+		vres.SolversInTeam = make([]*ctfviews.SsmSolverView, len(res.SolversInTeam))
+		for i, val := range res.SolversInTeam {
+			vres.SolversInTeam[i] = transformSsmSolverToCtfviewsSsmSolverView(val)
 		}
 	}
 	return vres

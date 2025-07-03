@@ -17,6 +17,8 @@ import (
 // endpoint HTTP request body.
 type RegisterUserRequestBody struct {
 	Username *string `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
+	// Optional: Team code to join a team in team-based CTFs.
+	TeamCode *string `form:"team_code,omitempty" json:"team_code,omitempty" xml:"team_code,omitempty"`
 }
 
 // SubmitFlagRequestBody is the type of the "ctf" service "SubmitFlag" endpoint
@@ -39,6 +41,8 @@ type GetResponseBody struct {
 	ChallengeIds []string `form:"challenge_ids" json:"challenge_ids" xml:"challenge_ids"`
 	// Is the CTF private?
 	Private *bool `form:"private,omitempty" json:"private,omitempty" xml:"private,omitempty"`
+	// Is the CTF team-based?
+	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 }
 
 // RegisterUserResponseBody is the type of the "ctf" service "RegisterUser"
@@ -48,6 +52,10 @@ type RegisterUserResponseBody struct {
 	CtfID    string `form:"ctf_id" json:"ctf_id" xml:"ctf_id"`
 	Username string `form:"username" json:"username" xml:"username"`
 	Password string `form:"password" json:"password" xml:"password"`
+	// Optional team ID for team-based CTFs
+	TeamID *string `form:"team_id,omitempty" json:"team_id,omitempty" xml:"team_id,omitempty"`
+	// Optional team name for team-based CTFs
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
 }
 
 // GetUserResponseBody is the type of the "ctf" service "GetUser" endpoint HTTP
@@ -57,6 +65,10 @@ type GetUserResponseBody struct {
 	CtfID    string `form:"ctf_id" json:"ctf_id" xml:"ctf_id"`
 	Username string `form:"username" json:"username" xml:"username"`
 	Password string `form:"password" json:"password" xml:"password"`
+	// Optional team ID for team-based CTFs
+	TeamID *string `form:"team_id,omitempty" json:"team_id,omitempty" xml:"team_id,omitempty"`
+	// Optional team name for team-based CTFs
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
 }
 
 // GetUserSolvesResponseBody is the type of the "ctf" service "GetUserSolves"
@@ -213,16 +225,22 @@ type SsmCtfChallengeResponse struct {
 	Services []*ChallengeServiceResponse `form:"services,omitempty" json:"services,omitempty" xml:"services,omitempty"`
 	Files    []*ChallengeFilesResponse   `form:"files,omitempty" json:"files,omitempty" xml:"files,omitempty"`
 	// The numer of people who solved the challenge
-	Solves int `form:"solves" json:"solves" xml:"solves"`
+	Solves          int  `form:"solves" json:"solves" xml:"solves"`
+	NumTeamSolves   *int `form:"num_team_solves,omitempty" json:"num_team_solves,omitempty" xml:"num_team_solves,omitempty"`
+	NumSolvesInTeam *int `form:"num_solves_in_team,omitempty" json:"num_solves_in_team,omitempty" xml:"num_solves_in_team,omitempty"`
 	// The ID of the CTF the challenge was taken from
 	CtfEventID     *string `form:"ctf_event_id,omitempty" json:"ctf_event_id,omitempty" xml:"ctf_event_id,omitempty"`
 	ChallNamespace *string `form:"chall_namespace,omitempty" json:"chall_namespace,omitempty" xml:"chall_namespace,omitempty"`
 	// whether the user has solved the challenge or not
-	Solved       bool                 `form:"solved" json:"solved" xml:"solved"`
-	Category     string               `form:"category" json:"category" xml:"category"`
-	Authors      []*AuthorResponse    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
-	Solvers      []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
-	DisplayOrder int                  `form:"display_order" json:"display_order" xml:"display_order"`
+	Solved bool `form:"solved" json:"solved" xml:"solved"`
+	// whether the user has solved the challenge in their team or not
+	SolvedInTeam  *bool                `form:"solved_in_team,omitempty" json:"solved_in_team,omitempty" xml:"solved_in_team,omitempty"`
+	Category      string               `form:"category" json:"category" xml:"category"`
+	Authors       []*AuthorResponse    `form:"authors,omitempty" json:"authors,omitempty" xml:"authors,omitempty"`
+	Solvers       []*SsmSolverResponse `form:"solvers,omitempty" json:"solvers,omitempty" xml:"solvers,omitempty"`
+	TeamSolvers   []*SsmSolverResponse `form:"team_solvers,omitempty" json:"team_solvers,omitempty" xml:"team_solvers,omitempty"`
+	SolversInTeam []*SsmSolverResponse `form:"solvers_in_team,omitempty" json:"solvers_in_team,omitempty" xml:"solvers_in_team,omitempty"`
+	DisplayOrder  int                  `form:"display_order" json:"display_order" xml:"display_order"`
 }
 
 // ChallengeServiceResponse is used to define fields on response body types.
@@ -262,6 +280,10 @@ type CTFScoreResponse struct {
 	Username string   `form:"username" json:"username" xml:"username"`
 	Score    int64    `form:"score" json:"score" xml:"score"`
 	Solves   []string `form:"solves" json:"solves" xml:"solves"`
+	// Optional team ID for team-based CTFs
+	TeamID *string `form:"team_id,omitempty" json:"team_id,omitempty" xml:"team_id,omitempty"`
+	// Optional team name for team-based CTFs
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
 }
 
 // NewGetResponseBody builds the HTTP response body from the result of the
@@ -275,6 +297,7 @@ func NewGetResponseBody(res *ctf.CTFInfo) *GetResponseBody {
 		EndTime:     res.EndTime,
 		Slug:        res.Slug,
 		Private:     res.Private,
+		TeamBased:   res.TeamBased,
 	}
 	if res.ChallengeIds != nil {
 		body.ChallengeIds = make([]string, len(res.ChallengeIds))
@@ -293,6 +316,8 @@ func NewRegisterUserResponseBody(res *ctf.CTFUser) *RegisterUserResponseBody {
 		CtfID:    res.CtfID,
 		Username: res.Username,
 		Password: res.Password,
+		TeamID:   res.TeamID,
+		Teamname: res.Teamname,
 	}
 	return body
 }
@@ -305,6 +330,8 @@ func NewGetUserResponseBody(res *ctf.CTFUser) *GetUserResponseBody {
 		CtfID:    res.CtfID,
 		Username: res.Username,
 		Password: res.Password,
+		TeamID:   res.TeamID,
+		Teamname: res.Teamname,
 	}
 	return body
 }
@@ -453,6 +480,7 @@ func NewGetPayload(slug string) *ctf.GetPayload {
 func NewRegisterUserPayload(body *RegisterUserRequestBody, slug string) *ctf.RegisterUserPayload {
 	v := &ctf.RegisterUserPayload{
 		Username: *body.Username,
+		TeamCode: body.TeamCode,
 	}
 	v.Slug = slug
 

@@ -45,6 +45,7 @@ func (s *service) CreateCTF(ctx context.Context, req *spec.CreateCTFPayload) (*s
 		StartTime:   ctf.StartTime.Format(time.RFC3339),
 		EndTime:     ctf.EndTime.Format(time.RFC3339),
 		Challenges:  req.Challenges,
+		TeamBased:   req.TeamBased,
 	}, nil
 }
 
@@ -88,6 +89,7 @@ func (s *service) ListCTFs(ctx context.Context, req *spec.ListCTFsPayload) ([]*s
 			EndTime:     ctf.EndTime.Format(time.RFC3339),
 			Slug:        ctf.Slug,
 			Challenges:  challenges,
+			TeamBased:   ctf.TeamBased,
 		})
 	}
 	return result, nil
@@ -112,6 +114,11 @@ func (s *service) UpdateCTF(ctx context.Context, req *spec.UpdateCTFPayload) (*s
 		return nil, errors.New("slug already exists")
 	}
 	ctf.Slug = req.Slug
+	if req.TeamBased != nil {
+		ctf.TeamBased = *req.TeamBased
+	} else {
+		ctf.TeamBased = false
+	}
 
 	_, err = ctf.Update(ctx, s.db, boil.Infer())
 	if err != nil {
@@ -139,6 +146,7 @@ func (s *service) UpdateCTF(ctx context.Context, req *spec.UpdateCTFPayload) (*s
 		EndTime:     ctf.EndTime.Format(time.RFC3339),
 		Slug:        ctf.Slug,
 		Challenges:  req.Challenges,
+		TeamBased:   ctf.TeamBased,
 	}, nil
 }
 
@@ -323,5 +331,119 @@ func (s *service) UpdateCTFUser(ctx context.Context, req *spec.UpdateCTFUserPayl
 		ID:       user.ID,
 		CtfID:    ctf.ID,
 		Username: user.Username,
+	}, nil
+}
+
+func (s *service) ListCTFTeams(ctx context.Context, req *spec.ListCTFTeamsPayload) ([]*spec.CTFTeam, error) {
+	ctf, err := models.CTFS(models.CTFWhere.ID.EQ(req.CtfID)).One(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+	teams, err := models.CTFTeams(models.CTFTeamWhere.CTFID.EQ(ctf.ID)).All(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+	var result []*spec.CTFTeam
+	for _, team := range teams {
+		result = append(result, &spec.CTFTeam{
+			ID:       team.ID,
+			CtfID:    team.CTFID,
+			Teamname: team.Teamname,
+			Password: team.Password,
+		})
+	}
+	return result, nil
+}
+
+func (s *service) CreateCTFTeam(ctx context.Context, req *spec.CreateCTFTeamPayload) (*spec.CTFTeam, error) {
+	ctf, err := models.CTFS(models.CTFWhere.ID.EQ(req.CtfID)).One(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if team name already exists for this ctf
+	var exists bool
+	err = s.db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM ctf_teams WHERE ctf_id = $1 AND teamname = $2)`, ctf.ID, req.Teamname).Scan(&exists)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		return nil, errors.New("team name already taken for this ctf")
+	}
+
+	// Generate a unique team password (team code), check for collisions
+	var teamPassword string
+	for {
+		teamPassword = uuid.New().String()[:8]
+		var exists bool
+		err = s.db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM ctf_teams WHERE ctf_id = $1 AND password = $2)`, ctf.ID, teamPassword).Scan(&exists)
+		if err != nil {
+			return nil, err
+		}
+		if !exists {
+			break
+		}
+	}
+
+	id := uuid.New().String()
+	team := &models.CTFTeam{
+		ID:       id,
+		CTFID:    ctf.ID,
+		Teamname: req.Teamname,
+		Password: teamPassword,
+	}
+	err = team.Insert(ctx, s.db, boil.Infer())
+	if err != nil {
+		return nil, err
+	}
+
+	return &spec.CTFTeam{
+		ID:       team.ID,
+		CtfID:    team.CTFID,
+		Teamname: team.Teamname,
+		Password: team.Password,
+	}, nil
+}
+
+func (s *service) DeleteCTFTeam(ctx context.Context, req *spec.DeleteCTFTeamPayload) error {
+	ctf, err := models.CTFS(models.CTFWhere.ID.EQ(req.CtfID)).One(ctx, s.db)
+	if err != nil {
+		return err
+	}
+	_, err = models.CTFTeams(models.CTFTeamWhere.ID.EQ(req.TeamID), models.CTFTeamWhere.CTFID.EQ(ctf.ID)).DeleteAll(ctx, s.db)
+	return err
+}
+
+func (s *service) UpdateCTFTeam(ctx context.Context, req *spec.UpdateCTFTeamPayload) (*spec.CTFTeam, error) {
+	ctf, err := models.CTFS(models.CTFWhere.ID.EQ(req.CtfID)).One(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+	team, err := models.CTFTeams(models.CTFTeamWhere.ID.EQ(req.TeamID), models.CTFTeamWhere.CTFID.EQ(ctf.ID)).One(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check if team name already exists for this ctf (excluding current team)
+	var exists bool
+	err = s.db.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM ctf_teams WHERE ctf_id = $1 AND teamname = $2 AND id != $3)`, ctf.ID, req.Teamname, team.ID).Scan(&exists)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		return nil, errors.New("team name already taken for this ctf")
+	}
+
+	team.Teamname = req.Teamname
+
+	_, err = team.Update(ctx, s.db, boil.Infer())
+	if err != nil {
+		return nil, err
+	}
+	return &spec.CTFTeam{
+		ID:       team.ID,
+		CtfID:    team.CTFID,
+		Teamname: team.Teamname,
+		Password: team.Password,
 	}, nil
 }

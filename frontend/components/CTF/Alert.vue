@@ -70,6 +70,8 @@ function formatTime(time: string) {
 }
 </script>
 <style scoped>
+@import "~/assets/styles/ctf-theme.css";
+
 .alert-box {
   background-color: #00000056;
   border: 2px solid #00000056;

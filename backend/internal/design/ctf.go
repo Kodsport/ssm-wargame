@@ -22,10 +22,13 @@ var _ = Service("ctf", func() {
 	})
 
 	Method("RegisterUser", func() {
-		Description("Register a user for a ctf with a unique username.")
+		Description("Register a user for a ctf with a unique username. For team-based CTFs, provide a team_code to join a team.")
 		Payload(func() {
 			Attribute("slug", String)
 			Attribute("username", String)
+			Attribute("team_code", String, func() {
+				Description("Optional: Team code to join a team in team-based CTFs.")
+			})
 			Required("slug", "username")
 		})
 		Result(CTFUser)

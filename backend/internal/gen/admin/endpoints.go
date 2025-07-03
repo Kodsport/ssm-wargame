@@ -51,6 +51,10 @@ type Endpoints struct {
 	ListCTFUsers              goa.Endpoint
 	DeleteCTFUser             goa.Endpoint
 	UpdateCTFUser             goa.Endpoint
+	ListCTFTeams              goa.Endpoint
+	CreateCTFTeam             goa.Endpoint
+	DeleteCTFTeam             goa.Endpoint
+	UpdateCTFTeam             goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "admin" service with endpoints.
@@ -93,6 +97,10 @@ func NewEndpoints(s Service) *Endpoints {
 		ListCTFUsers:              NewListCTFUsersEndpoint(s, a.JWTAuth),
 		DeleteCTFUser:             NewDeleteCTFUserEndpoint(s, a.JWTAuth),
 		UpdateCTFUser:             NewUpdateCTFUserEndpoint(s, a.JWTAuth),
+		ListCTFTeams:              NewListCTFTeamsEndpoint(s, a.JWTAuth),
+		CreateCTFTeam:             NewCreateCTFTeamEndpoint(s, a.JWTAuth),
+		DeleteCTFTeam:             NewDeleteCTFTeamEndpoint(s, a.JWTAuth),
+		UpdateCTFTeam:             NewUpdateCTFTeamEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -133,6 +141,10 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.ListCTFUsers = m(e.ListCTFUsers)
 	e.DeleteCTFUser = m(e.DeleteCTFUser)
 	e.UpdateCTFUser = m(e.UpdateCTFUser)
+	e.ListCTFTeams = m(e.ListCTFTeams)
+	e.CreateCTFTeam = m(e.CreateCTFTeam)
+	e.DeleteCTFTeam = m(e.DeleteCTFTeam)
+	e.UpdateCTFTeam = m(e.UpdateCTFTeam)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -797,5 +809,81 @@ func NewUpdateCTFUserEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.End
 			return nil, err
 		}
 		return s.UpdateCTFUser(ctx, p)
+	}
+}
+
+// NewListCTFTeamsEndpoint returns an endpoint function that calls the method
+// "ListCTFTeams" of service "admin".
+func NewListCTFTeamsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*ListCTFTeamsPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.ListCTFTeams(ctx, p)
+	}
+}
+
+// NewCreateCTFTeamEndpoint returns an endpoint function that calls the method
+// "CreateCTFTeam" of service "admin".
+func NewCreateCTFTeamEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*CreateCTFTeamPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.CreateCTFTeam(ctx, p)
+	}
+}
+
+// NewDeleteCTFTeamEndpoint returns an endpoint function that calls the method
+// "DeleteCTFTeam" of service "admin".
+func NewDeleteCTFTeamEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*DeleteCTFTeamPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.DeleteCTFTeam(ctx, p)
+	}
+}
+
+// NewUpdateCTFTeamEndpoint returns an endpoint function that calls the method
+// "UpdateCTFTeam" of service "admin".
+func NewUpdateCTFTeamEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*UpdateCTFTeamPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.UpdateCTFTeam(ctx, p)
 	}
 }

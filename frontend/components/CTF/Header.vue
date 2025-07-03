@@ -45,7 +45,12 @@
                 class="nav-link btn border border-primary"
                 :to="'/ctf/' + slug"
               >
-                <span>
+                <span v-if="auth.ctfUser.teamname">
+                  {{ auth.ctfUser.teamname }} -
+                  {{ auth.ctfUser.username }}
+                  <span class="material-symbols-outlined">person</span>
+                </span>
+                <span v-else>
                   {{ auth.ctfUser.username }}
                   <span class="material-symbols-outlined">person</span>
                 </span>

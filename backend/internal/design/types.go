@@ -264,7 +264,10 @@ var CTF = Type("CTF", func() {
 	Attribute("end_time", String)
 	Attribute("slug", String)
 	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
-	Required("id", "name", "description", "slug", "start_time", "end_time", "challenges")
+	Attribute("team_based", Boolean, "Is the CTF team-based?", func() {
+		Example(false)
+	})
+	Required("id", "name", "description", "slug", "start_time", "end_time", "challenges", "team_based")
 })
 
 var CTFInfo = Type("CTFInfo", func() {
@@ -276,7 +279,8 @@ var CTFInfo = Type("CTFInfo", func() {
 	Attribute("slug", String)
 	Attribute("challenge_ids", ArrayOf(String))
 	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
-	Required("id", "name", "description", "slug", "start_time", "end_time", "challenge_ids")
+	Attribute("team_based", Boolean, "Is the CTF team-based?", func() { Example(false) })
+	Required("id", "name", "description", "slug", "start_time", "end_time", "challenge_ids", "team_based")
 })
 
 var CTFUser = Type("CTFUser", func() {
@@ -284,7 +288,28 @@ var CTFUser = Type("CTFUser", func() {
 	Attribute("ctf_id", String)
 	Attribute("username", String)
 	Attribute("password", String)
+	Attribute("team_id", String, "Optional team ID for team-based CTFs", func() {
+		Example("team123")
+	})
+	Attribute("teamname", String, "Optional team name for team-based CTFs", func() {
+		Example("Team Alpha")
+	})
 	Required("id", "ctf_id", "username", "password")
+})
+
+var CTFTeam = Type("CTFTeam", func() {
+	Attribute("id", String)
+	Attribute("ctf_id", String)
+	Attribute("teamname", String, "Team name", func() {
+		Example("Team Alpha")
+	})
+	Attribute("password", String, "Team password/code", func() {
+		Example("team123")
+	})
+	Attribute("created_at", String, "Team creation timestamp", func() {
+		Example("2025-07-03T10:15:30Z")
+	})
+	Required("id", "ctf_id", "teamname", "password")
 })
 
 var CTFScore = Type("CTFScore", func() {
@@ -292,6 +317,12 @@ var CTFScore = Type("CTFScore", func() {
 	Attribute("username", String)
 	Attribute("score", Int64)
 	Attribute("solves", ArrayOf(String))
+	Attribute("team_id", String, "Optional team ID for team-based CTFs", func() {
+		Example("team123")
+	})
+	Attribute("teamname", String, "Optional team name for team-based CTFs", func() {
+		Example("Team Alpha")
+	})
 	Required("id", "username", "score", "solves")
 })
 
@@ -325,7 +356,8 @@ var CTFCreate = Type("CTFCreate", func() {
 	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
 	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
 	Attribute("password", String, "CTF password", func() { Example("password") })
-	Required("name", "description", "start_time", "end_time", "slug", "challenges")
+	Attribute("team_based", Boolean, "Is the CTF team-based?", func() { Example(false) })
+	Required("name", "description", "start_time", "end_time", "slug", "challenges", "team_based")
 })
 
 var CTFChallenge = Type("CTFChallenge", func() {
@@ -344,6 +376,7 @@ var CTFUpdate = Type("CTFUpdate", func() {
 	Attribute("challenges", ArrayOf(CTFChallenge), "Challenges")
 	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
 	Attribute("password", String, "CTF password", func() { Example("password") })
+	Attribute("team_based", Boolean, "Is the CTF team-based?", func() { Example(false) })
 	Required("name", "description", "start_time", "end_time", "slug", "challenges")
 })
 

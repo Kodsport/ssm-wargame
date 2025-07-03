@@ -10,14 +10,17 @@ export const useCTFStore = defineStore("ctf", {
     hasFetchedCTF: false,
     hasFetchedChallenges: false,
     hasFetchedScoreboard: false,
+    isTeamBased: false,
   }),
   actions: {
     async getCTF(slug: string) {
       try {
         const ctf = await http("/ctfs/" + slug);
         this.ctf = ctf;
+        this.isTeamBased = !!ctf.team_based;
       } catch (e) {
         this.ctf = {};
+        this.isTeamBased = false;
         console.error(e);
       }
     },

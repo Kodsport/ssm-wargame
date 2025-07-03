@@ -11,10 +11,18 @@
     </div>
     <div class="card-body d-flex justify-content-between">
       <div v-if="!props.hideSolves" class="align-items-end d-flex solve-text">
-        <span v-if="props.chall.solves != 0"
-          >{{ props.chall.solves }} lösare</span
-        >
-        <span v-else>Olöst</span>
+        <template v-if="props.chall.numTeamsSolved !== undefined">
+          <span v-if="props.chall.numTeamsSolved > 0"
+            >{{ props.chall.numTeamsSolved }} lag</span
+          >
+          <span v-else>Olöst</span>
+        </template>
+        <template v-else>
+          <span v-if="props.chall.numUsersSolved || props.chall.solves"
+            >{{ props.chall.numUsersSolved || props.chall.solves }} lösare</span
+          >
+          <span v-else>Olöst</span>
+        </template>
       </div>
       <h3 class="align-items-end d-flex mb-0 score-text">
         {{ props.chall.score }}

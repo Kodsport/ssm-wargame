@@ -397,17 +397,20 @@ func marshalCtfCTFUserSolveToCTFUserSolveResponseBody(v *ctf.CTFUserSolve) *CTFU
 // *ctfviews.SsmCtfChallengeView.
 func marshalCtfviewsSsmCtfChallengeViewToSsmCtfChallengeResponse(v *ctfviews.SsmCtfChallengeView) *SsmCtfChallengeResponse {
 	res := &SsmCtfChallengeResponse{
-		ID:             *v.ID,
-		Slug:           *v.Slug,
-		Title:          *v.Title,
-		Description:    *v.Description,
-		Score:          *v.Score,
-		Solves:         *v.Solves,
-		CtfEventID:     v.CtfEventID,
-		ChallNamespace: v.ChallNamespace,
-		Solved:         *v.Solved,
-		Category:       *v.Category,
-		DisplayOrder:   *v.DisplayOrder,
+		ID:              *v.ID,
+		Slug:            *v.Slug,
+		Title:           *v.Title,
+		Description:     *v.Description,
+		Score:           *v.Score,
+		Solves:          *v.Solves,
+		NumTeamSolves:   v.NumTeamSolves,
+		NumSolvesInTeam: v.NumSolvesInTeam,
+		CtfEventID:      v.CtfEventID,
+		ChallNamespace:  v.ChallNamespace,
+		Solved:          *v.Solved,
+		SolvedInTeam:    v.SolvedInTeam,
+		Category:        *v.Category,
+		DisplayOrder:    *v.DisplayOrder,
 	}
 	if v.Services != nil {
 		res.Services = make([]*ChallengeServiceResponse, len(v.Services))
@@ -431,6 +434,18 @@ func marshalCtfviewsSsmCtfChallengeViewToSsmCtfChallengeResponse(v *ctfviews.Ssm
 		res.Solvers = make([]*SsmSolverResponse, len(v.Solvers))
 		for i, val := range v.Solvers {
 			res.Solvers[i] = marshalCtfviewsSsmSolverViewToSsmSolverResponse(val)
+		}
+	}
+	if v.TeamSolvers != nil {
+		res.TeamSolvers = make([]*SsmSolverResponse, len(v.TeamSolvers))
+		for i, val := range v.TeamSolvers {
+			res.TeamSolvers[i] = marshalCtfviewsSsmSolverViewToSsmSolverResponse(val)
+		}
+	}
+	if v.SolversInTeam != nil {
+		res.SolversInTeam = make([]*SsmSolverResponse, len(v.SolversInTeam))
+		for i, val := range v.SolversInTeam {
+			res.SolversInTeam[i] = marshalCtfviewsSsmSolverViewToSsmSolverResponse(val)
 		}
 	}
 
@@ -508,6 +523,8 @@ func marshalCtfCTFScoreToCTFScoreResponse(v *ctf.CTFScore) *CTFScoreResponse {
 		ID:       v.ID,
 		Username: v.Username,
 		Score:    v.Score,
+		TeamID:   v.TeamID,
+		Teamname: v.Teamname,
 	}
 	if v.Solves != nil {
 		res.Solves = make([]string, len(v.Solves))

@@ -28,7 +28,7 @@ import (
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors|list-courses|enroll-course|complete-course|knack-koden-submit-flag|knack-koden-scoreboard|knack-koden-register-class|knack-koden-get-class)
-admin (list-challenges|get-challenge-meta|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course|create-ctf|update-ctf|delete-ctf|list-ct-fs|create-challenge-group|update-challenge-group|delete-challenge-group|list-challenge-groups|list-ctf-users|delete-ctf-user|update-ctf-user)
+admin (list-challenges|get-challenge-meta|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course|create-ctf|update-ctf|delete-ctf|list-ct-fs|create-challenge-group|update-challenge-group|delete-challenge-group|list-challenge-groups|list-ctf-users|delete-ctf-user|update-ctf-user|list-ctf-teams|create-ctf-team|delete-ctf-team|update-ctf-team)
 ctf (get|register-user|get-user|get-user-solves|list-challenges|scoreboard|submit-flag)
 user (get-self|update-self|complete-onboarding|join-school|leave-school|search-schools)
 `
@@ -39,7 +39,7 @@ func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
 		os.Args[0] + ` challenge list-challenges --slug "brumm" --ids [] --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
-		os.Args[0] + ` ctf get --slug "Saepe maxime quaerat voluptas."` + "\n" +
+		os.Args[0] + ` ctf get --slug "Ipsa nihil doloremque ut eum rerum."` + "\n" +
 		os.Args[0] + ` user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		""
 }
@@ -261,6 +261,26 @@ func ParseEndpoint(
 		adminUpdateCTFUserUserIDFlag = adminUpdateCTFUserFlags.String("user-id", "REQUIRED", "")
 		adminUpdateCTFUserTokenFlag  = adminUpdateCTFUserFlags.String("token", "REQUIRED", "")
 
+		adminListCTFTeamsFlags     = flag.NewFlagSet("list-ctf-teams", flag.ExitOnError)
+		adminListCTFTeamsCtfIDFlag = adminListCTFTeamsFlags.String("ctf-id", "REQUIRED", "")
+		adminListCTFTeamsTokenFlag = adminListCTFTeamsFlags.String("token", "REQUIRED", "")
+
+		adminCreateCTFTeamFlags     = flag.NewFlagSet("create-ctf-team", flag.ExitOnError)
+		adminCreateCTFTeamBodyFlag  = adminCreateCTFTeamFlags.String("body", "REQUIRED", "")
+		adminCreateCTFTeamCtfIDFlag = adminCreateCTFTeamFlags.String("ctf-id", "REQUIRED", "")
+		adminCreateCTFTeamTokenFlag = adminCreateCTFTeamFlags.String("token", "REQUIRED", "")
+
+		adminDeleteCTFTeamFlags      = flag.NewFlagSet("delete-ctf-team", flag.ExitOnError)
+		adminDeleteCTFTeamCtfIDFlag  = adminDeleteCTFTeamFlags.String("ctf-id", "REQUIRED", "")
+		adminDeleteCTFTeamTeamIDFlag = adminDeleteCTFTeamFlags.String("team-id", "REQUIRED", "")
+		adminDeleteCTFTeamTokenFlag  = adminDeleteCTFTeamFlags.String("token", "REQUIRED", "")
+
+		adminUpdateCTFTeamFlags      = flag.NewFlagSet("update-ctf-team", flag.ExitOnError)
+		adminUpdateCTFTeamBodyFlag   = adminUpdateCTFTeamFlags.String("body", "REQUIRED", "")
+		adminUpdateCTFTeamCtfIDFlag  = adminUpdateCTFTeamFlags.String("ctf-id", "REQUIRED", "")
+		adminUpdateCTFTeamTeamIDFlag = adminUpdateCTFTeamFlags.String("team-id", "REQUIRED", "")
+		adminUpdateCTFTeamTokenFlag  = adminUpdateCTFTeamFlags.String("token", "REQUIRED", "")
+
 		ctfFlags = flag.NewFlagSet("ctf", flag.ContinueOnError)
 
 		ctfGetFlags    = flag.NewFlagSet("get", flag.ExitOnError)
@@ -370,6 +390,10 @@ func ParseEndpoint(
 	adminListCTFUsersFlags.Usage = adminListCTFUsersUsage
 	adminDeleteCTFUserFlags.Usage = adminDeleteCTFUserUsage
 	adminUpdateCTFUserFlags.Usage = adminUpdateCTFUserUsage
+	adminListCTFTeamsFlags.Usage = adminListCTFTeamsUsage
+	adminCreateCTFTeamFlags.Usage = adminCreateCTFTeamUsage
+	adminDeleteCTFTeamFlags.Usage = adminDeleteCTFTeamUsage
+	adminUpdateCTFTeamFlags.Usage = adminUpdateCTFTeamUsage
 
 	ctfFlags.Usage = ctfUsage
 	ctfGetFlags.Usage = ctfGetUsage
@@ -593,6 +617,18 @@ func ParseEndpoint(
 
 			case "update-ctf-user":
 				epf = adminUpdateCTFUserFlags
+
+			case "list-ctf-teams":
+				epf = adminListCTFTeamsFlags
+
+			case "create-ctf-team":
+				epf = adminCreateCTFTeamFlags
+
+			case "delete-ctf-team":
+				epf = adminDeleteCTFTeamFlags
+
+			case "update-ctf-team":
+				epf = adminUpdateCTFTeamFlags
 
 			}
 
@@ -830,6 +866,18 @@ func ParseEndpoint(
 			case "update-ctf-user":
 				endpoint = c.UpdateCTFUser()
 				data, err = adminc.BuildUpdateCTFUserPayload(*adminUpdateCTFUserBodyFlag, *adminUpdateCTFUserCtfIDFlag, *adminUpdateCTFUserUserIDFlag, *adminUpdateCTFUserTokenFlag)
+			case "list-ctf-teams":
+				endpoint = c.ListCTFTeams()
+				data, err = adminc.BuildListCTFTeamsPayload(*adminListCTFTeamsCtfIDFlag, *adminListCTFTeamsTokenFlag)
+			case "create-ctf-team":
+				endpoint = c.CreateCTFTeam()
+				data, err = adminc.BuildCreateCTFTeamPayload(*adminCreateCTFTeamBodyFlag, *adminCreateCTFTeamCtfIDFlag, *adminCreateCTFTeamTokenFlag)
+			case "delete-ctf-team":
+				endpoint = c.DeleteCTFTeam()
+				data, err = adminc.BuildDeleteCTFTeamPayload(*adminDeleteCTFTeamCtfIDFlag, *adminDeleteCTFTeamTeamIDFlag, *adminDeleteCTFTeamTokenFlag)
+			case "update-ctf-team":
+				endpoint = c.UpdateCTFTeam()
+				data, err = adminc.BuildUpdateCTFTeamPayload(*adminUpdateCTFTeamBodyFlag, *adminUpdateCTFTeamCtfIDFlag, *adminUpdateCTFTeamTeamIDFlag, *adminUpdateCTFTeamTokenFlag)
 			}
 		case "ctf":
 			c := ctfc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -1093,7 +1141,7 @@ KnackKodenSubmitFlag implements KnackKodenSubmitFlag.
 Example:
     %[1]s challenge knack-koden-submit-flag --body '{
       "flag": "SSM{flag}",
-      "password": "Voluptatem et dolor consequatur."
+      "password": "Et corrupti suscipit."
    }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1118,12 +1166,12 @@ KnackKodenRegisterClass implements KnackKodenRegisterClass.
 
 Example:
     %[1]s challenge knack-koden-register-class --body '{
-      "class_name": "Quam est neque.",
-      "postal_code": "Aut natus maxime sunt.",
-      "school_name": "Non consequatur dolore magni.",
-      "teacher_email": "Ad accusamus mollitia eveniet iusto.",
-      "teacher_full_name": "Molestiae tenetur voluptatem ipsum odit qui.",
-      "teacher_phonenr": "Itaque eum eveniet."
+      "class_name": "Dolores itaque dolores sequi quia fugiat in.",
+      "postal_code": "Vero aut.",
+      "school_name": "Neque qui consectetur explicabo autem totam.",
+      "teacher_email": "Aut quo.",
+      "teacher_full_name": "Minima earum quam.",
+      "teacher_phonenr": "Exercitationem repellat voluptatem velit doloribus voluptate omnis."
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1137,7 +1185,7 @@ KnackKodenGetClass implements KnackKodenGetClass.
 
 Example:
     %[1]s challenge knack-koden-get-class --body '{
-      "password": "Temporibus est est consequuntur qui."
+      "password": "Optio eum est harum iste."
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1184,6 +1232,10 @@ COMMAND:
     list-ctf-users: ListCTFUsers implements ListCTFUsers.
     delete-ctf-user: DeleteCTFUser implements DeleteCTFUser.
     update-ctf-user: UpdateCTFUser implements UpdateCTFUser.
+    list-ctf-teams: ListCTFTeams implements ListCTFTeams.
+    create-ctf-team: CreateCTFTeam implements CreateCTFTeam.
+    delete-ctf-team: DeleteCTFTeam implements DeleteCTFTeam.
+    update-ctf-team: UpdateCTFTeam implements UpdateCTFTeam.
 
 Additional help:
     %[1]s admin COMMAND --help
@@ -1434,10 +1486,10 @@ Example:
       ],
       "challenge_id": "225ada44-3fde-460d-84a4-2f16ff579618",
       "custom": {
-         "chall_namespace": "Et eveniet velit et quisquam nemo.",
-         "publish": true,
-         "publish_at": "Est harum iste excepturi.",
-         "slug": "Voluptas tempora et adipisci."
+         "chall_namespace": "Voluptatem veritatis voluptas nostrum.",
+         "publish": false,
+         "publish_at": "Doloremque earum non cumque id qui.",
+         "slug": "Non consequuntur unde exercitationem laudantium adipisci."
       },
       "description": "how to dns",
       "file_urls": [
@@ -1453,18 +1505,22 @@ Example:
          {
             "flag": "fl4g_l0l",
             "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
          }
       ],
       "human_metadata": {
-         "event_name": "Eius molestias."
+         "event_name": "Culpa qui temporibus eveniet vel beatae quibusdam."
       },
       "order": 5,
       "score": 100,
       "services": [
-         {
-            "hyperlink": true,
-            "user_display": "nc 0.0.0.0 1234"
-         },
          {
             "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"
@@ -1525,7 +1581,7 @@ CreateCTFEventImportToken implements CreateCTFEventImportToken.
 
 Example:
     %[1]s admin create-ctf-event-import-token --body '{
-      "expires_in": "year",
+      "expires_in": "week",
       "name": "e3bb4dc5-9479-42ce-aed3-b41e8139fccb"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
@@ -1619,12 +1675,13 @@ Example:
          }
       ],
       "description": "A fun CTF for school",
-      "end_time": 205276042674887128,
+      "end_time": 8788348548593572716,
       "name": "School CTF 2025",
       "password": "password",
       "private": false,
       "slug": "school-ctf-2025",
-      "start_time": 6039843869835536091
+      "start_time": 6348780665798289713,
+      "team_based": false
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1649,15 +1706,26 @@ Example:
             "custom_score": 50,
             "display_order": 1,
             "id": "85163218-8735-42ed-a7a6-42a9de2294df"
+         },
+         {
+            "custom_score": 50,
+            "display_order": 1,
+            "id": "85163218-8735-42ed-a7a6-42a9de2294df"
+         },
+         {
+            "custom_score": 50,
+            "display_order": 1,
+            "id": "85163218-8735-42ed-a7a6-42a9de2294df"
          }
       ],
       "description": "A fun CTF for school",
-      "end_time": 3798013612609028327,
+      "end_time": 1186624192819501178,
       "name": "School CTF 2025",
       "password": "password",
       "private": false,
       "slug": "school-ctf-2025",
-      "start_time": 1834819382561110777
+      "start_time": 4286210627808286058,
+      "team_based": false
    }' --id "020817da-8b5c-42c4-9e52-0f3a6628c1f8" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1704,6 +1772,11 @@ Example:
             "custom_score": 50,
             "display_order": 1,
             "id": "85163218-8735-42ed-a7a6-42a9de2294df"
+         },
+         {
+            "custom_score": 50,
+            "display_order": 1,
+            "id": "85163218-8735-42ed-a7a6-42a9de2294df"
          }
       ],
       "description": "This is a group of challenges",
@@ -1723,6 +1796,11 @@ UpdateChallengeGroup implements UpdateChallengeGroup.
 Example:
     %[1]s admin update-challenge-group --body '{
       "challenges": [
+         {
+            "custom_score": 50,
+            "display_order": 1,
+            "id": "85163218-8735-42ed-a7a6-42a9de2294df"
+         },
          {
             "custom_score": 50,
             "display_order": 1,
@@ -1776,7 +1854,7 @@ ListCTFUsers implements ListCTFUsers.
     -token STRING: 
 
 Example:
-    %[1]s admin list-ctf-users --ctf-id "Rerum ut beatae recusandae quam et blanditiis." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s admin list-ctf-users --ctf-id "Numquam eos molestiae delectus facilis." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -1789,7 +1867,7 @@ DeleteCTFUser implements DeleteCTFUser.
     -token STRING: 
 
 Example:
-    %[1]s admin delete-ctf-user --ctf-id "Earum eaque harum aliquam praesentium aliquam placeat." --user-id "Assumenda officiis ipsum." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s admin delete-ctf-user --ctf-id "In vel sit quam at qui." --user-id "Pariatur voluptatem." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -1804,8 +1882,64 @@ UpdateCTFUser implements UpdateCTFUser.
 
 Example:
     %[1]s admin update-ctf-user --body '{
-      "username": "Facilis magnam sit ducimus est."
-   }' --ctf-id "Accusantium nostrum ut modi voluptatem similique." --user-id "Ipsa aut nulla." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+      "username": "Molestias tenetur rerum nam omnis possimus deserunt."
+   }' --ctf-id "Ut autem odio consequuntur asperiores enim." --user-id "Esse autem nam." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminListCTFTeamsUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin list-ctf-teams -ctf-id STRING -token STRING
+
+ListCTFTeams implements ListCTFTeams.
+    -ctf-id STRING: 
+    -token STRING: 
+
+Example:
+    %[1]s admin list-ctf-teams --ctf-id "Voluptatem consectetur." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminCreateCTFTeamUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin create-ctf-team -body JSON -ctf-id STRING -token STRING
+
+CreateCTFTeam implements CreateCTFTeam.
+    -body JSON: 
+    -ctf-id STRING: 
+    -token STRING: 
+
+Example:
+    %[1]s admin create-ctf-team --body '{
+      "teamname": "Modi reiciendis incidunt qui laborum."
+   }' --ctf-id "Optio aut reiciendis aliquid." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminDeleteCTFTeamUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin delete-ctf-team -ctf-id STRING -team-id STRING -token STRING
+
+DeleteCTFTeam implements DeleteCTFTeam.
+    -ctf-id STRING: 
+    -team-id STRING: 
+    -token STRING: 
+
+Example:
+    %[1]s admin delete-ctf-team --ctf-id "Officia eligendi est est deleniti voluptas." --team-id "Ea sunt officiis et consequuntur autem pariatur." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
+func adminUpdateCTFTeamUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin update-ctf-team -body JSON -ctf-id STRING -team-id STRING -token STRING
+
+UpdateCTFTeam implements UpdateCTFTeam.
+    -body JSON: 
+    -ctf-id STRING: 
+    -team-id STRING: 
+    -token STRING: 
+
+Example:
+    %[1]s admin update-ctf-team --body '{
+      "teamname": "Soluta molestias sit facere."
+   }' --ctf-id "Sit aliquam aut qui molestiae ullam." --team-id "Molestias sed voluptatum." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -1817,7 +1951,7 @@ Usage:
 
 COMMAND:
     get: Get info about a ctf.
-    register-user: Register a user for a ctf with a unique username.
+    register-user: Register a user for a ctf with a unique username. For team-based CTFs, provide a team_code to join a team.
     get-user: Get a user for a ctf.
     get-user-solves: Get a user's solves for a ctf.
     list-challenges: List challenges for a ctf.
@@ -1835,21 +1969,22 @@ Get info about a ctf.
     -slug STRING: 
 
 Example:
-    %[1]s ctf get --slug "Saepe maxime quaerat voluptas."
+    %[1]s ctf get --slug "Ipsa nihil doloremque ut eum rerum."
 `, os.Args[0])
 }
 
 func ctfRegisterUserUsage() {
 	fmt.Fprintf(os.Stderr, `%[1]s [flags] ctf register-user -body JSON -slug STRING
 
-Register a user for a ctf with a unique username.
+Register a user for a ctf with a unique username. For team-based CTFs, provide a team_code to join a team.
     -body JSON: 
     -slug STRING: 
 
 Example:
     %[1]s ctf register-user --body '{
-      "username": "Reiciendis incidunt qui."
-   }' --slug "Magnam optio aut reiciendis aliquid corporis vel."
+      "team_code": "In voluptatem amet.",
+      "username": "Aut dolorem maiores reprehenderit velit."
+   }' --slug "Deserunt doloremque id mollitia earum."
 `, os.Args[0])
 }
 
@@ -1861,7 +1996,7 @@ Get a user for a ctf.
     -password STRING: 
 
 Example:
-    %[1]s ctf get-user --slug "Aut accusantium aut excepturi." --password "Porro et qui."
+    %[1]s ctf get-user --slug "Vero incidunt placeat asperiores ipsa aperiam." --password "Neque non molestiae."
 `, os.Args[0])
 }
 
@@ -1873,7 +2008,7 @@ Get a user's solves for a ctf.
     -id STRING: 
 
 Example:
-    %[1]s ctf get-user-solves --slug "Ipsa nihil doloremque ut eum rerum." --id "Et ad."
+    %[1]s ctf get-user-solves --slug "Est sed earum." --id "Quia consequatur minus et quas ut."
 `, os.Args[0])
 }
 
@@ -1885,7 +2020,7 @@ List challenges for a ctf.
     -password STRING: 
 
 Example:
-    %[1]s ctf list-challenges --slug "Voluptatum consequatur voluptatem voluptatibus culpa amet accusamus." --password "Impedit aspernatur ipsa."
+    %[1]s ctf list-challenges --slug "Corporis neque hic quo." --password "Eligendi omnis est rem."
 `, os.Args[0])
 }
 
@@ -1896,7 +2031,7 @@ Get scoreboard for a ctf.
     -slug STRING: 
 
 Example:
-    %[1]s ctf scoreboard --slug "Fugiat ducimus cumque quo est praesentium."
+    %[1]s ctf scoreboard --slug "Aut ipsa iusto quis ullam non eum."
 `, os.Args[0])
 }
 
@@ -1912,7 +2047,7 @@ Example:
       "challenge_id": "85163218-8735-42ed-a7a6-42a9de2294df",
       "flag": "SSM{yo}",
       "password": "user-password"
-   }' --slug "Placeat animi atque veniam ut veniam."
+   }' --slug "Commodi quia non ea."
 `, os.Args[0])
 }
 

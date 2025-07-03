@@ -14,6 +14,12 @@
             placeholder="Namn"
             required
           />
+          <input
+            v-if="ctfStore.ctf.team_based"
+            class="form-control mt-2"
+            v-model="teamCode"
+            placeholder="Lagkod"
+          />
           <button class="btn btn-primary mt-2" type="submit">
             Registrera dig
           </button>
@@ -36,8 +42,10 @@
       </section>
       <section v-if="auth.ctfUser.id">
         <p class="mb-2">
-          Du är registrerad på denna CTF som {{ auth.ctfUser.username || "" }}.
-          Din lösenordsfras är
+          Du är registrerad på denna CTF som {{ auth.ctfUser.username || ""
+          }}<span v-if="ctfStore.ctf.team_based && auth.ctfUser.teamname">
+            i laget {{ auth.ctfUser.teamname }} </span
+          >. Din lösenordsfras är
           <span id="passwordHover" class="hover" @click="copyPassword">{{
             auth.ctfUser.password || ""
           }}</span
@@ -72,6 +80,7 @@ const router = useRouter();
 const slug = route.params.slug as string;
 const username = ref("");
 const password = ref("");
+const teamCode = ref("");
 const ctfStore = useCTFStore();
 const auth = useAuthStore();
 
@@ -82,7 +91,11 @@ async function register() {
   registrationError.value = "";
   loginError.value = "";
   try {
-    await auth.registerCTFUser(slug, username.value);
+    await auth.registerCTFUser(
+      slug,
+      username.value,
+      teamCode.value || undefined
+    );
   } catch (e: any) {
     if (e.response) {
       registrationError.value = e.response._data.message;

@@ -440,4 +440,56 @@ var _ = Service("admin", func() {
 			Response(StatusOK)
 		})
 	})
+
+	Method("ListCTFTeams", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Required("ctf_id")
+			Extend(TokenPayload)
+		})
+		Result(ArrayOf(CTFTeam))
+		HTTP(func() {
+			GET("/ctfs/{ctf_id}/teams")
+			Response(StatusOK)
+		})
+	})
+	Method("CreateCTFTeam", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Attribute("teamname", String)
+			Required("ctf_id", "teamname")
+			Extend(TokenPayload)
+		})
+		Result(CTFTeam)
+		HTTP(func() {
+			POST("/ctfs/{ctf_id}/teams")
+			Response(StatusCreated)
+		})
+	})
+	Method("DeleteCTFTeam", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Attribute("team_id", String)
+			Required("ctf_id", "team_id")
+			Extend(TokenPayload)
+		})
+		HTTP(func() {
+			DELETE("/ctfs/{ctf_id}/teams/{team_id}")
+			Response(StatusOK)
+		})
+	})
+	Method("UpdateCTFTeam", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Attribute("team_id", String)
+			Attribute("teamname", String)
+			Required("ctf_id", "team_id", "teamname")
+			Extend(TokenPayload)
+		})
+		Result(CTFTeam)
+		HTTP(func() {
+			PATCH("/ctfs/{ctf_id}/teams/{team_id}")
+			Response(StatusOK)
+		})
+	})
 })

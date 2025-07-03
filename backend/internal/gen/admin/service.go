@@ -87,6 +87,14 @@ type Service interface {
 	DeleteCTFUser(context.Context, *DeleteCTFUserPayload) (err error)
 	// UpdateCTFUser implements UpdateCTFUser.
 	UpdateCTFUser(context.Context, *UpdateCTFUserPayload) (res *CTFUser, err error)
+	// ListCTFTeams implements ListCTFTeams.
+	ListCTFTeams(context.Context, *ListCTFTeamsPayload) (res []*CTFTeam, err error)
+	// CreateCTFTeam implements CreateCTFTeam.
+	CreateCTFTeam(context.Context, *CreateCTFTeamPayload) (res *CTFTeam, err error)
+	// DeleteCTFTeam implements DeleteCTFTeam.
+	DeleteCTFTeam(context.Context, *DeleteCTFTeamPayload) (err error)
+	// UpdateCTFTeam implements UpdateCTFTeam.
+	UpdateCTFTeam(context.Context, *UpdateCTFTeamPayload) (res *CTFTeam, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -103,7 +111,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [35]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse", "CreateCTF", "UpdateCTF", "DeleteCTF", "ListCTFs", "CreateChallengeGroup", "UpdateChallengeGroup", "DeleteChallengeGroup", "ListChallengeGroups", "ListCTFUsers", "DeleteCTFUser", "UpdateCTFUser"}
+var MethodNames = [39]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse", "CreateCTF", "UpdateCTF", "DeleteCTF", "ListCTFs", "CreateChallengeGroup", "UpdateChallengeGroup", "DeleteChallengeGroup", "ListChallengeGroups", "ListCTFUsers", "DeleteCTFUser", "UpdateCTFUser", "ListCTFTeams", "CreateCTFTeam", "DeleteCTFTeam", "UpdateCTFTeam"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -382,6 +390,8 @@ type CreateCTFPayload struct {
 	Private *bool
 	// CTF password
 	Password *string
+	// Is the CTF team-based?
+	TeamBased bool
 }
 
 // CTF is the result type of the admin service CreateCTF method.
@@ -394,6 +404,8 @@ type CTF struct {
 	Slug        string
 	// Challenges
 	Challenges []*CTFChallenge
+	// Is the CTF team-based?
+	TeamBased bool
 }
 
 // UpdateCTFPayload is the payload type of the admin service UpdateCTF method.
@@ -417,6 +429,8 @@ type UpdateCTFPayload struct {
 	Private *bool
 	// CTF password
 	Password *string
+	// Is the CTF team-based?
+	TeamBased *bool
 }
 
 // DeleteCTFPayload is the payload type of the admin service DeleteCTF method.
@@ -507,6 +521,54 @@ type CTFUser struct {
 	CtfID    string
 	Username string
 	Password string
+	// Optional team ID for team-based CTFs
+	TeamID *string
+	// Optional team name for team-based CTFs
+	Teamname *string
+}
+
+// ListCTFTeamsPayload is the payload type of the admin service ListCTFTeams
+// method.
+type ListCTFTeamsPayload struct {
+	CtfID string
+	Token string
+}
+
+// CreateCTFTeamPayload is the payload type of the admin service CreateCTFTeam
+// method.
+type CreateCTFTeamPayload struct {
+	CtfID    string
+	Teamname string
+	Token    string
+}
+
+// CTFTeam is the result type of the admin service CreateCTFTeam method.
+type CTFTeam struct {
+	ID    string
+	CtfID string
+	// Team name
+	Teamname string
+	// Team password/code
+	Password string
+	// Team creation timestamp
+	CreatedAt *string
+}
+
+// DeleteCTFTeamPayload is the payload type of the admin service DeleteCTFTeam
+// method.
+type DeleteCTFTeamPayload struct {
+	CtfID  string
+	TeamID string
+	Token  string
+}
+
+// UpdateCTFTeamPayload is the payload type of the admin service UpdateCTFTeam
+// method.
+type UpdateCTFTeamPayload struct {
+	CtfID    string
+	TeamID   string
+	Teamname string
+	Token    string
 }
 
 // A Wargame challenge

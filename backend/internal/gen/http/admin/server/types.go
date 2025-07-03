@@ -157,6 +157,8 @@ type CreateCTFRequestBody struct {
 	Private *bool `form:"private,omitempty" json:"private,omitempty" xml:"private,omitempty"`
 	// CTF password
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+	// Is the CTF team-based?
+	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 }
 
 // UpdateCTFRequestBody is the type of the "admin" service "UpdateCTF" endpoint
@@ -178,6 +180,8 @@ type UpdateCTFRequestBody struct {
 	Private *bool `form:"private,omitempty" json:"private,omitempty" xml:"private,omitempty"`
 	// CTF password
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
+	// Is the CTF team-based?
+	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 }
 
 // CreateChallengeGroupRequestBody is the type of the "admin" service
@@ -202,6 +206,18 @@ type UpdateChallengeGroupRequestBody struct {
 // endpoint HTTP request body.
 type UpdateCTFUserRequestBody struct {
 	Username *string `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
+}
+
+// CreateCTFTeamRequestBody is the type of the "admin" service "CreateCTFTeam"
+// endpoint HTTP request body.
+type CreateCTFTeamRequestBody struct {
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
+}
+
+// UpdateCTFTeamRequestBody is the type of the "admin" service "UpdateCTFTeam"
+// endpoint HTTP request body.
+type UpdateCTFTeamRequestBody struct {
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
 }
 
 // SsmAdminChallengeResponseCollection is the type of the "admin" service
@@ -263,6 +279,8 @@ type CreateCTFResponseBody struct {
 	Slug        string `form:"slug" json:"slug" xml:"slug"`
 	// Challenges
 	Challenges []*CTFChallengeResponseBody `form:"challenges" json:"challenges" xml:"challenges"`
+	// Is the CTF team-based?
+	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 }
 
 // UpdateCTFResponseBody is the type of the "admin" service "UpdateCTF"
@@ -276,6 +294,8 @@ type UpdateCTFResponseBody struct {
 	Slug        string `form:"slug" json:"slug" xml:"slug"`
 	// Challenges
 	Challenges []*CTFChallengeResponseBody `form:"challenges" json:"challenges" xml:"challenges"`
+	// Is the CTF team-based?
+	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 }
 
 // ListCTFsResponseBody is the type of the "admin" service "ListCTFs" endpoint
@@ -317,6 +337,40 @@ type UpdateCTFUserResponseBody struct {
 	CtfID    string `form:"ctf_id" json:"ctf_id" xml:"ctf_id"`
 	Username string `form:"username" json:"username" xml:"username"`
 	Password string `form:"password" json:"password" xml:"password"`
+	// Optional team ID for team-based CTFs
+	TeamID *string `form:"team_id,omitempty" json:"team_id,omitempty" xml:"team_id,omitempty"`
+	// Optional team name for team-based CTFs
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
+}
+
+// ListCTFTeamsResponseBody is the type of the "admin" service "ListCTFTeams"
+// endpoint HTTP response body.
+type ListCTFTeamsResponseBody []*CTFTeamResponse
+
+// CreateCTFTeamResponseBody is the type of the "admin" service "CreateCTFTeam"
+// endpoint HTTP response body.
+type CreateCTFTeamResponseBody struct {
+	ID    string `form:"id" json:"id" xml:"id"`
+	CtfID string `form:"ctf_id" json:"ctf_id" xml:"ctf_id"`
+	// Team name
+	Teamname string `form:"teamname" json:"teamname" xml:"teamname"`
+	// Team password/code
+	Password string `form:"password" json:"password" xml:"password"`
+	// Team creation timestamp
+	CreatedAt *string `form:"created_at,omitempty" json:"created_at,omitempty" xml:"created_at,omitempty"`
+}
+
+// UpdateCTFTeamResponseBody is the type of the "admin" service "UpdateCTFTeam"
+// endpoint HTTP response body.
+type UpdateCTFTeamResponseBody struct {
+	ID    string `form:"id" json:"id" xml:"id"`
+	CtfID string `form:"ctf_id" json:"ctf_id" xml:"ctf_id"`
+	// Team name
+	Teamname string `form:"teamname" json:"teamname" xml:"teamname"`
+	// Team password/code
+	Password string `form:"password" json:"password" xml:"password"`
+	// Team creation timestamp
+	CreatedAt *string `form:"created_at,omitempty" json:"created_at,omitempty" xml:"created_at,omitempty"`
 }
 
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
@@ -2232,6 +2286,222 @@ type UpdateCTFUserBadRequestResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// ListCTFTeamsUnauthorizedResponseBody is the type of the "admin" service
+// "ListCTFTeams" endpoint HTTP response body for the "unauthorized" error.
+type ListCTFTeamsUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// ListCTFTeamsNotFoundResponseBody is the type of the "admin" service
+// "ListCTFTeams" endpoint HTTP response body for the "not_found" error.
+type ListCTFTeamsNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// ListCTFTeamsBadRequestResponseBody is the type of the "admin" service
+// "ListCTFTeams" endpoint HTTP response body for the "bad_request" error.
+type ListCTFTeamsBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFTeamUnauthorizedResponseBody is the type of the "admin" service
+// "CreateCTFTeam" endpoint HTTP response body for the "unauthorized" error.
+type CreateCTFTeamUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFTeamNotFoundResponseBody is the type of the "admin" service
+// "CreateCTFTeam" endpoint HTTP response body for the "not_found" error.
+type CreateCTFTeamNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// CreateCTFTeamBadRequestResponseBody is the type of the "admin" service
+// "CreateCTFTeam" endpoint HTTP response body for the "bad_request" error.
+type CreateCTFTeamBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteCTFTeamUnauthorizedResponseBody is the type of the "admin" service
+// "DeleteCTFTeam" endpoint HTTP response body for the "unauthorized" error.
+type DeleteCTFTeamUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteCTFTeamNotFoundResponseBody is the type of the "admin" service
+// "DeleteCTFTeam" endpoint HTTP response body for the "not_found" error.
+type DeleteCTFTeamNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// DeleteCTFTeamBadRequestResponseBody is the type of the "admin" service
+// "DeleteCTFTeam" endpoint HTTP response body for the "bad_request" error.
+type DeleteCTFTeamBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// UpdateCTFTeamUnauthorizedResponseBody is the type of the "admin" service
+// "UpdateCTFTeam" endpoint HTTP response body for the "unauthorized" error.
+type UpdateCTFTeamUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// UpdateCTFTeamNotFoundResponseBody is the type of the "admin" service
+// "UpdateCTFTeam" endpoint HTTP response body for the "not_found" error.
+type UpdateCTFTeamNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// UpdateCTFTeamBadRequestResponseBody is the type of the "admin" service
+// "UpdateCTFTeam" endpoint HTTP response body for the "bad_request" error.
+type UpdateCTFTeamBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
 	// ID of a file
@@ -2374,6 +2644,8 @@ type CTFResponse struct {
 	Slug        string `form:"slug" json:"slug" xml:"slug"`
 	// Challenges
 	Challenges []*CTFChallengeResponse `form:"challenges" json:"challenges" xml:"challenges"`
+	// Is the CTF team-based?
+	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 }
 
 // CTFChallengeResponse is used to define fields on response body types.
@@ -2401,6 +2673,22 @@ type CTFUserResponse struct {
 	CtfID    string `form:"ctf_id" json:"ctf_id" xml:"ctf_id"`
 	Username string `form:"username" json:"username" xml:"username"`
 	Password string `form:"password" json:"password" xml:"password"`
+	// Optional team ID for team-based CTFs
+	TeamID *string `form:"team_id,omitempty" json:"team_id,omitempty" xml:"team_id,omitempty"`
+	// Optional team name for team-based CTFs
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
+}
+
+// CTFTeamResponse is used to define fields on response body types.
+type CTFTeamResponse struct {
+	ID    string `form:"id" json:"id" xml:"id"`
+	CtfID string `form:"ctf_id" json:"ctf_id" xml:"ctf_id"`
+	// Team name
+	Teamname string `form:"teamname" json:"teamname" xml:"teamname"`
+	// Team password/code
+	Password string `form:"password" json:"password" xml:"password"`
+	// Team creation timestamp
+	CreatedAt *string `form:"created_at,omitempty" json:"created_at,omitempty" xml:"created_at,omitempty"`
 }
 
 // ImportChallFlagRequestBody is used to define fields on request body types.
@@ -2557,6 +2845,7 @@ func NewCreateCTFResponseBody(res *admin.CTF) *CreateCTFResponseBody {
 		StartTime:   res.StartTime,
 		EndTime:     res.EndTime,
 		Slug:        res.Slug,
+		TeamBased:   res.TeamBased,
 	}
 	if res.Challenges != nil {
 		body.Challenges = make([]*CTFChallengeResponseBody, len(res.Challenges))
@@ -2577,6 +2866,7 @@ func NewUpdateCTFResponseBody(res *admin.CTF) *UpdateCTFResponseBody {
 		StartTime:   res.StartTime,
 		EndTime:     res.EndTime,
 		Slug:        res.Slug,
+		TeamBased:   res.TeamBased,
 	}
 	if res.Challenges != nil {
 		body.Challenges = make([]*CTFChallengeResponseBody, len(res.Challenges))
@@ -2659,6 +2949,44 @@ func NewUpdateCTFUserResponseBody(res *admin.CTFUser) *UpdateCTFUserResponseBody
 		CtfID:    res.CtfID,
 		Username: res.Username,
 		Password: res.Password,
+		TeamID:   res.TeamID,
+		Teamname: res.Teamname,
+	}
+	return body
+}
+
+// NewListCTFTeamsResponseBody builds the HTTP response body from the result of
+// the "ListCTFTeams" endpoint of the "admin" service.
+func NewListCTFTeamsResponseBody(res []*admin.CTFTeam) ListCTFTeamsResponseBody {
+	body := make([]*CTFTeamResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalAdminCTFTeamToCTFTeamResponse(val)
+	}
+	return body
+}
+
+// NewCreateCTFTeamResponseBody builds the HTTP response body from the result
+// of the "CreateCTFTeam" endpoint of the "admin" service.
+func NewCreateCTFTeamResponseBody(res *admin.CTFTeam) *CreateCTFTeamResponseBody {
+	body := &CreateCTFTeamResponseBody{
+		ID:        res.ID,
+		CtfID:     res.CtfID,
+		Teamname:  res.Teamname,
+		Password:  res.Password,
+		CreatedAt: res.CreatedAt,
+	}
+	return body
+}
+
+// NewUpdateCTFTeamResponseBody builds the HTTP response body from the result
+// of the "UpdateCTFTeam" endpoint of the "admin" service.
+func NewUpdateCTFTeamResponseBody(res *admin.CTFTeam) *UpdateCTFTeamResponseBody {
+	body := &UpdateCTFTeamResponseBody{
+		ID:        res.ID,
+		CtfID:     res.CtfID,
+		Teamname:  res.Teamname,
+		Password:  res.Password,
+		CreatedAt: res.CreatedAt,
 	}
 	return body
 }
@@ -4157,6 +4485,174 @@ func NewUpdateCTFUserBadRequestResponseBody(res *goa.ServiceError) *UpdateCTFUse
 	return body
 }
 
+// NewListCTFTeamsUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "ListCTFTeams" endpoint of the "admin" service.
+func NewListCTFTeamsUnauthorizedResponseBody(res *goa.ServiceError) *ListCTFTeamsUnauthorizedResponseBody {
+	body := &ListCTFTeamsUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewListCTFTeamsNotFoundResponseBody builds the HTTP response body from the
+// result of the "ListCTFTeams" endpoint of the "admin" service.
+func NewListCTFTeamsNotFoundResponseBody(res *goa.ServiceError) *ListCTFTeamsNotFoundResponseBody {
+	body := &ListCTFTeamsNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewListCTFTeamsBadRequestResponseBody builds the HTTP response body from the
+// result of the "ListCTFTeams" endpoint of the "admin" service.
+func NewListCTFTeamsBadRequestResponseBody(res *goa.ServiceError) *ListCTFTeamsBadRequestResponseBody {
+	body := &ListCTFTeamsBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFTeamUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "CreateCTFTeam" endpoint of the "admin" service.
+func NewCreateCTFTeamUnauthorizedResponseBody(res *goa.ServiceError) *CreateCTFTeamUnauthorizedResponseBody {
+	body := &CreateCTFTeamUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFTeamNotFoundResponseBody builds the HTTP response body from the
+// result of the "CreateCTFTeam" endpoint of the "admin" service.
+func NewCreateCTFTeamNotFoundResponseBody(res *goa.ServiceError) *CreateCTFTeamNotFoundResponseBody {
+	body := &CreateCTFTeamNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewCreateCTFTeamBadRequestResponseBody builds the HTTP response body from
+// the result of the "CreateCTFTeam" endpoint of the "admin" service.
+func NewCreateCTFTeamBadRequestResponseBody(res *goa.ServiceError) *CreateCTFTeamBadRequestResponseBody {
+	body := &CreateCTFTeamBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteCTFTeamUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "DeleteCTFTeam" endpoint of the "admin" service.
+func NewDeleteCTFTeamUnauthorizedResponseBody(res *goa.ServiceError) *DeleteCTFTeamUnauthorizedResponseBody {
+	body := &DeleteCTFTeamUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteCTFTeamNotFoundResponseBody builds the HTTP response body from the
+// result of the "DeleteCTFTeam" endpoint of the "admin" service.
+func NewDeleteCTFTeamNotFoundResponseBody(res *goa.ServiceError) *DeleteCTFTeamNotFoundResponseBody {
+	body := &DeleteCTFTeamNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewDeleteCTFTeamBadRequestResponseBody builds the HTTP response body from
+// the result of the "DeleteCTFTeam" endpoint of the "admin" service.
+func NewDeleteCTFTeamBadRequestResponseBody(res *goa.ServiceError) *DeleteCTFTeamBadRequestResponseBody {
+	body := &DeleteCTFTeamBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewUpdateCTFTeamUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "UpdateCTFTeam" endpoint of the "admin" service.
+func NewUpdateCTFTeamUnauthorizedResponseBody(res *goa.ServiceError) *UpdateCTFTeamUnauthorizedResponseBody {
+	body := &UpdateCTFTeamUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewUpdateCTFTeamNotFoundResponseBody builds the HTTP response body from the
+// result of the "UpdateCTFTeam" endpoint of the "admin" service.
+func NewUpdateCTFTeamNotFoundResponseBody(res *goa.ServiceError) *UpdateCTFTeamNotFoundResponseBody {
+	body := &UpdateCTFTeamNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewUpdateCTFTeamBadRequestResponseBody builds the HTTP response body from
+// the result of the "UpdateCTFTeam" endpoint of the "admin" service.
+func NewUpdateCTFTeamBadRequestResponseBody(res *goa.ServiceError) *UpdateCTFTeamBadRequestResponseBody {
+	body := &UpdateCTFTeamBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewListChallengesPayload builds a admin service ListChallenges endpoint
 // payload.
 func NewListChallengesPayload(token string) *admin.ListChallengesPayload {
@@ -4498,6 +4994,7 @@ func NewCreateCTFPayload(body *CreateCTFRequestBody, token string) *admin.Create
 		Slug:        *body.Slug,
 		Private:     body.Private,
 		Password:    body.Password,
+		TeamBased:   *body.TeamBased,
 	}
 	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
 	for i, val := range body.Challenges {
@@ -4518,6 +5015,7 @@ func NewUpdateCTFPayload(body *UpdateCTFRequestBody, id string, token string) *a
 		Slug:        *body.Slug,
 		Private:     body.Private,
 		Password:    body.Password,
+		TeamBased:   body.TeamBased,
 	}
 	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
 	for i, val := range body.Challenges {
@@ -4626,6 +5124,51 @@ func NewUpdateCTFUserPayload(body *UpdateCTFUserRequestBody, ctfID string, userI
 	}
 	v.CtfID = ctfID
 	v.UserID = userID
+	v.Token = token
+
+	return v
+}
+
+// NewListCTFTeamsPayload builds a admin service ListCTFTeams endpoint payload.
+func NewListCTFTeamsPayload(ctfID string, token string) *admin.ListCTFTeamsPayload {
+	v := &admin.ListCTFTeamsPayload{}
+	v.CtfID = ctfID
+	v.Token = token
+
+	return v
+}
+
+// NewCreateCTFTeamPayload builds a admin service CreateCTFTeam endpoint
+// payload.
+func NewCreateCTFTeamPayload(body *CreateCTFTeamRequestBody, ctfID string, token string) *admin.CreateCTFTeamPayload {
+	v := &admin.CreateCTFTeamPayload{
+		Teamname: *body.Teamname,
+	}
+	v.CtfID = ctfID
+	v.Token = token
+
+	return v
+}
+
+// NewDeleteCTFTeamPayload builds a admin service DeleteCTFTeam endpoint
+// payload.
+func NewDeleteCTFTeamPayload(ctfID string, teamID string, token string) *admin.DeleteCTFTeamPayload {
+	v := &admin.DeleteCTFTeamPayload{}
+	v.CtfID = ctfID
+	v.TeamID = teamID
+	v.Token = token
+
+	return v
+}
+
+// NewUpdateCTFTeamPayload builds a admin service UpdateCTFTeam endpoint
+// payload.
+func NewUpdateCTFTeamPayload(body *UpdateCTFTeamRequestBody, ctfID string, teamID string, token string) *admin.UpdateCTFTeamPayload {
+	v := &admin.UpdateCTFTeamPayload{
+		Teamname: *body.Teamname,
+	}
+	v.CtfID = ctfID
+	v.TeamID = teamID
 	v.Token = token
 
 	return v
@@ -4871,6 +5414,9 @@ func ValidateCreateCTFRequestBody(body *CreateCTFRequestBody) (err error) {
 	if body.Challenges == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
 	}
+	if body.TeamBased == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("team_based", "body"))
+	}
 	for _, e := range body.Challenges {
 		if e != nil {
 			if err2 := ValidateCTFChallengeRequestBody(e); err2 != nil {
@@ -4961,6 +5507,24 @@ func ValidateUpdateChallengeGroupRequestBody(body *UpdateChallengeGroupRequestBo
 func ValidateUpdateCTFUserRequestBody(body *UpdateCTFUserRequestBody) (err error) {
 	if body.Username == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("username", "body"))
+	}
+	return
+}
+
+// ValidateCreateCTFTeamRequestBody runs the validations defined on
+// CreateCTFTeamRequestBody
+func ValidateCreateCTFTeamRequestBody(body *CreateCTFTeamRequestBody) (err error) {
+	if body.Teamname == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("teamname", "body"))
+	}
+	return
+}
+
+// ValidateUpdateCTFTeamRequestBody runs the validations defined on
+// UpdateCTFTeamRequestBody
+func ValidateUpdateCTFTeamRequestBody(body *UpdateCTFTeamRequestBody) (err error) {
+	if body.Teamname == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("teamname", "body"))
 	}
 	return
 }

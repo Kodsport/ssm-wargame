@@ -39,16 +39,22 @@ type SsmCtfChallengeView struct {
 	Services []*ChallengeServiceView
 	Files    []*ChallengeFilesView
 	// The numer of people who solved the challenge
-	Solves *int
+	Solves          *int
+	NumTeamSolves   *int
+	NumSolvesInTeam *int
 	// The ID of the CTF the challenge was taken from
 	CtfEventID     *string
 	ChallNamespace *string
 	// whether the user has solved the challenge or not
-	Solved       *bool
-	Category     *string
-	Authors      []*AuthorView
-	Solvers      []*SsmSolverView
-	DisplayOrder *int
+	Solved *bool
+	// whether the user has solved the challenge in their team or not
+	SolvedInTeam  *bool
+	Category      *string
+	Authors       []*AuthorView
+	Solvers       []*SsmSolverView
+	TeamSolvers   []*SsmSolverView
+	SolversInTeam []*SsmSolverView
+	DisplayOrder  *int
 }
 
 // ChallengeServiceView is a type that runs validations on a projected type.
@@ -95,12 +101,17 @@ var (
 			"services",
 			"files",
 			"solves",
+			"num_team_solves",
+			"num_solves_in_team",
 			"ctf_event_id",
 			"chall_namespace",
 			"solved",
+			"solved_in_team",
 			"category",
 			"authors",
 			"solvers",
+			"team_solvers",
+			"solvers_in_team",
 			"display_order",
 		},
 	}
@@ -116,12 +127,17 @@ var (
 			"services",
 			"files",
 			"solves",
+			"num_team_solves",
+			"num_solves_in_team",
 			"ctf_event_id",
 			"chall_namespace",
 			"solved",
+			"solved_in_team",
 			"category",
 			"authors",
 			"solvers",
+			"team_solvers",
+			"solvers_in_team",
 			"display_order",
 		},
 	}
@@ -216,6 +232,20 @@ func ValidateSsmCtfChallengeView(result *SsmCtfChallengeView) (err error) {
 		}
 	}
 	for _, e := range result.Solvers {
+		if e != nil {
+			if err2 := ValidateSsmSolverView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range result.TeamSolvers {
+		if e != nil {
+			if err2 := ValidateSsmSolverView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	for _, e := range result.SolversInTeam {
 		if e != nil {
 			if err2 := ValidateSsmSolverView(e); err2 != nil {
 				err = goa.MergeErrors(err, err2)

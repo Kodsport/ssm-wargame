@@ -15,6 +15,7 @@ interface CTFUser {
   username: string;
   password: string;
   ctfSlug: string;
+  teamname?: string;
 }
 
 export const useAuthStore = defineStore("auth", {
@@ -70,6 +71,9 @@ export const useAuthStore = defineStore("auth", {
         password: password,
         ctfSlug: slug,
       };
+      if (user.teamname) {
+        this.ctfUser.teamname = user.teamname;
+      }
       localStorage.setItem("ctf_password", password);
     },
     async getCTFUser(slug: string) {
@@ -79,8 +83,8 @@ export const useAuthStore = defineStore("auth", {
       try {
         await this.loginCTFUser(slug, password);
       } catch (e) {
-        localStorage.removeItem("ctf_password");
-        this.ctfUser = {} as CTFUser;
+        /* localStorage.removeItem("ctf_password");
+        this.ctfUser = {} as CTFUser; */
         return;
       }
     },
@@ -89,25 +93,24 @@ export const useAuthStore = defineStore("auth", {
         await this.getCTFUser(slug);
       }
     },
-    async registerCTFUser(slug: string, username: string) {
+    async registerCTFUser(slug: string, username: string, teamCode?: string) {
       const http = useHttp();
-
+      const body: any = { username };
+      if (teamCode) body.team_code = teamCode;
       const user = await http(`/ctfs/${slug}/users`, {
         method: "POST",
-        body: { username: username },
+        body,
       });
-
       const password = user.password;
       if (!password) throw new Error("No password found");
       localStorage.setItem("ctf_password", password);
-
       this.ctfUser = {
         id: user.id,
         username: user.username,
         password: user.password,
         ctfSlug: slug,
+        teamname: user.teamname,
       };
-
       return this.ctfUser;
     },
     logoutCTFUser() {

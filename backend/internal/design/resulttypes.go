@@ -114,12 +114,20 @@ var ResultCTFChallenge = ResultType("application/vnd.ssm.ctf.challenge", func() 
 	Attribute("services")
 	Attribute("files")
 	Attribute("solves")
+
+	Attribute("num_team_solves", Int)
+	Attribute("num_solves_in_team", Int)
+
 	Attribute("ctf_event_id")
 	Attribute("chall_namespace")
 
 	Attribute("solved", Boolean, func() {
 		Example(true)
 		Description("whether the user has solved the challenge or not")
+	})
+	Attribute("solved_in_team", Boolean, func() {
+		Example(true)
+		Description("whether the user has solved the challenge in their team or not")
 	})
 	Attribute("category", String, func() {
 		Example("Misc")
@@ -128,6 +136,8 @@ var ResultCTFChallenge = ResultType("application/vnd.ssm.ctf.challenge", func() 
 	Attribute("authors", ArrayOf(Author))
 
 	Attribute("solvers", ArrayOf(Solver))
+	Attribute("team_solvers", ArrayOf(Solver))
+	Attribute("solvers_in_team", ArrayOf(Solver))
 
 	Attribute("display_order", Int)
 
@@ -203,3 +213,28 @@ var AdminCourse = ResultType("application/vnd.ssm.admin.course", func() {
 		Example([]string{"46e0996b-3bee-4836-b5f8-afc2a62fc71b"})
 	})
 })
+
+// ResultCTFUser now includes team fields for team-based CTFs.
+type ResultCTFUser struct {
+	ID       string  `json:"id"`
+	Username string  `json:"username"`
+	Slug     string  `json:"slug"`
+	TeamID   *string `json:"team_id,omitempty"`
+	Teamname *string `json:"teamname,omitempty"`
+}
+
+// ResultCTFScore now includes team fields for team-based CTFs.
+type ResultCTFScore struct {
+	ID       string  `json:"id"`
+	Username string  `json:"username"`
+	Score    int     `json:"score"`
+	TeamID   *string `json:"team_id,omitempty"`
+	Teamname *string `json:"teamname,omitempty"`
+}
+
+// ResultRegisterUserPayload now supports optional team_code for team-based CTFs.
+type ResultRegisterUserPayload struct {
+	Slug     string  `json:"slug"`
+	Username string  `json:"username"`
+	TeamCode *string `json:"team_code,omitempty"`
+}
