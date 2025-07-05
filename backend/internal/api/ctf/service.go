@@ -35,6 +35,19 @@ func (s *Service) Get(ctx context.Context, req *spec.GetPayload) (*spec.CTFInfo,
 	if err != nil {
 		return nil, err
 	}
+
+	// manuel query för att få theme
+	var theme sql.NullString
+	err = s.db.QueryRowContext(ctx, "SELECT theme FROM ctfs WHERE slug = $1", req.Slug).Scan(&theme)
+	if err != nil && err != sql.ErrNoRows {
+		return nil, err
+	}
+
+	var themePtr *string
+	if theme.Valid {
+		themePtr = &theme.String
+	}
+
 	return &spec.CTFInfo{
 		ID:          ctf.ID,
 		Name:        ctf.Name,
@@ -43,6 +56,7 @@ func (s *Service) Get(ctx context.Context, req *spec.GetPayload) (*spec.CTFInfo,
 		EndTime:     ctf.EndTime.Format(time.RFC3339),
 		Slug:        ctf.Slug,
 		TeamBased:   ctf.TeamBased,
+		Theme:       themePtr,
 	}, nil
 }
 

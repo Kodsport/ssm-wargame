@@ -1324,6 +1324,7 @@ paths:
                   slug: Delectus dolores consequatur impedit.
                   start_time: Magnam qui velit optio.
                   team_based: false
+                  theme: ctf-theme
                 - challenges:
                   - custom_score: 50
                     display_order: 1
@@ -1341,6 +1342,7 @@ paths:
                   slug: Delectus dolores consequatur impedit.
                   start_time: Magnam qui velit optio.
                   team_based: false
+                  theme: ctf-theme
               example:
               - challenges:
                 - custom_score: 50
@@ -1359,6 +1361,7 @@ paths:
                 slug: Delectus dolores consequatur impedit.
                 start_time: Magnam qui velit optio.
                 team_based: false
+                theme: ctf-theme
               - challenges:
                 - custom_score: 50
                   display_order: 1
@@ -1376,6 +1379,7 @@ paths:
                 slug: Delectus dolores consequatur impedit.
                 start_time: Magnam qui velit optio.
                 team_based: false
+                theme: ctf-theme
               - challenges:
                 - custom_score: 50
                   display_order: 1
@@ -1393,6 +1397,7 @@ paths:
                 slug: Delectus dolores consequatur impedit.
                 start_time: Magnam qui velit optio.
                 team_based: false
+                theme: ctf-theme
               - challenges:
                 - custom_score: 50
                   display_order: 1
@@ -1410,6 +1415,7 @@ paths:
                 slug: Delectus dolores consequatur impedit.
                 start_time: Magnam qui velit optio.
                 team_based: false
+                theme: ctf-theme
         "400":
           description: Resource not found
           content:
@@ -1475,6 +1481,7 @@ paths:
               slug: school-ctf-2025
               start_time: 6348780665798289713
               team_based: false
+              theme: ctf-theme
       responses:
         "201":
           description: Created response.
@@ -1497,6 +1504,7 @@ paths:
                 slug: Modi molestiae ab repellat dolore.
                 start_time: Ut omnis aspernatur reprehenderit reprehenderit.
                 team_based: false
+                theme: ctf-theme
         "400":
           description: Resource not found
           content:
@@ -2130,6 +2138,7 @@ paths:
               slug: school-ctf-2025
               start_time: 4286210627808286058
               team_based: false
+              theme: ctf-theme
       responses:
         "200":
           description: OK response.
@@ -2155,6 +2164,7 @@ paths:
                 slug: Consequatur nihil dolores minus necessitatibus libero.
                 start_time: Omnis iusto.
                 team_based: false
+                theme: ctf-theme
         "400":
           description: Resource not found
           content:
@@ -3494,6 +3504,7 @@ paths:
                 slug: Vel dolor.
                 start_time: Consequatur ducimus possimus atque quasi quo a.
                 team_based: false
+                theme: ctf-theme
   /ctfs/{slug}/attempt:
     post:
       tags:
@@ -4844,6 +4855,10 @@ components:
           type: boolean
           description: Is the CTF team-based?
           example: false
+        theme:
+          type: string
+          description: The theme CSS filename for the CTF
+          example: ctf-theme
       example:
         challenges:
         - custom_score: 50
@@ -4862,6 +4877,7 @@ components:
         slug: Quisquam dolores numquam culpa qui ullam.
         start_time: Aliquam eaque voluptatem voluptatibus.
         team_based: false
+        theme: ctf-theme
       required:
       - id
       - name
@@ -4950,6 +4966,10 @@ components:
           type: boolean
           description: Is the CTF team-based?
           example: false
+        theme:
+          type: string
+          description: The theme CSS filename for the CTF
+          example: ctf-theme
       example:
         challenge_ids:
         - Aut voluptas quo cupiditate.
@@ -4963,6 +4983,7 @@ components:
         slug: Beatae mollitia et exercitationem itaque eos.
         start_time: Qui ut ducimus libero.
         team_based: false
+        theme: ctf-theme
       required:
       - id
       - name
@@ -5713,6 +5734,10 @@ components:
           type: boolean
           description: Is the CTF team-based?
           example: false
+        theme:
+          type: string
+          description: The theme CSS filename for the CTF
+          example: ctf-theme
       example:
         challenges:
         - custom_score: 50
@@ -5735,6 +5760,7 @@ components:
         slug: school-ctf-2025
         start_time: 7970601391464681532
         team_based: false
+        theme: ctf-theme
       required:
       - name
       - description
@@ -7979,6 +8005,10 @@ components:
           type: boolean
           description: Is the CTF team-based?
           example: false
+        theme:
+          type: string
+          description: The theme CSS filename for the CTF
+          example: ctf-theme
       example:
         challenges:
         - custom_score: 50
@@ -7995,6 +8025,7 @@ components:
         slug: school-ctf-2025
         start_time: 7963480005466995607
         team_based: false
+        theme: ctf-theme
       required:
       - name
       - description

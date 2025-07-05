@@ -4159,6 +4159,7 @@ func marshalAdminCTFToCTFResponse(v *admin.CTF) *CTFResponse {
 		EndTime:     v.EndTime,
 		Slug:        v.Slug,
 		TeamBased:   v.TeamBased,
+		Theme:       v.Theme,
 	}
 	if v.Challenges != nil {
 		res.Challenges = make([]*CTFChallengeResponse, len(v.Challenges))

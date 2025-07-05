@@ -1681,7 +1681,8 @@ Example:
       "private": false,
       "slug": "school-ctf-2025",
       "start_time": 6348780665798289713,
-      "team_based": false
+      "team_based": false,
+      "theme": "ctf-theme"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1725,7 +1726,8 @@ Example:
       "private": false,
       "slug": "school-ctf-2025",
       "start_time": 4286210627808286058,
-      "team_based": false
+      "team_based": false,
+      "theme": "ctf-theme"
    }' --id "020817da-8b5c-42c4-9e52-0f3a6628c1f8" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }

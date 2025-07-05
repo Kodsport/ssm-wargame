@@ -10,6 +10,7 @@ CREATE TABLE ctfs (
     start_time TIMESTAMPTZ NOT NULL,
     end_time TIMESTAMPTZ NOT NULL,
     team_based BOOLEAN NOT NULL DEFAULT FALSE,
+    theme TEXT DEFAULT 'ctf-theme',
     UNIQUE (slug)
 );
 
@@ -46,7 +47,6 @@ CREATE TABLE ctf_solves (
     challenge_id UUID NOT NULL REFERENCES challenges(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
 
 CREATE TABLE challenge_groups (
     id UUID NOT NULL PRIMARY KEY,

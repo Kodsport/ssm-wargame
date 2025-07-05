@@ -1,0 +1,10 @@
+.bg-warning {
+    --bs-bg-opacity: 1;
+    background-color: rgb(185, 175, 32) !important;
+}
+
+.challenge-preview-bg::before {
+    background-image: url() !important;
+    /* detta tar bort den jobbiga bilden som ni får någon anlednign använde */
+    /* Gör också bg-warning gula färgen mycket finare och inte blå + gul = grön :P */
+}

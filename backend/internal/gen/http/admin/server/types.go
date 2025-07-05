@@ -159,6 +159,8 @@ type CreateCTFRequestBody struct {
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 	// Is the CTF team-based?
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
+	// The theme CSS filename for the CTF
+	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
 }
 
 // UpdateCTFRequestBody is the type of the "admin" service "UpdateCTF" endpoint
@@ -182,6 +184,8 @@ type UpdateCTFRequestBody struct {
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 	// Is the CTF team-based?
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
+	// The theme CSS filename for the CTF
+	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
 }
 
 // CreateChallengeGroupRequestBody is the type of the "admin" service
@@ -281,6 +285,8 @@ type CreateCTFResponseBody struct {
 	Challenges []*CTFChallengeResponseBody `form:"challenges" json:"challenges" xml:"challenges"`
 	// Is the CTF team-based?
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
+	// The theme CSS filename for the CTF
+	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
 }
 
 // UpdateCTFResponseBody is the type of the "admin" service "UpdateCTF"
@@ -296,6 +302,8 @@ type UpdateCTFResponseBody struct {
 	Challenges []*CTFChallengeResponseBody `form:"challenges" json:"challenges" xml:"challenges"`
 	// Is the CTF team-based?
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
+	// The theme CSS filename for the CTF
+	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
 }
 
 // ListCTFsResponseBody is the type of the "admin" service "ListCTFs" endpoint
@@ -2646,6 +2654,8 @@ type CTFResponse struct {
 	Challenges []*CTFChallengeResponse `form:"challenges" json:"challenges" xml:"challenges"`
 	// Is the CTF team-based?
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
+	// The theme CSS filename for the CTF
+	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
 }
 
 // CTFChallengeResponse is used to define fields on response body types.
@@ -2846,6 +2856,7 @@ func NewCreateCTFResponseBody(res *admin.CTF) *CreateCTFResponseBody {
 		EndTime:     res.EndTime,
 		Slug:        res.Slug,
 		TeamBased:   res.TeamBased,
+		Theme:       res.Theme,
 	}
 	if res.Challenges != nil {
 		body.Challenges = make([]*CTFChallengeResponseBody, len(res.Challenges))
@@ -2867,6 +2878,7 @@ func NewUpdateCTFResponseBody(res *admin.CTF) *UpdateCTFResponseBody {
 		EndTime:     res.EndTime,
 		Slug:        res.Slug,
 		TeamBased:   res.TeamBased,
+		Theme:       res.Theme,
 	}
 	if res.Challenges != nil {
 		body.Challenges = make([]*CTFChallengeResponseBody, len(res.Challenges))
@@ -4995,6 +5007,7 @@ func NewCreateCTFPayload(body *CreateCTFRequestBody, token string) *admin.Create
 		Private:     body.Private,
 		Password:    body.Password,
 		TeamBased:   *body.TeamBased,
+		Theme:       body.Theme,
 	}
 	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
 	for i, val := range body.Challenges {
@@ -5016,6 +5029,7 @@ func NewUpdateCTFPayload(body *UpdateCTFRequestBody, id string, token string) *a
 		Private:     body.Private,
 		Password:    body.Password,
 		TeamBased:   body.TeamBased,
+		Theme:       body.Theme,
 	}
 	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
 	for i, val := range body.Challenges {

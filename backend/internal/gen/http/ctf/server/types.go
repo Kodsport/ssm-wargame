@@ -43,6 +43,8 @@ type GetResponseBody struct {
 	Private *bool `form:"private,omitempty" json:"private,omitempty" xml:"private,omitempty"`
 	// Is the CTF team-based?
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
+	// The theme CSS filename for the CTF
+	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
 }
 
 // RegisterUserResponseBody is the type of the "ctf" service "RegisterUser"
@@ -298,6 +300,7 @@ func NewGetResponseBody(res *ctf.CTFInfo) *GetResponseBody {
 		Slug:        res.Slug,
 		Private:     res.Private,
 		TeamBased:   res.TeamBased,
+		Theme:       res.Theme,
 	}
 	if res.ChallengeIds != nil {
 		body.ChallengeIds = make([]string, len(res.ChallengeIds))

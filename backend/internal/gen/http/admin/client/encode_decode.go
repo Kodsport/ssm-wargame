@@ -5267,6 +5267,7 @@ func unmarshalCTFResponseToAdminCTF(v *CTFResponse) *admin.CTF {
 		EndTime:     *v.EndTime,
 		Slug:        *v.Slug,
 		TeamBased:   *v.TeamBased,
+		Theme:       v.Theme,
 	}
 	res.Challenges = make([]*admin.CTFChallenge, len(v.Challenges))
 	for i, val := range v.Challenges {

@@ -21,6 +21,7 @@ var TableNames = struct {
 	CTFEvents                string
 	CTFSolves                string
 	CTFTeams                 string
+	CTFThemes                string
 	CTFUsers                 string
 	CTFS                     string
 	Flags                    string
@@ -50,6 +51,7 @@ var TableNames = struct {
 	CTFEvents:                "ctf_events",
 	CTFSolves:                "ctf_solves",
 	CTFTeams:                 "ctf_teams",
+	CTFThemes:                "ctf_themes",
 	CTFUsers:                 "ctf_users",
 	CTFS:                     "ctfs",
 	Flags:                    "flags",

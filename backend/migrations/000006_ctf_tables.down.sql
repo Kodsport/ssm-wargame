@@ -1,6 +1,5 @@
 BEGIN;
 
-
 DROP TABLE IF EXISTS challenge_group_challenges;
 DROP TABLE IF EXISTS challenge_groups;
 DROP TABLE IF EXISTS ctf_solves;

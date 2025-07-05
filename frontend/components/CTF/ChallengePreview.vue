@@ -1,10 +1,7 @@
 <template>
   <div
     class="card h-100 challenge-preview-bg"
-    :class="{
-      'bg-info': !props.chall.solved,
-      'bg-success': props.chall.solved,
-    }"
+    :class="getBackgroundClass()"
   >
     <div class="card-body pb-2">
       <h5 class="title-text">{{ props.chall.title }}</h5>
@@ -32,9 +29,62 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, watch } from 'vue';
+import { useCTFStore } from '~/store/ctf';
+
+const ctfStore = useCTFStore();
 const props = defineProps(["chall", "hideSolves"]);
+
+function getBackgroundClass() { // färger beroende på hur en chall e löst
+  if (props.chall.solved) {
+    return 'bg-success'; // ifall solvern är den som är inloggad
+  }
+  
+  if (props.chall.solved_in_team) {
+    return 'bg-warning'; // ifall nån i temeat har löst den men inte den som är inloggad
+  }
+  
+  return 'bg-info'; // ingen i laget har löst den/ du har inte löst den heller
+}
+
+onMounted(async () => {
+  const slug = ctfStore.ctf.slug;
+  if (slug) {
+    await ctfStore.getCTF(slug);
+  }
+  loadTheme();
+});
+
+watch(() => ctfStore.ctf.theme, () => {
+  loadTheme();
+});
+
+function loadTheme() {
+  const existingTheme = document.querySelector('link[data-ctf-theme]');
+  if (existingTheme) {
+    existingTheme.remove();
+  }
+
+  const themeName = ctfStore.ctf.theme || 'ctf-theme';
+
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `/themes/${themeName}.css`;
+  link.setAttribute('data-ctf-theme', 'true');
+  link.onerror = () => {
+    const fallbackLink = document.createElement('link');
+    fallbackLink.rel = 'stylesheet';
+    fallbackLink.href = `/assets/themes/${themeName}.css`;
+    fallbackLink.setAttribute('data-ctf-theme', 'true');
+    fallbackLink.onload = () => {
+    };
+    document.head.appendChild(fallbackLink);
+  };
+
+  document.head.appendChild(link);
+}
 </script>
-<style scoped>
+<style>
 .title-text {
   font-size: 1.3rem;
   min-height: 50px;

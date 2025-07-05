@@ -3460,6 +3460,10 @@ definitions:
         type: boolean
         description: Is the CTF team-based?
         example: false
+      theme:
+        type: string
+        description: The theme CSS filename for the CTF
+        example: ctf-theme
     example:
       challenges:
       - custom_score: 50
@@ -3476,6 +3480,7 @@ definitions:
       slug: school-ctf-2025
       start_time: 1706125889212605918
       team_based: false
+      theme: ctf-theme
     required:
     - name
     - description
@@ -3522,6 +3527,10 @@ definitions:
         type: boolean
         description: Is the CTF team-based?
         example: false
+      theme:
+        type: string
+        description: The theme CSS filename for the CTF
+        example: ctf-theme
     example:
       challenges:
       - custom_score: 50
@@ -3540,6 +3549,7 @@ definitions:
       slug: Eligendi omnis impedit quis commodi non.
       start_time: Deleniti voluptas voluptas aut numquam voluptas.
       team_based: false
+      theme: ctf-theme
     required:
     - id
     - name
@@ -8070,6 +8080,10 @@ definitions:
         type: boolean
         description: Is the CTF team-based?
         example: false
+      theme:
+        type: string
+        description: The theme CSS filename for the CTF
+        example: ctf-theme
     example:
       challenges:
       - custom_score: 50
@@ -8092,6 +8106,7 @@ definitions:
       slug: school-ctf-2025
       start_time: 8084139998855780836
       team_based: false
+      theme: ctf-theme
     required:
     - name
     - description
@@ -8137,6 +8152,10 @@ definitions:
         type: boolean
         description: Is the CTF team-based?
         example: false
+      theme:
+        type: string
+        description: The theme CSS filename for the CTF
+        example: ctf-theme
     example:
       challenges:
       - custom_score: 50
@@ -8152,6 +8171,7 @@ definitions:
       slug: Soluta possimus.
       start_time: Voluptatem nam magni aliquam.
       team_based: false
+      theme: ctf-theme
     required:
     - id
     - name
@@ -9230,6 +9250,10 @@ definitions:
         type: boolean
         description: Is the CTF team-based?
         example: false
+      theme:
+        type: string
+        description: The theme CSS filename for the CTF
+        example: ctf-theme
     example:
       challenges:
       - custom_score: 50
@@ -9248,6 +9272,7 @@ definitions:
       slug: Sed natus.
       start_time: Reiciendis suscipit provident quos dicta assumenda.
       team_based: false
+      theme: ctf-theme
     required:
     - id
     - name
@@ -10786,6 +10811,10 @@ definitions:
         type: boolean
         description: Is the CTF team-based?
         example: false
+      theme:
+        type: string
+        description: The theme CSS filename for the CTF
+        example: ctf-theme
     example:
       challenge_ids:
       - Eum odio sunt nihil unde.
@@ -10800,6 +10829,7 @@ definitions:
       slug: Pariatur error adipisci aut porro.
       start_time: Placeat quis ullam aut provident dolores nostrum.
       team_based: false
+      theme: ctf-theme
     required:
     - id
     - name

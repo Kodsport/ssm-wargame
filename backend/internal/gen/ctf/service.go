@@ -61,6 +61,8 @@ type CTFInfo struct {
 	Private *bool
 	// Is the CTF team-based?
 	TeamBased bool
+	// The theme CSS filename for the CTF
+	Theme *string
 }
 
 // RegisterUserPayload is the payload type of the ctf service RegisterUser

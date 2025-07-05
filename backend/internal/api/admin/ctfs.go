@@ -14,19 +14,20 @@ import (
 
 func (s *service) CreateCTF(ctx context.Context, req *spec.CreateCTFPayload) (*spec.CTF, error) {
 	id := uuid.New().String()
-	ctf := &models.CTF{
-		ID:          id,
-		Name:        req.Name,
-		Description: req.Description,
-		Slug:        req.Slug,
-		Private:     false,
-		StartTime:   time.Unix(req.StartTime, 0),
-		EndTime:     time.Unix(req.EndTime, 0),
+
+	theme := ""
+	if req.Theme != nil {
+		theme = *req.Theme
 	}
-	err := ctf.Insert(ctx, s.db, boil.Infer())
+
+	_, err := s.db.ExecContext(ctx, `
+		INSERT INTO ctfs (id, name, description, slug, private, start_time, end_time, team_based, theme, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
+	`, id, req.Name, req.Description, req.Slug, false, time.Unix(req.StartTime, 0), time.Unix(req.EndTime, 0), req.TeamBased, theme)
 	if err != nil {
 		return nil, err
 	}
+
 	for _, chall := range req.Challenges {
 		if chall.CustomScore != nil {
 			_, err = s.db.ExecContext(ctx, `INSERT INTO ctf_challenges (ctf_id, challenge_id, custom_score, display_order) VALUES ($1, $2, $3, $4)`, id, chall.ID, *chall.CustomScore, chall.DisplayOrder)
@@ -38,35 +39,58 @@ func (s *service) CreateCTF(ctx context.Context, req *spec.CreateCTFPayload) (*s
 		}
 	}
 	return &spec.CTF{
-		ID:          ctf.ID,
-		Name:        ctf.Name,
-		Description: ctf.Description,
-		Slug:        ctf.Slug,
-		StartTime:   ctf.StartTime.Format(time.RFC3339),
-		EndTime:     ctf.EndTime.Format(time.RFC3339),
+		ID:          id,
+		Name:        req.Name,
+		Description: req.Description,
+		Slug:        req.Slug,
+		StartTime:   time.Unix(req.StartTime, 0).Format(time.RFC3339),
+		EndTime:     time.Unix(req.EndTime, 0).Format(time.RFC3339),
 		Challenges:  req.Challenges,
 		TeamBased:   req.TeamBased,
+		Theme:       req.Theme,
 	}, nil
 }
 
 func (s *service) ListCTFs(ctx context.Context, req *spec.ListCTFsPayload) ([]*spec.CTF, error) {
-	ctfs, err := models.CTFS().All(ctx, s.db)
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT id, name, description, start_time, end_time, slug, team_based, COALESCE(theme, '') as theme
+		FROM ctfs 
+		ORDER BY created_at DESC
+	`)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
+
 	var result []*spec.CTF
-	for _, ctf := range ctfs {
-		rows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score, display_order FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
+	for rows.Next() {
+		var ctf struct {
+			ID          string
+			Name        string
+			Description string
+			StartTime   time.Time
+			EndTime     time.Time
+			Slug        string
+			TeamBased   bool
+			Theme       string
+		}
+
+		if err := rows.Scan(&ctf.ID, &ctf.Name, &ctf.Description, &ctf.StartTime, &ctf.EndTime, &ctf.Slug, &ctf.TeamBased, &ctf.Theme); err != nil {
+			return nil, err
+		}
+
+		challengeRows, err := s.db.QueryContext(ctx, `SELECT challenge_id, custom_score, display_order FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
 		if err != nil {
 			return nil, err
 		}
+
 		var challenges []*spec.CTFChallenge
-		for rows.Next() {
+		for challengeRows.Next() {
 			var cid string
 			var customScore sql.NullInt64
 			var displayOrder int
-			if err := rows.Scan(&cid, &customScore, &displayOrder); err != nil {
-				rows.Close()
+			if err := challengeRows.Scan(&cid, &customScore, &displayOrder); err != nil {
+				challengeRows.Close()
 				return nil, err
 			}
 			var csPtr *int = nil
@@ -80,7 +104,13 @@ func (s *service) ListCTFs(ctx context.Context, req *spec.ListCTFsPayload) ([]*s
 				DisplayOrder: displayOrder,
 			})
 		}
-		rows.Close()
+		challengeRows.Close()
+
+		var themePtr *string
+		if ctf.Theme != "" {
+			themePtr = &ctf.Theme
+		}
+
 		result = append(result, &spec.CTF{
 			ID:          ctf.ID,
 			Name:        ctf.Name,
@@ -90,6 +120,7 @@ func (s *service) ListCTFs(ctx context.Context, req *spec.ListCTFsPayload) ([]*s
 			Slug:        ctf.Slug,
 			Challenges:  challenges,
 			TeamBased:   ctf.TeamBased,
+			Theme:       themePtr,
 		})
 	}
 	return result, nil
@@ -100,10 +131,6 @@ func (s *service) UpdateCTF(ctx context.Context, req *spec.UpdateCTFPayload) (*s
 	if err != nil {
 		return nil, err
 	}
-	ctf.Name = req.Name
-	ctf.Description = req.Description
-	ctf.StartTime = time.Unix(req.StartTime, 0)
-	ctf.EndTime = time.Unix(req.EndTime, 0)
 
 	// Check if slug is unique
 	existingCTF, err := models.CTFS(models.CTFWhere.Slug.EQ(req.Slug)).One(ctx, s.db)
@@ -113,17 +140,26 @@ func (s *service) UpdateCTF(ctx context.Context, req *spec.UpdateCTFPayload) (*s
 	if existingCTF != nil && existingCTF.ID != ctf.ID {
 		return nil, errors.New("slug already exists")
 	}
-	ctf.Slug = req.Slug
+
+	teamBased := false
 	if req.TeamBased != nil {
-		ctf.TeamBased = *req.TeamBased
-	} else {
-		ctf.TeamBased = false
+		teamBased = *req.TeamBased
 	}
 
-	_, err = ctf.Update(ctx, s.db, boil.Infer())
+	theme := ""
+	if req.Theme != nil {
+		theme = *req.Theme
+	}
+	// kör direkta sql querys istället för modeller
+	_, err = s.db.ExecContext(ctx, `
+		UPDATE ctfs 
+		SET name = $1, description = $2, start_time = $3, end_time = $4, slug = $5, team_based = $6, theme = $7, updated_at = NOW()
+		WHERE id = $8
+	`, req.Name, req.Description, time.Unix(req.StartTime, 0), time.Unix(req.EndTime, 0), req.Slug, teamBased, theme, req.ID)
 	if err != nil {
 		return nil, err
 	}
+
 	_, err = s.db.ExecContext(ctx, `DELETE FROM ctf_challenges WHERE ctf_id = $1`, ctf.ID)
 	if err != nil {
 		return nil, err
@@ -138,15 +174,17 @@ func (s *service) UpdateCTF(ctx context.Context, req *spec.UpdateCTFPayload) (*s
 			return nil, err
 		}
 	}
+
 	return &spec.CTF{
 		ID:          ctf.ID,
-		Name:        ctf.Name,
-		Description: ctf.Description,
-		StartTime:   ctf.StartTime.Format(time.RFC3339),
-		EndTime:     ctf.EndTime.Format(time.RFC3339),
-		Slug:        ctf.Slug,
+		Name:        req.Name,
+		Description: req.Description,
+		StartTime:   time.Unix(req.StartTime, 0).Format(time.RFC3339),
+		EndTime:     time.Unix(req.EndTime, 0).Format(time.RFC3339),
+		Slug:        req.Slug,
 		Challenges:  req.Challenges,
-		TeamBased:   ctf.TeamBased,
+		TeamBased:   teamBased,
+		Theme:       req.Theme,
 	}, nil
 }
 

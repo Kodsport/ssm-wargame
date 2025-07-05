@@ -229,10 +229,47 @@ function goBack(event) {
     emit("back");
   }
 }
+
+
+onMounted(async () => {
+  const slug = store.ctf.slug;
+  if (slug) {
+    await store.getCTF(slug);
+  }
+  loadTheme();
+});
+
+watch(() => store.ctf.theme, () => {
+  loadTheme();
+});
+
+function loadTheme() {
+  const existingTheme = document.querySelector('link[data-ctf-theme]');
+  if (existingTheme) {
+    existingTheme.remove();
+  }
+
+  const themeName = store.ctf.theme || 'ctf-theme';
+
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `/themes/${themeName}.css`;
+  link.setAttribute('data-ctf-theme', 'true');
+  link.onerror = () => {
+    const fallbackLink = document.createElement('link');
+    fallbackLink.rel = 'stylesheet';
+    fallbackLink.href = `/assets/themes/${themeName}.css`;
+    fallbackLink.setAttribute('data-ctf-theme', 'true');
+    fallbackLink.onload = () => {
+    };
+    document.head.appendChild(fallbackLink);
+  };
+
+  document.head.appendChild(link);
+}
 </script>
 
 <style scoped>
-@import "~/assets/styles/ctf-theme.css";
 .author:after {
   content: ",";
   padding-right: 0.5em;

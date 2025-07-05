@@ -392,6 +392,8 @@ type CreateCTFPayload struct {
 	Password *string
 	// Is the CTF team-based?
 	TeamBased bool
+	// The theme CSS filename for the CTF
+	Theme *string
 }
 
 // CTF is the result type of the admin service CreateCTF method.
@@ -406,6 +408,8 @@ type CTF struct {
 	Challenges []*CTFChallenge
 	// Is the CTF team-based?
 	TeamBased bool
+	// The theme CSS filename for the CTF
+	Theme *string
 }
 
 // UpdateCTFPayload is the payload type of the admin service UpdateCTF method.
@@ -431,6 +435,8 @@ type UpdateCTFPayload struct {
 	Password *string
 	// Is the CTF team-based?
 	TeamBased *bool
+	// The theme CSS filename for the CTF
+	Theme *string
 }
 
 // DeleteCTFPayload is the payload type of the admin service DeleteCTF method.

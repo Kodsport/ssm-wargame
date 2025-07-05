@@ -672,7 +672,7 @@ func BuildCreateCTFPayload(adminCreateCTFBody string, adminCreateCTFToken string
 	{
 		err = json.Unmarshal([]byte(adminCreateCTFBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 8788348548593572716,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 6348780665798289713,\n      \"team_based\": false\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 8788348548593572716,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 6348780665798289713,\n      \"team_based\": false,\n      \"theme\": \"ctf-theme\"\n   }'")
 		}
 		if body.Challenges == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
@@ -694,6 +694,7 @@ func BuildCreateCTFPayload(adminCreateCTFBody string, adminCreateCTFToken string
 		Private:     body.Private,
 		Password:    body.Password,
 		TeamBased:   body.TeamBased,
+		Theme:       body.Theme,
 	}
 	if body.Challenges != nil {
 		v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
@@ -714,7 +715,7 @@ func BuildUpdateCTFPayload(adminUpdateCTFBody string, adminUpdateCTFID string, a
 	{
 		err = json.Unmarshal([]byte(adminUpdateCTFBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 1186624192819501178,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 4286210627808286058,\n      \"team_based\": false\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 1186624192819501178,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 4286210627808286058,\n      \"team_based\": false,\n      \"theme\": \"ctf-theme\"\n   }'")
 		}
 		if body.Challenges == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
@@ -745,6 +746,7 @@ func BuildUpdateCTFPayload(adminUpdateCTFBody string, adminUpdateCTFID string, a
 		Private:     body.Private,
 		Password:    body.Password,
 		TeamBased:   body.TeamBased,
+		Theme:       body.Theme,
 	}
 	if body.Challenges != nil {
 		v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))

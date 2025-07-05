@@ -267,6 +267,9 @@ var CTF = Type("CTF", func() {
 	Attribute("team_based", Boolean, "Is the CTF team-based?", func() {
 		Example(false)
 	})
+	Attribute("theme", String, "The theme CSS filename for the CTF", func() {
+		Example("ctf-theme")
+	})
 	Required("id", "name", "description", "slug", "start_time", "end_time", "challenges", "team_based")
 })
 
@@ -280,6 +283,9 @@ var CTFInfo = Type("CTFInfo", func() {
 	Attribute("challenge_ids", ArrayOf(String))
 	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
 	Attribute("team_based", Boolean, "Is the CTF team-based?", func() { Example(false) })
+	Attribute("theme", String, "The theme CSS filename for the CTF", func() {
+		Example("ctf-theme")
+	})
 	Required("id", "name", "description", "slug", "start_time", "end_time", "challenge_ids", "team_based")
 })
 
@@ -357,6 +363,7 @@ var CTFCreate = Type("CTFCreate", func() {
 	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
 	Attribute("password", String, "CTF password", func() { Example("password") })
 	Attribute("team_based", Boolean, "Is the CTF team-based?", func() { Example(false) })
+	Attribute("theme", String, "The theme CSS filename for the CTF", func() { Example("ctf-theme") })
 	Required("name", "description", "start_time", "end_time", "slug", "challenges", "team_based")
 })
 
@@ -377,6 +384,7 @@ var CTFUpdate = Type("CTFUpdate", func() {
 	Attribute("private", Boolean, "Is the CTF private?", func() { Example(false) })
 	Attribute("password", String, "CTF password", func() { Example("password") })
 	Attribute("team_based", Boolean, "Is the CTF team-based?", func() { Example(false) })
+	Attribute("theme", String, "The theme CSS filename for the CTF", func() { Example("ctf-theme") })
 	Required("name", "description", "start_time", "end_time", "slug", "challenges")
 })
 

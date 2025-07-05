@@ -35,6 +35,8 @@ type CTF struct {
 	StartTime   time.Time   `boil:"start_time" json:"start_time" toml:"start_time" yaml:"start_time"`
 	EndTime     time.Time   `boil:"end_time" json:"end_time" toml:"end_time" yaml:"end_time"`
 	TeamBased   bool        `boil:"team_based" json:"team_based" toml:"team_based" yaml:"team_based"`
+	ThemeID     null.String `boil:"theme_id" json:"theme_id,omitempty" toml:"theme_id" yaml:"theme_id,omitempty"`
+	Theme       null.String `boil:"theme" json:"theme,omitempty" toml:"theme" yaml:"theme,omitempty"`
 
 	R *ctfR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L ctfL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -52,6 +54,8 @@ var CTFColumns = struct {
 	StartTime   string
 	EndTime     string
 	TeamBased   string
+	ThemeID     string
+	Theme       string
 }{
 	ID:          "id",
 	Name:        "name",
@@ -64,6 +68,8 @@ var CTFColumns = struct {
 	StartTime:   "start_time",
 	EndTime:     "end_time",
 	TeamBased:   "team_based",
+	ThemeID:     "theme_id",
+	Theme:       "theme",
 }
 
 var CTFTableColumns = struct {
@@ -78,6 +84,8 @@ var CTFTableColumns = struct {
 	StartTime   string
 	EndTime     string
 	TeamBased   string
+	ThemeID     string
+	Theme       string
 }{
 	ID:          "ctfs.id",
 	Name:        "ctfs.name",
@@ -90,6 +98,8 @@ var CTFTableColumns = struct {
 	StartTime:   "ctfs.start_time",
 	EndTime:     "ctfs.end_time",
 	TeamBased:   "ctfs.team_based",
+	ThemeID:     "ctfs.theme_id",
+	Theme:       "ctfs.theme",
 }
 
 // Generated where
@@ -106,6 +116,8 @@ var CTFWhere = struct {
 	StartTime   whereHelpertime_Time
 	EndTime     whereHelpertime_Time
 	TeamBased   whereHelperbool
+	ThemeID     whereHelpernull_String
+	Theme       whereHelpernull_String
 }{
 	ID:          whereHelperstring{field: "\"ctfs\".\"id\""},
 	Name:        whereHelperstring{field: "\"ctfs\".\"name\""},
@@ -118,15 +130,19 @@ var CTFWhere = struct {
 	StartTime:   whereHelpertime_Time{field: "\"ctfs\".\"start_time\""},
 	EndTime:     whereHelpertime_Time{field: "\"ctfs\".\"end_time\""},
 	TeamBased:   whereHelperbool{field: "\"ctfs\".\"team_based\""},
+	ThemeID:     whereHelpernull_String{field: "\"ctfs\".\"theme_id\""},
+	Theme:       whereHelpernull_String{field: "\"ctfs\".\"theme\""},
 }
 
 // CTFRels is where relationship names are stored.
 var CTFRels = struct {
+	Theme         string
 	CTFChallenges string
 	CTFSolves     string
 	CTFTeams      string
 	CTFUsers      string
 }{
+	Theme:         "Theme",
 	CTFChallenges: "CTFChallenges",
 	CTFSolves:     "CTFSolves",
 	CTFTeams:      "CTFTeams",
@@ -135,6 +151,7 @@ var CTFRels = struct {
 
 // ctfR is where relationships are stored.
 type ctfR struct {
+	Theme         *CTFTheme         `boil:"Theme" json:"Theme" toml:"Theme" yaml:"Theme"`
 	CTFChallenges CTFChallengeSlice `boil:"CTFChallenges" json:"CTFChallenges" toml:"CTFChallenges" yaml:"CTFChallenges"`
 	CTFSolves     CTFSolfSlice      `boil:"CTFSolves" json:"CTFSolves" toml:"CTFSolves" yaml:"CTFSolves"`
 	CTFTeams      CTFTeamSlice      `boil:"CTFTeams" json:"CTFTeams" toml:"CTFTeams" yaml:"CTFTeams"`
@@ -144,6 +161,13 @@ type ctfR struct {
 // NewStruct creates a new relationship struct
 func (*ctfR) NewStruct() *ctfR {
 	return &ctfR{}
+}
+
+func (r *ctfR) GetTheme() *CTFTheme {
+	if r == nil {
+		return nil
+	}
+	return r.Theme
 }
 
 func (r *ctfR) GetCTFChallenges() CTFChallengeSlice {
@@ -178,9 +202,9 @@ func (r *ctfR) GetCTFUsers() CTFUserSlice {
 type ctfL struct{}
 
 var (
-	ctfAllColumns            = []string{"id", "name", "description", "slug", "private", "password", "created_at", "updated_at", "start_time", "end_time", "team_based"}
+	ctfAllColumns            = []string{"id", "name", "description", "slug", "private", "password", "created_at", "updated_at", "start_time", "end_time", "team_based", "theme_id", "theme"}
 	ctfColumnsWithoutDefault = []string{"id", "name", "description", "slug", "private", "start_time", "end_time"}
-	ctfColumnsWithDefault    = []string{"password", "created_at", "updated_at", "team_based"}
+	ctfColumnsWithDefault    = []string{"password", "created_at", "updated_at", "team_based", "theme_id", "theme"}
 	ctfPrimaryKeyColumns     = []string{"id"}
 	ctfGeneratedColumns      = []string{}
 )
@@ -463,6 +487,17 @@ func (q ctfQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool, 
 	return count > 0, nil
 }
 
+// ThemeRel pointed to by the foreign key.
+func (o *CTF) ThemeRel(mods ...qm.QueryMod) ctfThemeQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("\"id\" = ?", o.ThemeID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	return CTFThemes(queryMods...)
+}
+
 // CTFChallenges retrieves all the ctf_challenge's CTFChallenges with an executor.
 func (o *CTF) CTFChallenges(mods ...qm.QueryMod) ctfChallengeQuery {
 	var queryMods []qm.QueryMod
@@ -517,6 +552,130 @@ func (o *CTF) CTFUsers(mods ...qm.QueryMod) ctfUserQuery {
 	)
 
 	return CTFUsers(queryMods...)
+}
+
+// LoadTheme allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for an N-1 relationship.
+func (ctfL) LoadTheme(ctx context.Context, e boil.ContextExecutor, singular bool, maybeCTF interface{}, mods queries.Applicator) error {
+	var slice []*CTF
+	var object *CTF
+
+	if singular {
+		var ok bool
+		object, ok = maybeCTF.(*CTF)
+		if !ok {
+			object = new(CTF)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeCTF)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeCTF))
+			}
+		}
+	} else {
+		s, ok := maybeCTF.(*[]*CTF)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeCTF)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeCTF))
+			}
+		}
+	}
+
+	args := make([]interface{}, 0, 1)
+	if singular {
+		if object.R == nil {
+			object.R = &ctfR{}
+		}
+		if !queries.IsNil(object.ThemeID) {
+			args = append(args, object.ThemeID)
+		}
+
+	} else {
+	Outer:
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &ctfR{}
+			}
+
+			for _, a := range args {
+				if queries.Equal(a, obj.ThemeID) {
+					continue Outer
+				}
+			}
+
+			if !queries.IsNil(obj.ThemeID) {
+				args = append(args, obj.ThemeID)
+			}
+
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	query := NewQuery(
+		qm.From(`ctf_themes`),
+		qm.WhereIn(`ctf_themes.id in ?`, args...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load CTFTheme")
+	}
+
+	var resultSlice []*CTFTheme
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice CTFTheme")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for ctf_themes")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for ctf_themes")
+	}
+
+	if len(ctfThemeAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.Theme = foreign
+		if foreign.R == nil {
+			foreign.R = &ctfThemeR{}
+		}
+		foreign.R.ThemeCTFS = append(foreign.R.ThemeCTFS, object)
+		return nil
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if queries.Equal(local.ThemeID, foreign.ID) {
+				local.R.Theme = foreign
+				if foreign.R == nil {
+					foreign.R = &ctfThemeR{}
+				}
+				foreign.R.ThemeCTFS = append(foreign.R.ThemeCTFS, local)
+				break
+			}
+		}
+	}
+
+	return nil
 }
 
 // LoadCTFChallenges allows an eager lookup of values, cached into the
@@ -972,6 +1131,86 @@ func (ctfL) LoadCTFUsers(ctx context.Context, e boil.ContextExecutor, singular b
 		}
 	}
 
+	return nil
+}
+
+// SetTheme of the ctf to the related item.
+// Sets o.R.Theme to related.
+// Adds o to related.R.ThemeCTFS.
+func (o *CTF) SetTheme(ctx context.Context, exec boil.ContextExecutor, insert bool, related *CTFTheme) error {
+	var err error
+	if insert {
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	}
+
+	updateQuery := fmt.Sprintf(
+		"UPDATE \"ctfs\" SET %s WHERE %s",
+		strmangle.SetParamNames("\"", "\"", 1, []string{"theme_id"}),
+		strmangle.WhereClause("\"", "\"", 2, ctfPrimaryKeyColumns),
+	)
+	values := []interface{}{related.ID, o.ID}
+
+	if boil.IsDebug(ctx) {
+		writer := boil.DebugWriterFrom(ctx)
+		fmt.Fprintln(writer, updateQuery)
+		fmt.Fprintln(writer, values)
+	}
+	if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	queries.Assign(&o.ThemeID, related.ID)
+	if o.R == nil {
+		o.R = &ctfR{
+			Theme: related,
+		}
+	} else {
+		o.R.Theme = related
+	}
+
+	if related.R == nil {
+		related.R = &ctfThemeR{
+			ThemeCTFS: CTFSlice{o},
+		}
+	} else {
+		related.R.ThemeCTFS = append(related.R.ThemeCTFS, o)
+	}
+
+	return nil
+}
+
+// RemoveTheme relationship.
+// Sets o.R.Theme to nil.
+// Removes o from all passed in related items' relationships struct.
+func (o *CTF) RemoveTheme(ctx context.Context, exec boil.ContextExecutor, related *CTFTheme) error {
+	var err error
+
+	queries.SetScanner(&o.ThemeID, nil)
+	if _, err = o.Update(ctx, exec, boil.Whitelist("theme_id")); err != nil {
+		return errors.Wrap(err, "failed to update local table")
+	}
+
+	if o.R != nil {
+		o.R.Theme = nil
+	}
+	if related == nil || related.R == nil {
+		return nil
+	}
+
+	for i, ri := range related.R.ThemeCTFS {
+		if queries.Equal(o.ThemeID, ri.ThemeID) {
+			continue
+		}
+
+		ln := len(related.R.ThemeCTFS)
+		if ln > 1 && i < ln-1 {
+			related.R.ThemeCTFS[i] = related.R.ThemeCTFS[ln-1]
+		}
+		related.R.ThemeCTFS = related.R.ThemeCTFS[:ln-1]
+		break
+	}
 	return nil
 }
 

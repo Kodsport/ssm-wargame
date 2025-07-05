@@ -65,6 +65,14 @@
         />
         <label class="form-check-label" for="team_based"> Team based </label>
       </div>
+      <div class="form-group mt-2">
+        <label>Theme</label>
+        <select class="form-control" v-model="form.theme">
+          <option v-for="theme in themes" :key="theme.filename" :value="theme.filename">
+            {{ theme.name }}
+          </option>
+        </select>
+      </div>
       <ChallengeGroupPicker v-model="form.challenges"></ChallengeGroupPicker>
       <ChallengePicker v-model="form.challenges"></ChallengePicker>
       <button class="btn btn-primary mt-2" type="submit">
@@ -128,11 +136,13 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useChallengeStore } from "@/store/admin/challenges";
 import useHttp from "@/composables/use-http";
+import { getAvailableThemes } from "@/utils/themes";
 
 const router = useRouter();
 const challStore = useChallengeStore();
 const http = useHttp();
 const ctfs = ref<any[]>([]);
+const themes = ref<Array<{name: string, filename: string}>>([]);
 const form = ref({
   name: "",
   description: "",
@@ -140,6 +150,7 @@ const form = ref({
   end_time: "",
   slug: "",
   team_based: false,
+  theme: "",
   challenges: [] as Array<{
     id: string;
     custom_score: number;
@@ -154,6 +165,8 @@ const challenges = ref<any[]>([]);
 onMounted(async () => {
   challenges.value = challStore.challenges;
   ctfs.value = await http("/admin/ctfs");
+  // laddar från frontend
+  themes.value = getAvailableThemes();
   fixCTFs();
 });
 
@@ -193,6 +206,7 @@ function clearForm() {
     end_time: "",
     slug: "",
     team_based: false,
+    theme: "",
     challenges: [],
   };
 }
@@ -220,6 +234,7 @@ function editCTF(id: string) {
       end_time: new Date(ctf.end_time).toLocaleString(),
       slug: ctf.slug,
       team_based: ctf.team_based,
+      theme: ctf.theme || "",
       challenges: JSON.parse(JSON.stringify(ctf.challenges)),
     };
   }
