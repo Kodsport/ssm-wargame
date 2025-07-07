@@ -1,12 +1,12 @@
-$body-bg: #004454;
+$body-bg: #001125;
 $body-color: #ffffff;
 
-$green: #33b86f;
+$green: #009d46;
 $red: #fc6500;
-$yellow: #ffab1c;
+$yellow: #ffca04;
 $primary: $yellow;
-$dark: #002c36;
-$info: #008eae;
+$dark: #000001;
+$info: #006b91;
 
 $code-color: $yellow;
 
@@ -35,6 +35,66 @@ $link-color-dark: #c4a166;
 }
 
 @import "bootstrap/scss/bootstrap";
+
+/* Custom styling for specific elements with #d97100 */
+
+/* Logout button styling - target btn-primary for logout */
+.btn-primary {
+    background-color: #d97100 !important;
+    border-color: #d97100 !important;
+    color: white !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #b85e00 !important;
+    border-color: #b85e00 !important;
+    color: white !important;
+}
+
+/* Event filter button styling */
+.event-filter .btn-outline-primary {
+    border-color: #cf8d45 !important;
+    color: #ffffff !important;
+}
+
+.event-filter .btn-outline-primary:hover {
+    background-color: #d97100 !important;
+    border-color: #d97100 !important;
+}
+
+/* Filter bar border */
+.filter-bar {
+    border-color: #cf8d45 !important;
+}
+
+/* Event badges (SSM 2024, etc.) - these use bg-primary class */
+.badge.bg-primary {
+    background-color: #d97100 !important;
+    border-color: #d97100 !important;
+}
+
+/* Additional specific targeting for event badges */
+.challenge-card .badge.bg-primary,
+.table .badge.bg-primary,
+.modal .badge.bg-primary {
+    background-color: #d97100 !important;
+}
+
+/* User name button border */
+.nav-link.btn.border.border-primary {
+    border-color: #d97100 !important;
+}
+
+.nav-link.btn.border.border-primary:hover {
+    border-color: #d97100 !important;
+    background-color: rgba(217, 113, 0, 0.1) !important;
+}
+
+/* Onboarding modal title styling */
+.modal-title.text-primary {
+    color: #ffca04 !important;
+}
 
 .material-symbols-outlined {
     @extend .text-primary;

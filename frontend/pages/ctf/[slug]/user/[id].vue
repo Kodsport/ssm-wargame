@@ -96,6 +96,6 @@ function loadTheme() {
 </script>
 <style scoped>
 .table> :not(caption)>*>* {
-  background-color: #0000;
+  background-color: #001125 !important;
 }
 </style>

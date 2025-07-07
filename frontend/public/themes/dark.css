@@ -63,6 +63,12 @@
     background-image: url() !important;
 }
 
+
+.body {
+    background-color: rgb(1, 9, 27) !important;
+}
+
+
 /*tidslinjens rubriker*/
 .timeline-labels {
     color: #ffffff !important;
@@ -73,11 +79,7 @@
     background: linear-gradient(270deg, #00c600, #000000) !important;
 }
 
-/*border between categories*/
-.gradient-border {
-    -o-border-image: linear-gradient(to right, #fff, rgb(255, 255, 255)) 1 !important;
-    border-image: linear-gradient(to right, #fff, hsl(0, 0%, 100%)) 1 !important;
-}
+
 
 
 /*knappar, tex "Gå till utmaningar, logga in"*/
@@ -119,6 +121,7 @@
 }
 
 /*knappar, tex "logga ut"*/
+
 
 .btn-danger {
 
@@ -178,7 +181,8 @@
 
 /*background*/
 .ctf-gradient-bg {
-    background: linear-gradient(135deg, #000000, #021418) !important;
+    background: linear-gradient(180deg, #000000, #021418) !important;
+    min-height: 100vh;
 }
 
 .border-primary {
@@ -194,10 +198,6 @@
     --bs-card-bg: 0, 142, 174 !important;
 }
 
-.bg-dark {
-    --bs-bg-opacity: 1 !important;
-    background-color: rgb(1, 9, 27) !important;
-}
 
 .bg-warning {
     --bs-bg-opacity: 1;

@@ -179,7 +179,9 @@
 /*background*/
 .ctf-gradient-bg {
     background: linear-gradient(135deg, #000000, #990847) !important;
+    min-height: 100vh;
 }
+
 
 .border-primary {
     --bs-border-opacity: 1;
