@@ -3,7 +3,7 @@ import useHttp from "../composables/use-http";
 
 // Unsure about the correct types here. Please replace string with the correct types of you find that a string type is not enough
 interface User {
-  onboarding_fone: boolean;
+  onboarding_done: boolean;
   id: string;
   email: string;
   full_name: string;
