@@ -73,6 +73,11 @@
     background: linear-gradient(270deg, #00c600, #ff72af) !important;
 }
 
+.bg-dark {
+    --bs-bg-opacity: 1;
+    background-color: rgba(0,0,0) !important;
+}
+
 /*border between categories*/
 .gradient-border {
     -o-border-image: linear-gradient(to right, #fff, rgb(255, 255, 255)) 1 !important;

@@ -198,6 +198,11 @@
     --bs-card-bg: 0, 142, 174 !important;
 }
 
+.bg-dark {
+    --bs-bg-opacity: 1 !important;
+    background-color: rgb(8, 1, 24) !important;
+}
+
 
 .bg-warning {
     --bs-bg-opacity: 1;
