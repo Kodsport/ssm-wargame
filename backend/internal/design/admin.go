@@ -133,6 +133,20 @@ var _ = Service("admin", func() {
 		})
 	})
 
+	Method("GetDiscordUser", func() {
+		Description("get discord avatar for person")
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("discord_id", String, "Discord user ID")
+			Required("discord_id")
+		})
+		Result(DiscordUser)
+		HTTP(func() {
+			GET("/users/discord/{discord_id}")
+			Response(StatusOK)
+		})
+	})
+
 	Method("ListAuthors", func() {
 		Payload(func() {
 			Extend(TokenPayload)
@@ -489,6 +503,19 @@ var _ = Service("admin", func() {
 		Result(CTFTeam)
 		HTTP(func() {
 			PATCH("/ctfs/{ctf_id}/teams/{team_id}")
+			Response(StatusOK)
+		})
+	})
+	Method("GetUserDetails", func() {
+		Description("Get consolidated user details with all challenge submissions and statistics")
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("user_id", String, "User ID")
+			Required("user_id")
+		})
+		Result(UserDetails)
+		HTTP(func() {
+			GET("/users/{user_id}/details")
 			Response(StatusOK)
 		})
 	})

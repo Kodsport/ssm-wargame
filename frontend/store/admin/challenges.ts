@@ -35,13 +35,16 @@ export const useChallengeStore = defineStore('admin-challenges', {
         async getCourses() {
             const courses = await http('/admin/courses')
             this.courses = courses
+        },
+        async getChallengeDetails(challengeId: string) {
+            return await http(`/admin/challenges/${challengeId}`)
         }
     },
     getters: {
-        getBySlug: (state) => (slug: string) => state.challenges.find(c => c.slug == slug),
-        getAuthorBySlug: (state) => (slug: string) => state.authors.find(c => c.slug == slug),
-        getById: (state) => (id: string) => state.challenges.find(c => c.id == id),
-        getCategory: (state) => (id: string) => state.categories.find(c => c.id == id),
+        getBySlug: (state) => (slug: string) => state.challenges.find((c: any) => c.slug == slug),
+        getAuthorBySlug: (state) => (slug: string) => state.authors.find((c: any) => c.slug == slug),
+        getById: (state) => (id: string) => state.challenges.find((c: any) => c.id == id),
+        getCategory: (state) => (id: string) => state.categories.find((c: any) => c.id == id),
         getCurrentMonthly: () => null
     }
 })

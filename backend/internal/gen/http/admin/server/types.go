@@ -250,6 +250,16 @@ type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
 // endpoint HTTP response body.
 type ListUsersResponseBody []*SsmUserResponse
 
+// GetDiscordUserResponseBody is the type of the "admin" service
+// "GetDiscordUser" endpoint HTTP response body.
+type GetDiscordUserResponseBody struct {
+	ID            string  `form:"id" json:"id" xml:"id"`
+	Username      string  `form:"username" json:"username" xml:"username"`
+	Discriminator *string `form:"discriminator,omitempty" json:"discriminator,omitempty" xml:"discriminator,omitempty"`
+	Avatar        *string `form:"avatar,omitempty" json:"avatar,omitempty" xml:"avatar,omitempty"`
+	GlobalName    *string `form:"global_name,omitempty" json:"global_name,omitempty" xml:"global_name,omitempty"`
+}
+
 // ListAuthorsResponseBody is the type of the "admin" service "ListAuthors"
 // endpoint HTTP response body.
 type ListAuthorsResponseBody []*AuthorResponse
@@ -379,6 +389,15 @@ type UpdateCTFTeamResponseBody struct {
 	Password string `form:"password" json:"password" xml:"password"`
 	// Team creation timestamp
 	CreatedAt *string `form:"created_at,omitempty" json:"created_at,omitempty" xml:"created_at,omitempty"`
+}
+
+// GetUserDetailsResponseBody is the type of the "admin" service
+// "GetUserDetails" endpoint HTTP response body.
+type GetUserDetailsResponseBody struct {
+	DiscordUser          *SsmDiscordUserResponseBody              `form:"discord_user,omitempty" json:"discord_user,omitempty" xml:"discord_user,omitempty"`
+	SubmissionStats      *SubmissionStatsResponseBody             `form:"submission_stats" json:"submission_stats" xml:"submission_stats"`
+	HourlyActivity       []int                                    `form:"hourly_activity" json:"hourly_activity" xml:"hourly_activity"`
+	ChallengeSubmissions []*ChallengeSubmissionsGroupResponseBody `form:"challenge_submissions" json:"challenge_submissions" xml:"challenge_submissions"`
 }
 
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
@@ -864,6 +883,60 @@ type ListUsersNotFoundResponseBody struct {
 // ListUsersBadRequestResponseBody is the type of the "admin" service
 // "ListUsers" endpoint HTTP response body for the "bad_request" error.
 type ListUsersBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetDiscordUserUnauthorizedResponseBody is the type of the "admin" service
+// "GetDiscordUser" endpoint HTTP response body for the "unauthorized" error.
+type GetDiscordUserUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetDiscordUserNotFoundResponseBody is the type of the "admin" service
+// "GetDiscordUser" endpoint HTTP response body for the "not_found" error.
+type GetDiscordUserNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetDiscordUserBadRequestResponseBody is the type of the "admin" service
+// "GetDiscordUser" endpoint HTTP response body for the "bad_request" error.
+type GetDiscordUserBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name string `form:"name" json:"name" xml:"name"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -2510,6 +2583,60 @@ type UpdateCTFTeamBadRequestResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// GetUserDetailsUnauthorizedResponseBody is the type of the "admin" service
+// "GetUserDetails" endpoint HTTP response body for the "unauthorized" error.
+type GetUserDetailsUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetUserDetailsNotFoundResponseBody is the type of the "admin" service
+// "GetUserDetails" endpoint HTTP response body for the "not_found" error.
+type GetUserDetailsNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// GetUserDetailsBadRequestResponseBody is the type of the "admin" service
+// "GetUserDetails" endpoint HTTP response body for the "bad_request" error.
+type GetUserDetailsBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
 	// ID of a file
@@ -2586,11 +2713,12 @@ type MonthlyChallengeResponse struct {
 
 // SsmUserResponse is used to define fields on response body types.
 type SsmUserResponse struct {
-	ID       string  `form:"id" json:"id" xml:"id"`
-	Email    string  `form:"email" json:"email" xml:"email"`
-	FullName string  `form:"full_name" json:"full_name" xml:"full_name"`
-	Role     string  `form:"role" json:"role" xml:"role"`
-	SchoolID *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	ID        string  `form:"id" json:"id" xml:"id"`
+	Email     string  `form:"email" json:"email" xml:"email"`
+	FullName  string  `form:"full_name" json:"full_name" xml:"full_name"`
+	Role      string  `form:"role" json:"role" xml:"role"`
+	SchoolID  *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	DiscordID *string `form:"discord_id,omitempty" json:"discord_id,omitempty" xml:"discord_id,omitempty"`
 }
 
 // AuthorResponse is used to define fields on response body types.
@@ -2701,6 +2829,33 @@ type CTFTeamResponse struct {
 	CreatedAt *string `form:"created_at,omitempty" json:"created_at,omitempty" xml:"created_at,omitempty"`
 }
 
+// SsmDiscordUserResponseBody is used to define fields on response body types.
+type SsmDiscordUserResponseBody struct {
+	ID            string  `form:"id" json:"id" xml:"id"`
+	Username      string  `form:"username" json:"username" xml:"username"`
+	Discriminator *string `form:"discriminator,omitempty" json:"discriminator,omitempty" xml:"discriminator,omitempty"`
+	Avatar        *string `form:"avatar,omitempty" json:"avatar,omitempty" xml:"avatar,omitempty"`
+	GlobalName    *string `form:"global_name,omitempty" json:"global_name,omitempty" xml:"global_name,omitempty"`
+}
+
+// SubmissionStatsResponseBody is used to define fields on response body types.
+type SubmissionStatsResponseBody struct {
+	Successful  int `form:"successful" json:"successful" xml:"successful"`
+	Failed      int `form:"failed" json:"failed" xml:"failed"`
+	Total       int `form:"total" json:"total" xml:"total"`
+	SuccessRate int `form:"success_rate" json:"success_rate" xml:"success_rate"`
+}
+
+// ChallengeSubmissionsGroupResponseBody is used to define fields on response
+// body types.
+type ChallengeSubmissionsGroupResponseBody struct {
+	ChallengeID    string                             `form:"challenge_id" json:"challenge_id" xml:"challenge_id"`
+	ChallengeTitle string                             `form:"challenge_title" json:"challenge_title" xml:"challenge_title"`
+	ChallengeSlug  string                             `form:"challenge_slug" json:"challenge_slug" xml:"challenge_slug"`
+	Solved         bool                               `form:"solved" json:"solved" xml:"solved"`
+	Submissions    []*ChallengeSubmissionResponseBody `form:"submissions" json:"submissions" xml:"submissions"`
+}
+
 // ImportChallFlagRequestBody is used to define fields on request body types.
 type ImportChallFlagRequestBody struct {
 	Type *string `form:"type,omitempty" json:"type,omitempty" xml:"type,omitempty"`
@@ -2791,6 +2946,19 @@ func NewListUsersResponseBody(res []*admin.SsmUser) ListUsersResponseBody {
 	body := make([]*SsmUserResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalAdminSsmUserToSsmUserResponse(val)
+	}
+	return body
+}
+
+// NewGetDiscordUserResponseBody builds the HTTP response body from the result
+// of the "GetDiscordUser" endpoint of the "admin" service.
+func NewGetDiscordUserResponseBody(res *adminviews.SsmDiscordUserView) *GetDiscordUserResponseBody {
+	body := &GetDiscordUserResponseBody{
+		ID:            *res.ID,
+		Username:      *res.Username,
+		Discriminator: res.Discriminator,
+		Avatar:        res.Avatar,
+		GlobalName:    res.GlobalName,
 	}
 	return body
 }
@@ -2999,6 +3167,31 @@ func NewUpdateCTFTeamResponseBody(res *admin.CTFTeam) *UpdateCTFTeamResponseBody
 		Teamname:  res.Teamname,
 		Password:  res.Password,
 		CreatedAt: res.CreatedAt,
+	}
+	return body
+}
+
+// NewGetUserDetailsResponseBody builds the HTTP response body from the result
+// of the "GetUserDetails" endpoint of the "admin" service.
+func NewGetUserDetailsResponseBody(res *adminviews.SsmAdminUserdetailsView) *GetUserDetailsResponseBody {
+	body := &GetUserDetailsResponseBody{}
+	if res.DiscordUser != nil {
+		body.DiscordUser = marshalAdminviewsSsmDiscordUserViewToSsmDiscordUserResponseBody(res.DiscordUser)
+	}
+	if res.SubmissionStats != nil {
+		body.SubmissionStats = marshalAdminviewsSubmissionStatsViewToSubmissionStatsResponseBody(res.SubmissionStats)
+	}
+	if res.HourlyActivity != nil {
+		body.HourlyActivity = make([]int, len(res.HourlyActivity))
+		for i, val := range res.HourlyActivity {
+			body.HourlyActivity[i] = val
+		}
+	}
+	if res.ChallengeSubmissions != nil {
+		body.ChallengeSubmissions = make([]*ChallengeSubmissionsGroupResponseBody, len(res.ChallengeSubmissions))
+		for i, val := range res.ChallengeSubmissions {
+			body.ChallengeSubmissions[i] = marshalAdminviewsChallengeSubmissionsGroupViewToChallengeSubmissionsGroupResponseBody(val)
+		}
 	}
 	return body
 }
@@ -3383,6 +3576,48 @@ func NewListUsersNotFoundResponseBody(res *goa.ServiceError) *ListUsersNotFoundR
 // result of the "ListUsers" endpoint of the "admin" service.
 func NewListUsersBadRequestResponseBody(res *goa.ServiceError) *ListUsersBadRequestResponseBody {
 	body := &ListUsersBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetDiscordUserUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "GetDiscordUser" endpoint of the "admin" service.
+func NewGetDiscordUserUnauthorizedResponseBody(res *goa.ServiceError) *GetDiscordUserUnauthorizedResponseBody {
+	body := &GetDiscordUserUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetDiscordUserNotFoundResponseBody builds the HTTP response body from the
+// result of the "GetDiscordUser" endpoint of the "admin" service.
+func NewGetDiscordUserNotFoundResponseBody(res *goa.ServiceError) *GetDiscordUserNotFoundResponseBody {
+	body := &GetDiscordUserNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetDiscordUserBadRequestResponseBody builds the HTTP response body from
+// the result of the "GetDiscordUser" endpoint of the "admin" service.
+func NewGetDiscordUserBadRequestResponseBody(res *goa.ServiceError) *GetDiscordUserBadRequestResponseBody {
+	body := &GetDiscordUserBadRequestResponseBody{
 		Name:      res.Name,
 		ID:        res.ID,
 		Message:   res.Message,
@@ -4665,6 +4900,48 @@ func NewUpdateCTFTeamBadRequestResponseBody(res *goa.ServiceError) *UpdateCTFTea
 	return body
 }
 
+// NewGetUserDetailsUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "GetUserDetails" endpoint of the "admin" service.
+func NewGetUserDetailsUnauthorizedResponseBody(res *goa.ServiceError) *GetUserDetailsUnauthorizedResponseBody {
+	body := &GetUserDetailsUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetUserDetailsNotFoundResponseBody builds the HTTP response body from the
+// result of the "GetUserDetails" endpoint of the "admin" service.
+func NewGetUserDetailsNotFoundResponseBody(res *goa.ServiceError) *GetUserDetailsNotFoundResponseBody {
+	body := &GetUserDetailsNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewGetUserDetailsBadRequestResponseBody builds the HTTP response body from
+// the result of the "GetUserDetails" endpoint of the "admin" service.
+func NewGetUserDetailsBadRequestResponseBody(res *goa.ServiceError) *GetUserDetailsBadRequestResponseBody {
+	body := &GetUserDetailsBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewListChallengesPayload builds a admin service ListChallenges endpoint
 // payload.
 func NewListChallengesPayload(token string) *admin.ListChallengesPayload {
@@ -4767,6 +5044,16 @@ func NewCreateMonthlyChallengePayload(body *CreateMonthlyChallengeRequestBody, t
 // NewListUsersPayload builds a admin service ListUsers endpoint payload.
 func NewListUsersPayload(token string) *admin.ListUsersPayload {
 	v := &admin.ListUsersPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewGetDiscordUserPayload builds a admin service GetDiscordUser endpoint
+// payload.
+func NewGetDiscordUserPayload(discordID string, token string) *admin.GetDiscordUserPayload {
+	v := &admin.GetDiscordUserPayload{}
+	v.DiscordID = discordID
 	v.Token = token
 
 	return v
@@ -5183,6 +5470,16 @@ func NewUpdateCTFTeamPayload(body *UpdateCTFTeamRequestBody, ctfID string, teamI
 	}
 	v.CtfID = ctfID
 	v.TeamID = teamID
+	v.Token = token
+
+	return v
+}
+
+// NewGetUserDetailsPayload builds a admin service GetUserDetails endpoint
+// payload.
+func NewGetUserDetailsPayload(userID string, token string) *admin.GetUserDetailsPayload {
+	v := &admin.GetUserDetailsPayload{}
+	v.UserID = userID
 	v.Token = token
 
 	return v

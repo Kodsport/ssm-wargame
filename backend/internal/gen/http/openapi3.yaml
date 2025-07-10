@@ -44,14 +44,14 @@ paths:
                   publish: true
                   slug: movitz
                   sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
               example:
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
               - description: Movitz gör saker
                 full_name: Movitz Sunar
                 id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -291,6 +291,10 @@ paths:
                   name: Forensics
                 - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   name: Forensics
+                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  name: Forensics
+                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  name: Forensics
               example:
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                 name: Forensics
@@ -351,9 +355,12 @@ paths:
                   - custom_score: 50
                     display_order: 1
                     id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: Aliquam placeat eligendi assumenda officiis.
-                  id: Hic odit laudantium.
-                  name: Ea sint autem earum eaque harum aliquam.
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Dolorem aspernatur placeat.
+                  id: Similique eos ipsa aut nulla quo.
+                  name: Pariatur ea totam expedita et consectetur fugit.
                 - challenges:
                   - custom_score: 50
                     display_order: 1
@@ -361,9 +368,12 @@ paths:
                   - custom_score: 50
                     display_order: 1
                     id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: Aliquam placeat eligendi assumenda officiis.
-                  id: Hic odit laudantium.
-                  name: Ea sint autem earum eaque harum aliquam.
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Dolorem aspernatur placeat.
+                  id: Similique eos ipsa aut nulla quo.
+                  name: Pariatur ea totam expedita et consectetur fugit.
                 - challenges:
                   - custom_score: 50
                     display_order: 1
@@ -371,9 +381,25 @@ paths:
                   - custom_score: 50
                     display_order: 1
                     id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: Aliquam placeat eligendi assumenda officiis.
-                  id: Hic odit laudantium.
-                  name: Ea sint autem earum eaque harum aliquam.
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Dolorem aspernatur placeat.
+                  id: Similique eos ipsa aut nulla quo.
+                  name: Pariatur ea totam expedita et consectetur fugit.
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Dolorem aspernatur placeat.
+                  id: Similique eos ipsa aut nulla quo.
+                  name: Pariatur ea totam expedita et consectetur fugit.
               example:
               - challenges:
                 - custom_score: 50
@@ -382,9 +408,12 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Aliquam placeat eligendi assumenda officiis.
-                id: Hic odit laudantium.
-                name: Ea sint autem earum eaque harum aliquam.
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Dolorem aspernatur placeat.
+                id: Similique eos ipsa aut nulla quo.
+                name: Pariatur ea totam expedita et consectetur fugit.
               - challenges:
                 - custom_score: 50
                   display_order: 1
@@ -392,9 +421,12 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Aliquam placeat eligendi assumenda officiis.
-                id: Hic odit laudantium.
-                name: Ea sint autem earum eaque harum aliquam.
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Dolorem aspernatur placeat.
+                id: Similique eos ipsa aut nulla quo.
+                name: Pariatur ea totam expedita et consectetur fugit.
               - challenges:
                 - custom_score: 50
                   display_order: 1
@@ -402,9 +434,25 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Aliquam placeat eligendi assumenda officiis.
-                id: Hic odit laudantium.
-                name: Ea sint autem earum eaque harum aliquam.
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Dolorem aspernatur placeat.
+                id: Similique eos ipsa aut nulla quo.
+                name: Pariatur ea totam expedita et consectetur fugit.
+              - challenges:
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Dolorem aspernatur placeat.
+                id: Similique eos ipsa aut nulla quo.
+                name: Pariatur ea totam expedita et consectetur fugit.
         "400":
           description: Resource not found
           content:
@@ -459,6 +507,9 @@ paths:
               - custom_score: 50
                 display_order: 1
                 id: 85163218-8735-42ed-a7a6-42a9de2294df
+              - custom_score: 50
+                display_order: 1
+                id: 85163218-8735-42ed-a7a6-42a9de2294df
               description: This is a group of challenges
               name: Group 1
       responses:
@@ -479,9 +530,9 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Vel sit eaque voluptatem placeat velit.
-                id: Necessitatibus totam rerum ut.
-                name: Recusandae quam et blanditiis nesciunt labore.
+                description: Ipsum odit repudiandae sed voluptatem qui.
+                id: Praesentium aliquam.
+                name: Eligendi assumenda.
         "400":
           description: Resource not found
           content:
@@ -619,15 +670,9 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                - custom_score: 50
-                  display_order: 1
-                  id: 85163218-8735-42ed-a7a6-42a9de2294df
-                - custom_score: 50
-                  display_order: 1
-                  id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Architecto libero dolor dolores fugiat cum est.
-                id: Et enim.
-                name: Beatae velit quisquam.
+                description: Nostrum ut.
+                id: Numquam eos molestiae delectus facilis.
+                name: Sit ducimus est voluptatum.
         "400":
           description: Resource not found
           content:
@@ -859,21 +904,24 @@ paths:
                 $ref: '#/components/schemas/ChallengeMeta'
               example:
                 solvers:
-                - solved_at: 1346908383509799036
+                - solved_at: 1674417214770227690
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 1346908383509799036
-                  user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-                - solved_at: 1346908383509799036
+                - solved_at: 1674417214770227690
                   user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
                 submissions:
                 - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   input: SSM{wrong_flag}
-                  submitted_at: 918079523200858637
+                  submitted_at: 2079571719472454441
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
                 - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   input: SSM{wrong_flag}
-                  submitted_at: 918079523200858637
+                  submitted_at: 2079571719472454441
+                  successful: false
+                  user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  input: SSM{wrong_flag}
+                  submitted_at: 2079571719472454441
                   successful: false
                   user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         "400":
@@ -1317,12 +1365,15 @@ paths:
                   - custom_score: 50
                     display_order: 1
                     id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: Ut enim nihil dolore libero odio.
-                  end_time: Magnam autem aspernatur in.
-                  id: Blanditiis aut repellat assumenda et voluptatem.
-                  name: Facere eum officia et fugiat.
-                  slug: Delectus dolores consequatur impedit.
-                  start_time: Magnam qui velit optio.
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Velit deserunt occaecati tenetur et.
+                  end_time: Architecto libero dolor dolores fugiat cum est.
+                  id: Quam et blanditiis nesciunt labore unde.
+                  name: Sit eaque voluptatem.
+                  slug: Quaerat hic odit laudantium necessitatibus ea.
+                  start_time: Modi beatae velit quisquam.
                   team_based: false
                   theme: ctf-theme
                 - challenges:
@@ -1335,12 +1386,57 @@ paths:
                   - custom_score: 50
                     display_order: 1
                     id: 85163218-8735-42ed-a7a6-42a9de2294df
-                  description: Ut enim nihil dolore libero odio.
-                  end_time: Magnam autem aspernatur in.
-                  id: Blanditiis aut repellat assumenda et voluptatem.
-                  name: Facere eum officia et fugiat.
-                  slug: Delectus dolores consequatur impedit.
-                  start_time: Magnam qui velit optio.
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Velit deserunt occaecati tenetur et.
+                  end_time: Architecto libero dolor dolores fugiat cum est.
+                  id: Quam et blanditiis nesciunt labore unde.
+                  name: Sit eaque voluptatem.
+                  slug: Quaerat hic odit laudantium necessitatibus ea.
+                  start_time: Modi beatae velit quisquam.
+                  team_based: false
+                  theme: ctf-theme
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Velit deserunt occaecati tenetur et.
+                  end_time: Architecto libero dolor dolores fugiat cum est.
+                  id: Quam et blanditiis nesciunt labore unde.
+                  name: Sit eaque voluptatem.
+                  slug: Quaerat hic odit laudantium necessitatibus ea.
+                  start_time: Modi beatae velit quisquam.
+                  team_based: false
+                  theme: ctf-theme
+                - challenges:
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  - custom_score: 50
+                    display_order: 1
+                    id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  description: Velit deserunt occaecati tenetur et.
+                  end_time: Architecto libero dolor dolores fugiat cum est.
+                  id: Quam et blanditiis nesciunt labore unde.
+                  name: Sit eaque voluptatem.
+                  slug: Quaerat hic odit laudantium necessitatibus ea.
+                  start_time: Modi beatae velit quisquam.
                   team_based: false
                   theme: ctf-theme
               example:
@@ -1354,12 +1450,15 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Ut enim nihil dolore libero odio.
-                end_time: Magnam autem aspernatur in.
-                id: Blanditiis aut repellat assumenda et voluptatem.
-                name: Facere eum officia et fugiat.
-                slug: Delectus dolores consequatur impedit.
-                start_time: Magnam qui velit optio.
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Velit deserunt occaecati tenetur et.
+                end_time: Architecto libero dolor dolores fugiat cum est.
+                id: Quam et blanditiis nesciunt labore unde.
+                name: Sit eaque voluptatem.
+                slug: Quaerat hic odit laudantium necessitatibus ea.
+                start_time: Modi beatae velit quisquam.
                 team_based: false
                 theme: ctf-theme
               - challenges:
@@ -1372,48 +1471,15 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Ut enim nihil dolore libero odio.
-                end_time: Magnam autem aspernatur in.
-                id: Blanditiis aut repellat assumenda et voluptatem.
-                name: Facere eum officia et fugiat.
-                slug: Delectus dolores consequatur impedit.
-                start_time: Magnam qui velit optio.
-                team_based: false
-                theme: ctf-theme
-              - challenges:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                - custom_score: 50
-                  display_order: 1
-                  id: 85163218-8735-42ed-a7a6-42a9de2294df
-                - custom_score: 50
-                  display_order: 1
-                  id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Ut enim nihil dolore libero odio.
-                end_time: Magnam autem aspernatur in.
-                id: Blanditiis aut repellat assumenda et voluptatem.
-                name: Facere eum officia et fugiat.
-                slug: Delectus dolores consequatur impedit.
-                start_time: Magnam qui velit optio.
-                team_based: false
-                theme: ctf-theme
-              - challenges:
-                - custom_score: 50
-                  display_order: 1
-                  id: 85163218-8735-42ed-a7a6-42a9de2294df
-                - custom_score: 50
-                  display_order: 1
-                  id: 85163218-8735-42ed-a7a6-42a9de2294df
-                - custom_score: 50
-                  display_order: 1
-                  id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Ut enim nihil dolore libero odio.
-                end_time: Magnam autem aspernatur in.
-                id: Blanditiis aut repellat assumenda et voluptatem.
-                name: Facere eum officia et fugiat.
-                slug: Delectus dolores consequatur impedit.
-                start_time: Magnam qui velit optio.
+                description: Velit deserunt occaecati tenetur et.
+                end_time: Architecto libero dolor dolores fugiat cum est.
+                id: Quam et blanditiis nesciunt labore unde.
+                name: Sit eaque voluptatem.
+                slug: Quaerat hic odit laudantium necessitatibus ea.
+                start_time: Modi beatae velit quisquam.
                 team_based: false
                 theme: ctf-theme
         "400":
@@ -1474,12 +1540,12 @@ paths:
                 display_order: 1
                 id: 85163218-8735-42ed-a7a6-42a9de2294df
               description: A fun CTF for school
-              end_time: 8788348548593572716
+              end_time: 3433366848551607925
               name: School CTF 2025
               password: password
               private: false
               slug: school-ctf-2025
-              start_time: 6348780665798289713
+              start_time: 6234404335250354171
               team_based: false
               theme: ctf-theme
       responses:
@@ -1497,12 +1563,15 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Quas aliquam sit.
-                end_time: Aut fugit magni recusandae impedit.
-                id: Tenetur omnis delectus animi est sunt rerum.
-                name: Dolorum dolorum.
-                slug: Modi molestiae ab repellat dolore.
-                start_time: Ut omnis aspernatur reprehenderit reprehenderit.
+                - custom_score: 50
+                  display_order: 1
+                  id: 85163218-8735-42ed-a7a6-42a9de2294df
+                description: Ad consequuntur temporibus aut quo laudantium consequatur.
+                end_time: Libero perspiciatis harum blanditiis aut repellat assumenda.
+                id: Reiciendis laboriosam et consectetur voluptatem debitis aspernatur.
+                name: Iusto ex.
+                slug: Voluptatem molestias facere eum officia.
+                start_time: Dolores minus.
                 team_based: false
                 theme: ctf-theme
         "400":
@@ -1549,8 +1618,8 @@ paths:
         required: true
         schema:
           type: string
-          example: Enim libero.
-        example: Hic voluptatum dolor exercitationem eligendi saepe fuga.
+          example: Et culpa tempore sed sit aliquid amet.
+        example: Fugit nisi consequatur nihil nostrum.
       responses:
         "200":
           description: OK response.
@@ -1562,46 +1631,29 @@ paths:
                   $ref: '#/components/schemas/CTFTeam'
                 example:
                 - created_at: "2025-07-03T10:15:30Z"
-                  ctf_id: Assumenda repudiandae consequatur perferendis corporis quibusdam
-                    dolor.
-                  id: Et quia.
+                  ctf_id: Sit aliquam aut qui molestiae ullam.
+                  id: Soluta molestias sit facere.
                   password: team123
                   teamname: Team Alpha
                 - created_at: "2025-07-03T10:15:30Z"
-                  ctf_id: Assumenda repudiandae consequatur perferendis corporis quibusdam
-                    dolor.
-                  id: Et quia.
-                  password: team123
-                  teamname: Team Alpha
-                - created_at: "2025-07-03T10:15:30Z"
-                  ctf_id: Assumenda repudiandae consequatur perferendis corporis quibusdam
-                    dolor.
-                  id: Et quia.
+                  ctf_id: Sit aliquam aut qui molestiae ullam.
+                  id: Soluta molestias sit facere.
                   password: team123
                   teamname: Team Alpha
               example:
               - created_at: "2025-07-03T10:15:30Z"
-                ctf_id: Assumenda repudiandae consequatur perferendis corporis quibusdam
-                  dolor.
-                id: Et quia.
+                ctf_id: Sit aliquam aut qui molestiae ullam.
+                id: Soluta molestias sit facere.
                 password: team123
                 teamname: Team Alpha
               - created_at: "2025-07-03T10:15:30Z"
-                ctf_id: Assumenda repudiandae consequatur perferendis corporis quibusdam
-                  dolor.
-                id: Et quia.
+                ctf_id: Sit aliquam aut qui molestiae ullam.
+                id: Soluta molestias sit facere.
                 password: team123
                 teamname: Team Alpha
               - created_at: "2025-07-03T10:15:30Z"
-                ctf_id: Assumenda repudiandae consequatur perferendis corporis quibusdam
-                  dolor.
-                id: Et quia.
-                password: team123
-                teamname: Team Alpha
-              - created_at: "2025-07-03T10:15:30Z"
-                ctf_id: Assumenda repudiandae consequatur perferendis corporis quibusdam
-                  dolor.
-                id: Et quia.
+                ctf_id: Sit aliquam aut qui molestiae ullam.
+                id: Soluta molestias sit facere.
                 password: team123
                 teamname: Team Alpha
         "400":
@@ -1647,8 +1699,8 @@ paths:
         required: true
         schema:
           type: string
-          example: Quo maxime sequi non nihil quis.
-        example: Dolor eligendi dolor voluptas.
+          example: Animi similique et ut aut inventore.
+        example: Ut deleniti quod odio quibusdam neque.
       requestBody:
         required: true
         content:
@@ -1656,7 +1708,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateCTFTeamRequestBody'
             example:
-              teamname: Modi reiciendis incidunt qui laborum.
+              teamname: Autem nemo.
       responses:
         "201":
           description: Created response.
@@ -1666,8 +1718,8 @@ paths:
                 $ref: '#/components/schemas/CTFTeam'
               example:
                 created_at: "2025-07-03T10:15:30Z"
-                ctf_id: Exercitationem corrupti ut fugit distinctio.
-                id: Vel ut.
+                ctf_id: Odio vitae dolore ipsa nihil.
+                id: Assumenda suscipit.
                 password: team123
                 teamname: Team Alpha
         "400":
@@ -1714,15 +1766,15 @@ paths:
         required: true
         schema:
           type: string
-          example: Perspiciatis corporis fuga assumenda.
-        example: Id id facere est exercitationem explicabo.
+          example: Facere blanditiis nam quos.
+        example: Et a excepturi.
       - name: team_id
         in: path
         required: true
         schema:
           type: string
-          example: Et consectetur autem.
-        example: Reiciendis itaque sunt libero impedit qui earum.
+          example: Pariatur praesentium in amet libero sapiente.
+        example: Ea ab.
       responses:
         "200":
           description: OK response.
@@ -1769,15 +1821,15 @@ paths:
         required: true
         schema:
           type: string
-          example: Accusantium laudantium.
-        example: Repudiandae quia.
+          example: Voluptatibus sint est vero omnis qui.
+        example: Aut perspiciatis deleniti recusandae voluptatem sed consequuntur.
       - name: team_id
         in: path
         required: true
         schema:
           type: string
-          example: At omnis quaerat sunt ut minus.
-        example: Soluta aut facilis minus accusantium enim inventore.
+          example: Est voluptas.
+        example: Doloribus aliquam placeat architecto fugiat rerum laudantium.
       requestBody:
         required: true
         content:
@@ -1785,7 +1837,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateCTFTeamRequestBody'
             example:
-              teamname: Soluta molestias sit facere.
+              teamname: Vel dolor.
       responses:
         "200":
           description: OK response.
@@ -1795,8 +1847,8 @@ paths:
                 $ref: '#/components/schemas/CTFTeam'
               example:
                 created_at: "2025-07-03T10:15:30Z"
-                ctf_id: Nemo nobis quod omnis.
-                id: Laborum mollitia id.
+                ctf_id: Cumque et repellendus.
+                id: Impedit aspernatur ipsa.
                 password: team123
                 teamname: Team Alpha
         "400":
@@ -1843,8 +1895,8 @@ paths:
         required: true
         schema:
           type: string
-          example: Velit ipsa numquam quisquam est sunt sit.
-        example: Impedit illo explicabo.
+          example: Doloremque cupiditate dolorem.
+        example: Rem voluptas officiis consequatur.
       responses:
         "200":
           description: OK response.
@@ -1855,31 +1907,43 @@ paths:
                 items:
                   $ref: '#/components/schemas/CTFUser'
                 example:
-                - ctf_id: Nostrum ut.
-                  id: Sit ducimus est voluptatum.
-                  password: Aut nulla quo.
+                - ctf_id: Vitae molestias tenetur rerum nam.
+                  id: Maxime quaerat.
+                  password: Consequuntur asperiores enim sed esse autem.
                   team_id: team123
                   teamname: Team Alpha
-                  username: Voluptatem similique eos.
-                - ctf_id: Nostrum ut.
-                  id: Sit ducimus est voluptatum.
-                  password: Aut nulla quo.
+                  username: Possimus deserunt sunt ut autem.
+                - ctf_id: Vitae molestias tenetur rerum nam.
+                  id: Maxime quaerat.
+                  password: Consequuntur asperiores enim sed esse autem.
                   team_id: team123
                   teamname: Team Alpha
-                  username: Voluptatem similique eos.
+                  username: Possimus deserunt sunt ut autem.
+                - ctf_id: Vitae molestias tenetur rerum nam.
+                  id: Maxime quaerat.
+                  password: Consequuntur asperiores enim sed esse autem.
+                  team_id: team123
+                  teamname: Team Alpha
+                  username: Possimus deserunt sunt ut autem.
               example:
-              - ctf_id: Nostrum ut.
-                id: Sit ducimus est voluptatum.
-                password: Aut nulla quo.
+              - ctf_id: Vitae molestias tenetur rerum nam.
+                id: Maxime quaerat.
+                password: Consequuntur asperiores enim sed esse autem.
                 team_id: team123
                 teamname: Team Alpha
-                username: Voluptatem similique eos.
-              - ctf_id: Nostrum ut.
-                id: Sit ducimus est voluptatum.
-                password: Aut nulla quo.
+                username: Possimus deserunt sunt ut autem.
+              - ctf_id: Vitae molestias tenetur rerum nam.
+                id: Maxime quaerat.
+                password: Consequuntur asperiores enim sed esse autem.
                 team_id: team123
                 teamname: Team Alpha
-                username: Voluptatem similique eos.
+                username: Possimus deserunt sunt ut autem.
+              - ctf_id: Vitae molestias tenetur rerum nam.
+                id: Maxime quaerat.
+                password: Consequuntur asperiores enim sed esse autem.
+                team_id: team123
+                teamname: Team Alpha
+                username: Possimus deserunt sunt ut autem.
         "400":
           description: Resource not found
           content:
@@ -1924,15 +1988,15 @@ paths:
         required: true
         schema:
           type: string
-          example: Sint consequuntur cupiditate.
-        example: Earum mollitia nostrum facilis sint at.
+          example: Minima nam cupiditate sint et ea quia.
+        example: Voluptas explicabo veritatis perferendis tempore.
       - name: user_id
         in: path
         required: true
         schema:
           type: string
-          example: Et minima corporis corporis qui.
-        example: Minima officiis maxime explicabo nulla voluptas magni.
+          example: Recusandae odio itaque maxime qui.
+        example: Ea sit corporis sint ab.
       responses:
         "200":
           description: OK response.
@@ -1979,15 +2043,15 @@ paths:
         required: true
         schema:
           type: string
-          example: Eaque aliquid eum sed.
-        example: Consequatur illum fugit nulla quam nulla.
+          example: Aut iusto quam nulla neque reiciendis.
+        example: In possimus totam rerum voluptatem possimus in.
       - name: user_id
         in: path
         required: true
         schema:
           type: string
-          example: Commodi placeat quae.
-        example: Voluptatibus illo debitis.
+          example: Et pariatur in alias aliquid eius provident.
+        example: Eos odio non tempore.
       requestBody:
         required: true
         content:
@@ -1995,7 +2059,7 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateCTFUserRequestBody'
             example:
-              username: Molestias tenetur rerum nam omnis possimus deserunt.
+              username: Incidunt qui.
       responses:
         "200":
           description: OK response.
@@ -2004,12 +2068,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/CTFUser'
               example:
-                ctf_id: Est ut culpa aut molestiae omnis.
-                id: Inventore recusandae voluptatum eius.
-                password: Itaque commodi.
+                ctf_id: Minima non.
+                id: Voluptatem natus aut sed dolor maxime eos.
+                password: Ea sunt officiis et consequuntur autem pariatur.
                 team_id: team123
                 teamname: Team Alpha
-                username: Aperiam saepe.
+                username: Officia eligendi est est deleniti voluptas.
         "400":
           description: Resource not found
           content:
@@ -2127,16 +2191,13 @@ paths:
               - custom_score: 50
                 display_order: 1
                 id: 85163218-8735-42ed-a7a6-42a9de2294df
-              - custom_score: 50
-                display_order: 1
-                id: 85163218-8735-42ed-a7a6-42a9de2294df
               description: A fun CTF for school
-              end_time: 1186624192819501178
+              end_time: 4716225969945958973
               name: School CTF 2025
               password: password
               private: false
               slug: school-ctf-2025
-              start_time: 4286210627808286058
+              start_time: 4781384427134125013
               team_based: false
               theme: ctf-theme
       responses:
@@ -2157,12 +2218,12 @@ paths:
                 - custom_score: 50
                   display_order: 1
                   id: 85163218-8735-42ed-a7a6-42a9de2294df
-                description: Laboriosam et consectetur voluptatem debitis.
-                end_time: Sint ad consequuntur temporibus aut quo.
-                id: Aut omnis non ut eius ullam suscipit.
-                name: Id impedit rerum quae.
-                slug: Consequatur nihil dolores minus necessitatibus libero.
-                start_time: Omnis iusto.
+                description: Optio fuga magnam autem aspernatur in.
+                end_time: Ut dolores et sed.
+                id: Nihil dolore libero.
+                name: Et magnam qui.
+                slug: Necessitatibus totam rerum ut.
+                start_time: Delectus dolores consequatur impedit.
                 team_based: false
                 theme: ctf-theme
         "400":
@@ -2222,8 +2283,6 @@ paths:
                 - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   name: Säkerhet-SM 2023
               example:
-              - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                name: Säkerhet-SM 2023
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                 name: Säkerhet-SM 2023
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -2427,7 +2486,7 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateCTFEventImportTokenRequestBody'
             example:
-              expires_in: week
+              expires_in: year
               name: e3bb4dc5-9479-42ce-aed3-b41e8139fccb
       responses:
         "200":
@@ -2437,7 +2496,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateCTFEventImportTokenResponseBody'
               example:
-                token: Fuga voluptatem exercitationem facere harum saepe.
+                token: Aut omnis non ut eius ullam suscipit.
         "400":
           description: Resource not found
           content:
@@ -2494,15 +2553,15 @@ paths:
                   display_month: Januari/Februari
                   end_date: 1690884841
                   start_date: 1690874841
+                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  display_month: Januari/Februari
+                  end_date: 1690884841
+                  start_date: 1690874841
+                - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
+                  display_month: Januari/Februari
+                  end_date: 1690884841
+                  start_date: 1690874841
               example:
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                display_month: Januari/Februari
-                end_date: 1690884841
-                start_date: 1690874841
-              - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
-                display_month: Januari/Februari
-                end_date: 1690884841
-                start_date: 1690874841
               - challenge_id: 85163218-8735-42ed-a7a6-42a9de2294df
                 display_month: Januari/Februari
                 end_date: 1690884841
@@ -2676,10 +2735,10 @@ paths:
               - web
               challenge_id: 225ada44-3fde-460d-84a4-2f16ff579618
               custom:
-                chall_namespace: Voluptatem veritatis voluptas nostrum.
+                chall_namespace: Modi molestiae ab repellat dolore.
                 publish: false
-                publish_at: Doloremque earum non cumque id qui.
-                slug: Non consequuntur unde exercitationem laudantium adipisci.
+                publish_at: Reprehenderit reprehenderit.
+                slug: Aut fugit magni recusandae impedit.
               description: how to dns
               file_urls:
               - https://bucket/key
@@ -2690,15 +2749,13 @@ paths:
                 type: regex
               - flag: fl4g_l0l
                 type: regex
-              - flag: fl4g_l0l
-                type: regex
-              - flag: fl4g_l0l
-                type: regex
               human_metadata:
-                event_name: Culpa qui temporibus eveniet vel beatae quibusdam.
+                event_name: Ut quas aliquam sit sint ut.
               order: 5
               score: 100
               services:
+              - hyperlink: true
+                user_display: nc 0.0.0.0 1234
               - hyperlink: true
                 user_display: nc 0.0.0.0 1234
               - hyperlink: true
@@ -2753,37 +2810,252 @@ paths:
                 items:
                   $ref: '#/components/schemas/SsmUser'
                 example:
-                - email: movitz.sunar@ssm.example
+                - discord_id: "384389545793845983547349"
+                  email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
                   id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   role: admin
                   school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-                - email: movitz.sunar@ssm.example
+                - discord_id: "384389545793845983547349"
+                  email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
                   id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   role: admin
                   school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-                - email: movitz.sunar@ssm.example
+                - discord_id: "384389545793845983547349"
+                  email: movitz.sunar@ssm.example
+                  full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  role: admin
+                  school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
+                - discord_id: "384389545793845983547349"
+                  email: movitz.sunar@ssm.example
                   full_name: Movitz Sunar
                   id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   role: admin
                   school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
               example:
-              - email: movitz.sunar@ssm.example
+              - discord_id: "384389545793845983547349"
+                email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-              - email: movitz.sunar@ssm.example
+              - discord_id: "384389545793845983547349"
+                email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-              - email: movitz.sunar@ssm.example
+              - discord_id: "384389545793845983547349"
+                email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/users/{user_id}/details:
+    get:
+      tags:
+      - admin
+      summary: GetUserDetails admin
+      description: Get consolidated user details with all challenge submissions and
+        statistics
+      operationId: admin#GetUserDetails
+      parameters:
+      - name: user_id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+          description: User ID
+          example: Non voluptatem non nihil qui.
+        example: Deserunt dolore.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsmAdminUserdetails'
+              example:
+                challenge_submissions:
+                - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+                  challenge_slug: binexp-101
+                  challenge_title: Binary Exploitation 101
+                  solved: true
+                  submissions:
+                  - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    input: SSM{wrong_flag}
+                    submitted_at: 2079571719472454441
+                    successful: false
+                    user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                  - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    input: SSM{wrong_flag}
+                    submitted_at: 2079571719472454441
+                    successful: false
+                    user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                  - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    input: SSM{wrong_flag}
+                    submitted_at: 2079571719472454441
+                    successful: false
+                    user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+                  challenge_slug: binexp-101
+                  challenge_title: Binary Exploitation 101
+                  solved: true
+                  submissions:
+                  - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    input: SSM{wrong_flag}
+                    submitted_at: 2079571719472454441
+                    successful: false
+                    user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                  - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    input: SSM{wrong_flag}
+                    submitted_at: 2079571719472454441
+                    successful: false
+                    user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                  - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    input: SSM{wrong_flag}
+                    submitted_at: 2079571719472454441
+                    successful: false
+                    user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+                discord_id: "384389545793845983547349"
+                discord_user:
+                  avatar: a_1234567890abcdef1234567890abcdef
+                  discriminator: "1234"
+                  global_name: Display Name
+                  id: "123456789012345678"
+                  username: username
+                email: movitz.sunar@ssm.example
+                full_name: Movitz Sunar
+                hourly_activity:
+                - 0
+                - 0
+                - 1
+                - 0
+                - 0
+                - 0
+                - 2
+                - 5
+                - 3
+                - 1
+                - 0
+                - 0
+                - 0
+                - 0
+                - 1
+                - 0
+                - 0
+                - 0
+                - 0
+                - 2
+                - 4
+                - 3
+                - 1
+                - 0
+                id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                role: admin
+                school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
+                submission_stats:
+                  failed: 18
+                  success_rate: 70
+                  successful: 42
+                  total: 60
+        "400":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "403":
+          description: When the user does not have the required role
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+        "404":
+          description: Resource not found
+          content:
+            application/vnd.goa.error:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                id: 3F1FKVRR
+                message: Value of ID must be an integer
+                name: bad_request
+      security:
+      - jwt_header_Authorization: []
+  /admin/users/discord/{discord_id}:
+    get:
+      tags:
+      - admin
+      summary: GetDiscordUser admin
+      description: get discord avatar for person
+      operationId: admin#GetDiscordUser
+      parameters:
+      - name: discord_id
+        in: path
+        description: Discord user ID
+        required: true
+        schema:
+          type: string
+          description: Discord user ID
+          example: Quibusdam eum eaque.
+        example: Cupiditate aut facilis.
+      responses:
+        "200":
+          description: OK response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SsmDiscordUser'
+              example:
+                avatar: a_1234567890abcdef1234567890abcdef
+                discriminator: "1234"
+                global_name: Display Name
+                id: "123456789012345678"
+                username: username
         "400":
           description: Resource not found
           content:
@@ -2885,7 +3157,28 @@ paths:
                   publish: true
                   slug: movitz
                   sponsor: true
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
+                - description: Movitz gör saker
+                  full_name: Movitz Sunar
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  image_url: movitz
+                  publish: true
+                  slug: movitz
+                  sponsor: true
               example:
+              - description: Movitz gör saker
+                full_name: Movitz Sunar
+                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                image_url: movitz
+                publish: true
+                slug: movitz
+                sponsor: true
               - description: Movitz gör saker
                 full_name: Movitz Sunar
                 id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
@@ -2926,7 +3219,7 @@ paths:
           type: array
           items:
             type: string
-            example: Sint aspernatur.
+            example: Autem facere molestiae aperiam.
           description: Selectivly take out certain challs
           example: []
         example: []
@@ -3109,7 +3402,7 @@ paths:
               $ref: '#/components/schemas/KnackKodenSubmitFlagRequestBody'
             example:
               flag: SSM{flag}
-              password: Et corrupti suscipit.
+              password: Eius molestias.
       responses:
         "200":
           description: OK response.
@@ -3189,45 +3482,6 @@ paths:
                   - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
                     id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                     position: 0
-                  description: markdown text
-                  difficulty: advanced
-                  enrolled: false
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  publish: true
-                  slug: sqli
-                  title: SQL-Injektioner
-                - authors:
-                  - description: Movitz gör saker
-                    full_name: Movitz Sunar
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    image_url: movitz
-                    publish: true
-                    slug: movitz
-                    sponsor: true
-                  - description: Movitz gör saker
-                    full_name: Movitz Sunar
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    image_url: movitz
-                    publish: true
-                    slug: movitz
-                    sponsor: true
-                  - description: Movitz gör saker
-                    full_name: Movitz Sunar
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    image_url: movitz
-                    publish: true
-                    slug: movitz
-                    sponsor: true
-                  - description: Movitz gör saker
-                    full_name: Movitz Sunar
-                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                    image_url: movitz
-                    publish: true
-                    slug: movitz
-                    sponsor: true
-                  category: web
-                  completed: true
-                  course_items:
                   - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
                     id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                     position: 0
@@ -3273,6 +3527,12 @@ paths:
                   category: web
                   completed: true
                   course_items:
+                  - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    position: 0
+                  - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
+                    id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                    position: 0
                   - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
                     id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                     position: 0
@@ -3325,45 +3585,6 @@ paths:
                 - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
                   id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   position: 0
-                description: markdown text
-                difficulty: advanced
-                enrolled: false
-                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                publish: true
-                slug: sqli
-                title: SQL-Injektioner
-              - authors:
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                category: web
-                completed: true
-                course_items:
                 - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
                   id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   position: 0
@@ -3409,6 +3630,12 @@ paths:
                 category: web
                 completed: true
                 course_items:
+                - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  position: 0
+                - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
+                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  position: 0
                 - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
                   id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                   position: 0
@@ -3481,8 +3708,8 @@ paths:
         required: true
         schema:
           type: string
-          example: Ipsum et aperiam et rerum.
-        example: Qui aut blanditiis tempore enim architecto officiis.
+          example: Odio esse.
+        example: Porro qui quis.
       responses:
         "200":
           description: OK response.
@@ -3492,17 +3719,15 @@ paths:
                 $ref: '#/components/schemas/CTFInfo'
               example:
                 challenge_ids:
-                - Voluptatem voluptatibus culpa amet accusamus nihil.
-                - Aspernatur ipsa sunt cumque et repellendus asperiores.
-                - Pariatur ea est laboriosam.
-                - Fugiat ducimus cumque quo est praesentium.
-                description: Soluta ullam et.
-                end_time: Est ut.
-                id: Et ad.
-                name: Quasi praesentium facilis ut est harum distinctio.
+                - Fugit dolor culpa expedita qui.
+                - Velit vel cumque sed itaque.
+                description: Placeat animi atque veniam ut veniam.
+                end_time: Incidunt placeat asperiores ipsa aperiam.
+                id: Doloremque id mollitia earum sit.
+                name: Ipsum omnis deserunt debitis maiores qui.
                 private: false
-                slug: Vel dolor.
-                start_time: Consequatur ducimus possimus atque quasi quo a.
+                slug: Neque non molestiae.
+                start_time: Reprehenderit nihil molestiae animi et esse.
                 team_based: false
                 theme: ctf-theme
   /ctfs/{slug}/attempt:
@@ -3518,8 +3743,8 @@ paths:
         required: true
         schema:
           type: string
-          example: Nisi consequatur nihil.
-        example: Laborum unde animi similique et.
+          example: Qui quidem molestias soluta minima.
+        example: Enim debitis.
       requestBody:
         required: true
         content:
@@ -3538,11 +3763,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/CTFSolve'
               example:
-                challenge_id: Rem vel sunt commodi ab voluptate in.
-                ctf_id: Eos consectetur eum delectus molestiae facere at.
-                id: Veritatis minus aut non.
-                solved_at: Odit in.
-                user_id: Velit quia eos quasi tempore illo.
+                challenge_id: Maxime voluptas eum qui at vero.
+                ctf_id: Ipsam libero.
+                id: Ad ut quaerat.
+                solved_at: Porro aut saepe blanditiis exercitationem.
+                user_id: Eum mollitia sint neque et dolorem.
         "400":
           description: If the challenge is already solved
           content:
@@ -3586,15 +3811,15 @@ paths:
         allowEmptyValue: true
         schema:
           type: string
-          example: Quam nulla neque reiciendis deleniti.
-        example: Possimus totam rerum voluptatem possimus.
+          example: Sint dignissimos voluptatem.
+        example: Dolorum facere corrupti qui eos.
       - name: slug
         in: path
         required: true
         schema:
           type: string
-          example: Enim et pariatur in alias.
-        example: Eius provident.
+          example: Facilis eaque sed qui.
+        example: Perferendis maxime voluptatem.
       responses:
         "200":
           description: OK response.
@@ -3618,25 +3843,11 @@ paths:
                   publish: true
                   slug: movitz
                   sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
                 category: Misc
                 chall_namespace: knackkoden
                 ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
-                display_order: 6758816842017309524
+                display_order: 7416231872760887150
                 files:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
@@ -3645,8 +3856,8 @@ paths:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                num_solves_in_team: 9063769411106084439
-                num_team_solves: 5112359489965538824
+                num_solves_in_team: 5179484479523274053
+                num_team_solves: 4606953301895134197
                 score: 50
                 services:
                 - hyperlink: true
@@ -3669,6 +3880,9 @@ paths:
                   id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
                 solvers_in_team:
+                - full_name: Movitz Sunar
+                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+                  solved_at: 16123128
                 - full_name: Movitz Sunar
                   id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
@@ -3708,25 +3922,11 @@ paths:
                   publish: true
                   slug: movitz
                   sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
                 category: Misc
                 chall_namespace: knackkoden
                 ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
                 description: A heap overflow challenge
-                display_order: 6758816842017309524
+                display_order: 7416231872760887150
                 files:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
@@ -3735,8 +3935,8 @@ paths:
                 - filename: decryptor.exe
                   url: https://s3/bucket/key?signature
                 id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                num_solves_in_team: 9063769411106084439
-                num_team_solves: 5112359489965538824
+                num_solves_in_team: 5179484479523274053
+                num_team_solves: 4606953301895134197
                 score: 50
                 services:
                 - hyperlink: true
@@ -3762,183 +3962,6 @@ paths:
                 - full_name: Movitz Sunar
                   id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                solves: 3
-                team_solvers:
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                title: pwnme
-              - authors:
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                category: Misc
-                chall_namespace: knackkoden
-                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-                description: A heap overflow challenge
-                display_order: 6758816842017309524
-                files:
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                num_solves_in_team: 9063769411106084439
-                num_team_solves: 5112359489965538824
-                score: 50
-                services:
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                slug: pwnme
-                solved: true
-                solved_in_team: true
-                solvers:
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                solvers_in_team:
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                solves: 3
-                team_solvers:
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                title: pwnme
-              - authors:
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                - description: Movitz gör saker
-                  full_name: Movitz Sunar
-                  id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                  image_url: movitz
-                  publish: true
-                  slug: movitz
-                  sponsor: true
-                category: Misc
-                chall_namespace: knackkoden
-                ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-                description: A heap overflow challenge
-                display_order: 6758816842017309524
-                files:
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                - filename: decryptor.exe
-                  url: https://s3/bucket/key?signature
-                id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-                num_solves_in_team: 9063769411106084439
-                num_team_solves: 5112359489965538824
-                score: 50
-                services:
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                - hyperlink: true
-                  user_display: nc 0.0.0.0 1234
-                slug: pwnme
-                solved: true
-                solved_in_team: true
-                solvers:
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                - full_name: Movitz Sunar
-                  id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-                  solved_at: 16123128
-                solvers_in_team:
                 - full_name: Movitz Sunar
                   id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                   solved_at: 16123128
@@ -3976,8 +3999,8 @@ paths:
         required: true
         schema:
           type: string
-          example: Eos odio non tempore.
-        example: Et culpa tempore sed sit aliquid amet.
+          example: Dolorem quisquam velit voluptas omnis.
+        example: Dolores porro expedita delectus rem sed.
       responses:
         "200":
           description: OK response.
@@ -3988,43 +4011,71 @@ paths:
                 items:
                   $ref: '#/components/schemas/CTFScore'
                 example:
-                - id: Pariatur voluptatem.
-                  score: 2335349095746724708
+                - id: Placeat consequatur quisquam.
+                  score: 341378349086983949
                   solves:
-                  - Et enim voluptates aliquam consequatur.
-                  - Soluta sunt reiciendis praesentium.
-                  - Dignissimos labore et.
+                  - Voluptatum repudiandae nam veniam vel natus quod.
+                  - Nam similique dolores dolores.
                   team_id: team123
                   teamname: Team Alpha
-                  username: Quam sequi quia aut.
-                - id: Pariatur voluptatem.
-                  score: 2335349095746724708
+                  username: In in quibusdam voluptatibus sed.
+                - id: Placeat consequatur quisquam.
+                  score: 341378349086983949
                   solves:
-                  - Et enim voluptates aliquam consequatur.
-                  - Soluta sunt reiciendis praesentium.
-                  - Dignissimos labore et.
+                  - Voluptatum repudiandae nam veniam vel natus quod.
+                  - Nam similique dolores dolores.
                   team_id: team123
                   teamname: Team Alpha
-                  username: Quam sequi quia aut.
+                  username: In in quibusdam voluptatibus sed.
+                - id: Placeat consequatur quisquam.
+                  score: 341378349086983949
+                  solves:
+                  - Voluptatum repudiandae nam veniam vel natus quod.
+                  - Nam similique dolores dolores.
+                  team_id: team123
+                  teamname: Team Alpha
+                  username: In in quibusdam voluptatibus sed.
+                - id: Placeat consequatur quisquam.
+                  score: 341378349086983949
+                  solves:
+                  - Voluptatum repudiandae nam veniam vel natus quod.
+                  - Nam similique dolores dolores.
+                  team_id: team123
+                  teamname: Team Alpha
+                  username: In in quibusdam voluptatibus sed.
               example:
-              - id: Pariatur voluptatem.
-                score: 2335349095746724708
+              - id: Placeat consequatur quisquam.
+                score: 341378349086983949
                 solves:
-                - Et enim voluptates aliquam consequatur.
-                - Soluta sunt reiciendis praesentium.
-                - Dignissimos labore et.
+                - Voluptatum repudiandae nam veniam vel natus quod.
+                - Nam similique dolores dolores.
                 team_id: team123
                 teamname: Team Alpha
-                username: Quam sequi quia aut.
-              - id: Pariatur voluptatem.
-                score: 2335349095746724708
+                username: In in quibusdam voluptatibus sed.
+              - id: Placeat consequatur quisquam.
+                score: 341378349086983949
                 solves:
-                - Et enim voluptates aliquam consequatur.
-                - Soluta sunt reiciendis praesentium.
-                - Dignissimos labore et.
+                - Voluptatum repudiandae nam veniam vel natus quod.
+                - Nam similique dolores dolores.
                 team_id: team123
                 teamname: Team Alpha
-                username: Quam sequi quia aut.
+                username: In in quibusdam voluptatibus sed.
+              - id: Placeat consequatur quisquam.
+                score: 341378349086983949
+                solves:
+                - Voluptatum repudiandae nam veniam vel natus quod.
+                - Nam similique dolores dolores.
+                team_id: team123
+                teamname: Team Alpha
+                username: In in quibusdam voluptatibus sed.
+              - id: Placeat consequatur quisquam.
+                score: 341378349086983949
+                solves:
+                - Voluptatum repudiandae nam veniam vel natus quod.
+                - Nam similique dolores dolores.
+                team_id: team123
+                teamname: Team Alpha
+                username: In in quibusdam voluptatibus sed.
   /ctfs/{slug}/user:
     get:
       tags:
@@ -4039,15 +4090,15 @@ paths:
         required: true
         schema:
           type: string
-          example: Consequatur quibusdam eum.
-        example: Harum cupiditate aut facilis quam.
+          example: Laudantium pariatur illum voluptas nobis qui tempore.
+        example: Est in sunt ullam eum voluptatibus.
       - name: slug
         in: path
         required: true
         schema:
           type: string
-          example: Iste nesciunt sapiente et doloremque cupiditate dolorem.
-        example: Rem voluptas officiis consequatur.
+          example: Et reiciendis architecto et similique omnis.
+        example: Perferendis aut id ad.
       responses:
         "200":
           description: OK response.
@@ -4056,12 +4107,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/CTFUser'
               example:
-                ctf_id: Vel cumque sed itaque sapiente vel.
-                id: Ut fugit dolor culpa expedita qui earum.
-                password: Et non vero sit.
+                ctf_id: Itaque quaerat molestias exercitationem vel voluptate aut.
+                id: Fugiat consequatur eos sint labore alias.
+                password: Voluptatem fuga quam sequi quia aut.
                 team_id: team123
                 teamname: Team Alpha
-                username: Ut corporis magni omnis.
+                username: Iusto quis ullam non eum doloribus.
         "401":
           description: Unauthorized response.
           content:
@@ -4095,15 +4146,15 @@ paths:
         required: true
         schema:
           type: string
-          example: Consectetur minima nam cupiditate sint et.
-        example: Quia corporis voluptas explicabo veritatis perferendis.
+          example: Ab non quis molestias doloremque eligendi.
+        example: Consectetur repudiandae qui ipsum.
       - name: slug
         in: path
         required: true
         schema:
           type: string
-          example: Dicta recusandae odio itaque maxime qui quibusdam.
-        example: Sit corporis sint ab sunt aut.
+          example: Eveniet quasi autem iusto.
+        example: Dignissimos sit.
       responses:
         "200":
           description: OK response.
@@ -4113,13 +4164,15 @@ paths:
                 $ref: '#/components/schemas/CTFUserSolves'
               example:
                 solves:
-                - challenge_id: Repellat ipsum reiciendis.
-                  solved_at: Eum necessitatibus atque.
-                - challenge_id: Repellat ipsum reiciendis.
-                  solved_at: Eum necessitatibus atque.
-                - challenge_id: Repellat ipsum reiciendis.
-                  solved_at: Eum necessitatibus atque.
-                username: Ipsam quas neque.
+                - challenge_id: Rem optio eius veniam molestiae dolorem et.
+                  solved_at: Commodi quia non ea.
+                - challenge_id: Rem optio eius veniam molestiae dolorem et.
+                  solved_at: Commodi quia non ea.
+                - challenge_id: Rem optio eius veniam molestiae dolorem et.
+                  solved_at: Commodi quia non ea.
+                - challenge_id: Rem optio eius veniam molestiae dolorem et.
+                  solved_at: Commodi quia non ea.
+                username: Veritatis minus aut non.
   /ctfs/{slug}/users:
     post:
       tags:
@@ -4134,8 +4187,8 @@ paths:
         required: true
         schema:
           type: string
-          example: Blanditiis autem.
-        example: Molestiae aperiam fuga architecto rem quia.
+          example: Quaerat ut.
+        example: Et dolorem atque eaque odio blanditiis eius.
       requestBody:
         required: true
         content:
@@ -4143,8 +4196,8 @@ paths:
             schema:
               $ref: '#/components/schemas/RegisterUserRequestBody'
             example:
-              team_code: In voluptatem amet.
-              username: Aut dolorem maiores reprehenderit velit.
+              team_code: Illo nemo eius.
+              username: Non vero sit nostrum qui earum.
       responses:
         "201":
           description: Created response.
@@ -4153,12 +4206,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/CTFUser'
               example:
-                ctf_id: Debitis maiores.
-                id: Excepturi ipsum omnis.
-                password: Veniam ut.
+                ctf_id: Minus et quas ut temporibus repellat.
+                id: Soluta quia.
+                password: Ipsam quas neque.
                 team_id: team123
                 teamname: Team Alpha
-                username: Omnis placeat animi.
+                username: Reiciendis modi eum necessitatibus atque.
         "409":
           description: Conflict response.
           content:
@@ -4287,7 +4340,7 @@ paths:
             schema:
               $ref: '#/components/schemas/KnackKodenRegisterClassResponseBody'
             example:
-              password: Optio eum est harum iste.
+              password: Aut soluta.
       responses:
         "200":
           description: OK response.
@@ -4296,11 +4349,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/KnackKodenGetClassResponseBody'
               example:
-                class_name: Tempore voluptas tempora.
+                class_name: Optio culpa qui temporibus.
                 solves:
-                - Rerum et eveniet velit et.
-                - Nemo repellat rerum mollitia.
-                - Praesentium quis iusto qui consequuntur praesentium.
+                - Beatae quibusdam et fugit doloremque earum.
+                - Cumque id qui.
+                - Non consequuntur unde exercitationem laudantium adipisci.
       security:
       - jwt_header_Authorization: []
   /knack_koden_register_class:
@@ -4316,13 +4369,12 @@ paths:
             schema:
               $ref: '#/components/schemas/KnackKodenRegisterClassRequestBody'
             example:
-              class_name: Dolores itaque dolores sequi quia fugiat in.
-              postal_code: Vero aut.
-              school_name: Neque qui consectetur explicabo autem totam.
-              teacher_email: Aut quo.
-              teacher_full_name: Minima earum quam.
-              teacher_phonenr: Exercitationem repellat voluptatem velit doloribus
-                voluptate omnis.
+              class_name: Praesentium natus voluptatum repellat est a.
+              postal_code: Error ratione harum voluptatem.
+              school_name: Rerum mollitia et praesentium quis iusto qui.
+              teacher_email: Voluptas tempora et adipisci.
+              teacher_full_name: Est harum iste excepturi.
+              teacher_phonenr: Et eveniet velit et quisquam nemo.
       responses:
         "200":
           description: OK response.
@@ -4331,7 +4383,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/KnackKodenRegisterClassResponseBody'
               example:
-                password: Facere qui dolores quia eius.
+                password: Repudiandae sed error quia quia quibusdam voluptates.
       security:
       - jwt_header_Authorization: []
   /knack_koden_scoreboard:
@@ -4349,6 +4401,12 @@ paths:
                 $ref: '#/components/schemas/SsmSchoolScoreboard'
               example:
                 scores:
+                - is_university: true
+                  school_name: Stockholm Science and Innovation School
+                  score: 1337
+                - is_university: true
+                  school_name: Stockholm Science and Innovation School
+                  score: 1337
                 - is_university: true
                   school_name: Stockholm Science and Innovation School
                   score: 1337
@@ -4553,9 +4611,6 @@ paths:
                 - is_university: true
                   school_name: Stockholm Science and Innovation School
                   score: 1337
-                - is_university: true
-                  school_name: Stockholm Science and Innovation School
-                  score: 1337
       security:
       - jwt_header_Authorization: []
   /user/complete_onboarding:
@@ -4643,6 +4698,10 @@ paths:
                   is_university: true
                   municipality_name: Örebro
                   name: Engelbrektsskolan
+                - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+                  is_university: true
+                  municipality_name: Örebro
+                  name: Engelbrektsskolan
               example:
               - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
                 is_university: true
@@ -4676,13 +4735,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetSelfResponseBody'
               example:
+                discord_id: "384389545793845983547349"
                 email: movitz.sunar@ssm.example
                 full_name: Movitz Sunar
                 id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
                 onboarding_done: true
                 role: admin
                 school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-                school_name: Non aut.
+                school_name: Et dolor quis.
       security:
       - jwt_header_Authorization: []
     post:
@@ -4835,22 +4895,22 @@ components:
             id: 85163218-8735-42ed-a7a6-42a9de2294df
         description:
           type: string
-          example: Id voluptatum blanditiis rerum minus.
+          example: Sint dolores magnam.
         end_time:
           type: string
-          example: Illum assumenda est iusto fugit.
+          example: Est fugiat corrupti.
         id:
           type: string
-          example: Aliquid accusantium aut aut quidem et.
+          example: Neque voluptatem soluta id eum.
         name:
           type: string
-          example: Ut aut officia fugit velit.
+          example: Exercitationem voluptatem nihil.
         slug:
           type: string
-          example: Velit et qui inventore quia.
+          example: Sint exercitationem autem rerum qui dolor.
         start_time:
           type: string
-          example: Perferendis doloremque consectetur omnis consectetur dolorem.
+          example: Sunt tempora rerum.
         team_based:
           type: boolean
           description: Is the CTF team-based?
@@ -4867,15 +4927,12 @@ components:
         - custom_score: 50
           display_order: 1
           id: 85163218-8735-42ed-a7a6-42a9de2294df
-        - custom_score: 50
-          display_order: 1
-          id: 85163218-8735-42ed-a7a6-42a9de2294df
-        description: Aut molestiae molestias.
-        end_time: Blanditiis quo tenetur temporibus.
-        id: Dolores repudiandae ipsam error minima est.
-        name: Tempora unde voluptatem provident explicabo.
-        slug: Quisquam dolores numquam culpa qui ullam.
-        start_time: Aliquam eaque voluptatem voluptatibus.
+        description: Necessitatibus eaque architecto laudantium voluptas aliquam esse.
+        end_time: Quo eligendi earum deserunt at.
+        id: Omnis similique est.
+        name: Qui quia voluptatem.
+        slug: Voluptate sed hic dolorem.
+        start_time: Et voluptatem.
         team_based: false
         theme: ctf-theme
       required:
@@ -4935,33 +4992,33 @@ components:
           type: array
           items:
             type: string
-            example: Ea facere velit voluptates ratione.
+            example: Eaque consequatur doloremque corrupti.
           example:
-          - Rem unde velit.
-          - Atque quis dolor.
-          - Doloribus maiores rem.
+          - Quo ipsa voluptatum optio dolorum sunt.
+          - Sequi dolore placeat maiores ipsum temporibus quisquam.
+          - Similique et et et.
         description:
           type: string
-          example: Ex sint possimus.
+          example: Sit pariatur non ratione repellat veritatis veritatis.
         end_time:
           type: string
-          example: Sapiente aut.
+          example: Aut explicabo nesciunt ratione qui quo.
         id:
           type: string
-          example: Voluptate sed hic dolorem.
+          example: Aliquid quia.
         name:
           type: string
-          example: Consequuntur sed non quas.
+          example: Et alias quaerat quo.
         private:
           type: boolean
           description: Is the CTF private?
           example: false
         slug:
           type: string
-          example: Aliquam minima laudantium est inventore veniam.
+          example: Omnis vitae non quia atque fugit aut.
         start_time:
           type: string
-          example: Odio voluptatem fugit.
+          example: Eum est qui.
         team_based:
           type: boolean
           description: Is the CTF team-based?
@@ -4972,16 +5029,15 @@ components:
           example: ctf-theme
       example:
         challenge_ids:
-        - Aut voluptas quo cupiditate.
-        - In illum et omnis autem voluptate.
-        - Itaque asperiores commodi sint quo dolorem.
-        description: Maxime totam vel.
-        end_time: Ratione omnis consequatur a illo voluptatem.
-        id: Et velit ut rem culpa illo.
-        name: Non corrupti labore dolorem repellendus.
+        - Quod deserunt odit sunt.
+        - Rem et nesciunt aut et incidunt fugit.
+        description: Iusto quidem autem.
+        end_time: Fugit sit maxime debitis enim.
+        id: Rerum explicabo.
+        name: Tempora odio neque optio necessitatibus laboriosam.
         private: false
-        slug: Beatae mollitia et exercitationem itaque eos.
-        start_time: Qui ut ducimus libero.
+        slug: Mollitia neque.
+        start_time: Placeat et.
         team_based: false
         theme: ctf-theme
       required:
@@ -4998,19 +5054,20 @@ components:
       properties:
         id:
           type: string
-          example: Quia atque fugit aut quae eaque.
+          example: Consequatur impedit illo explicabo sequi.
         score:
           type: integer
-          example: 5421185971919184218
+          example: 4286907869404511580
           format: int64
         solves:
           type: array
           items:
             type: string
-            example: Dolorum sunt vitae sequi.
+            example: Mollitia nostrum.
           example:
-          - Maiores ipsum.
-          - Quisquam voluptate similique et et et.
+          - At dolores et minima corporis corporis qui.
+          - Minima officiis maxime explicabo nulla voluptas magni.
+          - Eaque aliquid eum sed.
         team_id:
           type: string
           description: Optional team ID for team-based CTFs
@@ -5021,16 +5078,17 @@ components:
           example: Team Alpha
         username:
           type: string
-          example: Doloremque corrupti at eos quo ipsa.
+          example: Sint consequuntur cupiditate.
       example:
-        id: Rerum explicabo.
-        score: 192692785636895924
+        id: Consequatur illum fugit nulla quam nulla.
+        score: 2728220373299274093
         solves:
-        - Autem corporis placeat et perspiciatis fugit sit.
-        - Debitis enim id mollitia.
+        - Debitis ab enim.
+        - Quasi hic voluptatum.
+        - Exercitationem eligendi saepe fuga.
         team_id: team123
         teamname: Team Alpha
-        username: Tempora odio neque optio necessitatibus laboriosam.
+        username: Commodi placeat quae.
       required:
       - id
       - username
@@ -5041,25 +5099,25 @@ components:
       properties:
         challenge_id:
           type: string
-          example: Aliquam et aut harum dolores officia natus.
+          example: Id id facere est exercitationem explicabo.
         ctf_id:
           type: string
-          example: Rem et nesciunt aut et incidunt fugit.
+          example: Dolor eligendi dolor voluptas.
         id:
           type: string
-          example: Ut quod deserunt odit sunt.
+          example: Quo maxime sequi non nihil quis.
         solved_at:
           type: string
-          example: Temporibus perferendis est debitis labore quisquam.
+          example: Et consectetur autem.
         user_id:
           type: string
-          example: Unde deleniti cum et et.
+          example: Perspiciatis corporis fuga assumenda.
       example:
-        challenge_id: Provident debitis perspiciatis occaecati.
-        ctf_id: Ullam excepturi porro rerum voluptas.
-        id: Nam praesentium totam cum laborum.
-        solved_at: Et tempore fugit dicta esse eius qui.
-        user_id: Distinctio quia aliquid omnis dolorem.
+        challenge_id: At omnis quaerat sunt ut minus.
+        ctf_id: Accusantium laudantium.
+        id: Reiciendis itaque sunt libero impedit qui earum.
+        solved_at: Soluta aut facilis minus accusantium enim inventore.
+        user_id: Repudiandae quia.
       required:
       - id
       - ctf_id
@@ -5075,10 +5133,10 @@ components:
           example: "2025-07-03T10:15:30Z"
         ctf_id:
           type: string
-          example: Cupiditate omnis similique.
+          example: Ducimus praesentium ipsam molestiae omnis.
         id:
           type: string
-          example: Sint exercitationem autem rerum qui dolor.
+          example: Suscipit quaerat asperiores sint.
         password:
           type: string
           description: Team password/code
@@ -5089,8 +5147,8 @@ components:
           example: Team Alpha
       example:
         created_at: "2025-07-03T10:15:30Z"
-        ctf_id: Eaque architecto laudantium voluptas.
-        id: Et qui quia voluptatem aut.
+        ctf_id: Excepturi officiis.
+        id: Quis laboriosam ratione veritatis voluptas.
         password: team123
         teamname: Team Alpha
       required:
@@ -5103,13 +5161,13 @@ components:
       properties:
         ctf_id:
           type: string
-          example: Incidunt unde autem.
+          example: Repellendus eveniet maxime totam vel animi.
         id:
           type: string
-          example: Magni fugiat dolores.
+          example: Illo et non corrupti labore.
         password:
           type: string
-          example: Iure earum nobis laborum vero.
+          example: Ratione omnis consequatur a illo voluptatem.
         team_id:
           type: string
           description: Optional team ID for team-based CTFs
@@ -5120,14 +5178,14 @@ components:
           example: Team Alpha
         username:
           type: string
-          example: Earum debitis vitae quis.
+          example: Ut ducimus libero.
       example:
-        ctf_id: Voluptatem soluta id.
-        id: Nobis vitae et laborum sunt similique tenetur.
-        password: Sint dolores magnam.
+        ctf_id: Illum aut.
+        id: Beatae mollitia et exercitationem itaque eos.
+        password: Voluptate sunt itaque asperiores commodi sint quo.
         team_id: team123
         teamname: Team Alpha
-        username: Omnis exercitationem voluptatem nihil.
+        username: Quo cupiditate reprehenderit in illum et omnis.
       required:
       - id
       - ctf_id
@@ -5138,13 +5196,13 @@ components:
       properties:
         challenge_id:
           type: string
-          example: Excepturi officiis.
+          example: Distinctio quia aliquid omnis dolorem.
         solved_at:
           type: string
-          example: Tenetur corrupti qui et sint ad.
+          example: Provident debitis perspiciatis occaecati.
       example:
-        challenge_id: Delectus qui ad ad est dolorem doloremque.
-        solved_at: Molestiae consectetur officia eius perspiciatis aliquid quia.
+        challenge_id: Et tempore fugit dicta esse eius qui.
+        solved_at: Et repudiandae nesciunt distinctio.
       required:
       - challenge_id
       - solved_at
@@ -5156,28 +5214,26 @@ components:
           items:
             $ref: '#/components/schemas/CTFUserSolve'
           example:
-          - challenge_id: Repellat ipsum reiciendis.
-            solved_at: Eum necessitatibus atque.
-          - challenge_id: Repellat ipsum reiciendis.
-            solved_at: Eum necessitatibus atque.
-          - challenge_id: Repellat ipsum reiciendis.
-            solved_at: Eum necessitatibus atque.
-          - challenge_id: Repellat ipsum reiciendis.
-            solved_at: Eum necessitatibus atque.
+          - challenge_id: Rem optio eius veniam molestiae dolorem et.
+            solved_at: Commodi quia non ea.
+          - challenge_id: Rem optio eius veniam molestiae dolorem et.
+            solved_at: Commodi quia non ea.
+          - challenge_id: Rem optio eius veniam molestiae dolorem et.
+            solved_at: Commodi quia non ea.
         username:
           type: string
-          example: Quis laboriosam ratione veritatis voluptas.
+          example: Ullam excepturi porro rerum voluptas.
       example:
         solves:
-        - challenge_id: Repellat ipsum reiciendis.
-          solved_at: Eum necessitatibus atque.
-        - challenge_id: Repellat ipsum reiciendis.
-          solved_at: Eum necessitatibus atque.
-        - challenge_id: Repellat ipsum reiciendis.
-          solved_at: Eum necessitatibus atque.
-        - challenge_id: Repellat ipsum reiciendis.
-          solved_at: Eum necessitatibus atque.
-        username: Alias quaerat quo quidem sit.
+        - challenge_id: Rem optio eius veniam molestiae dolorem et.
+          solved_at: Commodi quia non ea.
+        - challenge_id: Rem optio eius veniam molestiae dolorem et.
+          solved_at: Commodi quia non ea.
+        - challenge_id: Rem optio eius veniam molestiae dolorem et.
+          solved_at: Commodi quia non ea.
+        - challenge_id: Rem optio eius veniam molestiae dolorem et.
+          solved_at: Commodi quia non ea.
+        username: Molestiae sit.
       required:
       - username
       - solves
@@ -5213,13 +5269,13 @@ components:
             id: 85163218-8735-42ed-a7a6-42a9de2294df
         description:
           type: string
-          example: Dolores aut inventore unde nisi explicabo.
+          example: Inventore veniam repellendus.
         id:
           type: string
-          example: Et quidem voluptatem.
+          example: Voluptatem fugit provident sapiente aut voluptatem.
         name:
           type: string
-          example: Aperiam eligendi et.
+          example: Minima laudantium.
       example:
         challenges:
         - custom_score: 50
@@ -5231,9 +5287,12 @@ components:
         - custom_score: 50
           display_order: 1
           id: 85163218-8735-42ed-a7a6-42a9de2294df
-        description: Soluta voluptatibus aut laboriosam temporibus excepturi.
-        id: Quo doloremque.
-        name: Illo nesciunt ad beatae ullam neque cupiditate.
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
+        description: Maiores rem corrupti et velit.
+        id: Velit voluptates ratione omnis facilis rem.
+        name: Velit officiis atque quis dolor illo.
       required:
       - id
       - name
@@ -5247,13 +5306,9 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeSolver'
           example:
-          - solved_at: 1346908383509799036
+          - solved_at: 1674417214770227690
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 1346908383509799036
-            user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 1346908383509799036
-            user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-          - solved_at: 1346908383509799036
+          - solved_at: 1674417214770227690
             user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
           type: array
@@ -5262,31 +5317,38 @@ components:
           example:
           - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
             input: SSM{wrong_flag}
-            submitted_at: 918079523200858637
+            submitted_at: 2079571719472454441
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
           - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
             input: SSM{wrong_flag}
-            submitted_at: 918079523200858637
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
             successful: false
             user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       example:
         solvers:
-        - solved_at: 1346908383509799036
+        - solved_at: 1674417214770227690
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 1346908383509799036
+        - solved_at: 1674417214770227690
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
-        - solved_at: 1346908383509799036
+        - solved_at: 1674417214770227690
+          user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+        - solved_at: 1674417214770227690
           user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
         submissions:
         - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           input: SSM{wrong_flag}
-          submitted_at: 918079523200858637
+          submitted_at: 2079571719472454441
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
         - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           input: SSM{wrong_flag}
-          submitted_at: 918079523200858637
+          submitted_at: 2079571719472454441
           successful: false
           user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -5312,14 +5374,14 @@ components:
       properties:
         solved_at:
           type: integer
-          example: 6200193261111855861
+          example: 2921713592910588215
           format: int64
         user_id:
           type: string
           example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
           format: uuid
       example:
-        solved_at: 8147464284611678690
+        solved_at: 5299923717101944420
         user_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
       required:
       - user_id
@@ -5337,7 +5399,7 @@ components:
           example: SSM{wrong_flag}
         submitted_at:
           type: integer
-          example: 9047633055974461100
+          example: 2581675849393440699
           format: int64
         successful:
           type: boolean
@@ -5349,7 +5411,7 @@ components:
       example:
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
         input: SSM{wrong_flag}
-        submitted_at: 2151536604922067140
+        submitted_at: 9222605675319144499
         successful: false
         user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
       required:
@@ -5358,6 +5420,74 @@ components:
       - successful
       - submitted_at
       - id
+    ChallengeSubmissionsGroup:
+      type: object
+      properties:
+        challenge_id:
+          type: string
+          example: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+          format: uuid
+        challenge_slug:
+          type: string
+          example: binexp-101
+        challenge_title:
+          type: string
+          example: Binary Exploitation 101
+        solved:
+          type: boolean
+          example: true
+        submissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeSubmission'
+          example:
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+      example:
+        challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+        challenge_slug: binexp-101
+        challenge_title: Binary Exploitation 101
+        solved: true
+        submissions:
+        - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          input: SSM{wrong_flag}
+          submitted_at: 2079571719472454441
+          successful: false
+          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+        - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          input: SSM{wrong_flag}
+          submitted_at: 2079571719472454441
+          successful: false
+          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+        - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          input: SSM{wrong_flag}
+          submitted_at: 2079571719472454441
+          successful: false
+          user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+      required:
+      - challenge_id
+      - challenge_title
+      - challenge_slug
+      - solved
+      - submissions
     ChalltoolsImportRequestBody:
       type: object
       properties:
@@ -5365,14 +5495,14 @@ components:
           type: array
           items:
             type: string
-            example: Cumque est ut.
+            example: Voluptatem provident explicabo.
           example:
           - Movitz Sunar
         categories:
           type: array
           items:
             type: string
-            example: Modi totam.
+            example: Aut molestiae molestias.
           example:
           - web
         challenge_id:
@@ -5388,7 +5518,7 @@ components:
           type: array
           items:
             type: string
-            example: Consequatur iste.
+            example: Aliquam eaque voluptatem voluptatibus.
           example:
           - https://bucket/key
         flag_format_prefix:
@@ -5402,6 +5532,10 @@ components:
           items:
             $ref: '#/components/schemas/ImportChallFlag'
           example:
+          - flag: fl4g_l0l
+            type: regex
+          - flag: fl4g_l0l
+            type: regex
           - flag: fl4g_l0l
             type: regex
           - flag: fl4g_l0l
@@ -5425,6 +5559,10 @@ components:
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
         title:
           type: string
           example: DNS 101
@@ -5435,10 +5573,10 @@ components:
         - web
         challenge_id: 225ada44-3fde-460d-84a4-2f16ff579618
         custom:
-          chall_namespace: Voluptatem veritatis voluptas nostrum.
+          chall_namespace: Modi molestiae ab repellat dolore.
           publish: false
-          publish_at: Doloremque earum non cumque id qui.
-          slug: Non consequuntur unde exercitationem laudantium adipisci.
+          publish_at: Reprehenderit reprehenderit.
+          slug: Aut fugit magni recusandae impedit.
         description: how to dns
         file_urls:
         - https://bucket/key
@@ -5451,13 +5589,15 @@ components:
           type: regex
         - flag: fl4g_l0l
           type: regex
-        - flag: fl4g_l0l
-          type: regex
         human_metadata:
-          event_name: Culpa qui temporibus eveniet vel beatae quibusdam.
+          event_name: Ut quas aliquam sit sint ut.
         order: 5
         score: 100
         services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
@@ -5555,12 +5695,16 @@ components:
           publish: true
           slug: movitz
           sponsor: true
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
         category: web
         completed: true
         course_items:
-        - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          position: 0
         - challenge_id: 195229b0-b15f-4ee5-9a99-94bfff492967
           id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           position: 0
@@ -5650,7 +5794,7 @@ components:
       properties:
         expires_in:
           type: string
-          example: week
+          example: hour
           enum:
           - hour
           - week
@@ -5659,7 +5803,7 @@ components:
           type: string
           example: e3bb4dc5-9479-42ce-aed3-b41e8139fccb
       example:
-        expires_in: year
+        expires_in: hour
         name: e3bb4dc5-9479-42ce-aed3-b41e8139fccb
       required:
       - name
@@ -5669,9 +5813,9 @@ components:
       properties:
         token:
           type: string
-          example: Sunt quod voluptatem iure occaecati rem.
+          example: Excepturi et quas.
       example:
-        token: Sit aliquam.
+        token: Magni fugiat dolores.
       required:
       - token
     CreateCTFEventRequestBody:
@@ -5707,7 +5851,7 @@ components:
         end_time:
           type: integer
           description: CTF end time
-          example: 6512469730199329418
+          example: 9147538373580980590
           format: int64
         name:
           type: string
@@ -5728,7 +5872,7 @@ components:
         start_time:
           type: integer
           description: CTF start time
-          example: 6925673529621859417
+          example: 853525197756313985
           format: int64
         team_based:
           type: boolean
@@ -5746,19 +5890,13 @@ components:
         - custom_score: 50
           display_order: 1
           id: 85163218-8735-42ed-a7a6-42a9de2294df
-        - custom_score: 50
-          display_order: 1
-          id: 85163218-8735-42ed-a7a6-42a9de2294df
-        - custom_score: 50
-          display_order: 1
-          id: 85163218-8735-42ed-a7a6-42a9de2294df
         description: A fun CTF for school
-        end_time: 8246517860426589428
+        end_time: 5649905465008439842
         name: School CTF 2025
         password: password
         private: false
         slug: school-ctf-2025
-        start_time: 7970601391464681532
+        start_time: 1797339777852084780
         team_based: false
         theme: ctf-theme
       required:
@@ -5774,9 +5912,9 @@ components:
       properties:
         teamname:
           type: string
-          example: Atque et voluptatem nesciunt quo eligendi.
+          example: Corrupti qui et sint ad.
       example:
-        teamname: Deserunt at.
+        teamname: Delectus qui ad ad est dolorem doloremque.
       required:
       - teamname
     CreateChallengeGroupRequestBody:
@@ -5788,12 +5926,6 @@ components:
             $ref: '#/components/schemas/CTFChallenge'
           description: Challenges
           example:
-          - custom_score: 50
-            display_order: 1
-            id: 85163218-8735-42ed-a7a6-42a9de2294df
-          - custom_score: 50
-            display_order: 1
-            id: 85163218-8735-42ed-a7a6-42a9de2294df
           - custom_score: 50
             display_order: 1
             id: 85163218-8735-42ed-a7a6-42a9de2294df
@@ -5833,7 +5965,7 @@ components:
           type: array
           items:
             type: string
-            example: Et iusto magni optio.
+            example: Quia et ut dolores repudiandae ipsam error.
           example:
           - 1b678293-6737-4cc7-8eae-aa821100293f
         category_id:
@@ -5897,7 +6029,7 @@ components:
           type: array
           items:
             type: string
-            example: Quis et.
+            example: Debitis vitae.
           example:
           - b29869ec-6eef-451c-a389-249a6d6ac47b
         category:
@@ -5943,7 +6075,7 @@ components:
         fault:
           type: boolean
           description: Is the error a server-side fault?
-          example: true
+          example: false
         id:
           type: string
           description: ID is a unique identifier for this particular occurrence of
@@ -5961,11 +6093,11 @@ components:
         temporary:
           type: boolean
           description: Is the error temporary?
-          example: false
+          example: true
         timeout:
           type: boolean
           description: Is the error a timeout?
-          example: true
+          example: false
       example:
         id: 3F1FKVRR
         message: Value of ID must be an integer
@@ -6016,6 +6148,9 @@ components:
     GetSelfResponseBody:
       type: object
       properties:
+        discord_id:
+          type: string
+          example: "384389545793845983547349"
         email:
           type: string
           example: movitz.sunar@ssm.example
@@ -6036,15 +6171,16 @@ components:
           example: a0b05541-9211-4faf-82cc-d3bd64370bf4
         school_name:
           type: string
-          example: Et repudiandae nesciunt distinctio.
+          example: Ipsum et aperiam et rerum.
       example:
+        discord_id: "384389545793845983547349"
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
         onboarding_done: true
         role: admin
         school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
-        school_name: Rerum molestiae.
+        school_name: Qui aut blanditiis tempore enim architecto officiis.
       required:
       - onboarding_done
       - id
@@ -6056,21 +6192,21 @@ components:
       properties:
         chall_namespace:
           type: string
-          example: Et in.
+          example: Et dolores aut.
         publish:
           type: boolean
           example: false
         publish_at:
           type: string
-          example: Sed commodi est nobis praesentium voluptatem impedit.
+          example: Sed rem dignissimos excepturi non occaecati beatae.
         slug:
           type: string
-          example: Nobis qui sit quo sit nihil.
+          example: Quidem voluptatem cupiditate aperiam eligendi.
       example:
-        chall_namespace: Accusamus iste.
+        chall_namespace: Illo nesciunt ad beatae ullam neque cupiditate.
         publish: false
-        publish_at: Inventore vel.
-        slug: Ipsa ab.
+        publish_at: Nisi explicabo inventore.
+        slug: Quo doloremque.
     ImportChallFlag:
       type: object
       properties:
@@ -6091,9 +6227,9 @@ components:
       properties:
         event_name:
           type: string
-          example: Et sapiente voluptates minima.
+          example: Tenetur temporibus dolorem.
       example:
-        event_name: Deserunt ut cum.
+        event_name: Dolores numquam culpa qui ullam autem necessitatibus.
     JoinSchoolRequestBody:
       type: object
       properties:
@@ -6109,21 +6245,22 @@ components:
       properties:
         class_name:
           type: string
-          example: Non et.
+          example: Ab veritatis accusamus.
         solves:
           type: array
           items:
             type: string
-            example: Tempore ut odio sit.
+            example: Debitis quia deleniti dolorem consequatur.
           example:
-          - Sapiente fugit aut.
-          - Architecto et.
-          - Vero at.
+          - Quod voluptatem iure occaecati rem aut.
+          - Aliquam minus architecto doloremque ex suscipit.
+          - Autem quis et dolorum.
+          - Illum et sunt occaecati.
       example:
-        class_name: Exercitationem consequuntur consequatur laborum ab.
+        class_name: Eos aliquid ut veritatis exercitationem sit consequuntur.
         solves:
-        - Repellendus et ipsum quo repellendus.
-        - Quidem consequatur qui est non.
+        - Aut aut quidem et repellendus.
+        - Aut officia fugit velit.
       required:
       - class_name
       - solves
@@ -6132,29 +6269,29 @@ components:
       properties:
         class_name:
           type: string
-          example: Dolor provident dolor et.
+          example: Aut assumenda et iusto.
         postal_code:
           type: string
-          example: Molestiae sunt.
+          example: Optio eius aut tenetur illum est cumque.
         school_name:
           type: string
-          example: Reiciendis ut quidem quod voluptates sapiente sed.
+          example: Incidunt reiciendis consequatur sit eveniet quis.
         teacher_email:
           type: string
-          example: Commodi veniam est.
+          example: Suscipit ea repellat labore sed.
         teacher_full_name:
           type: string
-          example: Quia odio qui expedita officiis dolorem consequatur.
+          example: Consequatur qui est non.
         teacher_phonenr:
           type: string
-          example: Veritatis dolore doloribus.
+          example: Omnis facilis quia eum aliquid magni et.
       example:
-        class_name: Quis quos.
-        postal_code: Et vel est labore qui.
-        school_name: Mollitia voluptas molestiae quia ipsa.
-        teacher_email: Cumque in iure quas voluptatem suscipit dolorum.
-        teacher_full_name: Et sit.
-        teacher_phonenr: Consectetur deserunt quod est consectetur et sit.
+        class_name: Consectetur sed commodi est nobis praesentium voluptatem.
+        postal_code: Neque nobis qui sit quo sit nihil.
+        school_name: Deserunt ut cum.
+        teacher_email: Consequatur iste.
+        teacher_full_name: Ut aspernatur modi totam.
+        teacher_phonenr: Et qui et sapiente voluptates minima.
       required:
       - teacher_full_name
       - teacher_email
@@ -6167,9 +6304,9 @@ components:
       properties:
         password:
           type: string
-          example: Aliquam et consectetur sed voluptas et et.
+          example: Et in.
       example:
-        password: Qui et autem.
+        password: Et inventore vel eius.
       required:
       - password
     KnackKodenSubmitFlagRequestBody:
@@ -6181,10 +6318,10 @@ components:
           maxLength: 200
         password:
           type: string
-          example: Repellat error rem facilis aut.
+          example: Magnam est.
       example:
         flag: SSM{flag}
-        password: Eius ratione.
+        password: Et ipsum quo repellendus omnis.
       required:
       - flag
       - password
@@ -6248,13 +6385,13 @@ components:
         team_code:
           type: string
           description: 'Optional: Team code to join a team in team-based CTFs.'
-          example: Ut dicta.
+          example: Aliquam et aut harum dolores officia natus.
         username:
           type: string
-          example: Consequatur aut iure.
+          example: Unde deleniti cum et et.
       example:
-        team_code: Ducimus praesentium ipsam molestiae omnis.
-        username: Suscipit quaerat asperiores sint.
+        team_code: Nam praesentium totam cum laborum.
+        username: Temporibus perferendis est debitis labore quisquam.
       required:
       - username
     School:
@@ -6312,7 +6449,7 @@ components:
           type: array
           items:
             type: string
-            example: Labore sed quis omnis facilis quia eum.
+            example: Rerum minus sit perferendis doloremque consectetur omnis.
           example:
           - dfaa1a6a-9051-4c52-9441-5d664536cf24
         category_id:
@@ -6339,17 +6476,15 @@ components:
           - filename: decryptor.exe
             id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
             url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            url: https://s3/bucket/key?signature
         flags:
           type: array
           items:
             $ref: '#/components/schemas/AdminChallengeFlag'
           example:
+          - flag: SSM{yo}
+            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          - flag: SSM{yo}
+            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           - flag: SSM{yo}
             id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           - flag: SSM{yo}
@@ -6372,6 +6507,10 @@ components:
           items:
             $ref: '#/components/schemas/ChallengeService'
           example:
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
+          - hyperlink: true
+            user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
@@ -6401,6 +6540,9 @@ components:
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
+        - filename: decryptor.exe
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
           url: https://s3/bucket/key?signature
@@ -6510,41 +6652,6 @@ components:
         solves: 3
         static_score: 50
         title: pwnme
-      - authors:
-        - dfaa1a6a-9051-4c52-9441-5d664536cf24
-        category_id: 12b8dc3a-10ae-49ed-9d69-5208ccd92ed1
-        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
-        description: A heap overflow challenge
-        files:
-        - filename: decryptor.exe
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          url: https://s3/bucket/key?signature
-        flags:
-        - flag: SSM{yo}
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        - flag: SSM{yo}
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        - flag: SSM{yo}
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        hide: false
-        id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        publish_at: 1638384718
-        services:
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
-        slug: pwnme
-        solves: 3
-        static_score: 50
-        title: pwnme
     SsmAdminCourse:
       type: object
       properties:
@@ -6552,7 +6659,7 @@ components:
           type: array
           items:
             type: string
-            example: Architecto doloremque ex suscipit.
+            example: Incidunt unde autem.
           example:
           - 46e0996b-3bee-4836-b5f8-afc2a62fc71b
         category:
@@ -6630,15 +6737,261 @@ components:
         publish: true
         slug: sqli
         title: SQL-Injektioner
-      - author_ids:
-        - 46e0996b-3bee-4836-b5f8-afc2a62fc71b
-        category: web
-        description: markdown text
-        difficulty: advanced
-        id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        publish: true
-        slug: sqli
-        title: SQL-Injektioner
+    SsmAdminUserdetails:
+      type: object
+      properties:
+        challenge_submissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChallengeSubmissionsGroup'
+          example:
+          - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+            challenge_slug: binexp-101
+            challenge_title: Binary Exploitation 101
+            solved: true
+            submissions:
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+            challenge_slug: binexp-101
+            challenge_title: Binary Exploitation 101
+            solved: true
+            submissions:
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+            challenge_slug: binexp-101
+            challenge_title: Binary Exploitation 101
+            solved: true
+            submissions:
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+            - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+              input: SSM{wrong_flag}
+              submitted_at: 2079571719472454441
+              successful: false
+              user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+        discord_id:
+          type: string
+          example: "384389545793845983547349"
+        discord_user:
+          $ref: '#/components/schemas/SsmDiscordUser'
+        email:
+          type: string
+          example: movitz.sunar@ssm.example
+        full_name:
+          type: string
+          example: Movitz Sunar
+        hourly_activity:
+          type: array
+          items:
+            type: integer
+            example: 2600588145431918562
+            format: int64
+          example:
+          - 0
+          - 0
+          - 1
+          - 0
+          - 0
+          - 0
+          - 2
+          - 5
+          - 3
+          - 1
+          - 0
+          - 0
+          - 0
+          - 0
+          - 1
+          - 0
+          - 0
+          - 0
+          - 0
+          - 2
+          - 4
+          - 3
+          - 1
+          - 0
+          minItems: 24
+          maxItems: 24
+        id:
+          type: string
+          example: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+        role:
+          type: string
+          example: admin
+        school_id:
+          type: string
+          example: a0b05541-9211-4faf-82cc-d3bd64370bf4
+        submission_stats:
+          $ref: '#/components/schemas/SubmissionStats'
+      example:
+        challenge_submissions:
+        - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+          challenge_slug: binexp-101
+          challenge_title: Binary Exploitation 101
+          solved: true
+          submissions:
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+        - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+          challenge_slug: binexp-101
+          challenge_title: Binary Exploitation 101
+          solved: true
+          submissions:
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+        - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+          challenge_slug: binexp-101
+          challenge_title: Binary Exploitation 101
+          solved: true
+          submissions:
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+        - challenge_id: 8bf8ae1c-0c49-4ea7-ad0f-0798d7b2728a
+          challenge_slug: binexp-101
+          challenge_title: Binary Exploitation 101
+          solved: true
+          submissions:
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+          - id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+            input: SSM{wrong_flag}
+            submitted_at: 2079571719472454441
+            successful: false
+            user_id: a78c6915-87f4-49e1-8ec9-0bb5c261b56d
+        discord_id: "384389545793845983547349"
+        discord_user:
+          avatar: a_1234567890abcdef1234567890abcdef
+          discriminator: "1234"
+          global_name: Display Name
+          id: "123456789012345678"
+          username: username
+        email: movitz.sunar@ssm.example
+        full_name: Movitz Sunar
+        hourly_activity:
+        - 0
+        - 0
+        - 1
+        - 0
+        - 0
+        - 0
+        - 2
+        - 5
+        - 3
+        - 1
+        - 0
+        - 0
+        - 0
+        - 0
+        - 1
+        - 0
+        - 0
+        - 0
+        - 0
+        - 2
+        - 4
+        - 3
+        - 1
+        - 0
+        id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+        role: admin
+        school_id: a0b05541-9211-4faf-82cc-d3bd64370bf4
+        submission_stats:
+          failed: 18
+          success_rate: 70
+          successful: 42
+          total: 60
+      required:
+      - id
+      - email
+      - full_name
+      - role
+      - submission_stats
+      - hourly_activity
+      - challenge_submissions
     SsmChallenge:
       type: object
       properties:
@@ -6694,8 +7047,6 @@ components:
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
         id:
           type: string
           description: ID of a file
@@ -6715,8 +7066,6 @@ components:
             user_display: nc 0.0.0.0 1234
           - hyperlink: true
             user_display: nc 0.0.0.0 1234
-          - hyperlink: true
-            user_display: nc 0.0.0.0 1234
         slug:
           type: string
           description: A unique string that can be used in URLs
@@ -6730,6 +7079,12 @@ components:
           items:
             $ref: '#/components/schemas/SsmSolver'
           example:
+          - full_name: Movitz Sunar
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+            solved_at: 16123128
+          - full_name: Movitz Sunar
+            id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+            solved_at: 16123128
           - full_name: Movitz Sunar
             id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
             solved_at: 16123128
@@ -6762,15 +7117,18 @@ components:
           publish: true
           slug: movitz
           sponsor: true
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
         category: Misc
         chall_namespace: knackkoden
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
         files:
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
-        - filename: decryptor.exe
-          url: https://s3/bucket/key?signature
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         - filename: decryptor.exe
@@ -6784,11 +7142,15 @@ components:
           user_display: nc 0.0.0.0 1234
         - hyperlink: true
           user_display: nc 0.0.0.0 1234
-        - hyperlink: true
-          user_display: nc 0.0.0.0 1234
         slug: pwnme
         solved: true
         solvers:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
@@ -6812,6 +7174,53 @@ components:
       items:
         $ref: '#/components/schemas/SsmChallenge'
       example:
+      - authors:
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        - description: Movitz gör saker
+          full_name: Movitz Sunar
+          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+          image_url: movitz
+          publish: true
+          slug: movitz
+          sponsor: true
+        category: Misc
+        chall_namespace: knackkoden
+        ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
+        description: A heap overflow challenge
+        files:
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        - filename: decryptor.exe
+          url: https://s3/bucket/key?signature
+        id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
+        score: 50
+        services:
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        - hyperlink: true
+          user_display: nc 0.0.0.0 1234
+        slug: pwnme
+        solved: true
+        solvers:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        solves: 3
+        title: pwnme
       - authors:
         - description: Movitz gör saker
           full_name: Movitz Sunar
@@ -6935,13 +7344,6 @@ components:
             publish: true
             slug: movitz
             sponsor: true
-          - description: Movitz gör saker
-            full_name: Movitz Sunar
-            id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-            image_url: movitz
-            publish: true
-            slug: movitz
-            sponsor: true
         category:
           type: string
           example: Misc
@@ -6959,15 +7361,13 @@ components:
           example: A heap overflow challenge
         display_order:
           type: integer
-          example: 4211547380968846771
+          example: 7786436499030470001
           format: int64
         files:
           type: array
           items:
             $ref: '#/components/schemas/ChallengeFiles'
           example:
-          - filename: decryptor.exe
-            url: https://s3/bucket/key?signature
           - filename: decryptor.exe
             url: https://s3/bucket/key?signature
           - filename: decryptor.exe
@@ -6979,11 +7379,11 @@ components:
           format: uuid
         num_solves_in_team:
           type: integer
-          example: 8484233190178163360
+          example: 5678571326822605551
           format: int64
         num_team_solves:
           type: integer
-          example: 4495796303946122967
+          example: 4810904717134558767
           format: int64
         score:
           type: integer
@@ -7096,7 +7496,7 @@ components:
         chall_namespace: knackkoden
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
-        display_order: 254325988742580033
+        display_order: 2675430504444589942
         files:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
@@ -7107,8 +7507,8 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        num_solves_in_team: 8274726516734649870
-        num_team_solves: 6032390487536644650
+        num_solves_in_team: 3994215549201927321
+        num_team_solves: 5794149975565332742
         score: 50
         services:
         - hyperlink: true
@@ -7129,13 +7529,13 @@ components:
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
         solvers_in_team:
-        - full_name: Movitz Sunar
-          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-          solved_at: 16123128
-        - full_name: Movitz Sunar
-          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
-          solved_at: 16123128
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
@@ -7144,6 +7544,9 @@ components:
           solved_at: 16123128
         solves: 3
         team_solvers:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
@@ -7185,25 +7588,11 @@ components:
           publish: true
           slug: movitz
           sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
         category: Misc
         chall_namespace: knackkoden
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
-        display_order: 6758816842017309524
+        display_order: 7416231872760887150
         files:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
@@ -7212,8 +7601,8 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        num_solves_in_team: 9063769411106084439
-        num_team_solves: 5112359489965538824
+        num_solves_in_team: 5179484479523274053
+        num_team_solves: 4606953301895134197
         score: 50
         services:
         - hyperlink: true
@@ -7236,6 +7625,9 @@ components:
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         solvers_in_team:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
@@ -7275,25 +7667,11 @@ components:
           publish: true
           slug: movitz
           sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
         category: Misc
         chall_namespace: knackkoden
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
-        display_order: 6758816842017309524
+        display_order: 7416231872760887150
         files:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
@@ -7302,8 +7680,8 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        num_solves_in_team: 9063769411106084439
-        num_team_solves: 5112359489965538824
+        num_solves_in_team: 5179484479523274053
+        num_team_solves: 4606953301895134197
         score: 50
         services:
         - hyperlink: true
@@ -7326,6 +7704,9 @@ components:
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         solvers_in_team:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
@@ -7365,25 +7746,11 @@ components:
           publish: true
           slug: movitz
           sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
         category: Misc
         chall_namespace: knackkoden
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
-        display_order: 6758816842017309524
+        display_order: 7416231872760887150
         files:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
@@ -7392,8 +7759,8 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        num_solves_in_team: 9063769411106084439
-        num_team_solves: 5112359489965538824
+        num_solves_in_team: 5179484479523274053
+        num_team_solves: 4606953301895134197
         score: 50
         services:
         - hyperlink: true
@@ -7416,6 +7783,9 @@ components:
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         solvers_in_team:
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
@@ -7455,25 +7825,11 @@ components:
           publish: true
           slug: movitz
           sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
-        - description: Movitz gör saker
-          full_name: Movitz Sunar
-          id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-          image_url: movitz
-          publish: true
-          slug: movitz
-          sponsor: true
         category: Misc
         chall_namespace: knackkoden
         ctf_event_id: c397efb2-b171-4d77-9166-d105cf4f521a
         description: A heap overflow challenge
-        display_order: 6758816842017309524
+        display_order: 7416231872760887150
         files:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
@@ -7482,8 +7838,8 @@ components:
         - filename: decryptor.exe
           url: https://s3/bucket/key?signature
         id: 020817da-8b5c-42c4-9e52-0f3a6628c1f8
-        num_solves_in_team: 9063769411106084439
-        num_team_solves: 5112359489965538824
+        num_solves_in_team: 5179484479523274053
+        num_team_solves: 4606953301895134197
         score: 50
         services:
         - hyperlink: true
@@ -7515,6 +7871,9 @@ components:
         - full_name: Movitz Sunar
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
+        - full_name: Movitz Sunar
+          id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
+          solved_at: 16123128
         solves: 3
         team_solvers:
         - full_name: Movitz Sunar
@@ -7530,6 +7889,33 @@ components:
           id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
           solved_at: 16123128
         title: pwnme
+    SsmDiscordUser:
+      type: object
+      properties:
+        avatar:
+          type: string
+          example: a_1234567890abcdef1234567890abcdef
+        discriminator:
+          type: string
+          example: "1234"
+        global_name:
+          type: string
+          example: Display Name
+        id:
+          type: string
+          example: "123456789012345678"
+        username:
+          type: string
+          example: username
+      example:
+        avatar: a_1234567890abcdef1234567890abcdef
+        discriminator: "1234"
+        global_name: Display Name
+        id: "123456789012345678"
+        username: username
+      required:
+      - id
+      - username
     SsmSchoolScoreboard:
       type: object
       properties:
@@ -7544,11 +7930,11 @@ components:
           - is_university: true
             school_name: Stockholm Science and Innovation School
             score: 1337
-          - is_university: true
-            school_name: Stockholm Science and Innovation School
-            score: 1337
       example:
         scores:
+        - is_university: true
+          school_name: Stockholm Science and Innovation School
+          score: 1337
         - is_university: true
           school_name: Stockholm Science and Innovation School
           score: 1337
@@ -7586,6 +7972,9 @@ components:
     SsmUser:
       type: object
       properties:
+        discord_id:
+          type: string
+          example: "384389545793845983547349"
         email:
           type: string
           example: movitz.sunar@ssm.example
@@ -7602,6 +7991,7 @@ components:
           type: string
           example: a0b05541-9211-4faf-82cc-d3bd64370bf4
       example:
+        discord_id: "384389545793845983547349"
         email: movitz.sunar@ssm.example
         full_name: Movitz Sunar
         id: 9f3e4702-d5b8-42c9-a409-a04678f23a33
@@ -7879,6 +8269,14 @@ components:
             school_name: Stockholm Science and Innovation School
             score: 1337
             user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+          - name: Movitz Sunar
+            school_name: Stockholm Science and Innovation School
+            score: 1337
+            user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+          - name: Movitz Sunar
+            school_name: Stockholm Science and Innovation School
+            score: 1337
+            user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
       example:
         scores:
         - name: Movitz Sunar
@@ -7889,8 +8287,41 @@ components:
           school_name: Stockholm Science and Innovation School
           score: 1337
           user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
+        - name: Movitz Sunar
+          school_name: Stockholm Science and Innovation School
+          score: 1337
+          user_id: 97ee0ee4-b65f-445b-97cc-b61d96db8d8e
       required:
       - scores
+    SubmissionStats:
+      type: object
+      properties:
+        failed:
+          type: integer
+          example: 18
+          format: int64
+        success_rate:
+          type: integer
+          example: 70
+          format: int64
+        successful:
+          type: integer
+          example: 42
+          format: int64
+        total:
+          type: integer
+          example: 60
+          format: int64
+      example:
+        failed: 18
+        success_rate: 70
+        successful: 42
+        total: 60
+      required:
+      - successful
+      - failed
+      - total
+      - success_rate
     SubmitFlagRequestBody:
       type: object
       properties:
@@ -7978,7 +8409,7 @@ components:
         end_time:
           type: integer
           description: CTF end time
-          example: 1331932598113011535
+          example: 8506529078469305259
           format: int64
         name:
           type: string
@@ -7999,7 +8430,7 @@ components:
         start_time:
           type: integer
           description: CTF start time
-          example: 5502025902767995630
+          example: 3777828644520277747
           format: int64
         team_based:
           type: boolean
@@ -8017,13 +8448,16 @@ components:
         - custom_score: 50
           display_order: 1
           id: 85163218-8735-42ed-a7a6-42a9de2294df
+        - custom_score: 50
+          display_order: 1
+          id: 85163218-8735-42ed-a7a6-42a9de2294df
         description: A fun CTF for school
-        end_time: 938489317958134895
+        end_time: 7510947210452317707
         name: School CTF 2025
         password: password
         private: false
         slug: school-ctf-2025
-        start_time: 7963480005466995607
+        start_time: 7941563173992546312
         team_based: false
         theme: ctf-theme
       required:
@@ -8038,9 +8472,9 @@ components:
       properties:
         username:
           type: string
-          example: Tempora rerum dolore.
+          example: Consequatur aut iure.
       example:
-        username: Fugiat corrupti.
+        username: Ut dicta.
       required:
       - username
     UpdateCourseRequestBody:
@@ -8050,7 +8484,7 @@ components:
           type: array
           items:
             type: string
-            example: Sed illum et sunt occaecati est.
+            example: Nostrum iure earum nobis laborum vero distinctio.
           example:
           - b29869ec-6eef-451c-a389-249a6d6ac47b
         category:

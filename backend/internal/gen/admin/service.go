@@ -35,6 +35,8 @@ type Service interface {
 	CreateMonthlyChallenge(context.Context, *CreateMonthlyChallengePayload) (err error)
 	// ListUsers implements ListUsers.
 	ListUsers(context.Context, *ListUsersPayload) (res []*SsmUser, err error)
+	// get discord avatar for person
+	GetDiscordUser(context.Context, *GetDiscordUserPayload) (res *SsmDiscordUser, err error)
 	// ListAuthors implements ListAuthors.
 	ListAuthors(context.Context, *ListAuthorsPayload) (res []*Author, err error)
 	// UpdateAuthor implements UpdateAuthor.
@@ -95,6 +97,8 @@ type Service interface {
 	DeleteCTFTeam(context.Context, *DeleteCTFTeamPayload) (err error)
 	// UpdateCTFTeam implements UpdateCTFTeam.
 	UpdateCTFTeam(context.Context, *UpdateCTFTeamPayload) (res *CTFTeam, err error)
+	// Get consolidated user details with all challenge submissions and statistics
+	GetUserDetails(context.Context, *GetUserDetailsPayload) (res *SsmAdminUserdetails, err error)
 }
 
 // Auther defines the authorization functions to be implemented by the service.
@@ -111,7 +115,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [39]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse", "CreateCTF", "UpdateCTF", "DeleteCTF", "ListCTFs", "CreateChallengeGroup", "UpdateChallengeGroup", "DeleteChallengeGroup", "ListChallengeGroups", "ListCTFUsers", "DeleteCTFUser", "UpdateCTFUser", "ListCTFTeams", "CreateCTFTeam", "DeleteCTFTeam", "UpdateCTFTeam"}
+var MethodNames = [41]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "GetDiscordUser", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse", "CreateCTF", "UpdateCTF", "DeleteCTF", "ListCTFs", "CreateChallengeGroup", "UpdateChallengeGroup", "DeleteChallengeGroup", "ListChallengeGroups", "ListCTFUsers", "DeleteCTFUser", "UpdateCTFUser", "ListCTFTeams", "CreateCTFTeam", "DeleteCTFTeam", "UpdateCTFTeam", "GetUserDetails"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -215,6 +219,23 @@ type CreateMonthlyChallengePayload struct {
 // ListUsersPayload is the payload type of the admin service ListUsers method.
 type ListUsersPayload struct {
 	Token string
+}
+
+// GetDiscordUserPayload is the payload type of the admin service
+// GetDiscordUser method.
+type GetDiscordUserPayload struct {
+	// Discord user ID
+	DiscordID string
+	Token     string
+}
+
+// SsmDiscordUser is the result type of the admin service GetDiscordUser method.
+type SsmDiscordUser struct {
+	ID            string
+	Username      string
+	Discriminator *string
+	Avatar        *string
+	GlobalName    *string
 }
 
 // ListAuthorsPayload is the payload type of the admin service ListAuthors
@@ -577,6 +598,29 @@ type UpdateCTFTeamPayload struct {
 	Token    string
 }
 
+// GetUserDetailsPayload is the payload type of the admin service
+// GetUserDetails method.
+type GetUserDetailsPayload struct {
+	// User ID
+	UserID string
+	Token  string
+}
+
+// SsmAdminUserdetails is the result type of the admin service GetUserDetails
+// method.
+type SsmAdminUserdetails struct {
+	DiscordUser          *SsmDiscordUser
+	SubmissionStats      *SubmissionStats
+	HourlyActivity       []int
+	ChallengeSubmissions []*ChallengeSubmissionsGroup
+	ID                   string
+	Email                string
+	FullName             string
+	Role                 string
+	SchoolID             *string
+	DiscordID            *string
+}
+
 // A Wargame challenge
 type SsmAdminChallenge struct {
 	// ID of a file
@@ -645,11 +689,12 @@ type MonthlyChallenge struct {
 }
 
 type SsmUser struct {
-	ID       string
-	Email    string
-	FullName string
-	Role     string
-	SchoolID *string
+	ID        string
+	Email     string
+	FullName  string
+	Role      string
+	SchoolID  *string
+	DiscordID *string
 }
 
 type Author struct {
@@ -717,6 +762,21 @@ type CTFChallenge struct {
 	DisplayOrder int
 }
 
+type SubmissionStats struct {
+	Successful  int
+	Failed      int
+	Total       int
+	SuccessRate int
+}
+
+type ChallengeSubmissionsGroup struct {
+	ChallengeID    string
+	ChallengeTitle string
+	ChallengeSlug  string
+	Solved         bool
+	Submissions    []*ChallengeSubmission
+}
+
 // MakeUnauthorized builds a goa.ServiceError from an error.
 func MakeUnauthorized(err error) *goa.ServiceError {
 	return &goa.ServiceError{
@@ -759,6 +819,19 @@ func NewViewedSsmAdminChallengeCollection(res SsmAdminChallengeCollection, view 
 	return adminviews.SsmAdminChallengeCollection{Projected: p, View: "default"}
 }
 
+// NewSsmDiscordUser initializes result type SsmDiscordUser from viewed result
+// type SsmDiscordUser.
+func NewSsmDiscordUser(vres *adminviews.SsmDiscordUser) *SsmDiscordUser {
+	return newSsmDiscordUser(vres.Projected)
+}
+
+// NewViewedSsmDiscordUser initializes viewed result type SsmDiscordUser from
+// result type SsmDiscordUser using the given view.
+func NewViewedSsmDiscordUser(res *SsmDiscordUser, view string) *adminviews.SsmDiscordUser {
+	p := newSsmDiscordUserView(res)
+	return &adminviews.SsmDiscordUser{Projected: p, View: "default"}
+}
+
 // NewSsmAdminCourseCollection initializes result type SsmAdminCourseCollection
 // from viewed result type SsmAdminCourseCollection.
 func NewSsmAdminCourseCollection(vres adminviews.SsmAdminCourseCollection) SsmAdminCourseCollection {
@@ -771,6 +844,20 @@ func NewSsmAdminCourseCollection(vres adminviews.SsmAdminCourseCollection) SsmAd
 func NewViewedSsmAdminCourseCollection(res SsmAdminCourseCollection, view string) adminviews.SsmAdminCourseCollection {
 	p := newSsmAdminCourseCollectionView(res)
 	return adminviews.SsmAdminCourseCollection{Projected: p, View: "default"}
+}
+
+// NewSsmAdminUserdetails initializes result type SsmAdminUserdetails from
+// viewed result type SsmAdminUserdetails.
+func NewSsmAdminUserdetails(vres *adminviews.SsmAdminUserdetails) *SsmAdminUserdetails {
+	return newSsmAdminUserdetails(vres.Projected)
+}
+
+// NewViewedSsmAdminUserdetails initializes viewed result type
+// SsmAdminUserdetails from result type SsmAdminUserdetails using the given
+// view.
+func NewViewedSsmAdminUserdetails(res *SsmAdminUserdetails, view string) *adminviews.SsmAdminUserdetails {
+	p := newSsmAdminUserdetailsView(res)
+	return &adminviews.SsmAdminUserdetails{Projected: p, View: "default"}
 }
 
 // newSsmAdminChallengeCollection converts projected type
@@ -892,6 +979,36 @@ func newSsmAdminChallengeView(res *SsmAdminChallenge) *adminviews.SsmAdminChalle
 	return vres
 }
 
+// newSsmDiscordUser converts projected type SsmDiscordUser to service type
+// SsmDiscordUser.
+func newSsmDiscordUser(vres *adminviews.SsmDiscordUserView) *SsmDiscordUser {
+	res := &SsmDiscordUser{
+		Discriminator: vres.Discriminator,
+		Avatar:        vres.Avatar,
+		GlobalName:    vres.GlobalName,
+	}
+	if vres.ID != nil {
+		res.ID = *vres.ID
+	}
+	if vres.Username != nil {
+		res.Username = *vres.Username
+	}
+	return res
+}
+
+// newSsmDiscordUserView projects result type SsmDiscordUser to projected type
+// SsmDiscordUserView using the "default" view.
+func newSsmDiscordUserView(res *SsmDiscordUser) *adminviews.SsmDiscordUserView {
+	vres := &adminviews.SsmDiscordUserView{
+		ID:            &res.ID,
+		Username:      &res.Username,
+		Discriminator: res.Discriminator,
+		Avatar:        res.Avatar,
+		GlobalName:    res.GlobalName,
+	}
+	return vres
+}
+
 // newSsmAdminCourseCollection converts projected type SsmAdminCourseCollection
 // to service type SsmAdminCourseCollection.
 func newSsmAdminCourseCollection(vres adminviews.SsmAdminCourseCollectionView) SsmAdminCourseCollection {
@@ -964,6 +1081,56 @@ func newSsmAdminCourseView(res *SsmAdminCourse) *adminviews.SsmAdminCourseView {
 		for i, val := range res.AuthorIds {
 			vres.AuthorIds[i] = val
 		}
+	}
+	return vres
+}
+
+// newSsmAdminUserdetails converts projected type SsmAdminUserdetails to
+// service type SsmAdminUserdetails.
+func newSsmAdminUserdetails(vres *adminviews.SsmAdminUserdetailsView) *SsmAdminUserdetails {
+	res := &SsmAdminUserdetails{}
+	if vres.SubmissionStats != nil {
+		res.SubmissionStats = transformAdminviewsSubmissionStatsViewToSubmissionStats(vres.SubmissionStats)
+	}
+	if vres.HourlyActivity != nil {
+		res.HourlyActivity = make([]int, len(vres.HourlyActivity))
+		for i, val := range vres.HourlyActivity {
+			res.HourlyActivity[i] = val
+		}
+	}
+	if vres.ChallengeSubmissions != nil {
+		res.ChallengeSubmissions = make([]*ChallengeSubmissionsGroup, len(vres.ChallengeSubmissions))
+		for i, val := range vres.ChallengeSubmissions {
+			res.ChallengeSubmissions[i] = transformAdminviewsChallengeSubmissionsGroupViewToChallengeSubmissionsGroup(val)
+		}
+	}
+	if vres.DiscordUser != nil {
+		res.DiscordUser = newSsmDiscordUser(vres.DiscordUser)
+	}
+	return res
+}
+
+// newSsmAdminUserdetailsView projects result type SsmAdminUserdetails to
+// projected type SsmAdminUserdetailsView using the "default" view.
+func newSsmAdminUserdetailsView(res *SsmAdminUserdetails) *adminviews.SsmAdminUserdetailsView {
+	vres := &adminviews.SsmAdminUserdetailsView{}
+	if res.SubmissionStats != nil {
+		vres.SubmissionStats = transformSubmissionStatsToAdminviewsSubmissionStatsView(res.SubmissionStats)
+	}
+	if res.HourlyActivity != nil {
+		vres.HourlyActivity = make([]int, len(res.HourlyActivity))
+		for i, val := range res.HourlyActivity {
+			vres.HourlyActivity[i] = val
+		}
+	}
+	if res.ChallengeSubmissions != nil {
+		vres.ChallengeSubmissions = make([]*adminviews.ChallengeSubmissionsGroupView, len(res.ChallengeSubmissions))
+		for i, val := range res.ChallengeSubmissions {
+			vres.ChallengeSubmissions[i] = transformChallengeSubmissionsGroupToAdminviewsChallengeSubmissionsGroupView(val)
+		}
+	}
+	if res.DiscordUser != nil {
+		vres.DiscordUser = newSsmDiscordUserView(res.DiscordUser)
 	}
 	return vres
 }
@@ -1050,6 +1217,108 @@ func transformAdminChallengeFlagToAdminviewsAdminChallengeFlagView(v *AdminChall
 	res := &adminviews.AdminChallengeFlagView{
 		Flag: &v.Flag,
 		ID:   &v.ID,
+	}
+
+	return res
+}
+
+// transformAdminviewsSubmissionStatsViewToSubmissionStats builds a value of
+// type *SubmissionStats from a value of type *adminviews.SubmissionStatsView.
+func transformAdminviewsSubmissionStatsViewToSubmissionStats(v *adminviews.SubmissionStatsView) *SubmissionStats {
+	if v == nil {
+		return nil
+	}
+	res := &SubmissionStats{
+		Successful:  *v.Successful,
+		Failed:      *v.Failed,
+		Total:       *v.Total,
+		SuccessRate: *v.SuccessRate,
+	}
+
+	return res
+}
+
+// transformAdminviewsChallengeSubmissionsGroupViewToChallengeSubmissionsGroup
+// builds a value of type *ChallengeSubmissionsGroup from a value of type
+// *adminviews.ChallengeSubmissionsGroupView.
+func transformAdminviewsChallengeSubmissionsGroupViewToChallengeSubmissionsGroup(v *adminviews.ChallengeSubmissionsGroupView) *ChallengeSubmissionsGroup {
+	if v == nil {
+		return nil
+	}
+	res := &ChallengeSubmissionsGroup{
+		ChallengeID:    *v.ChallengeID,
+		ChallengeTitle: *v.ChallengeTitle,
+		ChallengeSlug:  *v.ChallengeSlug,
+		Solved:         *v.Solved,
+	}
+	if v.Submissions != nil {
+		res.Submissions = make([]*ChallengeSubmission, len(v.Submissions))
+		for i, val := range v.Submissions {
+			res.Submissions[i] = transformAdminviewsChallengeSubmissionViewToChallengeSubmission(val)
+		}
+	}
+
+	return res
+}
+
+// transformAdminviewsChallengeSubmissionViewToChallengeSubmission builds a
+// value of type *ChallengeSubmission from a value of type
+// *adminviews.ChallengeSubmissionView.
+func transformAdminviewsChallengeSubmissionViewToChallengeSubmission(v *adminviews.ChallengeSubmissionView) *ChallengeSubmission {
+	res := &ChallengeSubmission{
+		Input:       *v.Input,
+		Successful:  *v.Successful,
+		UserID:      *v.UserID,
+		SubmittedAt: *v.SubmittedAt,
+		ID:          *v.ID,
+	}
+
+	return res
+}
+
+// transformSubmissionStatsToAdminviewsSubmissionStatsView builds a value of
+// type *adminviews.SubmissionStatsView from a value of type *SubmissionStats.
+func transformSubmissionStatsToAdminviewsSubmissionStatsView(v *SubmissionStats) *adminviews.SubmissionStatsView {
+	res := &adminviews.SubmissionStatsView{
+		Successful:  &v.Successful,
+		Failed:      &v.Failed,
+		Total:       &v.Total,
+		SuccessRate: &v.SuccessRate,
+	}
+
+	return res
+}
+
+// transformChallengeSubmissionsGroupToAdminviewsChallengeSubmissionsGroupView
+// builds a value of type *adminviews.ChallengeSubmissionsGroupView from a
+// value of type *ChallengeSubmissionsGroup.
+func transformChallengeSubmissionsGroupToAdminviewsChallengeSubmissionsGroupView(v *ChallengeSubmissionsGroup) *adminviews.ChallengeSubmissionsGroupView {
+	res := &adminviews.ChallengeSubmissionsGroupView{
+		ChallengeID:    &v.ChallengeID,
+		ChallengeTitle: &v.ChallengeTitle,
+		ChallengeSlug:  &v.ChallengeSlug,
+		Solved:         &v.Solved,
+	}
+	if v.Submissions != nil {
+		res.Submissions = make([]*adminviews.ChallengeSubmissionView, len(v.Submissions))
+		for i, val := range v.Submissions {
+			res.Submissions[i] = transformChallengeSubmissionToAdminviewsChallengeSubmissionView(val)
+		}
+	}
+
+	return res
+}
+
+// transformChallengeSubmissionToAdminviewsChallengeSubmissionView builds a
+// value of type *adminviews.ChallengeSubmissionView from a value of type
+// *ChallengeSubmission.
+func transformChallengeSubmissionToAdminviewsChallengeSubmissionView(v *ChallengeSubmission) *adminviews.ChallengeSubmissionView {
+	res := &adminviews.ChallengeSubmissionView{
+		Input:       &v.Input,
+		Successful:  &v.Successful,
+		UserID:      &v.UserID,
+		SubmittedAt: &v.SubmittedAt,
+		ID:          &v.ID,
 	}
 
 	return res

@@ -250,6 +250,16 @@ type ListMonthlyChallengesResponseBody []*MonthlyChallengeResponse
 // endpoint HTTP response body.
 type ListUsersResponseBody []*SsmUserResponse
 
+// GetDiscordUserResponseBody is the type of the "admin" service
+// "GetDiscordUser" endpoint HTTP response body.
+type GetDiscordUserResponseBody struct {
+	ID            *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Username      *string `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
+	Discriminator *string `form:"discriminator,omitempty" json:"discriminator,omitempty" xml:"discriminator,omitempty"`
+	Avatar        *string `form:"avatar,omitempty" json:"avatar,omitempty" xml:"avatar,omitempty"`
+	GlobalName    *string `form:"global_name,omitempty" json:"global_name,omitempty" xml:"global_name,omitempty"`
+}
+
 // ListAuthorsResponseBody is the type of the "admin" service "ListAuthors"
 // endpoint HTTP response body.
 type ListAuthorsResponseBody []*AuthorResponse
@@ -379,6 +389,21 @@ type UpdateCTFTeamResponseBody struct {
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 	// Team creation timestamp
 	CreatedAt *string `form:"created_at,omitempty" json:"created_at,omitempty" xml:"created_at,omitempty"`
+}
+
+// GetUserDetailsResponseBody is the type of the "admin" service
+// "GetUserDetails" endpoint HTTP response body.
+type GetUserDetailsResponseBody struct {
+	DiscordUser          *SsmDiscordUserResponseBody              `form:"discord_user,omitempty" json:"discord_user,omitempty" xml:"discord_user,omitempty"`
+	SubmissionStats      *SubmissionStatsResponseBody             `form:"submission_stats,omitempty" json:"submission_stats,omitempty" xml:"submission_stats,omitempty"`
+	HourlyActivity       []int                                    `form:"hourly_activity,omitempty" json:"hourly_activity,omitempty" xml:"hourly_activity,omitempty"`
+	ChallengeSubmissions []*ChallengeSubmissionsGroupResponseBody `form:"challenge_submissions,omitempty" json:"challenge_submissions,omitempty" xml:"challenge_submissions,omitempty"`
+	ID                   *string                                  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Email                *string                                  `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	FullName             *string                                  `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	Role                 *string                                  `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
+	SchoolID             *string                                  `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	DiscordID            *string                                  `form:"discord_id,omitempty" json:"discord_id,omitempty" xml:"discord_id,omitempty"`
 }
 
 // ListChallengesUnauthorizedResponseBody is the type of the "admin" service
@@ -864,6 +889,60 @@ type ListUsersNotFoundResponseBody struct {
 // ListUsersBadRequestResponseBody is the type of the "admin" service
 // "ListUsers" endpoint HTTP response body for the "bad_request" error.
 type ListUsersBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetDiscordUserUnauthorizedResponseBody is the type of the "admin" service
+// "GetDiscordUser" endpoint HTTP response body for the "unauthorized" error.
+type GetDiscordUserUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetDiscordUserNotFoundResponseBody is the type of the "admin" service
+// "GetDiscordUser" endpoint HTTP response body for the "not_found" error.
+type GetDiscordUserNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetDiscordUserBadRequestResponseBody is the type of the "admin" service
+// "GetDiscordUser" endpoint HTTP response body for the "bad_request" error.
+type GetDiscordUserBadRequestResponseBody struct {
 	// Name is the name of this class of errors.
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 	// ID is a unique identifier for this particular occurrence of the problem.
@@ -2510,6 +2589,60 @@ type UpdateCTFTeamBadRequestResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// GetUserDetailsUnauthorizedResponseBody is the type of the "admin" service
+// "GetUserDetails" endpoint HTTP response body for the "unauthorized" error.
+type GetUserDetailsUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetUserDetailsNotFoundResponseBody is the type of the "admin" service
+// "GetUserDetails" endpoint HTTP response body for the "not_found" error.
+type GetUserDetailsNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// GetUserDetailsBadRequestResponseBody is the type of the "admin" service
+// "GetUserDetails" endpoint HTTP response body for the "bad_request" error.
+type GetUserDetailsBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
 	// ID of a file
@@ -2586,11 +2719,12 @@ type MonthlyChallengeResponse struct {
 
 // SsmUserResponse is used to define fields on response body types.
 type SsmUserResponse struct {
-	ID       *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	Email    *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
-	FullName *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
-	Role     *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
-	SchoolID *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	ID        *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Email     *string `form:"email,omitempty" json:"email,omitempty" xml:"email,omitempty"`
+	FullName  *string `form:"full_name,omitempty" json:"full_name,omitempty" xml:"full_name,omitempty"`
+	Role      *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
+	SchoolID  *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	DiscordID *string `form:"discord_id,omitempty" json:"discord_id,omitempty" xml:"discord_id,omitempty"`
 }
 
 // AuthorResponse is used to define fields on response body types.
@@ -2735,6 +2869,33 @@ type CTFTeamResponse struct {
 	Password *string `form:"password,omitempty" json:"password,omitempty" xml:"password,omitempty"`
 	// Team creation timestamp
 	CreatedAt *string `form:"created_at,omitempty" json:"created_at,omitempty" xml:"created_at,omitempty"`
+}
+
+// SsmDiscordUserResponseBody is used to define fields on response body types.
+type SsmDiscordUserResponseBody struct {
+	ID            *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Username      *string `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
+	Discriminator *string `form:"discriminator,omitempty" json:"discriminator,omitempty" xml:"discriminator,omitempty"`
+	Avatar        *string `form:"avatar,omitempty" json:"avatar,omitempty" xml:"avatar,omitempty"`
+	GlobalName    *string `form:"global_name,omitempty" json:"global_name,omitempty" xml:"global_name,omitempty"`
+}
+
+// SubmissionStatsResponseBody is used to define fields on response body types.
+type SubmissionStatsResponseBody struct {
+	Successful  *int `form:"successful,omitempty" json:"successful,omitempty" xml:"successful,omitempty"`
+	Failed      *int `form:"failed,omitempty" json:"failed,omitempty" xml:"failed,omitempty"`
+	Total       *int `form:"total,omitempty" json:"total,omitempty" xml:"total,omitempty"`
+	SuccessRate *int `form:"success_rate,omitempty" json:"success_rate,omitempty" xml:"success_rate,omitempty"`
+}
+
+// ChallengeSubmissionsGroupResponseBody is used to define fields on response
+// body types.
+type ChallengeSubmissionsGroupResponseBody struct {
+	ChallengeID    *string                            `form:"challenge_id,omitempty" json:"challenge_id,omitempty" xml:"challenge_id,omitempty"`
+	ChallengeTitle *string                            `form:"challenge_title,omitempty" json:"challenge_title,omitempty" xml:"challenge_title,omitempty"`
+	ChallengeSlug  *string                            `form:"challenge_slug,omitempty" json:"challenge_slug,omitempty" xml:"challenge_slug,omitempty"`
+	Solved         *bool                              `form:"solved,omitempty" json:"solved,omitempty" xml:"solved,omitempty"`
+	Submissions    []*ChallengeSubmissionResponseBody `form:"submissions,omitempty" json:"submissions,omitempty" xml:"submissions,omitempty"`
 }
 
 // NewCreateChallengeRequestBody builds the HTTP request body from the payload
@@ -3487,6 +3648,65 @@ func NewListUsersNotFound(body *ListUsersNotFoundResponseBody) *goa.ServiceError
 // NewListUsersBadRequest builds a admin service ListUsers endpoint bad_request
 // error.
 func NewListUsersBadRequest(body *ListUsersBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetDiscordUserSsmDiscordUserOK builds a "admin" service "GetDiscordUser"
+// endpoint result from a HTTP "OK" response.
+func NewGetDiscordUserSsmDiscordUserOK(body *GetDiscordUserResponseBody) *adminviews.SsmDiscordUserView {
+	v := &adminviews.SsmDiscordUserView{
+		ID:            body.ID,
+		Username:      body.Username,
+		Discriminator: body.Discriminator,
+		Avatar:        body.Avatar,
+		GlobalName:    body.GlobalName,
+	}
+
+	return v
+}
+
+// NewGetDiscordUserUnauthorized builds a admin service GetDiscordUser endpoint
+// unauthorized error.
+func NewGetDiscordUserUnauthorized(body *GetDiscordUserUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetDiscordUserNotFound builds a admin service GetDiscordUser endpoint
+// not_found error.
+func NewGetDiscordUserNotFound(body *GetDiscordUserNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetDiscordUserBadRequest builds a admin service GetDiscordUser endpoint
+// bad_request error.
+func NewGetDiscordUserBadRequest(body *GetDiscordUserBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -5062,6 +5282,78 @@ func NewUpdateCTFTeamBadRequest(body *UpdateCTFTeamBadRequestResponseBody) *goa.
 	return v
 }
 
+// NewGetUserDetailsSsmAdminUserdetailsOK builds a "admin" service
+// "GetUserDetails" endpoint result from a HTTP "OK" response.
+func NewGetUserDetailsSsmAdminUserdetailsOK(body *GetUserDetailsResponseBody) *adminviews.SsmAdminUserdetailsView {
+	v := &adminviews.SsmAdminUserdetailsView{
+		ID:        body.ID,
+		Email:     body.Email,
+		FullName:  body.FullName,
+		Role:      body.Role,
+		SchoolID:  body.SchoolID,
+		DiscordID: body.DiscordID,
+	}
+	if body.DiscordUser != nil {
+		v.DiscordUser = unmarshalSsmDiscordUserResponseBodyToAdminviewsSsmDiscordUserView(body.DiscordUser)
+	}
+	v.SubmissionStats = unmarshalSubmissionStatsResponseBodyToAdminviewsSubmissionStatsView(body.SubmissionStats)
+	v.HourlyActivity = make([]int, len(body.HourlyActivity))
+	for i, val := range body.HourlyActivity {
+		v.HourlyActivity[i] = val
+	}
+	v.ChallengeSubmissions = make([]*adminviews.ChallengeSubmissionsGroupView, len(body.ChallengeSubmissions))
+	for i, val := range body.ChallengeSubmissions {
+		v.ChallengeSubmissions[i] = unmarshalChallengeSubmissionsGroupResponseBodyToAdminviewsChallengeSubmissionsGroupView(val)
+	}
+
+	return v
+}
+
+// NewGetUserDetailsUnauthorized builds a admin service GetUserDetails endpoint
+// unauthorized error.
+func NewGetUserDetailsUnauthorized(body *GetUserDetailsUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetUserDetailsNotFound builds a admin service GetUserDetails endpoint
+// not_found error.
+func NewGetUserDetailsNotFound(body *GetUserDetailsNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewGetUserDetailsBadRequest builds a admin service GetUserDetails endpoint
+// bad_request error.
+func NewGetUserDetailsBadRequest(body *GetUserDetailsBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
 // ValidateGetChallengeMetaResponseBody runs the validations defined on
 // GetChallengeMetaResponseBody
 func ValidateGetChallengeMetaResponseBody(body *GetChallengeMetaResponseBody) (err error) {
@@ -5911,6 +6203,78 @@ func ValidateListUsersNotFoundResponseBody(body *ListUsersNotFoundResponseBody) 
 // ValidateListUsersBadRequestResponseBody runs the validations defined on
 // ListUsers_bad_request_Response_Body
 func ValidateListUsersBadRequestResponseBody(body *ListUsersBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetDiscordUserUnauthorizedResponseBody runs the validations defined
+// on GetDiscordUser_unauthorized_Response_Body
+func ValidateGetDiscordUserUnauthorizedResponseBody(body *GetDiscordUserUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetDiscordUserNotFoundResponseBody runs the validations defined on
+// GetDiscordUser_not_found_Response_Body
+func ValidateGetDiscordUserNotFoundResponseBody(body *GetDiscordUserNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetDiscordUserBadRequestResponseBody runs the validations defined on
+// GetDiscordUser_bad_request_Response_Body
+func ValidateGetDiscordUserBadRequestResponseBody(body *GetDiscordUserBadRequestResponseBody) (err error) {
 	if body.Name == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
 	}
@@ -8092,6 +8456,78 @@ func ValidateUpdateCTFTeamBadRequestResponseBody(body *UpdateCTFTeamBadRequestRe
 	return
 }
 
+// ValidateGetUserDetailsUnauthorizedResponseBody runs the validations defined
+// on GetUserDetails_unauthorized_Response_Body
+func ValidateGetUserDetailsUnauthorizedResponseBody(body *GetUserDetailsUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetUserDetailsNotFoundResponseBody runs the validations defined on
+// GetUserDetails_not_found_Response_Body
+func ValidateGetUserDetailsNotFoundResponseBody(body *GetUserDetailsNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateGetUserDetailsBadRequestResponseBody runs the validations defined on
+// GetUserDetails_bad_request_Response_Body
+func ValidateGetUserDetailsBadRequestResponseBody(body *GetUserDetailsBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateSsmAdminChallengeResponse runs the validations defined on
 // SsmAdminChallengeResponse
 func ValidateSsmAdminChallengeResponse(body *SsmAdminChallengeResponse) (err error) {
@@ -8476,6 +8912,67 @@ func ValidateCTFTeamResponse(body *CTFTeamResponse) (err error) {
 	}
 	if body.Password == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("password", "body"))
+	}
+	return
+}
+
+// ValidateSsmDiscordUserResponseBody runs the validations defined on
+// SsmDiscordUserResponseBody
+func ValidateSsmDiscordUserResponseBody(body *SsmDiscordUserResponseBody) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Username == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("username", "body"))
+	}
+	return
+}
+
+// ValidateSubmissionStatsResponseBody runs the validations defined on
+// SubmissionStatsResponseBody
+func ValidateSubmissionStatsResponseBody(body *SubmissionStatsResponseBody) (err error) {
+	if body.Successful == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("successful", "body"))
+	}
+	if body.Failed == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("failed", "body"))
+	}
+	if body.Total == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("total", "body"))
+	}
+	if body.SuccessRate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("success_rate", "body"))
+	}
+	return
+}
+
+// ValidateChallengeSubmissionsGroupResponseBody runs the validations defined
+// on ChallengeSubmissionsGroupResponseBody
+func ValidateChallengeSubmissionsGroupResponseBody(body *ChallengeSubmissionsGroupResponseBody) (err error) {
+	if body.ChallengeID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "body"))
+	}
+	if body.ChallengeTitle == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_title", "body"))
+	}
+	if body.ChallengeSlug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_slug", "body"))
+	}
+	if body.Solved == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved", "body"))
+	}
+	if body.Submissions == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("submissions", "body"))
+	}
+	if body.ChallengeID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", *body.ChallengeID, goa.FormatUUID))
+	}
+	for _, e := range body.Submissions {
+		if e != nil {
+			if err2 := ValidateChallengeSubmissionResponseBody(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
 	}
 	return
 }

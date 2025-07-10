@@ -60,6 +60,7 @@ type GetSelfResult struct {
 	FullName       string
 	Role           string
 	SchoolID       *string
+	DiscordID      *string
 }
 
 // UpdateSelfPayload is the payload type of the user service UpdateSelf method.

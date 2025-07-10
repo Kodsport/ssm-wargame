@@ -53,6 +53,10 @@ type Client struct {
 	// endpoint.
 	ListUsersDoer goahttp.Doer
 
+	// GetDiscordUser Doer is the HTTP client used to make requests to the
+	// GetDiscordUser endpoint.
+	GetDiscordUserDoer goahttp.Doer
+
 	// ListAuthors Doer is the HTTP client used to make requests to the ListAuthors
 	// endpoint.
 	ListAuthorsDoer goahttp.Doer
@@ -173,6 +177,10 @@ type Client struct {
 	// UpdateCTFTeam endpoint.
 	UpdateCTFTeamDoer goahttp.Doer
 
+	// GetUserDetails Doer is the HTTP client used to make requests to the
+	// GetUserDetails endpoint.
+	GetUserDetailsDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -202,6 +210,7 @@ func NewClient(
 		DeleteFileDoer:                doer,
 		CreateMonthlyChallengeDoer:    doer,
 		ListUsersDoer:                 doer,
+		GetDiscordUserDoer:            doer,
 		ListAuthorsDoer:               doer,
 		UpdateAuthorDoer:              doer,
 		CreateAuthorDoer:              doer,
@@ -232,6 +241,7 @@ func NewClient(
 		CreateCTFTeamDoer:             doer,
 		DeleteCTFTeamDoer:             doer,
 		UpdateCTFTeamDoer:             doer,
+		GetUserDetailsDoer:            doer,
 		RestoreResponseBody:           restoreBody,
 		scheme:                        scheme,
 		host:                          host,
@@ -451,6 +461,30 @@ func (c *Client) ListUsers() goa.Endpoint {
 		resp, err := c.ListUsersDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "ListUsers", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// GetDiscordUser returns an endpoint that makes HTTP requests to the admin
+// service GetDiscordUser server.
+func (c *Client) GetDiscordUser() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeGetDiscordUserRequest(c.encoder)
+		decodeResponse = DecodeGetDiscordUserResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildGetDiscordUserRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.GetDiscordUserDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "GetDiscordUser", err)
 		}
 		return decodeResponse(resp)
 	}
@@ -1171,6 +1205,30 @@ func (c *Client) UpdateCTFTeam() goa.Endpoint {
 		resp, err := c.UpdateCTFTeamDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "UpdateCTFTeam", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// GetUserDetails returns an endpoint that makes HTTP requests to the admin
+// service GetUserDetails server.
+func (c *Client) GetUserDetails() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeGetUserDetailsRequest(c.encoder)
+		decodeResponse = DecodeGetUserDetailsResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildGetUserDetailsRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.GetUserDetailsDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "GetUserDetails", err)
 		}
 		return decodeResponse(resp)
 	}

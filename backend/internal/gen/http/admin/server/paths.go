@@ -56,6 +56,11 @@ func ListUsersAdminPath() string {
 	return "/admin/users"
 }
 
+// GetDiscordUserAdminPath returns the URL path to the admin service GetDiscordUser HTTP endpoint.
+func GetDiscordUserAdminPath(discordID string) string {
+	return fmt.Sprintf("/admin/users/discord/%v", discordID)
+}
+
 // ListAuthorsAdminPath returns the URL path to the admin service ListAuthors HTTP endpoint.
 func ListAuthorsAdminPath() string {
 	return "/admin/authors"
@@ -204,4 +209,9 @@ func DeleteCTFTeamAdminPath(ctfID string, teamID string) string {
 // UpdateCTFTeamAdminPath returns the URL path to the admin service UpdateCTFTeam HTTP endpoint.
 func UpdateCTFTeamAdminPath(ctfID string, teamID string) string {
 	return fmt.Sprintf("/admin/ctfs/%v/teams/%v", ctfID, teamID)
+}
+
+// GetUserDetailsAdminPath returns the URL path to the admin service GetUserDetails HTTP endpoint.
+func GetUserDetailsAdminPath(userID string) string {
+	return fmt.Sprintf("/admin/users/%v/details", userID)
 }

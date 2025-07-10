@@ -20,11 +20,28 @@ type SsmAdminChallengeCollection struct {
 	View string
 }
 
+// SsmDiscordUser is the viewed result type that is projected based on a view.
+type SsmDiscordUser struct {
+	// Type to project
+	Projected *SsmDiscordUserView
+	// View to render
+	View string
+}
+
 // SsmAdminCourseCollection is the viewed result type that is projected based
 // on a view.
 type SsmAdminCourseCollection struct {
 	// Type to project
 	Projected SsmAdminCourseCollectionView
+	// View to render
+	View string
+}
+
+// SsmAdminUserdetails is the viewed result type that is projected based on a
+// view.
+type SsmAdminUserdetails struct {
+	// Type to project
+	Projected *SsmAdminUserdetailsView
 	// View to render
 	View string
 }
@@ -79,6 +96,15 @@ type AdminChallengeFlagView struct {
 	ID *string
 }
 
+// SsmDiscordUserView is a type that runs validations on a projected type.
+type SsmDiscordUserView struct {
+	ID            *string
+	Username      *string
+	Discriminator *string
+	Avatar        *string
+	GlobalName    *string
+}
+
 // SsmAdminCourseCollectionView is a type that runs validations on a projected
 // type.
 type SsmAdminCourseCollectionView []*SsmAdminCourseView
@@ -94,6 +120,48 @@ type SsmAdminCourseView struct {
 	Description *string
 	Publish     *bool
 	AuthorIds   []string
+}
+
+// SsmAdminUserdetailsView is a type that runs validations on a projected type.
+type SsmAdminUserdetailsView struct {
+	DiscordUser          *SsmDiscordUserView
+	SubmissionStats      *SubmissionStatsView
+	HourlyActivity       []int
+	ChallengeSubmissions []*ChallengeSubmissionsGroupView
+	ID                   *string
+	Email                *string
+	FullName             *string
+	Role                 *string
+	SchoolID             *string
+	DiscordID            *string
+}
+
+// SubmissionStatsView is a type that runs validations on a projected type.
+type SubmissionStatsView struct {
+	Successful  *int
+	Failed      *int
+	Total       *int
+	SuccessRate *int
+}
+
+// ChallengeSubmissionsGroupView is a type that runs validations on a projected
+// type.
+type ChallengeSubmissionsGroupView struct {
+	ChallengeID    *string
+	ChallengeTitle *string
+	ChallengeSlug  *string
+	Solved         *bool
+	Submissions    []*ChallengeSubmissionView
+}
+
+// ChallengeSubmissionView is a type that runs validations on a projected type.
+type ChallengeSubmissionView struct {
+	Input       *string
+	Successful  *bool
+	UserID      *string
+	SubmittedAt *int64
+	// ID of a file
+	ID *string
 }
 
 var (
@@ -117,6 +185,17 @@ var (
 			"authors",
 		},
 	}
+	// SsmDiscordUserMap is a map indexing the attribute names of SsmDiscordUser by
+	// view name.
+	SsmDiscordUserMap = map[string][]string{
+		"default": {
+			"id",
+			"username",
+			"discriminator",
+			"avatar",
+			"global_name",
+		},
+	}
 	// SsmAdminCourseCollectionMap is a map indexing the attribute names of
 	// SsmAdminCourseCollection by view name.
 	SsmAdminCourseCollectionMap = map[string][]string{
@@ -129,6 +208,16 @@ var (
 			"description",
 			"publish",
 			"author_ids",
+		},
+	}
+	// SsmAdminUserdetailsMap is a map indexing the attribute names of
+	// SsmAdminUserdetails by view name.
+	SsmAdminUserdetailsMap = map[string][]string{
+		"default": {
+			"discord_user",
+			"submission_stats",
+			"hourly_activity",
+			"challenge_submissions",
 		},
 	}
 	// SsmAdminChallengeMap is a map indexing the attribute names of
@@ -179,12 +268,36 @@ func ValidateSsmAdminChallengeCollection(result SsmAdminChallengeCollection) (er
 	return
 }
 
+// ValidateSsmDiscordUser runs the validations defined on the viewed result
+// type SsmDiscordUser.
+func ValidateSsmDiscordUser(result *SsmDiscordUser) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmDiscordUserView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
 // ValidateSsmAdminCourseCollection runs the validations defined on the viewed
 // result type SsmAdminCourseCollection.
 func ValidateSsmAdminCourseCollection(result SsmAdminCourseCollection) (err error) {
 	switch result.View {
 	case "default", "":
 		err = ValidateSsmAdminCourseCollectionView(result.Projected)
+	default:
+		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
+	}
+	return
+}
+
+// ValidateSsmAdminUserdetails runs the validations defined on the viewed
+// result type SsmAdminUserdetails.
+func ValidateSsmAdminUserdetails(result *SsmAdminUserdetails) (err error) {
+	switch result.View {
+	case "default", "":
+		err = ValidateSsmAdminUserdetailsView(result.Projected)
 	default:
 		err = goa.InvalidEnumValueError("view", result.View, []interface{}{"default"})
 	}
@@ -307,6 +420,18 @@ func ValidateAdminChallengeFlagView(result *AdminChallengeFlagView) (err error) 
 	return
 }
 
+// ValidateSsmDiscordUserView runs the validations defined on
+// SsmDiscordUserView using the "default" view.
+func ValidateSsmDiscordUserView(result *SsmDiscordUserView) (err error) {
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.Username == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("username", "result"))
+	}
+	return
+}
+
 // ValidateSsmAdminCourseCollectionView runs the validations defined on
 // SsmAdminCourseCollectionView using the "default" view.
 func ValidateSsmAdminCourseCollectionView(result SsmAdminCourseCollectionView) (err error) {
@@ -341,6 +466,120 @@ func ValidateSsmAdminCourseView(result *SsmAdminCourseView) (err error) {
 	}
 	if result.ID == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.ID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))
+	}
+	return
+}
+
+// ValidateSsmAdminUserdetailsView runs the validations defined on
+// SsmAdminUserdetailsView using the "default" view.
+func ValidateSsmAdminUserdetailsView(result *SsmAdminUserdetailsView) (err error) {
+	if result.SubmissionStats == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("submission_stats", "result"))
+	}
+	if result.HourlyActivity == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("hourly_activity", "result"))
+	}
+	if result.ChallengeSubmissions == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_submissions", "result"))
+	}
+	if result.SubmissionStats != nil {
+		if err2 := ValidateSubmissionStatsView(result.SubmissionStats); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	if len(result.HourlyActivity) < 24 {
+		err = goa.MergeErrors(err, goa.InvalidLengthError("result.hourly_activity", result.HourlyActivity, len(result.HourlyActivity), 24, true))
+	}
+	if len(result.HourlyActivity) > 24 {
+		err = goa.MergeErrors(err, goa.InvalidLengthError("result.hourly_activity", result.HourlyActivity, len(result.HourlyActivity), 24, false))
+	}
+	for _, e := range result.ChallengeSubmissions {
+		if e != nil {
+			if err2 := ValidateChallengeSubmissionsGroupView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	if result.DiscordUser != nil {
+		if err2 := ValidateSsmDiscordUserView(result.DiscordUser); err2 != nil {
+			err = goa.MergeErrors(err, err2)
+		}
+	}
+	return
+}
+
+// ValidateSubmissionStatsView runs the validations defined on
+// SubmissionStatsView.
+func ValidateSubmissionStatsView(result *SubmissionStatsView) (err error) {
+	if result.Successful == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("successful", "result"))
+	}
+	if result.Failed == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("failed", "result"))
+	}
+	if result.Total == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("total", "result"))
+	}
+	if result.SuccessRate == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("success_rate", "result"))
+	}
+	return
+}
+
+// ValidateChallengeSubmissionsGroupView runs the validations defined on
+// ChallengeSubmissionsGroupView.
+func ValidateChallengeSubmissionsGroupView(result *ChallengeSubmissionsGroupView) (err error) {
+	if result.ChallengeID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_id", "result"))
+	}
+	if result.ChallengeTitle == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_title", "result"))
+	}
+	if result.ChallengeSlug == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("challenge_slug", "result"))
+	}
+	if result.Solved == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solved", "result"))
+	}
+	if result.Submissions == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("submissions", "result"))
+	}
+	if result.ChallengeID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.challenge_id", *result.ChallengeID, goa.FormatUUID))
+	}
+	for _, e := range result.Submissions {
+		if e != nil {
+			if err2 := ValidateChallengeSubmissionView(e); err2 != nil {
+				err = goa.MergeErrors(err, err2)
+			}
+		}
+	}
+	return
+}
+
+// ValidateChallengeSubmissionView runs the validations defined on
+// ChallengeSubmissionView.
+func ValidateChallengeSubmissionView(result *ChallengeSubmissionView) (err error) {
+	if result.UserID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("user_id", "result"))
+	}
+	if result.Input == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("input", "result"))
+	}
+	if result.Successful == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("successful", "result"))
+	}
+	if result.SubmittedAt == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("submitted_at", "result"))
+	}
+	if result.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "result"))
+	}
+	if result.UserID != nil {
+		err = goa.MergeErrors(err, goa.ValidateFormat("result.user_id", *result.UserID, goa.FormatUUID))
 	}
 	if result.ID != nil {
 		err = goa.MergeErrors(err, goa.ValidateFormat("result.id", *result.ID, goa.FormatUUID))

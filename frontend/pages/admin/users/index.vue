@@ -1,16 +1,23 @@
 <template>
-    <div class="container">
+    <div class="container-fluid">
         <table class="table">
             <thead>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
+                <th style="width: 30%">Name</th>
+                <th style="width: 40%">Email</th>
+                <th style="width: 30%">Role</th>
             </thead>
             <tbody>
-                <tr v-for="user in users.users" :key="user.id">
-                    <td>{{ user.full_name }}</td>
-                    <td>{{ user.email }}</td>
-                    <td>{{ user.role }}</td>
+                <tr v-for="user in users.users" :key="(user as any).id">
+                    <td style="width: 30%">
+                        <NuxtLink 
+                            :to="`/admin/users/${(user as any).id}`" 
+                            class="user-link text-decoration-none"
+                        >
+                            {{ (user as any).full_name }}
+                        </NuxtLink>
+                    </td>
+                    <td style="width: 40%">{{ (user as any).email }}</td>
+                    <td style="width: 30%">{{ (user as any).role }}</td>
                 </tr>
             </tbody>
         </table>

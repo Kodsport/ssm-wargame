@@ -34,6 +34,7 @@ type GetSelfResponseBody struct {
 	FullName       string  `form:"full_name" json:"full_name" xml:"full_name"`
 	Role           string  `form:"role" json:"role" xml:"role"`
 	SchoolID       *string `form:"school_id,omitempty" json:"school_id,omitempty" xml:"school_id,omitempty"`
+	DiscordID      *string `form:"discord_id,omitempty" json:"discord_id,omitempty" xml:"discord_id,omitempty"`
 }
 
 // SearchSchoolsResponseBody is the type of the "user" service "SearchSchools"
@@ -60,6 +61,7 @@ func NewGetSelfResponseBody(res *user.GetSelfResult) *GetSelfResponseBody {
 		FullName:       res.FullName,
 		Role:           res.Role,
 		SchoolID:       res.SchoolID,
+		DiscordID:      res.DiscordID,
 	}
 	return body
 }
