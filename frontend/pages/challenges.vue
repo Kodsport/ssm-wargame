@@ -69,7 +69,7 @@ const router = useRouter()
 const { challFilter } = storeToRefs(useChallengeStore())
 
 await useAsyncData('challenges', challs.getChallenges)
-await useAsyncData('events', challs.getEvents)
+await useAsyncData('events', challs.getEvents.sort((a,b) => a.name < b.name))
 
 onMounted(() => {
     challs.getChallenges()
