@@ -21,11 +21,11 @@
                         </li>
                         <li>
                             <span class="material-symbols-outlined">swords</span>
-                            Kval online <b>17-19 januari 2025</b>
+                            Kval online <b>24-25 januari 2026</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">emoji_events</span>
-                            Final i Stockholm <b>7-9 mars 2025</b>
+                            Final i Stockholm <b>12-15 mars 2026</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">azm</span>
