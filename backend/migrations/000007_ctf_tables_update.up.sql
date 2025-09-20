@@ -1,0 +1,19 @@
+ALTER TABLE ctfs
+    ADD COLUMN team_based BOOLEAN NOT NULL DEFAULT FALSE;
+
+ALTER TABLE ctfs
+    ADD COLUMN theme TEXT DEFAULT 'ctf-theme';
+
+CREATE TABLE ctf_teams (
+    id UUID NOT NULL PRIMARY KEY,
+    ctf_id UUID NOT NULL REFERENCES ctfs(id) ON DELETE CASCADE,
+    teamname TEXT NOT NULL,
+    password TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE ctf_users
+    ADD COLUMN team_id UUID REFERENCES ctf_teams(id) ON DELETE CASCADE;
+
+ALTER TABLE ctf_solves
+    ADD COLUMN team_id UUID REFERENCES ctf_teams(id) ON DELETE CASCADE;

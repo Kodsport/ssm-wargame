@@ -1,0 +1,13 @@
+ALTER TABLE ctf_solves
+    DROP COLUMN IF EXISTS team_id;
+
+ALTER TABLE ctf_users
+    DROP COLUMN IF EXISTS team_id;
+
+DROP TABLE IF EXISTS ctf_teams;
+
+ALTER TABLE ctfs
+    DROP COLUMN IF EXISTS theme;
+
+ALTER TABLE ctfs
+    DROP COLUMN IF EXISTS team_based;
