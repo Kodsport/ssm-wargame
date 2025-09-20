@@ -34,8 +34,8 @@ onUnmounted(() => {
 });
 </script>
 <style scoped>
-.ctf-gradient-bg {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #004353 0%, #005053 100%);
+.ctf.gradient-bg {
+  border-bottom: 3px solid;
+  border-image: linear-gradient(to right, var(--bs-primary), #004353) 1;
 }
 </style>

@@ -63,3 +63,15 @@ cd frontend
 yarn # Installs
 yarn dev
 ```
+
+### Themes for CTFs
+
+To use a theme simply choose it in the theme selector when creating a ctf.
+
+To upload/use your own firstly:
+Copy the CSS file into the /public/themes/ directory.
+Edit the CSS to match the ctf elements (see examples "```purple.css```" & "```dark.css```").
+Add the filename to ```frontend/utils/themes.ts```
+
+
+

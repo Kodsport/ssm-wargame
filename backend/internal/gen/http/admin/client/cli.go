@@ -236,6 +236,24 @@ func BuildListUsersPayload(adminListUsersToken string) (*admin.ListUsersPayload,
 	return v, nil
 }
 
+// BuildGetDiscordUserPayload builds the payload for the admin GetDiscordUser
+// endpoint from CLI flags.
+func BuildGetDiscordUserPayload(adminGetDiscordUserDiscordID string, adminGetDiscordUserToken string) (*admin.GetDiscordUserPayload, error) {
+	var discordID string
+	{
+		discordID = adminGetDiscordUserDiscordID
+	}
+	var token string
+	{
+		token = adminGetDiscordUserToken
+	}
+	v := &admin.GetDiscordUserPayload{}
+	v.DiscordID = discordID
+	v.Token = token
+
+	return v, nil
+}
+
 // BuildListAuthorsPayload builds the payload for the admin ListAuthors
 // endpoint from CLI flags.
 func BuildListAuthorsPayload(adminListAuthorsToken string) (*admin.ListAuthorsPayload, error) {
@@ -421,7 +439,7 @@ func BuildChalltoolsImportPayload(adminChalltoolsImportBody string, adminChallto
 	{
 		err = json.Unmarshal([]byte(adminChalltoolsImportBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"custom\": {\n         \"chall_namespace\": \"Et eveniet velit et quisquam nemo.\",\n         \"publish\": true,\n         \"publish_at\": \"Est harum iste excepturi.\",\n         \"slug\": \"Voluptas tempora et adipisci.\"\n      },\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"Eius molestias.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"authors\": [\n         \"Movitz Sunar\"\n      ],\n      \"categories\": [\n         \"web\"\n      ],\n      \"challenge_id\": \"225ada44-3fde-460d-84a4-2f16ff579618\",\n      \"custom\": {\n         \"chall_namespace\": \"Modi molestiae ab repellat dolore.\",\n         \"publish\": false,\n         \"publish_at\": \"Reprehenderit reprehenderit.\",\n         \"slug\": \"Aut fugit magni recusandae impedit.\"\n      },\n      \"description\": \"how to dns\",\n      \"file_urls\": [\n         \"https://bucket/key\"\n      ],\n      \"flag_format_prefix\": \"SSM{\",\n      \"flag_format_suffix\": \"}\",\n      \"flags\": [\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         },\n         {\n            \"flag\": \"fl4g_l0l\",\n            \"type\": \"regex\"\n         }\n      ],\n      \"human_metadata\": {\n         \"event_name\": \"Ut quas aliquam sit sint ut.\"\n      },\n      \"order\": 5,\n      \"score\": 100,\n      \"services\": [\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         },\n         {\n            \"hyperlink\": true,\n            \"user_display\": \"nc 0.0.0.0 1234\"\n         }\n      ],\n      \"title\": \"DNS 101\"\n   }'")
 		}
 		err = goa.MergeErrors(err, goa.ValidateFormat("body.challenge_id", body.ChallengeID, goa.FormatUUID))
 
@@ -672,7 +690,7 @@ func BuildCreateCTFPayload(adminCreateCTFBody string, adminCreateCTFToken string
 	{
 		err = json.Unmarshal([]byte(adminCreateCTFBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 205276042674887128,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 6039843869835536091\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 3433366848551607925,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 6234404335250354171,\n      \"team_based\": false,\n      \"theme\": \"ctf-theme\"\n   }'")
 		}
 		if body.Challenges == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
@@ -693,6 +711,8 @@ func BuildCreateCTFPayload(adminCreateCTFBody string, adminCreateCTFToken string
 		Slug:        body.Slug,
 		Private:     body.Private,
 		Password:    body.Password,
+		TeamBased:   body.TeamBased,
+		Theme:       body.Theme,
 	}
 	if body.Challenges != nil {
 		v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
@@ -713,7 +733,7 @@ func BuildUpdateCTFPayload(adminUpdateCTFBody string, adminUpdateCTFID string, a
 	{
 		err = json.Unmarshal([]byte(adminUpdateCTFBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 3798013612609028327,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 1834819382561110777\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"A fun CTF for school\",\n      \"end_time\": 4716225969945958973,\n      \"name\": \"School CTF 2025\",\n      \"password\": \"password\",\n      \"private\": false,\n      \"slug\": \"school-ctf-2025\",\n      \"start_time\": 4781384427134125013,\n      \"team_based\": false,\n      \"theme\": \"ctf-theme\"\n   }'")
 		}
 		if body.Challenges == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
@@ -743,6 +763,8 @@ func BuildUpdateCTFPayload(adminUpdateCTFBody string, adminUpdateCTFID string, a
 		Slug:        body.Slug,
 		Private:     body.Private,
 		Password:    body.Password,
+		TeamBased:   body.TeamBased,
+		Theme:       body.Theme,
 	}
 	if body.Challenges != nil {
 		v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
@@ -801,7 +823,7 @@ func BuildCreateChallengeGroupPayload(adminCreateChallengeGroupBody string, admi
 	{
 		err = json.Unmarshal([]byte(adminCreateChallengeGroupBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
 		}
 		if body.Challenges == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
@@ -837,7 +859,7 @@ func BuildUpdateChallengeGroupPayload(adminUpdateChallengeGroupBody string, admi
 	{
 		err = json.Unmarshal([]byte(adminUpdateChallengeGroupBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"challenges\": [\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         },\n         {\n            \"custom_score\": 50,\n            \"display_order\": 1,\n            \"id\": \"85163218-8735-42ed-a7a6-42a9de2294df\"\n         }\n      ],\n      \"description\": \"This is a group of challenges\",\n      \"name\": \"Group 1\"\n   }'")
 		}
 		if body.Challenges == nil {
 			err = goa.MergeErrors(err, goa.MissingFieldError("challenges", "body"))
@@ -961,7 +983,7 @@ func BuildUpdateCTFUserPayload(adminUpdateCTFUserBody string, adminUpdateCTFUser
 	{
 		err = json.Unmarshal([]byte(adminUpdateCTFUserBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"username\": \"Facilis magnam sit ducimus est.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"username\": \"Incidunt qui.\"\n   }'")
 		}
 	}
 	var ctfID string
@@ -980,6 +1002,126 @@ func BuildUpdateCTFUserPayload(adminUpdateCTFUserBody string, adminUpdateCTFUser
 		Username: body.Username,
 	}
 	v.CtfID = ctfID
+	v.UserID = userID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildListCTFTeamsPayload builds the payload for the admin ListCTFTeams
+// endpoint from CLI flags.
+func BuildListCTFTeamsPayload(adminListCTFTeamsCtfID string, adminListCTFTeamsToken string) (*admin.ListCTFTeamsPayload, error) {
+	var ctfID string
+	{
+		ctfID = adminListCTFTeamsCtfID
+	}
+	var token string
+	{
+		token = adminListCTFTeamsToken
+	}
+	v := &admin.ListCTFTeamsPayload{}
+	v.CtfID = ctfID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildCreateCTFTeamPayload builds the payload for the admin CreateCTFTeam
+// endpoint from CLI flags.
+func BuildCreateCTFTeamPayload(adminCreateCTFTeamBody string, adminCreateCTFTeamCtfID string, adminCreateCTFTeamToken string) (*admin.CreateCTFTeamPayload, error) {
+	var err error
+	var body CreateCTFTeamRequestBody
+	{
+		err = json.Unmarshal([]byte(adminCreateCTFTeamBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"teamname\": \"Autem nemo.\"\n   }'")
+		}
+	}
+	var ctfID string
+	{
+		ctfID = adminCreateCTFTeamCtfID
+	}
+	var token string
+	{
+		token = adminCreateCTFTeamToken
+	}
+	v := &admin.CreateCTFTeamPayload{
+		Teamname: body.Teamname,
+	}
+	v.CtfID = ctfID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildDeleteCTFTeamPayload builds the payload for the admin DeleteCTFTeam
+// endpoint from CLI flags.
+func BuildDeleteCTFTeamPayload(adminDeleteCTFTeamCtfID string, adminDeleteCTFTeamTeamID string, adminDeleteCTFTeamToken string) (*admin.DeleteCTFTeamPayload, error) {
+	var ctfID string
+	{
+		ctfID = adminDeleteCTFTeamCtfID
+	}
+	var teamID string
+	{
+		teamID = adminDeleteCTFTeamTeamID
+	}
+	var token string
+	{
+		token = adminDeleteCTFTeamToken
+	}
+	v := &admin.DeleteCTFTeamPayload{}
+	v.CtfID = ctfID
+	v.TeamID = teamID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildUpdateCTFTeamPayload builds the payload for the admin UpdateCTFTeam
+// endpoint from CLI flags.
+func BuildUpdateCTFTeamPayload(adminUpdateCTFTeamBody string, adminUpdateCTFTeamCtfID string, adminUpdateCTFTeamTeamID string, adminUpdateCTFTeamToken string) (*admin.UpdateCTFTeamPayload, error) {
+	var err error
+	var body UpdateCTFTeamRequestBody
+	{
+		err = json.Unmarshal([]byte(adminUpdateCTFTeamBody), &body)
+		if err != nil {
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"teamname\": \"Vel dolor.\"\n   }'")
+		}
+	}
+	var ctfID string
+	{
+		ctfID = adminUpdateCTFTeamCtfID
+	}
+	var teamID string
+	{
+		teamID = adminUpdateCTFTeamTeamID
+	}
+	var token string
+	{
+		token = adminUpdateCTFTeamToken
+	}
+	v := &admin.UpdateCTFTeamPayload{
+		Teamname: body.Teamname,
+	}
+	v.CtfID = ctfID
+	v.TeamID = teamID
+	v.Token = token
+
+	return v, nil
+}
+
+// BuildGetUserDetailsPayload builds the payload for the admin GetUserDetails
+// endpoint from CLI flags.
+func BuildGetUserDetailsPayload(adminGetUserDetailsUserID string, adminGetUserDetailsToken string) (*admin.GetUserDetailsPayload, error) {
+	var userID string
+	{
+		userID = adminGetUserDetailsUserID
+	}
+	var token string
+	{
+		token = adminGetUserDetailsToken
+	}
+	v := &admin.GetUserDetailsPayload{}
 	v.UserID = userID
 	v.Token = token
 

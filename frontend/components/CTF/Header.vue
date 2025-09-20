@@ -45,7 +45,12 @@
                 class="nav-link btn border border-primary"
                 :to="'/ctf/' + slug"
               >
-                <span>
+                <span v-if="auth.ctfUser.teamname">
+                  {{ auth.ctfUser.teamname }} -
+                  {{ auth.ctfUser.username }}
+                  <span class="material-symbols-outlined">person</span>
+                </span>
+                <span v-else>
                   {{ auth.ctfUser.username }}
                   <span class="material-symbols-outlined">person</span>
                 </span>
@@ -75,6 +80,43 @@ const route = useRoute();
 const ctfStore = useCTFStore();
 const slug = route.params.slug as string;
 const toggleCollapse = ref(false);
+
+onMounted(async () => {
+  const slug = ctfStore.ctf.slug;
+  if (slug) {
+    await ctfStore.getCTF(slug);
+  }
+  loadTheme();
+});
+
+watch(() => ctfStore.ctf.theme, () => {
+  loadTheme();
+});
+
+function loadTheme() {
+  const existingTheme = document.querySelector('link[data-ctf-theme]');
+  if (existingTheme) {
+    existingTheme.remove();
+  }
+
+  const themeName = ctfStore.ctf.theme || 'ctf-theme';
+
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `/themes/${themeName}.css`;
+  link.setAttribute('data-ctf-theme', 'true');
+  link.onerror = () => {
+    const fallbackLink = document.createElement('link');
+    fallbackLink.rel = 'stylesheet';
+    fallbackLink.href = `/assets/themes/${themeName}.css`;
+    fallbackLink.setAttribute('data-ctf-theme', 'true');
+    fallbackLink.onload = () => {
+    };
+    document.head.appendChild(fallbackLink);
+  };
+
+  document.head.appendChild(link);
+}
 </script>
 
 <style scoped>

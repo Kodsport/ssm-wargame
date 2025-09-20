@@ -14,6 +14,10 @@ export default defineNuxtConfig({
           rel: "stylesheet",
           href: "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
         },
+        {
+          rel: "stylesheet",
+          href: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css",
+        },
       ],
       title: "Säkerhets-SM",
       meta: [
@@ -38,7 +42,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: "set via env",
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:8000/",
     },
   },
   routeRules: {

@@ -133,6 +133,20 @@ var _ = Service("admin", func() {
 		})
 	})
 
+	Method("GetDiscordUser", func() {
+		Description("get discord avatar for person")
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("discord_id", String, "Discord user ID")
+			Required("discord_id")
+		})
+		Result(DiscordUser)
+		HTTP(func() {
+			GET("/users/discord/{discord_id}")
+			Response(StatusOK)
+		})
+	})
+
 	Method("ListAuthors", func() {
 		Payload(func() {
 			Extend(TokenPayload)
@@ -437,6 +451,71 @@ var _ = Service("admin", func() {
 		Result(CTFUser)
 		HTTP(func() {
 			PATCH("/ctfs/{ctf_id}/users/{user_id}")
+			Response(StatusOK)
+		})
+	})
+
+	Method("ListCTFTeams", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Required("ctf_id")
+			Extend(TokenPayload)
+		})
+		Result(ArrayOf(CTFTeam))
+		HTTP(func() {
+			GET("/ctfs/{ctf_id}/teams")
+			Response(StatusOK)
+		})
+	})
+	Method("CreateCTFTeam", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Attribute("teamname", String)
+			Required("ctf_id", "teamname")
+			Extend(TokenPayload)
+		})
+		Result(CTFTeam)
+		HTTP(func() {
+			POST("/ctfs/{ctf_id}/teams")
+			Response(StatusCreated)
+		})
+	})
+	Method("DeleteCTFTeam", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Attribute("team_id", String)
+			Required("ctf_id", "team_id")
+			Extend(TokenPayload)
+		})
+		HTTP(func() {
+			DELETE("/ctfs/{ctf_id}/teams/{team_id}")
+			Response(StatusOK)
+		})
+	})
+	Method("UpdateCTFTeam", func() {
+		Payload(func() {
+			Attribute("ctf_id", String)
+			Attribute("team_id", String)
+			Attribute("teamname", String)
+			Required("ctf_id", "team_id", "teamname")
+			Extend(TokenPayload)
+		})
+		Result(CTFTeam)
+		HTTP(func() {
+			PATCH("/ctfs/{ctf_id}/teams/{team_id}")
+			Response(StatusOK)
+		})
+	})
+	Method("GetUserDetails", func() {
+		Description("Get consolidated user details with all challenge submissions and statistics")
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("user_id", String, "User ID")
+			Required("user_id")
+		})
+		Result(UserDetails)
+		HTTP(func() {
+			GET("/users/{user_id}/details")
 			Response(StatusOK)
 		})
 	})

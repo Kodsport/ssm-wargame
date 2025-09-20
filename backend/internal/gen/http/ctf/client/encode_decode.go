@@ -661,17 +661,20 @@ func unmarshalCTFUserSolveResponseBodyToCtfCTFUserSolve(v *CTFUserSolveResponseB
 // *SsmCtfChallengeResponse.
 func unmarshalSsmCtfChallengeResponseToCtfviewsSsmCtfChallengeView(v *SsmCtfChallengeResponse) *ctfviews.SsmCtfChallengeView {
 	res := &ctfviews.SsmCtfChallengeView{
-		ID:             v.ID,
-		Slug:           v.Slug,
-		Title:          v.Title,
-		Description:    v.Description,
-		Score:          v.Score,
-		Solves:         v.Solves,
-		CtfEventID:     v.CtfEventID,
-		ChallNamespace: v.ChallNamespace,
-		Solved:         v.Solved,
-		Category:       v.Category,
-		DisplayOrder:   v.DisplayOrder,
+		ID:              v.ID,
+		Slug:            v.Slug,
+		Title:           v.Title,
+		Description:     v.Description,
+		Score:           v.Score,
+		Solves:          v.Solves,
+		NumTeamSolves:   v.NumTeamSolves,
+		NumSolvesInTeam: v.NumSolvesInTeam,
+		CtfEventID:      v.CtfEventID,
+		ChallNamespace:  v.ChallNamespace,
+		Solved:          v.Solved,
+		SolvedInTeam:    v.SolvedInTeam,
+		Category:        v.Category,
+		DisplayOrder:    v.DisplayOrder,
 	}
 	if v.Services != nil {
 		res.Services = make([]*ctfviews.ChallengeServiceView, len(v.Services))
@@ -695,6 +698,18 @@ func unmarshalSsmCtfChallengeResponseToCtfviewsSsmCtfChallengeView(v *SsmCtfChal
 		res.Solvers = make([]*ctfviews.SsmSolverView, len(v.Solvers))
 		for i, val := range v.Solvers {
 			res.Solvers[i] = unmarshalSsmSolverResponseToCtfviewsSsmSolverView(val)
+		}
+	}
+	if v.TeamSolvers != nil {
+		res.TeamSolvers = make([]*ctfviews.SsmSolverView, len(v.TeamSolvers))
+		for i, val := range v.TeamSolvers {
+			res.TeamSolvers[i] = unmarshalSsmSolverResponseToCtfviewsSsmSolverView(val)
+		}
+	}
+	if v.SolversInTeam != nil {
+		res.SolversInTeam = make([]*ctfviews.SsmSolverView, len(v.SolversInTeam))
+		for i, val := range v.SolversInTeam {
+			res.SolversInTeam[i] = unmarshalSsmSolverResponseToCtfviewsSsmSolverView(val)
 		}
 	}
 
@@ -772,6 +787,8 @@ func unmarshalCTFScoreResponseToCtfCTFScore(v *CTFScoreResponse) *ctf.CTFScore {
 		ID:       *v.ID,
 		Username: *v.Username,
 		Score:    *v.Score,
+		TeamID:   v.TeamID,
+		Teamname: v.Teamname,
 	}
 	res.Solves = make([]string, len(v.Solves))
 	for i, val := range v.Solves {

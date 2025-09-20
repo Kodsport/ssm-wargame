@@ -1137,6 +1137,140 @@ func DecodeListUsersResponse(decoder func(*http.Response) goahttp.Decoder, resto
 	}
 }
 
+// BuildGetDiscordUserRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "GetDiscordUser" endpoint
+func (c *Client) BuildGetDiscordUserRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		discordID string
+	)
+	{
+		p, ok := v.(*admin.GetDiscordUserPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "GetDiscordUser", "*admin.GetDiscordUserPayload", v)
+		}
+		discordID = p.DiscordID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetDiscordUserAdminPath(discordID)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "GetDiscordUser", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeGetDiscordUserRequest returns an encoder for requests sent to the
+// admin GetDiscordUser server.
+func EncodeGetDiscordUserRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.GetDiscordUserPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "GetDiscordUser", "*admin.GetDiscordUserPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeGetDiscordUserResponse returns a decoder for responses returned by the
+// admin GetDiscordUser endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeGetDiscordUserResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeGetDiscordUserResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body GetDiscordUserResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetDiscordUser", err)
+			}
+			p := NewGetDiscordUserSsmDiscordUserOK(&body)
+			view := "default"
+			vres := &adminviews.SsmDiscordUser{Projected: p, View: view}
+			if err = adminviews.ValidateSsmDiscordUser(vres); err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetDiscordUser", err)
+			}
+			res := admin.NewSsmDiscordUser(vres)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body GetDiscordUserUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetDiscordUser", err)
+			}
+			err = ValidateGetDiscordUserUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetDiscordUser", err)
+			}
+			return nil, NewGetDiscordUserUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body GetDiscordUserNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetDiscordUser", err)
+			}
+			err = ValidateGetDiscordUserNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetDiscordUser", err)
+			}
+			return nil, NewGetDiscordUserNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body GetDiscordUserBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetDiscordUser", err)
+			}
+			err = ValidateGetDiscordUserBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetDiscordUser", err)
+			}
+			return nil, NewGetDiscordUserBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "GetDiscordUser", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildListAuthorsRequest instantiates a HTTP request object with method and
 // path set to call the "admin" service "ListAuthors" endpoint
 func (c *Client) BuildListAuthorsRequest(ctx context.Context, v interface{}) (*http.Request, error) {
@@ -4367,6 +4501,673 @@ func DecodeUpdateCTFUserResponse(decoder func(*http.Response) goahttp.Decoder, r
 	}
 }
 
+// BuildListCTFTeamsRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "ListCTFTeams" endpoint
+func (c *Client) BuildListCTFTeamsRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		ctfID string
+	)
+	{
+		p, ok := v.(*admin.ListCTFTeamsPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "ListCTFTeams", "*admin.ListCTFTeamsPayload", v)
+		}
+		ctfID = p.CtfID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: ListCTFTeamsAdminPath(ctfID)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "ListCTFTeams", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeListCTFTeamsRequest returns an encoder for requests sent to the admin
+// ListCTFTeams server.
+func EncodeListCTFTeamsRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.ListCTFTeamsPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "ListCTFTeams", "*admin.ListCTFTeamsPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeListCTFTeamsResponse returns a decoder for responses returned by the
+// admin ListCTFTeams endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeListCTFTeamsResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeListCTFTeamsResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body ListCTFTeamsResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCTFTeams", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateCTFTeamResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCTFTeams", err)
+			}
+			res := NewListCTFTeamsCTFTeamOK(body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body ListCTFTeamsUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCTFTeams", err)
+			}
+			err = ValidateListCTFTeamsUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCTFTeams", err)
+			}
+			return nil, NewListCTFTeamsUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body ListCTFTeamsNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCTFTeams", err)
+			}
+			err = ValidateListCTFTeamsNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCTFTeams", err)
+			}
+			return nil, NewListCTFTeamsNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body ListCTFTeamsBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "ListCTFTeams", err)
+			}
+			err = ValidateListCTFTeamsBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "ListCTFTeams", err)
+			}
+			return nil, NewListCTFTeamsBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "ListCTFTeams", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildCreateCTFTeamRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "CreateCTFTeam" endpoint
+func (c *Client) BuildCreateCTFTeamRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		ctfID string
+	)
+	{
+		p, ok := v.(*admin.CreateCTFTeamPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "CreateCTFTeam", "*admin.CreateCTFTeamPayload", v)
+		}
+		ctfID = p.CtfID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateCTFTeamAdminPath(ctfID)}
+	req, err := http.NewRequest("POST", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "CreateCTFTeam", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeCreateCTFTeamRequest returns an encoder for requests sent to the admin
+// CreateCTFTeam server.
+func EncodeCreateCTFTeamRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.CreateCTFTeamPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "CreateCTFTeam", "*admin.CreateCTFTeamPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewCreateCTFTeamRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "CreateCTFTeam", err)
+		}
+		return nil
+	}
+}
+
+// DecodeCreateCTFTeamResponse returns a decoder for responses returned by the
+// admin CreateCTFTeam endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeCreateCTFTeamResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeCreateCTFTeamResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusCreated:
+			var (
+				body CreateCTFTeamResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFTeam", err)
+			}
+			err = ValidateCreateCTFTeamResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFTeam", err)
+			}
+			res := NewCreateCTFTeamCTFTeamCreated(&body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body CreateCTFTeamUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFTeam", err)
+			}
+			err = ValidateCreateCTFTeamUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFTeam", err)
+			}
+			return nil, NewCreateCTFTeamUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body CreateCTFTeamNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFTeam", err)
+			}
+			err = ValidateCreateCTFTeamNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFTeam", err)
+			}
+			return nil, NewCreateCTFTeamNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body CreateCTFTeamBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "CreateCTFTeam", err)
+			}
+			err = ValidateCreateCTFTeamBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "CreateCTFTeam", err)
+			}
+			return nil, NewCreateCTFTeamBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "CreateCTFTeam", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildDeleteCTFTeamRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "DeleteCTFTeam" endpoint
+func (c *Client) BuildDeleteCTFTeamRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		ctfID  string
+		teamID string
+	)
+	{
+		p, ok := v.(*admin.DeleteCTFTeamPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "DeleteCTFTeam", "*admin.DeleteCTFTeamPayload", v)
+		}
+		ctfID = p.CtfID
+		teamID = p.TeamID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: DeleteCTFTeamAdminPath(ctfID, teamID)}
+	req, err := http.NewRequest("DELETE", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "DeleteCTFTeam", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeDeleteCTFTeamRequest returns an encoder for requests sent to the admin
+// DeleteCTFTeam server.
+func EncodeDeleteCTFTeamRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.DeleteCTFTeamPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "DeleteCTFTeam", "*admin.DeleteCTFTeamPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeDeleteCTFTeamResponse returns a decoder for responses returned by the
+// admin DeleteCTFTeam endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeDeleteCTFTeamResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeDeleteCTFTeamResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body DeleteCTFTeamUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteCTFTeam", err)
+			}
+			err = ValidateDeleteCTFTeamUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteCTFTeam", err)
+			}
+			return nil, NewDeleteCTFTeamUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body DeleteCTFTeamNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteCTFTeam", err)
+			}
+			err = ValidateDeleteCTFTeamNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteCTFTeam", err)
+			}
+			return nil, NewDeleteCTFTeamNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body DeleteCTFTeamBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "DeleteCTFTeam", err)
+			}
+			err = ValidateDeleteCTFTeamBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "DeleteCTFTeam", err)
+			}
+			return nil, NewDeleteCTFTeamBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "DeleteCTFTeam", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildUpdateCTFTeamRequest instantiates a HTTP request object with method and
+// path set to call the "admin" service "UpdateCTFTeam" endpoint
+func (c *Client) BuildUpdateCTFTeamRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		ctfID  string
+		teamID string
+	)
+	{
+		p, ok := v.(*admin.UpdateCTFTeamPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "UpdateCTFTeam", "*admin.UpdateCTFTeamPayload", v)
+		}
+		ctfID = p.CtfID
+		teamID = p.TeamID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateCTFTeamAdminPath(ctfID, teamID)}
+	req, err := http.NewRequest("PATCH", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "UpdateCTFTeam", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeUpdateCTFTeamRequest returns an encoder for requests sent to the admin
+// UpdateCTFTeam server.
+func EncodeUpdateCTFTeamRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.UpdateCTFTeamPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "UpdateCTFTeam", "*admin.UpdateCTFTeamPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewUpdateCTFTeamRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "UpdateCTFTeam", err)
+		}
+		return nil
+	}
+}
+
+// DecodeUpdateCTFTeamResponse returns a decoder for responses returned by the
+// admin UpdateCTFTeam endpoint. restoreBody controls whether the response body
+// should be restored after having been read.
+// DecodeUpdateCTFTeamResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeUpdateCTFTeamResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body UpdateCTFTeamResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateCTFTeam", err)
+			}
+			err = ValidateUpdateCTFTeamResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateCTFTeam", err)
+			}
+			res := NewUpdateCTFTeamCTFTeamOK(&body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body UpdateCTFTeamUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateCTFTeam", err)
+			}
+			err = ValidateUpdateCTFTeamUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateCTFTeam", err)
+			}
+			return nil, NewUpdateCTFTeamUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body UpdateCTFTeamNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateCTFTeam", err)
+			}
+			err = ValidateUpdateCTFTeamNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateCTFTeam", err)
+			}
+			return nil, NewUpdateCTFTeamNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body UpdateCTFTeamBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateCTFTeam", err)
+			}
+			err = ValidateUpdateCTFTeamBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateCTFTeam", err)
+			}
+			return nil, NewUpdateCTFTeamBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "UpdateCTFTeam", resp.StatusCode, string(body))
+		}
+	}
+}
+
+// BuildGetUserDetailsRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "GetUserDetails" endpoint
+func (c *Client) BuildGetUserDetailsRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		userID string
+	)
+	{
+		p, ok := v.(*admin.GetUserDetailsPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "GetUserDetails", "*admin.GetUserDetailsPayload", v)
+		}
+		userID = p.UserID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: GetUserDetailsAdminPath(userID)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "GetUserDetails", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeGetUserDetailsRequest returns an encoder for requests sent to the
+// admin GetUserDetails server.
+func EncodeGetUserDetailsRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.GetUserDetailsPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "GetUserDetails", "*admin.GetUserDetailsPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeGetUserDetailsResponse returns a decoder for responses returned by the
+// admin GetUserDetails endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeGetUserDetailsResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeGetUserDetailsResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body GetUserDetailsResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetUserDetails", err)
+			}
+			p := NewGetUserDetailsSsmAdminUserdetailsOK(&body)
+			view := "default"
+			vres := &adminviews.SsmAdminUserdetails{Projected: p, View: view}
+			if err = adminviews.ValidateSsmAdminUserdetails(vres); err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetUserDetails", err)
+			}
+			res := admin.NewSsmAdminUserdetails(vres)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body GetUserDetailsUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetUserDetails", err)
+			}
+			err = ValidateGetUserDetailsUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetUserDetails", err)
+			}
+			return nil, NewGetUserDetailsUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body GetUserDetailsNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetUserDetails", err)
+			}
+			err = ValidateGetUserDetailsNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetUserDetails", err)
+			}
+			return nil, NewGetUserDetailsNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body GetUserDetailsBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "GetUserDetails", err)
+			}
+			err = ValidateGetUserDetailsBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "GetUserDetails", err)
+			}
+			return nil, NewGetUserDetailsBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "GetUserDetails", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView builds a
 // value of type *adminviews.SsmAdminChallengeView from a value of type
 // *SsmAdminChallengeResponse.
@@ -4496,11 +5297,12 @@ func unmarshalMonthlyChallengeResponseToAdminMonthlyChallenge(v *MonthlyChalleng
 // from a value of type *SsmUserResponse.
 func unmarshalSsmUserResponseToAdminSsmUser(v *SsmUserResponse) *admin.SsmUser {
 	res := &admin.SsmUser{
-		ID:       *v.ID,
-		Email:    *v.Email,
-		FullName: *v.FullName,
-		Role:     *v.Role,
-		SchoolID: v.SchoolID,
+		ID:        *v.ID,
+		Email:     *v.Email,
+		FullName:  *v.FullName,
+		Role:      *v.Role,
+		SchoolID:  v.SchoolID,
+		DiscordID: v.DiscordID,
 	}
 
 	return res
@@ -4733,6 +5535,8 @@ func unmarshalCTFResponseToAdminCTF(v *CTFResponse) *admin.CTF {
 		StartTime:   *v.StartTime,
 		EndTime:     *v.EndTime,
 		Slug:        *v.Slug,
+		TeamBased:   *v.TeamBased,
+		Theme:       v.Theme,
 	}
 	res.Challenges = make([]*admin.CTFChallenge, len(v.Challenges))
 	for i, val := range v.Challenges {
@@ -4778,6 +5582,87 @@ func unmarshalCTFUserResponseToAdminCTFUser(v *CTFUserResponse) *admin.CTFUser {
 		CtfID:    *v.CtfID,
 		Username: *v.Username,
 		Password: *v.Password,
+		TeamID:   v.TeamID,
+		Teamname: v.Teamname,
+	}
+
+	return res
+}
+
+// unmarshalCTFTeamResponseToAdminCTFTeam builds a value of type *admin.CTFTeam
+// from a value of type *CTFTeamResponse.
+func unmarshalCTFTeamResponseToAdminCTFTeam(v *CTFTeamResponse) *admin.CTFTeam {
+	res := &admin.CTFTeam{
+		ID:        *v.ID,
+		CtfID:     *v.CtfID,
+		Teamname:  *v.Teamname,
+		Password:  *v.Password,
+		CreatedAt: v.CreatedAt,
+	}
+
+	return res
+}
+
+// unmarshalSsmDiscordUserResponseBodyToAdminviewsSsmDiscordUserView builds a
+// value of type *adminviews.SsmDiscordUserView from a value of type
+// *SsmDiscordUserResponseBody.
+func unmarshalSsmDiscordUserResponseBodyToAdminviewsSsmDiscordUserView(v *SsmDiscordUserResponseBody) *adminviews.SsmDiscordUserView {
+	if v == nil {
+		return nil
+	}
+	res := &adminviews.SsmDiscordUserView{
+		ID:            v.ID,
+		Username:      v.Username,
+		Discriminator: v.Discriminator,
+		Avatar:        v.Avatar,
+		GlobalName:    v.GlobalName,
+	}
+
+	return res
+}
+
+// unmarshalSubmissionStatsResponseBodyToAdminviewsSubmissionStatsView builds a
+// value of type *adminviews.SubmissionStatsView from a value of type
+// *SubmissionStatsResponseBody.
+func unmarshalSubmissionStatsResponseBodyToAdminviewsSubmissionStatsView(v *SubmissionStatsResponseBody) *adminviews.SubmissionStatsView {
+	res := &adminviews.SubmissionStatsView{
+		Successful:  v.Successful,
+		Failed:      v.Failed,
+		Total:       v.Total,
+		SuccessRate: v.SuccessRate,
+	}
+
+	return res
+}
+
+// unmarshalChallengeSubmissionsGroupResponseBodyToAdminviewsChallengeSubmissionsGroupView
+// builds a value of type *adminviews.ChallengeSubmissionsGroupView from a
+// value of type *ChallengeSubmissionsGroupResponseBody.
+func unmarshalChallengeSubmissionsGroupResponseBodyToAdminviewsChallengeSubmissionsGroupView(v *ChallengeSubmissionsGroupResponseBody) *adminviews.ChallengeSubmissionsGroupView {
+	res := &adminviews.ChallengeSubmissionsGroupView{
+		ChallengeID:    v.ChallengeID,
+		ChallengeTitle: v.ChallengeTitle,
+		ChallengeSlug:  v.ChallengeSlug,
+		Solved:         v.Solved,
+	}
+	res.Submissions = make([]*adminviews.ChallengeSubmissionView, len(v.Submissions))
+	for i, val := range v.Submissions {
+		res.Submissions[i] = unmarshalChallengeSubmissionResponseBodyToAdminviewsChallengeSubmissionView(val)
+	}
+
+	return res
+}
+
+// unmarshalChallengeSubmissionResponseBodyToAdminviewsChallengeSubmissionView
+// builds a value of type *adminviews.ChallengeSubmissionView from a value of
+// type *ChallengeSubmissionResponseBody.
+func unmarshalChallengeSubmissionResponseBodyToAdminviewsChallengeSubmissionView(v *ChallengeSubmissionResponseBody) *adminviews.ChallengeSubmissionView {
+	res := &adminviews.ChallengeSubmissionView{
+		Input:       v.Input,
+		Successful:  v.Successful,
+		UserID:      v.UserID,
+		SubmittedAt: v.SubmittedAt,
+		ID:          v.ID,
 	}
 
 	return res

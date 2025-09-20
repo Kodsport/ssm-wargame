@@ -7,9 +7,13 @@ import (
 
 type UserChall struct {
 	models.Challenge `boil:",bind"`
-	NumSolves        int    `boil:"num_solves"`
-	Solved           bool   `boil:"solved"`
-	Category         string `boil:"category"`
+	NumSolves        int  `boil:"num_solves"`
+	NumSolvesInTeam  int  `boil:"num_solves_in_team"`
+	NumTeamSolves    int  `boil:"num_team_solves"`
+	SolvedInTeam     bool `boil:"solved_in_team"`
+
+	Solved   bool   `boil:"solved"`
+	Category string `boil:"category"`
 }
 
 type UserMonthlyChall struct {

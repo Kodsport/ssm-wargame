@@ -56,6 +56,11 @@ func ListUsersAdminPath() string {
 	return "/admin/users"
 }
 
+// GetDiscordUserAdminPath returns the URL path to the admin service GetDiscordUser HTTP endpoint.
+func GetDiscordUserAdminPath(discordID string) string {
+	return fmt.Sprintf("/admin/users/discord/%v", discordID)
+}
+
 // ListAuthorsAdminPath returns the URL path to the admin service ListAuthors HTTP endpoint.
 func ListAuthorsAdminPath() string {
 	return "/admin/authors"
@@ -184,4 +189,29 @@ func DeleteCTFUserAdminPath(ctfID string, userID string) string {
 // UpdateCTFUserAdminPath returns the URL path to the admin service UpdateCTFUser HTTP endpoint.
 func UpdateCTFUserAdminPath(ctfID string, userID string) string {
 	return fmt.Sprintf("/admin/ctfs/%v/users/%v", ctfID, userID)
+}
+
+// ListCTFTeamsAdminPath returns the URL path to the admin service ListCTFTeams HTTP endpoint.
+func ListCTFTeamsAdminPath(ctfID string) string {
+	return fmt.Sprintf("/admin/ctfs/%v/teams", ctfID)
+}
+
+// CreateCTFTeamAdminPath returns the URL path to the admin service CreateCTFTeam HTTP endpoint.
+func CreateCTFTeamAdminPath(ctfID string) string {
+	return fmt.Sprintf("/admin/ctfs/%v/teams", ctfID)
+}
+
+// DeleteCTFTeamAdminPath returns the URL path to the admin service DeleteCTFTeam HTTP endpoint.
+func DeleteCTFTeamAdminPath(ctfID string, teamID string) string {
+	return fmt.Sprintf("/admin/ctfs/%v/teams/%v", ctfID, teamID)
+}
+
+// UpdateCTFTeamAdminPath returns the URL path to the admin service UpdateCTFTeam HTTP endpoint.
+func UpdateCTFTeamAdminPath(ctfID string, teamID string) string {
+	return fmt.Sprintf("/admin/ctfs/%v/teams/%v", ctfID, teamID)
+}
+
+// GetUserDetailsAdminPath returns the URL path to the admin service GetUserDetails HTTP endpoint.
+func GetUserDetailsAdminPath(userID string) string {
+	return fmt.Sprintf("/admin/users/%v/details", userID)
 }

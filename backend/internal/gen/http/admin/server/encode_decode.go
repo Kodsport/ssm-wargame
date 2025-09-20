@@ -886,6 +886,100 @@ func EncodeListUsersError(encoder func(context.Context, http.ResponseWriter) goa
 	}
 }
 
+// EncodeGetDiscordUserResponse returns an encoder for responses returned by
+// the admin GetDiscordUser endpoint.
+func EncodeGetDiscordUserResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*adminviews.SsmDiscordUser)
+		enc := encoder(ctx, w)
+		body := NewGetDiscordUserResponseBody(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeGetDiscordUserRequest returns a decoder for requests sent to the admin
+// GetDiscordUser endpoint.
+func DecodeGetDiscordUserRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			discordID string
+			token     string
+			err       error
+
+			params = mux.Vars(r)
+		)
+		discordID = params["discord_id"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewGetDiscordUserPayload(discordID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeGetDiscordUserError returns an encoder for errors returned by the
+// GetDiscordUser admin endpoint.
+func EncodeGetDiscordUserError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetDiscordUserUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetDiscordUserNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetDiscordUserBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeListAuthorsResponse returns an encoder for responses returned by the
 // admin ListAuthors endpoint.
 func EncodeListAuthorsResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -3455,6 +3549,507 @@ func EncodeUpdateCTFUserError(encoder func(context.Context, http.ResponseWriter)
 	}
 }
 
+// EncodeListCTFTeamsResponse returns an encoder for responses returned by the
+// admin ListCTFTeams endpoint.
+func EncodeListCTFTeamsResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.([]*admin.CTFTeam)
+		enc := encoder(ctx, w)
+		body := NewListCTFTeamsResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeListCTFTeamsRequest returns a decoder for requests sent to the admin
+// ListCTFTeams endpoint.
+func DecodeListCTFTeamsRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			ctfID string
+			token string
+			err   error
+
+			params = mux.Vars(r)
+		)
+		ctfID = params["ctf_id"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewListCTFTeamsPayload(ctfID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeListCTFTeamsError returns an encoder for errors returned by the
+// ListCTFTeams admin endpoint.
+func EncodeListCTFTeamsError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCTFTeamsUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCTFTeamsNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewListCTFTeamsBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeCreateCTFTeamResponse returns an encoder for responses returned by the
+// admin CreateCTFTeam endpoint.
+func EncodeCreateCTFTeamResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.(*admin.CTFTeam)
+		enc := encoder(ctx, w)
+		body := NewCreateCTFTeamResponseBody(res)
+		w.WriteHeader(http.StatusCreated)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeCreateCTFTeamRequest returns a decoder for requests sent to the admin
+// CreateCTFTeam endpoint.
+func DecodeCreateCTFTeamRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body CreateCTFTeamRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateCreateCTFTeamRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			ctfID string
+			token string
+
+			params = mux.Vars(r)
+		)
+		ctfID = params["ctf_id"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewCreateCTFTeamPayload(&body, ctfID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeCreateCTFTeamError returns an encoder for errors returned by the
+// CreateCTFTeam admin endpoint.
+func EncodeCreateCTFTeamError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCreateCTFTeamUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCreateCTFTeamNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewCreateCTFTeamBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeDeleteCTFTeamResponse returns an encoder for responses returned by the
+// admin DeleteCTFTeam endpoint.
+func EncodeDeleteCTFTeamResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		w.WriteHeader(http.StatusOK)
+		return nil
+	}
+}
+
+// DecodeDeleteCTFTeamRequest returns a decoder for requests sent to the admin
+// DeleteCTFTeam endpoint.
+func DecodeDeleteCTFTeamRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			ctfID  string
+			teamID string
+			token  string
+			err    error
+
+			params = mux.Vars(r)
+		)
+		ctfID = params["ctf_id"]
+		teamID = params["team_id"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewDeleteCTFTeamPayload(ctfID, teamID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeDeleteCTFTeamError returns an encoder for errors returned by the
+// DeleteCTFTeam admin endpoint.
+func EncodeDeleteCTFTeamError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewDeleteCTFTeamUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewDeleteCTFTeamNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewDeleteCTFTeamBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeUpdateCTFTeamResponse returns an encoder for responses returned by the
+// admin UpdateCTFTeam endpoint.
+func EncodeUpdateCTFTeamResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.(*admin.CTFTeam)
+		enc := encoder(ctx, w)
+		body := NewUpdateCTFTeamResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeUpdateCTFTeamRequest returns a decoder for requests sent to the admin
+// UpdateCTFTeam endpoint.
+func DecodeUpdateCTFTeamRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			body UpdateCTFTeamRequestBody
+			err  error
+		)
+		err = decoder(r).Decode(&body)
+		if err != nil {
+			if err == io.EOF {
+				return nil, goa.MissingPayloadError()
+			}
+			return nil, goa.DecodePayloadError(err.Error())
+		}
+		err = ValidateUpdateCTFTeamRequestBody(&body)
+		if err != nil {
+			return nil, err
+		}
+
+		var (
+			ctfID  string
+			teamID string
+			token  string
+
+			params = mux.Vars(r)
+		)
+		ctfID = params["ctf_id"]
+		teamID = params["team_id"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewUpdateCTFTeamPayload(&body, ctfID, teamID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeUpdateCTFTeamError returns an encoder for errors returned by the
+// UpdateCTFTeam admin endpoint.
+func EncodeUpdateCTFTeamError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateCTFTeamUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateCTFTeamNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewUpdateCTFTeamBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
+// EncodeGetUserDetailsResponse returns an encoder for responses returned by
+// the admin GetUserDetails endpoint.
+func EncodeGetUserDetailsResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res := v.(*adminviews.SsmAdminUserdetails)
+		enc := encoder(ctx, w)
+		body := NewGetUserDetailsResponseBody(res.Projected)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeGetUserDetailsRequest returns a decoder for requests sent to the admin
+// GetUserDetails endpoint.
+func DecodeGetUserDetailsRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			userID string
+			token  string
+			err    error
+
+			params = mux.Vars(r)
+		)
+		userID = params["user_id"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewGetUserDetailsPayload(userID, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeGetUserDetailsError returns an encoder for errors returned by the
+// GetUserDetails admin endpoint.
+func EncodeGetUserDetailsError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetUserDetailsUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetUserDetailsNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewGetUserDetailsBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // marshalAdminviewsSsmAdminChallengeViewToSsmAdminChallengeResponse builds a
 // value of type *SsmAdminChallengeResponse from a value of type
 // *adminviews.SsmAdminChallengeView.
@@ -3586,11 +4181,12 @@ func marshalAdminMonthlyChallengeToMonthlyChallengeResponse(v *admin.MonthlyChal
 // from a value of type *admin.SsmUser.
 func marshalAdminSsmUserToSsmUserResponse(v *admin.SsmUser) *SsmUserResponse {
 	res := &SsmUserResponse{
-		ID:       v.ID,
-		Email:    v.Email,
-		FullName: v.FullName,
-		Role:     v.Role,
-		SchoolID: v.SchoolID,
+		ID:        v.ID,
+		Email:     v.Email,
+		FullName:  v.FullName,
+		Role:      v.Role,
+		SchoolID:  v.SchoolID,
+		DiscordID: v.DiscordID,
 	}
 
 	return res
@@ -3751,6 +4347,8 @@ func marshalAdminCTFToCTFResponse(v *admin.CTF) *CTFResponse {
 		StartTime:   v.StartTime,
 		EndTime:     v.EndTime,
 		Slug:        v.Slug,
+		TeamBased:   v.TeamBased,
+		Theme:       v.Theme,
 	}
 	if v.Challenges != nil {
 		res.Challenges = make([]*CTFChallengeResponse, len(v.Challenges))
@@ -3800,6 +4398,89 @@ func marshalAdminCTFUserToCTFUserResponse(v *admin.CTFUser) *CTFUserResponse {
 		CtfID:    v.CtfID,
 		Username: v.Username,
 		Password: v.Password,
+		TeamID:   v.TeamID,
+		Teamname: v.Teamname,
+	}
+
+	return res
+}
+
+// marshalAdminCTFTeamToCTFTeamResponse builds a value of type *CTFTeamResponse
+// from a value of type *admin.CTFTeam.
+func marshalAdminCTFTeamToCTFTeamResponse(v *admin.CTFTeam) *CTFTeamResponse {
+	res := &CTFTeamResponse{
+		ID:        v.ID,
+		CtfID:     v.CtfID,
+		Teamname:  v.Teamname,
+		Password:  v.Password,
+		CreatedAt: v.CreatedAt,
+	}
+
+	return res
+}
+
+// marshalAdminviewsSsmDiscordUserViewToSsmDiscordUserResponseBody builds a
+// value of type *SsmDiscordUserResponseBody from a value of type
+// *adminviews.SsmDiscordUserView.
+func marshalAdminviewsSsmDiscordUserViewToSsmDiscordUserResponseBody(v *adminviews.SsmDiscordUserView) *SsmDiscordUserResponseBody {
+	if v == nil {
+		return nil
+	}
+	res := &SsmDiscordUserResponseBody{
+		ID:            *v.ID,
+		Username:      *v.Username,
+		Discriminator: v.Discriminator,
+		Avatar:        v.Avatar,
+		GlobalName:    v.GlobalName,
+	}
+
+	return res
+}
+
+// marshalAdminviewsSubmissionStatsViewToSubmissionStatsResponseBody builds a
+// value of type *SubmissionStatsResponseBody from a value of type
+// *adminviews.SubmissionStatsView.
+func marshalAdminviewsSubmissionStatsViewToSubmissionStatsResponseBody(v *adminviews.SubmissionStatsView) *SubmissionStatsResponseBody {
+	res := &SubmissionStatsResponseBody{
+		Successful:  *v.Successful,
+		Failed:      *v.Failed,
+		Total:       *v.Total,
+		SuccessRate: *v.SuccessRate,
+	}
+
+	return res
+}
+
+// marshalAdminviewsChallengeSubmissionsGroupViewToChallengeSubmissionsGroupResponseBody
+// builds a value of type *ChallengeSubmissionsGroupResponseBody from a value
+// of type *adminviews.ChallengeSubmissionsGroupView.
+func marshalAdminviewsChallengeSubmissionsGroupViewToChallengeSubmissionsGroupResponseBody(v *adminviews.ChallengeSubmissionsGroupView) *ChallengeSubmissionsGroupResponseBody {
+	res := &ChallengeSubmissionsGroupResponseBody{
+		ChallengeID:    *v.ChallengeID,
+		ChallengeTitle: *v.ChallengeTitle,
+		ChallengeSlug:  *v.ChallengeSlug,
+		Solved:         *v.Solved,
+	}
+	if v.Submissions != nil {
+		res.Submissions = make([]*ChallengeSubmissionResponseBody, len(v.Submissions))
+		for i, val := range v.Submissions {
+			res.Submissions[i] = marshalAdminviewsChallengeSubmissionViewToChallengeSubmissionResponseBody(val)
+		}
+	}
+
+	return res
+}
+
+// marshalAdminviewsChallengeSubmissionViewToChallengeSubmissionResponseBody
+// builds a value of type *ChallengeSubmissionResponseBody from a value of type
+// *adminviews.ChallengeSubmissionView.
+func marshalAdminviewsChallengeSubmissionViewToChallengeSubmissionResponseBody(v *adminviews.ChallengeSubmissionView) *ChallengeSubmissionResponseBody {
+	res := &ChallengeSubmissionResponseBody{
+		Input:       *v.Input,
+		Successful:  *v.Successful,
+		UserID:      *v.UserID,
+		SubmittedAt: *v.SubmittedAt,
+		ID:          *v.ID,
 	}
 
 	return res
