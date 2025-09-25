@@ -8,7 +8,7 @@ marked.use({
 
 const config = {
     ADD_TAGS: ["iframe"],
-    ADD_ATTR: ["allowfullscreen", "allow", "frameborder", "scrolling"]
+    ADD_ATTR: ["allowfullscreen", "allow", "frameborder", "scrolling", "target"]
 }
 
 export default function renderMarkdown(text: string) {
