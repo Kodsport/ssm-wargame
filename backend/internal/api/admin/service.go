@@ -38,7 +38,7 @@ func (s *service) JWTAuth(ctx context.Context, token string, schema *security.JW
 		return ctx, err
 	}
 
-	if !auth.HasRole(ctx, "author", "admin") {
+	if !auth.HasRole(ctx, "author", "org", "admin") {
 		return ctx, spec.MakeUnauthorized(errors.New("user is not admin or author"))
 	}
 

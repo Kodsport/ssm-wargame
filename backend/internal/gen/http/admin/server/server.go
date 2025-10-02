@@ -60,6 +60,7 @@ type Server struct {
 	DeleteCTFTeam             http.Handler
 	UpdateCTFTeam             http.Handler
 	GetUserDetails            http.Handler
+	UpdateUserRole            http.Handler
 }
 
 // ErrorNamer is an interface implemented by generated error structs that
@@ -136,6 +137,7 @@ func New(
 			{"DeleteCTFTeam", "DELETE", "/admin/ctfs/{ctf_id}/teams/{team_id}"},
 			{"UpdateCTFTeam", "PATCH", "/admin/ctfs/{ctf_id}/teams/{team_id}"},
 			{"GetUserDetails", "GET", "/admin/users/{user_id}/details"},
+			{"UpdateUserRole", "PATCH", "/admin/users/{user_id}/role"},
 		},
 		ListChallenges:            NewListChallengesHandler(e.ListChallenges, mux, decoder, encoder, errhandler, formatter),
 		GetChallengeMeta:          NewGetChallengeMetaHandler(e.GetChallengeMeta, mux, decoder, encoder, errhandler, formatter),
@@ -178,6 +180,7 @@ func New(
 		DeleteCTFTeam:             NewDeleteCTFTeamHandler(e.DeleteCTFTeam, mux, decoder, encoder, errhandler, formatter),
 		UpdateCTFTeam:             NewUpdateCTFTeamHandler(e.UpdateCTFTeam, mux, decoder, encoder, errhandler, formatter),
 		GetUserDetails:            NewGetUserDetailsHandler(e.GetUserDetails, mux, decoder, encoder, errhandler, formatter),
+		UpdateUserRole:            NewUpdateUserRoleHandler(e.UpdateUserRole, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -227,6 +230,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.DeleteCTFTeam = m(s.DeleteCTFTeam)
 	s.UpdateCTFTeam = m(s.UpdateCTFTeam)
 	s.GetUserDetails = m(s.GetUserDetails)
+	s.UpdateUserRole = m(s.UpdateUserRole)
 }
 
 // Mount configures the mux to serve the admin endpoints.
@@ -272,6 +276,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountDeleteCTFTeamHandler(mux, h.DeleteCTFTeam)
 	MountUpdateCTFTeamHandler(mux, h.UpdateCTFTeam)
 	MountGetUserDetailsHandler(mux, h.GetUserDetails)
+	MountUpdateUserRoleHandler(mux, h.UpdateUserRole)
 }
 
 // MountListChallengesHandler configures the mux to serve the "admin" service
@@ -2345,6 +2350,57 @@ func NewGetUserDetailsHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "GetUserDetails")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountUpdateUserRoleHandler configures the mux to serve the "admin" service
+// "UpdateUserRole" endpoint.
+func MountUpdateUserRoleHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("PATCH", "/admin/users/{user_id}/role", f)
+}
+
+// NewUpdateUserRoleHandler creates a HTTP handler which loads the HTTP request
+// and calls the "admin" service "UpdateUserRole" endpoint.
+func NewUpdateUserRoleHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeUpdateUserRoleRequest(mux, decoder)
+		encodeResponse = EncodeUpdateUserRoleResponse(encoder)
+		encodeError    = EncodeUpdateUserRoleError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "UpdateUserRole")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

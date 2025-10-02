@@ -181,6 +181,10 @@ type Client struct {
 	// GetUserDetails endpoint.
 	GetUserDetailsDoer goahttp.Doer
 
+	// UpdateUserRole Doer is the HTTP client used to make requests to the
+	// UpdateUserRole endpoint.
+	UpdateUserRoleDoer goahttp.Doer
+
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
 	RestoreResponseBody bool
@@ -242,6 +246,7 @@ func NewClient(
 		DeleteCTFTeamDoer:             doer,
 		UpdateCTFTeamDoer:             doer,
 		GetUserDetailsDoer:            doer,
+		UpdateUserRoleDoer:            doer,
 		RestoreResponseBody:           restoreBody,
 		scheme:                        scheme,
 		host:                          host,
@@ -1229,6 +1234,30 @@ func (c *Client) GetUserDetails() goa.Endpoint {
 		resp, err := c.GetUserDetailsDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "GetUserDetails", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// UpdateUserRole returns an endpoint that makes HTTP requests to the admin
+// service UpdateUserRole server.
+func (c *Client) UpdateUserRole() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeUpdateUserRoleRequest(c.encoder)
+		decodeResponse = DecodeUpdateUserRoleResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildUpdateUserRoleRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.UpdateUserRoleDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "UpdateUserRole", err)
 		}
 		return decodeResponse(resp)
 	}

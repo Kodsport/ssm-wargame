@@ -519,4 +519,18 @@ var _ = Service("admin", func() {
 			Response(StatusOK)
 		})
 	})
+
+	Method("UpdateUserRole", func() {
+		Description("Update a user's role")
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("user_id", String, "User ID")
+			Attribute("role", String, "New role for the user")
+			Required("user_id", "role")
+		})
+		HTTP(func() {
+			PATCH("/users/{user_id}/role")
+			Response(StatusOK)
+		})
+	})
 })

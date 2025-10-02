@@ -224,6 +224,13 @@ type UpdateCTFTeamRequestBody struct {
 	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
 }
 
+// UpdateUserRoleRequestBody is the type of the "admin" service
+// "UpdateUserRole" endpoint HTTP request body.
+type UpdateUserRoleRequestBody struct {
+	// New role for the user
+	Role *string `form:"role,omitempty" json:"role,omitempty" xml:"role,omitempty"`
+}
+
 // SsmAdminChallengeResponseCollection is the type of the "admin" service
 // "ListChallenges" endpoint HTTP response body.
 type SsmAdminChallengeResponseCollection []*SsmAdminChallengeResponse
@@ -2637,6 +2644,60 @@ type GetUserDetailsBadRequestResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// UpdateUserRoleUnauthorizedResponseBody is the type of the "admin" service
+// "UpdateUserRole" endpoint HTTP response body for the "unauthorized" error.
+type UpdateUserRoleUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// UpdateUserRoleNotFoundResponseBody is the type of the "admin" service
+// "UpdateUserRole" endpoint HTTP response body for the "not_found" error.
+type UpdateUserRoleNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// UpdateUserRoleBadRequestResponseBody is the type of the "admin" service
+// "UpdateUserRole" endpoint HTTP response body for the "bad_request" error.
+type UpdateUserRoleBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // SsmAdminChallengeResponse is used to define fields on response body types.
 type SsmAdminChallengeResponse struct {
 	// ID of a file
@@ -4942,6 +5003,48 @@ func NewGetUserDetailsBadRequestResponseBody(res *goa.ServiceError) *GetUserDeta
 	return body
 }
 
+// NewUpdateUserRoleUnauthorizedResponseBody builds the HTTP response body from
+// the result of the "UpdateUserRole" endpoint of the "admin" service.
+func NewUpdateUserRoleUnauthorizedResponseBody(res *goa.ServiceError) *UpdateUserRoleUnauthorizedResponseBody {
+	body := &UpdateUserRoleUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewUpdateUserRoleNotFoundResponseBody builds the HTTP response body from the
+// result of the "UpdateUserRole" endpoint of the "admin" service.
+func NewUpdateUserRoleNotFoundResponseBody(res *goa.ServiceError) *UpdateUserRoleNotFoundResponseBody {
+	body := &UpdateUserRoleNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewUpdateUserRoleBadRequestResponseBody builds the HTTP response body from
+// the result of the "UpdateUserRole" endpoint of the "admin" service.
+func NewUpdateUserRoleBadRequestResponseBody(res *goa.ServiceError) *UpdateUserRoleBadRequestResponseBody {
+	body := &UpdateUserRoleBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewListChallengesPayload builds a admin service ListChallenges endpoint
 // payload.
 func NewListChallengesPayload(token string) *admin.ListChallengesPayload {
@@ -5485,6 +5588,18 @@ func NewGetUserDetailsPayload(userID string, token string) *admin.GetUserDetails
 	return v
 }
 
+// NewUpdateUserRolePayload builds a admin service UpdateUserRole endpoint
+// payload.
+func NewUpdateUserRolePayload(body *UpdateUserRoleRequestBody, userID string, token string) *admin.UpdateUserRolePayload {
+	v := &admin.UpdateUserRolePayload{
+		Role: *body.Role,
+	}
+	v.UserID = userID
+	v.Token = token
+
+	return v
+}
+
 // ValidateCreateChallengeRequestBody runs the validations defined on
 // CreateChallengeRequestBody
 func ValidateCreateChallengeRequestBody(body *CreateChallengeRequestBody) (err error) {
@@ -5836,6 +5951,15 @@ func ValidateCreateCTFTeamRequestBody(body *CreateCTFTeamRequestBody) (err error
 func ValidateUpdateCTFTeamRequestBody(body *UpdateCTFTeamRequestBody) (err error) {
 	if body.Teamname == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("teamname", "body"))
+	}
+	return
+}
+
+// ValidateUpdateUserRoleRequestBody runs the validations defined on
+// UpdateUserRoleRequestBody
+func ValidateUpdateUserRoleRequestBody(body *UpdateUserRoleRequestBody) (err error) {
+	if body.Role == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("role", "body"))
 	}
 	return
 }

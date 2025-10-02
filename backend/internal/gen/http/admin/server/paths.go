@@ -215,3 +215,8 @@ func UpdateCTFTeamAdminPath(ctfID string, teamID string) string {
 func GetUserDetailsAdminPath(userID string) string {
 	return fmt.Sprintf("/admin/users/%v/details", userID)
 }
+
+// UpdateUserRoleAdminPath returns the URL path to the admin service UpdateUserRole HTTP endpoint.
+func UpdateUserRoleAdminPath(userID string) string {
+	return fmt.Sprintf("/admin/users/%v/role", userID)
+}

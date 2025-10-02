@@ -13,6 +13,7 @@ import (
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/admin"
 	"github.com/sakerhetsm/ssm-wargame/internal/models"
 	"github.com/sakerhetsm/ssm-wargame/internal/utils"
+	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"go.uber.org/zap"
 )
@@ -38,6 +39,7 @@ func (s *service) ListUsers(ctx context.Context, req *spec.ListUsersPayload) ([]
 
 	return res, nil
 }
+
 // discriminator är gamla tags typ alanoo#3846. de anvnds frf på gamla konton
 func (s *service) GetDiscordUser(ctx context.Context, req *spec.GetDiscordUserPayload) (*spec.SsmDiscordUser, error) {
 	botToken := os.Getenv("DISCORD_BOT_TOKEN")
@@ -188,7 +190,6 @@ func (s *service) GetUserDetails(ctx context.Context, req *spec.GetUserDetailsPa
 
 	// DISCORD API DEL //
 
-
 	var discordUser *spec.SsmDiscordUser
 	if user.DiscordID.Valid {
 		discordUserReq := &spec.GetDiscordUserPayload{
@@ -201,12 +202,12 @@ func (s *service) GetUserDetails(ctx context.Context, req *spec.GetUserDetailsPa
 	}
 
 	result := &spec.SsmAdminUserdetails{
-		ID:        user.ID,
-		Email:     user.Email,
-		FullName:  user.FullName,
-		Role:      user.Role,
-		SchoolID:  user.SchoolID.Ptr(),
-		DiscordID: user.DiscordID.Ptr(),
+		ID:          user.ID,
+		Email:       user.Email,
+		FullName:    user.FullName,
+		Role:        user.Role,
+		SchoolID:    user.SchoolID.Ptr(),
+		DiscordID:   user.DiscordID.Ptr(),
 		DiscordUser: discordUser,
 		SubmissionStats: &spec.SubmissionStats{
 			Successful:  successful,
@@ -219,4 +220,44 @@ func (s *service) GetUserDetails(ctx context.Context, req *spec.GetUserDetailsPa
 	}
 
 	return result, nil
+}
+
+func (s *service) UpdateUserRole(ctx context.Context, req *spec.UpdateUserRolePayload) error {
+	// Check if user exists
+	user, err := models.Users(models.UserWhere.ID.EQ(req.UserID)).One(ctx, s.db)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return spec.MakeNotFound(fmt.Errorf("user not found"))
+		}
+		s.log.Error("could not get user", zap.Error(err), utils.C(ctx))
+		return err
+	}
+
+	// Validate role (you might want to add validation for allowed roles)
+	validRoles := []string{"solver", "author", "org", "admin"} // Adjust based on your system's roles
+	isValidRole := false
+	for _, validRole := range validRoles {
+		if req.Role == validRole {
+			isValidRole = true
+			break
+		}
+	}
+	if !isValidRole {
+		return spec.MakeBadRequest(fmt.Errorf("invalid role: %s", req.Role))
+	}
+
+	// Update the user's role
+	user.Role = req.Role
+	_, err = user.Update(ctx, s.db, boil.Infer())
+	if err != nil {
+		s.log.Error("could not update user role", zap.Error(err), utils.C(ctx))
+		return err
+	}
+
+	s.log.Info("user role updated successfully",
+		zap.String("user_id", req.UserID),
+		zap.String("new_role", req.Role),
+		utils.C(ctx))
+
+	return nil
 }

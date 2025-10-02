@@ -5168,6 +5168,129 @@ func DecodeGetUserDetailsResponse(decoder func(*http.Response) goahttp.Decoder, 
 	}
 }
 
+// BuildUpdateUserRoleRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "UpdateUserRole" endpoint
+func (c *Client) BuildUpdateUserRoleRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		userID string
+	)
+	{
+		p, ok := v.(*admin.UpdateUserRolePayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "UpdateUserRole", "*admin.UpdateUserRolePayload", v)
+		}
+		userID = p.UserID
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateUserRoleAdminPath(userID)}
+	req, err := http.NewRequest("PATCH", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "UpdateUserRole", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeUpdateUserRoleRequest returns an encoder for requests sent to the
+// admin UpdateUserRole server.
+func EncodeUpdateUserRoleRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.UpdateUserRolePayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "UpdateUserRole", "*admin.UpdateUserRolePayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		body := NewUpdateUserRoleRequestBody(p)
+		if err := encoder(req).Encode(&body); err != nil {
+			return goahttp.ErrEncodingError("admin", "UpdateUserRole", err)
+		}
+		return nil
+	}
+}
+
+// DecodeUpdateUserRoleResponse returns a decoder for responses returned by the
+// admin UpdateUserRole endpoint. restoreBody controls whether the response
+// body should be restored after having been read.
+// DecodeUpdateUserRoleResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeUpdateUserRoleResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			return nil, nil
+		case http.StatusForbidden:
+			var (
+				body UpdateUserRoleUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateUserRole", err)
+			}
+			err = ValidateUpdateUserRoleUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateUserRole", err)
+			}
+			return nil, NewUpdateUserRoleUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body UpdateUserRoleNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateUserRole", err)
+			}
+			err = ValidateUpdateUserRoleNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateUserRole", err)
+			}
+			return nil, NewUpdateUserRoleNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body UpdateUserRoleBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "UpdateUserRole", err)
+			}
+			err = ValidateUpdateUserRoleBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "UpdateUserRole", err)
+			}
+			return nil, NewUpdateUserRoleBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "UpdateUserRole", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // unmarshalSsmAdminChallengeResponseToAdminviewsSsmAdminChallengeView builds a
 // value of type *adminviews.SsmAdminChallengeView from a value of type
 // *SsmAdminChallengeResponse.

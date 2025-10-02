@@ -617,7 +617,7 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 		// Individual scoreboard
 		rows, err := s.db.QueryContext(ctx, `
 			SELECT u.id, u.username, COALESCE(SUM(COALESCE(cc.custom_score, ch.static_score)), 0) as score,
-				MIN(s.created_at) as first_solve
+				MAX(s.created_at) as last_solve
 			FROM ctf_users u
 			LEFT JOIN (
 				SELECT DISTINCT ON (user_id, challenge_id) *
@@ -629,7 +629,7 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 			LEFT JOIN ctf_challenges cc ON cc.ctf_id = $1 AND cc.challenge_id = ch.id
 			WHERE u.ctf_id = $1
 			GROUP BY u.id, u.username
-			ORDER BY score DESC, first_solve ASC NULLS LAST, u.username ASC
+			ORDER BY score DESC, last_solve ASC NULLS LAST, u.username ASC
 		`, ctf.ID)
 		if err != nil {
 			return nil, err
@@ -640,8 +640,8 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 			var userID string
 			var username string
 			var score int64
-			var firstSolve sql.NullTime
-			if err := rows.Scan(&userID, &username, &score, &firstSolve); err != nil {
+			var lastSolve sql.NullTime
+			if err := rows.Scan(&userID, &username, &score, &lastSolve); err != nil {
 				return nil, err
 			}
 			solvesRows, err := s.db.QueryContext(ctx, `

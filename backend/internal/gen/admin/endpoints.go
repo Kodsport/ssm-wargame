@@ -57,6 +57,7 @@ type Endpoints struct {
 	DeleteCTFTeam             goa.Endpoint
 	UpdateCTFTeam             goa.Endpoint
 	GetUserDetails            goa.Endpoint
+	UpdateUserRole            goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "admin" service with endpoints.
@@ -105,6 +106,7 @@ func NewEndpoints(s Service) *Endpoints {
 		DeleteCTFTeam:             NewDeleteCTFTeamEndpoint(s, a.JWTAuth),
 		UpdateCTFTeam:             NewUpdateCTFTeamEndpoint(s, a.JWTAuth),
 		GetUserDetails:            NewGetUserDetailsEndpoint(s, a.JWTAuth),
+		UpdateUserRole:            NewUpdateUserRoleEndpoint(s, a.JWTAuth),
 	}
 }
 
@@ -151,6 +153,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.DeleteCTFTeam = m(e.DeleteCTFTeam)
 	e.UpdateCTFTeam = m(e.UpdateCTFTeam)
 	e.GetUserDetails = m(e.GetUserDetails)
+	e.UpdateUserRole = m(e.UpdateUserRole)
 }
 
 // NewListChallengesEndpoint returns an endpoint function that calls the method
@@ -939,5 +942,24 @@ func NewGetUserDetailsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.En
 		}
 		vres := NewViewedSsmAdminUserdetails(res, "default")
 		return vres, nil
+	}
+}
+
+// NewUpdateUserRoleEndpoint returns an endpoint function that calls the method
+// "UpdateUserRole" of service "admin".
+func NewUpdateUserRoleEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*UpdateUserRolePayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return nil, s.UpdateUserRole(ctx, p)
 	}
 }

@@ -28,7 +28,7 @@ import (
 func UsageCommands() string {
 	return `auth (generate-discord-auth-url|exchange-discord)
 challenge (list-challenges|list-events|get-current-monthly-challenge|list-monthly-challenges|submit-flag|school-scoreboard|user-scoreboard|list-authors|list-courses|enroll-course|complete-course|knack-koden-submit-flag|knack-koden-scoreboard|knack-koden-register-class|knack-koden-get-class)
-admin (list-challenges|get-challenge-meta|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|get-discord-user|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course|create-ctf|update-ctf|delete-ctf|list-ct-fs|create-challenge-group|update-challenge-group|delete-challenge-group|list-challenge-groups|list-ctf-users|delete-ctf-user|update-ctf-user|list-ctf-teams|create-ctf-team|delete-ctf-team|update-ctf-team|get-user-details)
+admin (list-challenges|get-challenge-meta|create-challenge|presign-chall-file-upload|list-monthly-challenges|delete-monthly-challenge|delete-file|create-monthly-challenge|list-users|get-discord-user|list-authors|update-author|create-author|delete-author|add-flag|delete-flag|list-categories|challtools-import|list-ctf-events|create-ctf-event|delete-ctf-event|create-ctf-event-import-token|list-courses|create-course|update-course|create-ctf|update-ctf|delete-ctf|list-ct-fs|create-challenge-group|update-challenge-group|delete-challenge-group|list-challenge-groups|list-ctf-users|delete-ctf-user|update-ctf-user|list-ctf-teams|create-ctf-team|delete-ctf-team|update-ctf-team|get-user-details|update-user-role)
 ctf (get|register-user|get-user|get-user-solves|list-challenges|scoreboard|submit-flag)
 user (get-self|update-self|complete-onboarding|join-school|leave-school|search-schools)
 `
@@ -39,7 +39,7 @@ func UsageExamples() string {
 	return os.Args[0] + ` auth generate-discord-auth-url` + "\n" +
 		os.Args[0] + ` challenge list-challenges --slug "brumm" --ids [] --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		os.Args[0] + ` admin list-challenges --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
-		os.Args[0] + ` ctf get --slug "Velit a in voluptatem amet ipsum."` + "\n" +
+		os.Args[0] + ` ctf get --slug "Placeat animi atque veniam ut veniam."` + "\n" +
 		os.Args[0] + ` user get-self --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"` + "\n" +
 		""
 }
@@ -289,6 +289,11 @@ func ParseEndpoint(
 		adminGetUserDetailsUserIDFlag = adminGetUserDetailsFlags.String("user-id", "REQUIRED", "User ID")
 		adminGetUserDetailsTokenFlag  = adminGetUserDetailsFlags.String("token", "REQUIRED", "")
 
+		adminUpdateUserRoleFlags      = flag.NewFlagSet("update-user-role", flag.ExitOnError)
+		adminUpdateUserRoleBodyFlag   = adminUpdateUserRoleFlags.String("body", "REQUIRED", "")
+		adminUpdateUserRoleUserIDFlag = adminUpdateUserRoleFlags.String("user-id", "REQUIRED", "User ID")
+		adminUpdateUserRoleTokenFlag  = adminUpdateUserRoleFlags.String("token", "REQUIRED", "")
+
 		ctfFlags = flag.NewFlagSet("ctf", flag.ContinueOnError)
 
 		ctfGetFlags    = flag.NewFlagSet("get", flag.ExitOnError)
@@ -404,6 +409,7 @@ func ParseEndpoint(
 	adminDeleteCTFTeamFlags.Usage = adminDeleteCTFTeamUsage
 	adminUpdateCTFTeamFlags.Usage = adminUpdateCTFTeamUsage
 	adminGetUserDetailsFlags.Usage = adminGetUserDetailsUsage
+	adminUpdateUserRoleFlags.Usage = adminUpdateUserRoleUsage
 
 	ctfFlags.Usage = ctfUsage
 	ctfGetFlags.Usage = ctfGetUsage
@@ -645,6 +651,9 @@ func ParseEndpoint(
 
 			case "get-user-details":
 				epf = adminGetUserDetailsFlags
+
+			case "update-user-role":
+				epf = adminUpdateUserRoleFlags
 
 			}
 
@@ -900,6 +909,9 @@ func ParseEndpoint(
 			case "get-user-details":
 				endpoint = c.GetUserDetails()
 				data, err = adminc.BuildGetUserDetailsPayload(*adminGetUserDetailsUserIDFlag, *adminGetUserDetailsTokenFlag)
+			case "update-user-role":
+				endpoint = c.UpdateUserRole()
+				data, err = adminc.BuildUpdateUserRolePayload(*adminUpdateUserRoleBodyFlag, *adminUpdateUserRoleUserIDFlag, *adminUpdateUserRoleTokenFlag)
 			}
 		case "ctf":
 			c := ctfc.NewClient(scheme, host, doer, enc, dec, restore)
@@ -1163,7 +1175,7 @@ KnackKodenSubmitFlag implements KnackKodenSubmitFlag.
 Example:
     %[1]s challenge knack-koden-submit-flag --body '{
       "flag": "SSM{flag}",
-      "password": "Eius molestias."
+      "password": "Excepturi tempore."
    }' --challenge-id "195229b0-b15f-4ee5-9a99-94bfff492967" --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1188,12 +1200,12 @@ KnackKodenRegisterClass implements KnackKodenRegisterClass.
 
 Example:
     %[1]s challenge knack-koden-register-class --body '{
-      "class_name": "Praesentium natus voluptatum repellat est a.",
-      "postal_code": "Error ratione harum voluptatem.",
-      "school_name": "Rerum mollitia et praesentium quis iusto qui.",
-      "teacher_email": "Voluptas tempora et adipisci.",
-      "teacher_full_name": "Est harum iste excepturi.",
-      "teacher_phonenr": "Et eveniet velit et quisquam nemo."
+      "class_name": "Aperiam error ratione.",
+      "postal_code": "Voluptatem et repudiandae.",
+      "school_name": "Voluptatum repellat est.",
+      "teacher_email": "Nemo repellat rerum mollitia.",
+      "teacher_full_name": "Et adipisci rerum et eveniet velit et.",
+      "teacher_phonenr": "Praesentium quis iusto qui consequuntur praesentium."
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1207,7 +1219,7 @@ KnackKodenGetClass implements KnackKodenGetClass.
 
 Example:
     %[1]s challenge knack-koden-get-class --body '{
-      "password": "Aut soluta."
+      "password": "Maxime optio culpa."
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
@@ -1260,6 +1272,7 @@ COMMAND:
     delete-ctf-team: DeleteCTFTeam implements DeleteCTFTeam.
     update-ctf-team: UpdateCTFTeam implements UpdateCTFTeam.
     get-user-details: Get consolidated user details with all challenge submissions and statistics
+    update-user-role: Update a user's role
 
 Additional help:
     %[1]s admin COMMAND --help
@@ -1400,7 +1413,7 @@ get discord avatar for person
     -token STRING: 
 
 Example:
-    %[1]s admin get-discord-user --discord-id "Numquam quisquam tenetur." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+    %[1]s admin get-discord-user --discord-id "Delectus animi." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
 }
 
@@ -1522,10 +1535,10 @@ Example:
       ],
       "challenge_id": "225ada44-3fde-460d-84a4-2f16ff579618",
       "custom": {
-         "chall_namespace": "Modi molestiae ab repellat dolore.",
+         "chall_namespace": "Mollitia modi ipsum.",
          "publish": false,
-         "publish_at": "Reprehenderit reprehenderit.",
-         "slug": "Aut fugit magni recusandae impedit."
+         "publish_at": "Tenetur aut fugit.",
+         "slug": "Recusandae impedit nostrum modi molestiae ab repellat."
       },
       "description": "how to dns",
       "file_urls": [
@@ -1541,18 +1554,22 @@ Example:
          {
             "flag": "fl4g_l0l",
             "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
+         },
+         {
+            "flag": "fl4g_l0l",
+            "type": "regex"
          }
       ],
       "human_metadata": {
-         "event_name": "Ut quas aliquam sit sint ut."
+         "event_name": "Sit sint ut omnis aspernatur."
       },
       "order": 5,
       "score": 100,
       "services": [
-         {
-            "hyperlink": true,
-            "user_display": "nc 0.0.0.0 1234"
-         },
          {
             "hyperlink": true,
             "user_display": "nc 0.0.0.0 1234"
@@ -1613,7 +1630,7 @@ CreateCTFEventImportToken implements CreateCTFEventImportToken.
 
 Example:
     %[1]s admin create-ctf-event-import-token --body '{
-      "expires_in": "year",
+      "expires_in": "week",
       "name": "e3bb4dc5-9479-42ce-aed3-b41e8139fccb"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
 `, os.Args[0])
@@ -1707,12 +1724,12 @@ Example:
          }
       ],
       "description": "A fun CTF for school",
-      "end_time": 3433366848551607925,
+      "end_time": 1159611972310912379,
       "name": "School CTF 2025",
       "password": "password",
       "private": false,
       "slug": "school-ctf-2025",
-      "start_time": 6234404335250354171,
+      "start_time": 1582591935090455510,
       "team_based": false,
       "theme": "ctf-theme"
    }' --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
@@ -1989,6 +2006,21 @@ Example:
 `, os.Args[0])
 }
 
+func adminUpdateUserRoleUsage() {
+	fmt.Fprintf(os.Stderr, `%[1]s [flags] admin update-user-role -body JSON -user-id STRING -token STRING
+
+Update a user's role
+    -body JSON: 
+    -user-id STRING: User ID
+    -token STRING: 
+
+Example:
+    %[1]s admin update-user-role --body '{
+      "role": "Velit a in voluptatem amet ipsum."
+   }' --user-id "Doloremque id mollitia earum sit." --token "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6InN1cCAoIDoiLCJpYXQiOjE1MTYyMzkwMjJ9.niAX9xS6jNYQSX6hleuwGmzkUCuR9OXPRb5BksyMlkg"
+`, os.Args[0])
+}
+
 // ctfUsage displays the usage of the ctf command and its subcommands.
 func ctfUsage() {
 	fmt.Fprintf(os.Stderr, `CTF mini-competition endpoints for school visits.
@@ -2015,7 +2047,7 @@ Get info about a ctf.
     -slug STRING: 
 
 Example:
-    %[1]s ctf get --slug "Velit a in voluptatem amet ipsum."
+    %[1]s ctf get --slug "Placeat animi atque veniam ut veniam."
 `, os.Args[0])
 }
 
@@ -2028,9 +2060,9 @@ Register a user for a ctf with a unique username. For team-based CTFs, provide a
 
 Example:
     %[1]s ctf register-user --body '{
-      "team_code": "Illo nemo eius.",
-      "username": "Non vero sit nostrum qui earum."
-   }' --slug "Sit quaerat est sed."
+      "team_code": "Reiciendis modi eum necessitatibus atque.",
+      "username": "Minus et quas ut temporibus repellat."
+   }' --slug "Ipsam quas neque."
 `, os.Args[0])
 }
 
@@ -2042,7 +2074,7 @@ Get a user for a ctf.
     -password STRING: 
 
 Example:
-    %[1]s ctf get-user --slug "Corporis neque hic quo." --password "Eligendi omnis est rem."
+    %[1]s ctf get-user --slug "Iusto quis ullam non eum doloribus." --password "Voluptatem fuga quam sequi quia aut."
 `, os.Args[0])
 }
 
@@ -2054,7 +2086,7 @@ Get a user's solves for a ctf.
     -id STRING: 
 
 Example:
-    %[1]s ctf get-user-solves --slug "Sunt reiciendis praesentium exercitationem dignissimos labore." --id "Vel eos eveniet."
+    %[1]s ctf get-user-solves --slug "Veritatis minus aut non." --id "Eos consectetur eum delectus molestiae facere at."
 `, os.Args[0])
 }
 
@@ -2066,7 +2098,7 @@ List challenges for a ctf.
     -password STRING: 
 
 Example:
-    %[1]s ctf list-challenges --slug "Facere at consequatur velit." --password "Eos quasi tempore illo."
+    %[1]s ctf list-challenges --slug "Quia placeat consequatur quisquam." --password "In in quibusdam voluptatibus sed."
 `, os.Args[0])
 }
 
@@ -2077,7 +2109,7 @@ Get scoreboard for a ctf.
     -slug STRING: 
 
 Example:
-    %[1]s ctf scoreboard --slug "Nisi in sed."
+    %[1]s ctf scoreboard --slug "Tenetur vel sed qui dolorem omnis quia."
 `, os.Args[0])
 }
 
@@ -2093,7 +2125,7 @@ Example:
       "challenge_id": "85163218-8735-42ed-a7a6-42a9de2294df",
       "flag": "SSM{yo}",
       "password": "user-password"
-   }' --slug "Tempora dolores sunt."
+   }' --slug "Sit accusantium accusamus rerum."
 `, os.Args[0])
 }
 

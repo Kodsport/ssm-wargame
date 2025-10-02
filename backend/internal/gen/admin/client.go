@@ -56,10 +56,11 @@ type Client struct {
 	DeleteCTFTeamEndpoint             goa.Endpoint
 	UpdateCTFTeamEndpoint             goa.Endpoint
 	GetUserDetailsEndpoint            goa.Endpoint
+	UpdateUserRoleEndpoint            goa.Endpoint
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, getDiscordUser, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse, createCTF, updateCTF, deleteCTF, listCTFs, createChallengeGroup, updateChallengeGroup, deleteChallengeGroup, listChallengeGroups, listCTFUsers, deleteCTFUser, updateCTFUser, listCTFTeams, createCTFTeam, deleteCTFTeam, updateCTFTeam, getUserDetails goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, getDiscordUser, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse, createCTF, updateCTF, deleteCTF, listCTFs, createChallengeGroup, updateChallengeGroup, deleteChallengeGroup, listChallengeGroups, listCTFUsers, deleteCTFUser, updateCTFUser, listCTFTeams, createCTFTeam, deleteCTFTeam, updateCTFTeam, getUserDetails, updateUserRole goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:            listChallenges,
 		GetChallengeMetaEndpoint:          getChallengeMeta,
@@ -102,6 +103,7 @@ func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFi
 		DeleteCTFTeamEndpoint:             deleteCTFTeam,
 		UpdateCTFTeamEndpoint:             updateCTFTeam,
 		GetUserDetailsEndpoint:            getUserDetails,
+		UpdateUserRoleEndpoint:            updateUserRole,
 	}
 }
 
@@ -452,4 +454,10 @@ func (c *Client) GetUserDetails(ctx context.Context, p *GetUserDetailsPayload) (
 		return
 	}
 	return ires.(*SsmAdminUserdetails), nil
+}
+
+// UpdateUserRole calls the "UpdateUserRole" endpoint of the "admin" service.
+func (c *Client) UpdateUserRole(ctx context.Context, p *UpdateUserRolePayload) (err error) {
+	_, err = c.UpdateUserRoleEndpoint(ctx, p)
+	return
 }

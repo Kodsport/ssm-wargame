@@ -158,7 +158,9 @@
         </ul>
         <client-only>
           <ul v-if="auth.user" class="navbar-nav pe-3">
-            <template v-if="auth.user.role == 'admin'">
+            <template
+              v-if="auth.user.role == 'admin' || auth.user.role == 'org'"
+            >
               <li class="nav-item dropdown hover-drop-down pe-2">
                 <nuxt-link
                   to="/admin"
@@ -175,6 +177,7 @@
                       active-class="active-drop-down-el"
                       class="text-primary dropdown-item"
                       to="/admin/users"
+                      v-if="auth.user.role === 'admin'"
                     >
                       Users
                     </nuxt-link>
@@ -184,6 +187,7 @@
                       active-class="active-drop-down-el"
                       class="text-primary dropdown-item"
                       to="/admin/challenges"
+                      v-if="auth.user.role === 'admin'"
                     >
                       Challenges
                     </nuxt-link>
@@ -193,6 +197,9 @@
                       active-class="active-drop-down-el"
                       class="text-primary dropdown-item"
                       to="/admin/monthly"
+                      v-if="
+                        auth.user.role === 'admin' || auth.user.role === 'org'
+                      "
                     >
                       Monthly
                     </nuxt-link>
@@ -202,6 +209,7 @@
                       active-class="active-drop-down-el"
                       class="text-primary dropdown-item"
                       to="/admin/courses"
+                      v-if="auth.user.role === 'admin'"
                     >
                       Courses
                     </nuxt-link>
@@ -211,6 +219,7 @@
                       active-class="active-drop-down-el"
                       class="text-primary dropdown-item"
                       to="/admin/events"
+                      v-if="auth.user.role === 'admin'"
                     >
                       Events
                     </nuxt-link>
@@ -220,6 +229,7 @@
                       active-class="active-drop-down-el"
                       class="text-primary dropdown-item"
                       to="/admin/authors"
+                      v-if="auth.user.role === 'admin'"
                     >
                       Authors
                     </nuxt-link>
@@ -229,6 +239,9 @@
                       active-class="active-drop-down-el"
                       class="text-primary dropdown-item"
                       to="/admin/ctfs"
+                      v-if="
+                        auth.user.role === 'admin' || auth.user.role === 'org'
+                      "
                     >
                       CTFs
                     </nuxt-link>
@@ -307,7 +320,11 @@ onMounted(async () => {
   if (
     process.client &&
     window.location.pathname.startsWith("/admin") &&
-    (!(auth.user.role == "admin" || auth.user.role == "author") ||
+    (!(
+      auth.user.role == "admin" ||
+      auth.user.role == "author" ||
+      auth.user.role == "org"
+    ) ||
       !auth.user.role)
   ) {
     router.push("/");
