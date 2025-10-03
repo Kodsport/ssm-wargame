@@ -22,7 +22,9 @@
               v-for="chall in ctfStore.challenges
                 .filter((c) => c.category == category)
                 .sort((a, b) => Number(a.score) - Number(b.score))
-                .sort((a, b) => Number(a.display_order) - Number(b.display_order))"
+                .sort(
+                  (a, b) => Number(a.display_order) - Number(b.display_order)
+                )"
               :key="chall.id"
             >
               <CTFChallengePreview
@@ -69,40 +71,6 @@ const categories = computed(() =>
 function nav(challSlug: string) {
   router.push(`/ctf/${slug}/challenges/${challSlug}`);
 }
-onMounted(async () => {
-  await ctfStore.getCTF(slug);
-  loadTheme();
-});
-
-watch(() => ctfStore.ctf.theme, () => {
-  loadTheme();
-});
-
-function loadTheme() {
-  const existingTheme = document.querySelector('link[data-ctf-theme]');
-  if (existingTheme) {
-    existingTheme.remove();
-  }
-
-  const themeName = ctfStore.ctf.theme || 'ctf-theme';
-
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = `/themes/${themeName}.css`;
-  link.setAttribute('data-ctf-theme', 'true');
-  link.onerror = () => {
-    const fallbackLink = document.createElement('link');
-    fallbackLink.rel = 'stylesheet';
-    fallbackLink.href = `/assets/themes/${themeName}.css`;
-    fallbackLink.setAttribute('data-ctf-theme', 'true');
-    fallbackLink.onload = () => {
-    };
-    document.head.appendChild(fallbackLink);
-  };
-
-  document.head.appendChild(link);
-}
-
 </script>
 <style scoped>
 .pointer {

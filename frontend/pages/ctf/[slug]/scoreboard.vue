@@ -12,12 +12,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, i) in ctfStore.scoreboard" :key="row.username" :class="{
-          'scoreboard-gold': i === 0,
-          'scoreboard-silver': i === 1,
-          'scoreboard-bronze': i === 2,
-          'scoreboard-user': auth.ctfUser.username === row.username && i > 2,
-        }" @click="$router.push(`/ctf/${route.params.slug}/user/${row.id}`)">
+        <tr
+          v-for="(row, i) in ctfStore.scoreboard"
+          :key="row.username"
+          :class="{
+            'scoreboard-gold': i === 0,
+            'scoreboard-silver': i === 1,
+            'scoreboard-bronze': i === 2,
+            'scoreboard-user': auth.ctfUser.username === row.username && i > 2,
+          }"
+          @click="$router.push(`/ctf/${route.params.slug}/user/${row.id}`)"
+        >
           <td class="fw-bold">{{ i + 1 }}</td>
           <td>{{ row.username }}</td>
           <td class="fw-bold">{{ row.score }}</td>
@@ -42,50 +47,10 @@ definePageMeta({
 const route = useRoute();
 const ctfStore = useCTFStore();
 const auth = useAuthStore();
-
-const slug = route.params.slug as string;
-
-onMounted(async () => {
-  await ctfStore.getCTF(slug);
-  loadTheme();
-});
-
-watch(() => ctfStore.ctf.theme, () => {
-  loadTheme();
-});
-
-function loadTheme() {
-  const existingTheme = document.querySelector('link[data-ctf-theme]');
-  if (existingTheme) {
-    existingTheme.remove();
-  }
-
-  const themeName = ctfStore.ctf.theme || 'ctf-theme';
-
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href = `/themes/${themeName}.css`;
-  link.setAttribute('data-ctf-theme', 'true');
-  link.onerror = () => {
-    const fallbackLink = document.createElement('link');
-    fallbackLink.rel = 'stylesheet';
-    fallbackLink.href = `/assets/themes/${themeName}.css`;
-    fallbackLink.setAttribute('data-ctf-theme', 'true');
-    fallbackLink.onload = () => {
-    };
-    document.head.appendChild(fallbackLink);
-  };
-
-  document.head.appendChild(link);
-}
-
-
 </script>
 
-
-
 <style scoped>
-tbody>tr {
+tbody > tr {
   cursor: pointer;
 }
 
@@ -95,7 +60,7 @@ tbody>tr {
   overflow: hidden;
 }
 
-.table> :not(caption)>*>* {
+.table > :not(caption) > * > * {
   background-color: #00000000;
 }
 
