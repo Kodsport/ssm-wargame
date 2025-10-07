@@ -11,8 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/volatiletech/sqlboiler/v4/queries"
-
 	"github.com/google/uuid"
 	"github.com/sakerhetsm/ssm-wargame/internal/custommodels"
 	spec "github.com/sakerhetsm/ssm-wargame/internal/gen/ctf"
@@ -314,61 +312,8 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 		challengeIDs = append(challengeIDs, cid)
 	}
 
-	challs := make([]*custommodels.UserChall, 0)
-	var q *queries.Query
-	if ctf.TeamBased {
-		// For team-based CTFs, add more solve stats
-		var teamID *string
-		if req.Password != nil {
-			user, err := models.CTFUsers(models.CTFUserWhere.Password.EQ(*req.Password), models.CTFUserWhere.CTFID.EQ(ctf.ID)).One(ctx, s.db)
-			if err == nil && user.TeamID.Valid {
-				teamID = &user.TeamID.String
-			}
-		}
-
-		// Build team-based fields conditionally
-		var numSolvesInTeamSQL, solvedInTeamSQL string
-		if teamID != nil && *teamID != "" {
-			numSolvesInTeamSQL = "(SELECT COUNT(DISTINCT user_id) FROM ctf_solves WHERE challenge_id = challenges.id AND ctf_id = '" + ctf.ID + "' AND team_id = '" + *teamID + "') num_solves_in_team"
-			solvedInTeamSQL = "EXISTS(SELECT 1 FROM ctf_solves WHERE challenge_id = challenges.id AND ctf_id = '" + ctf.ID + "' AND team_id = '" + *teamID + "') AS solved_in_team"
-		} else {
-			numSolvesInTeamSQL = "0 AS num_solves_in_team"
-			solvedInTeamSQL = "false AS solved_in_team"
-		}
-
-		q = models.NewQuery(
-			qm.Select("challenges.*, categories.name as category"),
-			// Distinct teams that solved
-			qm.Select("(SELECT COUNT(DISTINCT team_id) FROM ctf_solves WHERE challenge_id = challenges.id AND ctf_id = '"+ctf.ID+"' AND team_id IS NOT NULL) num_team_solves"),
-			// Total solves by all users (including multiple per team)
-			qm.Select("(SELECT COUNT(1) FROM ctf_solves WHERE challenge_id = challenges.id AND ctf_id = '"+ctf.ID+"') num_solves"),
-			// Conditionally include team-based fields
-			qm.Select(numSolvesInTeamSQL),
-			qm.Select(solvedInTeamSQL),
-			qm.From(models.TableNames.Challenges),
-			qm.InnerJoin("categories ON categories.id = challenges.category_id"),
-			qm.Load(models.ChallengeRels.ChallengeFiles),
-			qm.Load(models.ChallengeRels.ChallengeServices),
-			qm.Load(models.ChallengeRels.Authors),
-			qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User)),
-		)
-	} else {
-		// For individual CTFs, count unique users that solved each challenge
-		q = models.NewQuery(
-			qm.Select("challenges.*, categories.name as category"),
-			qm.Select("(SELECT COUNT(1) FROM ctf_solves WHERE challenge_id = challenges.id AND ctf_id = '"+ctf.ID+"') num_solves"),
-			qm.From(models.TableNames.Challenges),
-			qm.InnerJoin("categories ON categories.id = challenges.category_id"),
-			qm.Load(models.ChallengeRels.ChallengeFiles),
-			qm.Load(models.ChallengeRels.ChallengeServices),
-			qm.Load(models.ChallengeRels.Authors),
-			qm.Load(qm.Rels(models.ChallengeRels.UserSolves, models.UserSolfRels.User)),
-		)
-	}
-
-	models.ChallengeWhere.ID.IN(challengeIDs).Apply(q)
-
 	var user *models.CTFUser
+	var teamID *string
 	if req.Password != nil {
 		user, err = models.CTFUsers(models.CTFUserWhere.Password.EQ(*req.Password), models.CTFUserWhere.CTFID.EQ(ctf.ID)).One(ctx, s.db)
 		if err != nil {
@@ -377,46 +322,143 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 			return nil, err
 		}
-		qm.Select(
-			"EXISTS(SELECT 1 FROM ctf_solves us2 WHERE us2.challenge_id = challenges.id AND ctf_id = '" + ctf.ID + "' AND us2.user_id = '" + user.ID + "') AS solved",
-		).Apply(q)
+		if user.TeamID.Valid {
+			teamID = &user.TeamID.String
+		}
 	}
+	// precalculate 1 query
+	challengeIDList := make([]string, len(challengeIDs))
+	for i, id := range challengeIDs {
+		challengeIDList[i] = "'" + id + "'"
+	}
+	challengeIDsSQL := strings.Join(challengeIDList, ",")
+
+	solveCounts := make(map[string]int)
+	teamSolveCounts := make(map[string]int)
+	userTeamSolveCounts := make(map[string]int)
+	userSolved := make(map[string]bool)
+	userTeamSolved := make(map[string]bool)
+
+	if len(challengeIDs) > 0 {
+		solveCountQuery := `
+			SELECT 
+				challenge_id,
+				COUNT(1) as total_solves,
+				COUNT(DISTINCT CASE WHEN team_id IS NOT NULL THEN team_id END) as team_solves
+			FROM ctf_solves 
+			WHERE ctf_id = $1 AND challenge_id IN (` + challengeIDsSQL + `)
+			GROUP BY challenge_id`
+
+		rows, err := s.db.QueryContext(ctx, solveCountQuery, ctf.ID)
+		if err == nil {
+			defer rows.Close()
+			for rows.Next() {
+				var challengeID string
+				var totalSolves, teamSolves int
+				if err := rows.Scan(&challengeID, &totalSolves, &teamSolves); err == nil {
+					solveCounts[challengeID] = totalSolves
+					teamSolveCounts[challengeID] = teamSolves
+				}
+			}
+		}
+
+		if teamID != nil && *teamID != "" {
+			teamSolveQuery := `
+				SELECT 
+					challenge_id,
+					COUNT(DISTINCT user_id) as team_user_solves,
+					COUNT(1) > 0 as team_solved
+				FROM ctf_solves 
+				WHERE ctf_id = $1 AND challenge_id IN (` + challengeIDsSQL + `) AND team_id = $2
+				GROUP BY challenge_id`
+
+			rows, err := s.db.QueryContext(ctx, teamSolveQuery, ctf.ID, *teamID)
+			if err == nil {
+				defer rows.Close()
+				for rows.Next() {
+					var challengeID string
+					var teamUserSolves int
+					var teamSolved bool
+					if err := rows.Scan(&challengeID, &teamUserSolves, &teamSolved); err == nil {
+						userTeamSolveCounts[challengeID] = teamUserSolves
+						userTeamSolved[challengeID] = teamSolved
+					}
+				}
+			}
+		}
+
+		if user != nil {
+			userSolveQuery := `
+				SELECT DISTINCT challenge_id
+				FROM ctf_solves 
+				WHERE ctf_id = $1 AND challenge_id IN (` + challengeIDsSQL + `) AND user_id = $2`
+
+			rows, err := s.db.QueryContext(ctx, userSolveQuery, ctf.ID, user.ID)
+			if err == nil {
+				defer rows.Close()
+				for rows.Next() {
+					var challengeID string
+					if err := rows.Scan(&challengeID); err == nil {
+						userSolved[challengeID] = true
+					}
+				}
+			}
+		}
+	}
+
+	// Now build the main query without expensive subqueries
+	challs := make([]*custommodels.UserChall, 0)
+	q := models.NewQuery(
+		qm.Select("challenges.*, categories.name as category"),
+		qm.From(models.TableNames.Challenges),
+		qm.InnerJoin("categories ON categories.id = challenges.category_id"),
+		qm.Load(models.ChallengeRels.ChallengeFiles),
+		qm.Load(models.ChallengeRels.ChallengeServices),
+		qm.Load(models.ChallengeRels.Authors),
+	)
+
+	models.ChallengeWhere.ID.IN(challengeIDs).Apply(q)
 
 	err = q.Bind(ctx, s.db, &challs)
 	if err != nil {
 		return nil, err
 	}
-	res := make(spec.SsmCtfChallengeCollection, len(challs))
 
-	for i, chall := range challs {
-		score := chall.StaticScore.Int
-		if cs, ok := customScores[chall.ID]; ok && cs != nil {
-			score = *cs
-		} else if !chall.StaticScore.Valid {
-			score = dynamicScore(500, 100, float64(chall.NumSolves))
-		}
+	allSolvers := make(map[string][]*spec.SsmSolver)
+	allTeamSolvers := make(map[string][]*spec.SsmSolver)
+	allSolversInTeam := make(map[string][]*spec.SsmSolver)
 
-		// --- Use ctf_solves table for all solver queries ---
-		var solvers []*spec.SsmSolver
-		var teamSolvers []*spec.SsmSolver
-		var solversInTeam []*spec.SsmSolver
+	challengeIDList = make([]string, len(challengeIDs))
+	for i, id := range challengeIDs {
+		challengeIDList[i] = "'" + id + "'"
+	}
+	challengeIDsSQL = strings.Join(challengeIDList, ",")
 
-		// 1. Solvers: first 5 solvers (user id, username, solved_at)
-		rows, err := s.db.QueryContext(ctx, `
-				   SELECT u.id, u.username, s.created_at
-				   FROM ctf_solves s
-				   INNER JOIN ctf_users u ON u.id = s.user_id
-				   WHERE s.ctf_id = $1 AND s.challenge_id = $2
-				   ORDER BY s.created_at ASC
-				   LIMIT 5
-		   `, ctf.ID, chall.ID)
+	if len(challengeIDs) > 0 {
+		solversQuery := `
+			WITH ranked_solves AS (
+				SELECT s.challenge_id, u.id, u.username, s.created_at,
+					   ROW_NUMBER() OVER (PARTITION BY s.challenge_id ORDER BY s.created_at ASC) as rn
+				FROM ctf_solves s
+				INNER JOIN ctf_users u ON u.id = s.user_id
+				WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `)
+			)
+			SELECT challenge_id, id, username, created_at
+			FROM ranked_solves
+			WHERE rn <= 5
+			ORDER BY challenge_id, created_at ASC`
+
+		rows, err := s.db.QueryContext(ctx, solversQuery, ctf.ID)
 		if err == nil {
 			defer rows.Close()
 			for rows.Next() {
-				var id, username string
+				var challengeID, id, username string
 				var solvedAt time.Time
-				if err := rows.Scan(&id, &username, &solvedAt); err == nil {
-					solvers = append(solvers, &spec.SsmSolver{
+				if err := rows.Scan(&challengeID, &id, &username, &solvedAt); err == nil {
+					if allSolvers[challengeID] == nil {
+						allSolvers[challengeID] = make([]*spec.SsmSolver, 0)
+					}
+					allSolvers[challengeID] = append(allSolvers[challengeID], &spec.SsmSolver{
 						ID:       id,
 						FullName: username,
 						SolvedAt: solvedAt.Unix(),
@@ -425,29 +467,37 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 		}
 
-		// 2. TeamSolvers: first 5 unique teams (team_id, teamname, first solver, solved_at)
+		// Batch query for team solvers (first 5 teams per challenge)
 		if ctf.TeamBased {
-			rows, err := s.db.QueryContext(ctx, `
-				SELECT t.id, t.teamname, u.id, u.username, s.created_at
-				FROM ctf_solves s
-				INNER JOIN ctf_teams t ON t.id = s.team_id
-				INNER JOIN ctf_users u ON u.id = s.user_id
-				WHERE s.ctf_id = $1 AND s.challenge_id = $2 AND s.team_id IS NOT NULL
-				AND s.created_at = (
-					SELECT MIN(s2.created_at)
-					FROM ctf_solves s2
-					WHERE s2.ctf_id = s.ctf_id AND s2.challenge_id = s.challenge_id AND s2.team_id = s.team_id
+			teamSolversQuery := `
+				WITH first_team_solves AS (
+					SELECT s.challenge_id, s.team_id, MIN(s.created_at) as first_solve_time
+					FROM ctf_solves s
+					WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `) AND s.team_id IS NOT NULL
+					GROUP BY s.challenge_id, s.team_id
+				),
+				ranked_team_solves AS (
+					SELECT fts.challenge_id, fts.team_id, fts.first_solve_time,
+						   ROW_NUMBER() OVER (PARTITION BY fts.challenge_id ORDER BY fts.first_solve_time ASC) as rn
+					FROM first_team_solves fts
 				)
-				ORDER BY s.created_at ASC
-				LIMIT 5
-			`, ctf.ID, chall.ID)
+				SELECT rts.challenge_id, t.id, t.teamname, rts.first_solve_time
+				FROM ranked_team_solves rts
+				INNER JOIN ctf_teams t ON t.id = rts.team_id
+				WHERE rts.rn <= 5
+				ORDER BY rts.challenge_id, rts.first_solve_time ASC`
+
+			rows, err = s.db.QueryContext(ctx, teamSolversQuery, ctf.ID)
 			if err == nil {
 				defer rows.Close()
 				for rows.Next() {
-					var teamID, teamname, userID, username string
+					var challengeID, teamID, teamname string
 					var solvedAt time.Time
-					if err := rows.Scan(&teamID, &teamname, &userID, &username, &solvedAt); err == nil {
-						teamSolvers = append(teamSolvers, &spec.SsmSolver{
+					if err := rows.Scan(&challengeID, &teamID, &teamname, &solvedAt); err == nil {
+						if allTeamSolvers[challengeID] == nil {
+							allTeamSolvers[challengeID] = make([]*spec.SsmSolver, 0)
+						}
+						allTeamSolvers[challengeID] = append(allTeamSolvers[challengeID], &spec.SsmSolver{
 							ID:       teamID,
 							FullName: teamname,
 							SolvedAt: solvedAt.Unix(),
@@ -457,23 +507,32 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 		}
 
-		// 3. SolversInTeam: first 5 usernames in user's team (user id, username, solved_at)
+		// Batch query for solvers in user's team
 		if ctf.TeamBased && user != nil && user.TeamID.Valid {
-			rows, err := s.db.QueryContext(ctx, `
-				SELECT u.id, u.username, s.created_at
-				FROM ctf_solves s
-				INNER JOIN ctf_users u ON u.id = s.user_id
-				WHERE s.ctf_id = $1 AND s.challenge_id = $2 AND s.team_id = $3
-				ORDER BY s.created_at ASC
-				LIMIT 5
-			`, ctf.ID, chall.ID, user.TeamID.String)
+			teamSolversQuery := `
+				WITH ranked_team_member_solves AS (
+					SELECT s.challenge_id, u.id, u.username, s.created_at,
+						   ROW_NUMBER() OVER (PARTITION BY s.challenge_id ORDER BY s.created_at ASC) as rn
+					FROM ctf_solves s
+					INNER JOIN ctf_users u ON u.id = s.user_id
+					WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `) AND s.team_id = $2
+				)
+				SELECT challenge_id, id, username, created_at
+				FROM ranked_team_member_solves
+				WHERE rn <= 5
+				ORDER BY challenge_id, created_at ASC`
+
+			rows, err = s.db.QueryContext(ctx, teamSolversQuery, ctf.ID, user.TeamID.String)
 			if err == nil {
 				defer rows.Close()
 				for rows.Next() {
-					var id, username string
+					var challengeID, id, username string
 					var solvedAt time.Time
-					if err := rows.Scan(&id, &username, &solvedAt); err == nil {
-						solversInTeam = append(solversInTeam, &spec.SsmSolver{
+					if err := rows.Scan(&challengeID, &id, &username, &solvedAt); err == nil {
+						if allSolversInTeam[challengeID] == nil {
+							allSolversInTeam[challengeID] = make([]*spec.SsmSolver, 0)
+						}
+						allSolversInTeam[challengeID] = append(allSolversInTeam[challengeID], &spec.SsmSolver{
 							ID:       id,
 							FullName: username,
 							SolvedAt: solvedAt.Unix(),
@@ -482,6 +541,39 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				}
 			}
 		}
+	}
+
+	res := make(spec.SsmCtfChallengeCollection, len(challs))
+
+	for i, chall := range challs {
+		// Get pre-calculated solve counts
+		numSolves := solveCounts[chall.ID]
+		numTeamSolves := teamSolveCounts[chall.ID]
+		numSolvesInTeam := userTeamSolveCounts[chall.ID]
+		solvedInTeam := userTeamSolved[chall.ID]
+		solved := userSolved[chall.ID]
+
+		score := chall.StaticScore.Int
+		if cs, ok := customScores[chall.ID]; ok && cs != nil {
+			score = *cs
+		} else if !chall.StaticScore.Valid {
+			score = dynamicScore(500, 100, float64(numSolves))
+		}
+
+		solvers := allSolvers[chall.ID]
+		teamSolvers := allTeamSolvers[chall.ID]
+		solversInTeam := allSolversInTeam[chall.ID]
+		
+		// json saker
+		if solvers == nil {
+			solvers = make([]*spec.SsmSolver, 0)
+		}
+		if teamSolvers == nil {
+			teamSolvers = make([]*spec.SsmSolver, 0)
+		}
+		if solversInTeam == nil {
+			solversInTeam = make([]*spec.SsmSolver, 0)
+		}
 
 		res[i] = &spec.SsmCtfChallenge{
 			ID:              chall.ID,
@@ -489,11 +581,11 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			Title:           chall.Title,
 			Description:     chall.Description,
 			Score:           score,
-			Solves:          chall.NumSolves,
-			NumTeamSolves:   &chall.NumTeamSolves,
-			NumSolvesInTeam: &chall.NumSolvesInTeam,
-			SolvedInTeam:    &chall.SolvedInTeam,
-			Solved:          chall.Solved,
+			Solves:          numSolves,
+			NumTeamSolves:   &numTeamSolves,
+			NumSolvesInTeam: &numSolvesInTeam,
+			SolvedInTeam:    &solvedInTeam,
+			Solved:          solved,
 			Category:        chall.Category,
 			CtfEventID:      chall.CTFEventID.Ptr(),
 			ChallNamespace:  chall.ChallNamespace.Ptr(),
