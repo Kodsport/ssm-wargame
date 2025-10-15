@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import useHttp from "@/composables/use-http";
 import { useCTFStore } from "~/store/ctf";
@@ -58,15 +58,35 @@ const router = useRouter();
 const slug = route.params.slug as string;
 const ctfStore = useCTFStore();
 
-const categories = computed(() =>
-  ctfStore.challenges
-    ?.filter((c) => c.category == "introduktion")
-    .concat(
-      ctfStore.challenges?.filter((c) => c.category != "introduktion") || []
-    )
-    .map((c) => c.category)
-    .filter((v, i, a) => a.indexOf(v) == i)
-);
+// order
+const order = [
+  "introduktion",
+  "web",
+  "crypto",
+  "forensics",
+  "osint",
+  "pwn",
+  "reversing",
+  // the rest of the categories
+];
+
+const categories = computed(() => {
+  const cats = ctfStore.challenges?.map((c) => c.category) || [];
+  const unique = Array.from(new Set(cats));
+
+  return unique.sort((a, b) => {
+    const ia = order.indexOf(a);
+    const ib = order.indexOf(b);
+
+    const aUnknown = ia === -1;
+    const bUnknown = ib === -1;
+
+    if (aUnknown && bUnknown) return a.localeCompare(b);
+    if (aUnknown) return 1;
+    if (bUnknown) return -1;
+    return ia - ib;
+  });
+});
 
 function nav(challSlug: string) {
   router.push(`/ctf/${slug}/challenges/${challSlug}`);
