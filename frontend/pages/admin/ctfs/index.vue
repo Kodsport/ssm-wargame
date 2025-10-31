@@ -99,7 +99,11 @@
       <div class="form-group mt-2">
         <label>Theme</label>
         <select class="form-control" v-model="form.theme">
-          <option v-for="theme in themes" :key="theme.filename" :value="theme.filename">
+          <option
+            v-for="theme in themes"
+            :key="theme.filename"
+            :value="theme.filename"
+          >
             {{ theme.name }}
           </option>
         </select>
@@ -176,7 +180,7 @@ const router = useRouter();
 const challStore = useChallengeStore();
 const http = useHttp();
 const ctfs = ref<any[]>([]);
-const themes = ref<Array<{name: string, filename: string}>>([]);
+const themes = ref<Array<{ name: string; filename: string }>>([]);
 const form = ref({
   name: "",
   description: "",
@@ -259,6 +263,24 @@ function clearForm() {
     challenges: [],
   };
   freezeEnabled.value = false;
+}
+
+function toLocalInput(dt: any) {
+  // Accepts ISO strings or numeric timestamps (seconds or ms) and returns
+  // a string in the form YYYY-MM-DDTHH:mm suitable for <input type="datetime-local">.
+  let d: Date;
+  if (dt == null) {
+    d = new Date();
+  } else if (typeof dt === "number") {
+    // If it's a small number, assume seconds
+    d = new Date(dt > 1e12 ? dt : dt * 1000);
+  } else {
+    d = new Date(dt);
+  }
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}`;
 }
 
 async function deleteCTF(id: string) {
