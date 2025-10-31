@@ -45,6 +45,7 @@ type Endpoints struct {
 	UpdateCTF                 goa.Endpoint
 	DeleteCTF                 goa.Endpoint
 	ListCTFs                  goa.Endpoint
+	AdminScoreboard           goa.Endpoint
 	CreateChallengeGroup      goa.Endpoint
 	UpdateChallengeGroup      goa.Endpoint
 	DeleteChallengeGroup      goa.Endpoint
@@ -94,6 +95,7 @@ func NewEndpoints(s Service) *Endpoints {
 		UpdateCTF:                 NewUpdateCTFEndpoint(s, a.JWTAuth),
 		DeleteCTF:                 NewDeleteCTFEndpoint(s, a.JWTAuth),
 		ListCTFs:                  NewListCTFsEndpoint(s, a.JWTAuth),
+		AdminScoreboard:           NewAdminScoreboardEndpoint(s, a.JWTAuth),
 		CreateChallengeGroup:      NewCreateChallengeGroupEndpoint(s, a.JWTAuth),
 		UpdateChallengeGroup:      NewUpdateChallengeGroupEndpoint(s, a.JWTAuth),
 		DeleteChallengeGroup:      NewDeleteChallengeGroupEndpoint(s, a.JWTAuth),
@@ -141,6 +143,7 @@ func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
 	e.UpdateCTF = m(e.UpdateCTF)
 	e.DeleteCTF = m(e.DeleteCTF)
 	e.ListCTFs = m(e.ListCTFs)
+	e.AdminScoreboard = m(e.AdminScoreboard)
 	e.CreateChallengeGroup = m(e.CreateChallengeGroup)
 	e.UpdateChallengeGroup = m(e.UpdateChallengeGroup)
 	e.DeleteChallengeGroup = m(e.DeleteChallengeGroup)
@@ -709,6 +712,25 @@ func NewListCTFsEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint
 			return nil, err
 		}
 		return s.ListCTFs(ctx, p)
+	}
+}
+
+// NewAdminScoreboardEndpoint returns an endpoint function that calls the
+// method "AdminScoreboard" of service "admin".
+func NewAdminScoreboardEndpoint(s Service, authJWTFn security.AuthJWTFunc) goa.Endpoint {
+	return func(ctx context.Context, req interface{}) (interface{}, error) {
+		p := req.(*AdminScoreboardPayload)
+		var err error
+		sc := security.JWTScheme{
+			Name:           "jwt",
+			Scopes:         []string{},
+			RequiredScopes: []string{},
+		}
+		ctx, err = authJWTFn(ctx, p.Token, &sc)
+		if err != nil {
+			return nil, err
+		}
+		return s.AdminScoreboard(ctx, p)
 	}
 }
 

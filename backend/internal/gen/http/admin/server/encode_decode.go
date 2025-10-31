@@ -2852,6 +2852,100 @@ func EncodeListCTFsError(encoder func(context.Context, http.ResponseWriter) goah
 	}
 }
 
+// EncodeAdminScoreboardResponse returns an encoder for responses returned by
+// the admin AdminScoreboard endpoint.
+func EncodeAdminScoreboardResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
+		res, _ := v.([]*admin.CTFScore)
+		enc := encoder(ctx, w)
+		body := NewAdminScoreboardResponseBody(res)
+		w.WriteHeader(http.StatusOK)
+		return enc.Encode(body)
+	}
+}
+
+// DecodeAdminScoreboardRequest returns a decoder for requests sent to the
+// admin AdminScoreboard endpoint.
+func DecodeAdminScoreboardRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+	return func(r *http.Request) (interface{}, error) {
+		var (
+			slug  string
+			token string
+			err   error
+
+			params = mux.Vars(r)
+		)
+		slug = params["slug"]
+		token = r.Header.Get("Authorization")
+		if token == "" {
+			err = goa.MergeErrors(err, goa.MissingFieldError("Authorization", "header"))
+		}
+		if err != nil {
+			return nil, err
+		}
+		payload := NewAdminScoreboardPayload(slug, token)
+		if strings.Contains(payload.Token, " ") {
+			// Remove authorization scheme prefix (e.g. "Bearer")
+			cred := strings.SplitN(payload.Token, " ", 2)[1]
+			payload.Token = cred
+		}
+
+		return payload, nil
+	}
+}
+
+// EncodeAdminScoreboardError returns an encoder for errors returned by the
+// AdminScoreboard admin endpoint.
+func EncodeAdminScoreboardError(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder, formatter func(err error) goahttp.Statuser) func(context.Context, http.ResponseWriter, error) error {
+	encodeError := goahttp.ErrorEncoder(encoder, formatter)
+	return func(ctx context.Context, w http.ResponseWriter, v error) error {
+		en, ok := v.(ErrorNamer)
+		if !ok {
+			return encodeError(ctx, w, v)
+		}
+		switch en.ErrorName() {
+		case "unauthorized":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewAdminScoreboardUnauthorizedResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusForbidden)
+			return enc.Encode(body)
+		case "not_found":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewAdminScoreboardNotFoundResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusNotFound)
+			return enc.Encode(body)
+		case "bad_request":
+			res := v.(*goa.ServiceError)
+			enc := encoder(ctx, w)
+			var body interface{}
+			if formatter != nil {
+				body = formatter(res)
+			} else {
+				body = NewAdminScoreboardBadRequestResponseBody(res)
+			}
+			w.Header().Set("goa-error", res.ErrorName())
+			w.WriteHeader(http.StatusBadRequest)
+			return enc.Encode(body)
+		default:
+			return encodeError(ctx, w, v)
+		}
+	}
+}
+
 // EncodeCreateChallengeGroupResponse returns an encoder for responses returned
 // by the admin CreateChallengeGroup endpoint.
 func EncodeCreateChallengeGroupResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
@@ -4447,14 +4541,16 @@ func marshalAdminCTFChallengeToCTFChallengeResponseBody(v *admin.CTFChallenge) *
 // value of type *admin.CTF.
 func marshalAdminCTFToCTFResponse(v *admin.CTF) *CTFResponse {
 	res := &CTFResponse{
-		ID:          v.ID,
-		Name:        v.Name,
-		Description: v.Description,
-		StartTime:   v.StartTime,
-		EndTime:     v.EndTime,
-		Slug:        v.Slug,
-		TeamBased:   v.TeamBased,
-		Theme:       v.Theme,
+		ID:                    v.ID,
+		Name:                  v.Name,
+		Description:           v.Description,
+		StartTime:             v.StartTime,
+		EndTime:               v.EndTime,
+		Slug:                  v.Slug,
+		TeamBased:             v.TeamBased,
+		Theme:                 v.Theme,
+		ScoreboardFreezeStart: v.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   v.ScoreboardFreezeEnd,
 	}
 	if v.Challenges != nil {
 		res.Challenges = make([]*CTFChallengeResponse, len(v.Challenges))
@@ -4473,6 +4569,26 @@ func marshalAdminCTFChallengeToCTFChallengeResponse(v *admin.CTFChallenge) *CTFC
 		ID:           v.ID,
 		CustomScore:  v.CustomScore,
 		DisplayOrder: v.DisplayOrder,
+	}
+
+	return res
+}
+
+// marshalAdminCTFScoreToCTFScoreResponse builds a value of type
+// *CTFScoreResponse from a value of type *admin.CTFScore.
+func marshalAdminCTFScoreToCTFScoreResponse(v *admin.CTFScore) *CTFScoreResponse {
+	res := &CTFScoreResponse{
+		ID:       v.ID,
+		Username: v.Username,
+		Score:    v.Score,
+		TeamID:   v.TeamID,
+		Teamname: v.Teamname,
+	}
+	if v.Solves != nil {
+		res.Solves = make([]string, len(v.Solves))
+		for i, val := range v.Solves {
+			res.Solves[i] = val
+		}
 	}
 
 	return res

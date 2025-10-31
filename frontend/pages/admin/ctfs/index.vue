@@ -65,6 +65,37 @@
         />
         <label class="form-check-label" for="team_based"> Team based </label>
       </div>
+      <div class="form-check mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="freeze_enabled"
+          v-model="freezeEnabled"
+        />
+        <label class="form-check-label" for="freeze_enabled">
+          Scoreboard Freeze
+        </label>
+      </div>
+      <div v-if="freezeEnabled" class="d-flex mt-2">
+        <div class="form-group col-6 pe-2">
+          <label>Freeze start time</label>
+          <input
+            class="form-control"
+            type="datetime-local"
+            placeholder="Enter freeze start date"
+            v-model="form.scoreboard_freeze_start"
+          />
+        </div>
+        <div class="form-group col-6">
+          <label>Freeze end time</label>
+          <input
+            class="form-control"
+            type="datetime-local"
+            placeholder="Enter freeze end date"
+            v-model="form.scoreboard_freeze_end"
+          />
+        </div>
+      </div>
       <div class="form-group mt-2">
         <label>Theme</label>
         <select class="form-control" v-model="form.theme">
@@ -113,6 +144,9 @@
             {{ new Date(ctf.end_time).toLocaleString() }}
           </td>
           <td class="text-end">
+            <button class="btn btn-success me-2" @click="viewScoreboard(ctf.slug)">
+              Poängtavla
+            </button>
             <button class="btn btn-info me-2" @click="viewUsers(ctf.id)">
               Manage users
             </button>
@@ -151,6 +185,8 @@ const form = ref({
   slug: "",
   team_based: false,
   theme: "",
+  scoreboard_freeze_start: "",
+  scoreboard_freeze_end: "",
   challenges: [] as Array<{
     id: string;
     custom_score: number;
@@ -161,6 +197,7 @@ const error = ref("");
 const edit = ref(false);
 const editCTFId = ref("");
 const challenges = ref<any[]>([]);
+const freezeEnabled = ref(false);
 
 onMounted(async () => {
   challenges.value = challStore.challenges;
@@ -173,15 +210,25 @@ onMounted(async () => {
 async function createCTF() {
   error.value = "";
   try {
+    const body: any = {
+      ...form.value,
+      start_time: new Date(form.value.start_time).valueOf() / 1000,
+      end_time: new Date(form.value.end_time).valueOf() / 1000,
+    };
+    
+    if (freezeEnabled.value && form.value.scoreboard_freeze_start && form.value.scoreboard_freeze_end) {
+      body.scoreboard_freeze_start = new Date(form.value.scoreboard_freeze_start).valueOf() / 1000;
+      body.scoreboard_freeze_end = new Date(form.value.scoreboard_freeze_end).valueOf() / 1000;
+    } else {
+      delete body.scoreboard_freeze_start;
+      delete body.scoreboard_freeze_end;
+    }
+    
     const ctf = await http(
       edit.value ? "/admin/ctfs/" + editCTFId.value : "/admin/ctfs",
       {
         method: edit.value ? "PUT" : "POST",
-        body: {
-          ...form.value,
-          start_time: new Date(form.value.start_time).valueOf() / 1000,
-          end_time: new Date(form.value.end_time).valueOf() / 1000,
-        },
+        body,
       }
     );
     if (edit.value) {
@@ -207,8 +254,11 @@ function clearForm() {
     slug: "",
     team_based: false,
     theme: "",
+    scoreboard_freeze_start: "",
+    scoreboard_freeze_end: "",
     challenges: [],
   };
+  freezeEnabled.value = false;
 }
 
 async function deleteCTF(id: string) {
@@ -230,16 +280,30 @@ function editCTF(id: string) {
     form.value = {
       name: ctf.name,
       description: ctf.description,
-      start_time: new Date(ctf.start_time).toLocaleString(),
-      end_time: new Date(ctf.end_time).toLocaleString(),
+      start_time: toLocalInput(ctf.start_time),
+      end_time: toLocalInput(ctf.end_time),
       slug: ctf.slug,
       team_based: ctf.team_based,
       theme: ctf.theme || "",
+      scoreboard_freeze_start: ctf.scoreboard_freeze_start ? toLocalInput(ctf.scoreboard_freeze_start) : "",
+      scoreboard_freeze_end: ctf.scoreboard_freeze_end ? toLocalInput(ctf.scoreboard_freeze_end) : "",
       challenges: JSON.parse(JSON.stringify(ctf.challenges)),
     };
+    freezeEnabled.value = !!(ctf.scoreboard_freeze_start && ctf.scoreboard_freeze_end);
   }
 }
 
+function toLocalInput(isoString: string): string {
+  let d = new Date(isoString);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}`;
+}
+
+function viewScoreboard(slug: string) {
+  router.push(`/admin/ctfs/${slug}/scoreboard`);
+}
 function viewUsers(id: string) {
   router.push(`/admin/ctfs/${id}/users`);
 }

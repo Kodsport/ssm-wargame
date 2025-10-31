@@ -45,6 +45,10 @@ type GetResponseBody struct {
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // RegisterUserResponseBody is the type of the "ctf" service "RegisterUser"
@@ -313,15 +317,17 @@ func NewSubmitFlagRequestBody(p *ctf.SubmitFlagPayload) *SubmitFlagRequestBody {
 // "OK" response.
 func NewGetCTFInfoOK(body *GetResponseBody) *ctf.CTFInfo {
 	v := &ctf.CTFInfo{
-		ID:          *body.ID,
-		Name:        *body.Name,
-		Description: *body.Description,
-		StartTime:   *body.StartTime,
-		EndTime:     *body.EndTime,
-		Slug:        *body.Slug,
-		Private:     body.Private,
-		TeamBased:   *body.TeamBased,
-		Theme:       body.Theme,
+		ID:                    *body.ID,
+		Name:                  *body.Name,
+		Description:           *body.Description,
+		StartTime:             *body.StartTime,
+		EndTime:               *body.EndTime,
+		Slug:                  *body.Slug,
+		Private:               body.Private,
+		TeamBased:             *body.TeamBased,
+		Theme:                 body.Theme,
+		ScoreboardFreezeStart: body.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   body.ScoreboardFreezeEnd,
 	}
 	v.ChallengeIds = make([]string, len(body.ChallengeIds))
 	for i, val := range body.ChallengeIds {

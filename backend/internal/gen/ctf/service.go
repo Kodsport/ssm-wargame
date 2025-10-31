@@ -63,6 +63,10 @@ type CTFInfo struct {
 	TeamBased bool
 	// The theme CSS filename for the CTF
 	Theme *string
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string
 }
 
 // RegisterUserPayload is the payload type of the ctf service RegisterUser

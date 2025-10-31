@@ -45,6 +45,10 @@ type GetResponseBody struct {
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // RegisterUserResponseBody is the type of the "ctf" service "RegisterUser"
@@ -292,15 +296,17 @@ type CTFScoreResponse struct {
 // "Get" endpoint of the "ctf" service.
 func NewGetResponseBody(res *ctf.CTFInfo) *GetResponseBody {
 	body := &GetResponseBody{
-		ID:          res.ID,
-		Name:        res.Name,
-		Description: res.Description,
-		StartTime:   res.StartTime,
-		EndTime:     res.EndTime,
-		Slug:        res.Slug,
-		Private:     res.Private,
-		TeamBased:   res.TeamBased,
-		Theme:       res.Theme,
+		ID:                    res.ID,
+		Name:                  res.Name,
+		Description:           res.Description,
+		StartTime:             res.StartTime,
+		EndTime:               res.EndTime,
+		Slug:                  res.Slug,
+		Private:               res.Private,
+		TeamBased:             res.TeamBased,
+		Theme:                 res.Theme,
+		ScoreboardFreezeStart: res.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   res.ScoreboardFreezeEnd,
 	}
 	if res.ChallengeIds != nil {
 		body.ChallengeIds = make([]string, len(res.ChallengeIds))

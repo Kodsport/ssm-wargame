@@ -3,7 +3,7 @@
     <div class="alert-box" v-if="text">
       {{ text }}
     </div>
-    <div class="timeline-container" v-else-if="ctfStore.ctf.slug">
+    <div class="timeline-container" v-if="ctfStore.ctf.slug && !hasEnded && !hasNotStarted">
       <div class="timeline-labels">
         <span>{{ formatTime(ctfStore.ctf.start_time) }}</span>
         <span>{{ formatTime(ctfStore.ctf.end_time) }}</span>
@@ -43,16 +43,43 @@ const hasNotStarted = computed(() => {
   return new Date(ctfStore.ctf.start_time).getTime() > now.value;
 });
 
+const isFrozen = computed(() => {
+  if (!ctfStore.ctf.scoreboard_freeze_start || !ctfStore.ctf.scoreboard_freeze_end) return false;
+  const freezeStart = new Date(ctfStore.ctf.scoreboard_freeze_start).getTime();
+  const freezeEnd = new Date(ctfStore.ctf.scoreboard_freeze_end).getTime();
+  return now.value >= freezeStart && now.value < freezeEnd;
+});
+
+const beforeFreeze = computed(() => {
+  if (!ctfStore.ctf.scoreboard_freeze_start) return false;
+  return now.value < new Date(ctfStore.ctf.scoreboard_freeze_start).getTime();
+});
+
 const text = computed(() => {
   if (hasNotStarted.value)
     return (
       "CTF:en har inte börjat ännu! Den börjar " +
-      moment
-        .default(new Date(ctfStore.ctf.start_time))
-        .format("YYYY-MM-DD HH:mm:ss") +
+      moment(new Date(ctfStore.ctf.start_time)).format("YYYY-MM-DD HH:mm:ss") +
       "."
     );
   if (hasEnded.value) return "CTF:en har avslutats!";
+  
+  if (isFrozen.value) {
+    return (
+      "Poängtavlan är fryst! Lösningar räknas fortfarande men visas inte förrän " +
+      moment(new Date(ctfStore.ctf.scoreboard_freeze_end)).format("YYYY-MM-DD HH:mm:ss") +
+      "."
+    );
+  }
+  
+  if (beforeFreeze.value && ctfStore.ctf.scoreboard_freeze_start) {
+    return (
+      "Poängtavlan kommer att frysas " +
+      moment(new Date(ctfStore.ctf.scoreboard_freeze_start)).format("YYYY-MM-DD HH:mm:ss") +
+      "."
+    );
+  }
+  
   return "";
 });
 
@@ -66,7 +93,7 @@ const progress = computed(() => {
 });
 
 function formatTime(time: string) {
-  return moment.default(new Date(time)).format("YYYY-MM-DD HH:mm");
+  return moment(new Date(time)).format("YYYY-MM-DD HH:mm");
 }
 </script>
 <style scoped>
