@@ -44,6 +44,7 @@ type Client struct {
 	UpdateCTFEndpoint                 goa.Endpoint
 	DeleteCTFEndpoint                 goa.Endpoint
 	ListCTFsEndpoint                  goa.Endpoint
+	AdminScoreboardEndpoint           goa.Endpoint
 	CreateChallengeGroupEndpoint      goa.Endpoint
 	UpdateChallengeGroupEndpoint      goa.Endpoint
 	DeleteChallengeGroupEndpoint      goa.Endpoint
@@ -60,7 +61,7 @@ type Client struct {
 }
 
 // NewClient initializes a "admin" service client given the endpoints.
-func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, getDiscordUser, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse, createCTF, updateCTF, deleteCTF, listCTFs, createChallengeGroup, updateChallengeGroup, deleteChallengeGroup, listChallengeGroups, listCTFUsers, deleteCTFUser, updateCTFUser, listCTFTeams, createCTFTeam, deleteCTFTeam, updateCTFTeam, getUserDetails, updateUserRole goa.Endpoint) *Client {
+func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFileUpload, listMonthlyChallenges, deleteMonthlyChallenge, deleteFile, createMonthlyChallenge, listUsers, getDiscordUser, listAuthors, updateAuthor, createAuthor, deleteAuthor, addFlag, deleteFlag, listCategories, challtoolsImport, listCTFEvents, createCTFEvent, deleteCTFEvent, createCTFEventImportToken, listCourses, createCourse, updateCourse, createCTF, updateCTF, deleteCTF, listCTFs, adminScoreboard, createChallengeGroup, updateChallengeGroup, deleteChallengeGroup, listChallengeGroups, listCTFUsers, deleteCTFUser, updateCTFUser, listCTFTeams, createCTFTeam, deleteCTFTeam, updateCTFTeam, getUserDetails, updateUserRole goa.Endpoint) *Client {
 	return &Client{
 		ListChallengesEndpoint:            listChallenges,
 		GetChallengeMetaEndpoint:          getChallengeMeta,
@@ -91,6 +92,7 @@ func NewClient(listChallenges, getChallengeMeta, createChallenge, presignChallFi
 		UpdateCTFEndpoint:                 updateCTF,
 		DeleteCTFEndpoint:                 deleteCTF,
 		ListCTFsEndpoint:                  listCTFs,
+		AdminScoreboardEndpoint:           adminScoreboard,
 		CreateChallengeGroupEndpoint:      createChallengeGroup,
 		UpdateChallengeGroupEndpoint:      updateChallengeGroup,
 		DeleteChallengeGroupEndpoint:      deleteChallengeGroup,
@@ -342,6 +344,16 @@ func (c *Client) ListCTFs(ctx context.Context, p *ListCTFsPayload) (res []*CTF, 
 		return
 	}
 	return ires.([]*CTF), nil
+}
+
+// AdminScoreboard calls the "AdminScoreboard" endpoint of the "admin" service.
+func (c *Client) AdminScoreboard(ctx context.Context, p *AdminScoreboardPayload) (res []*CTFScore, err error) {
+	var ires interface{}
+	ires, err = c.AdminScoreboardEndpoint(ctx, p)
+	if err != nil {
+		return
+	}
+	return ires.([]*CTFScore), nil
 }
 
 // CreateChallengeGroup calls the "CreateChallengeGroup" endpoint of the

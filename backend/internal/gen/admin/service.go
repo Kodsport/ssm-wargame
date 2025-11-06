@@ -75,6 +75,8 @@ type Service interface {
 	DeleteCTF(context.Context, *DeleteCTFPayload) (err error)
 	// ListCTFs implements ListCTFs.
 	ListCTFs(context.Context, *ListCTFsPayload) (res []*CTF, err error)
+	// Get live scoreboard bypassing freeze (admin only)
+	AdminScoreboard(context.Context, *AdminScoreboardPayload) (res []*CTFScore, err error)
 	// CreateChallengeGroup implements CreateChallengeGroup.
 	CreateChallengeGroup(context.Context, *CreateChallengeGroupPayload) (res *ChallengeGroup, err error)
 	// UpdateChallengeGroup implements UpdateChallengeGroup.
@@ -117,7 +119,7 @@ const ServiceName = "admin"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [42]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "GetDiscordUser", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse", "CreateCTF", "UpdateCTF", "DeleteCTF", "ListCTFs", "CreateChallengeGroup", "UpdateChallengeGroup", "DeleteChallengeGroup", "ListChallengeGroups", "ListCTFUsers", "DeleteCTFUser", "UpdateCTFUser", "ListCTFTeams", "CreateCTFTeam", "DeleteCTFTeam", "UpdateCTFTeam", "GetUserDetails", "UpdateUserRole"}
+var MethodNames = [43]string{"ListChallenges", "GetChallengeMeta", "CreateChallenge", "PresignChallFileUpload", "ListMonthlyChallenges", "DeleteMonthlyChallenge", "DeleteFile", "CreateMonthlyChallenge", "ListUsers", "GetDiscordUser", "ListAuthors", "UpdateAuthor", "CreateAuthor", "DeleteAuthor", "AddFlag", "DeleteFlag", "ListCategories", "ChalltoolsImport", "ListCTFEvents", "CreateCTFEvent", "DeleteCTFEvent", "CreateCTFEventImportToken", "ListCourses", "CreateCourse", "UpdateCourse", "CreateCTF", "UpdateCTF", "DeleteCTF", "ListCTFs", "AdminScoreboard", "CreateChallengeGroup", "UpdateChallengeGroup", "DeleteChallengeGroup", "ListChallengeGroups", "ListCTFUsers", "DeleteCTFUser", "UpdateCTFUser", "ListCTFTeams", "CreateCTFTeam", "DeleteCTFTeam", "UpdateCTFTeam", "GetUserDetails", "UpdateUserRole"}
 
 // ListChallengesPayload is the payload type of the admin service
 // ListChallenges method.
@@ -417,6 +419,10 @@ type CreateCTFPayload struct {
 	TeamBased bool
 	// The theme CSS filename for the CTF
 	Theme *string
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *int64
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *int64
 }
 
 // CTF is the result type of the admin service CreateCTF method.
@@ -433,6 +439,10 @@ type CTF struct {
 	TeamBased bool
 	// The theme CSS filename for the CTF
 	Theme *string
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string
 }
 
 // UpdateCTFPayload is the payload type of the admin service UpdateCTF method.
@@ -460,6 +470,10 @@ type UpdateCTFPayload struct {
 	TeamBased *bool
 	// The theme CSS filename for the CTF
 	Theme *string
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *int64
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *int64
 }
 
 // DeleteCTFPayload is the payload type of the admin service DeleteCTF method.
@@ -471,6 +485,14 @@ type DeleteCTFPayload struct {
 
 // ListCTFsPayload is the payload type of the admin service ListCTFs method.
 type ListCTFsPayload struct {
+	Token string
+}
+
+// AdminScoreboardPayload is the payload type of the admin service
+// AdminScoreboard method.
+type AdminScoreboardPayload struct {
+	// CTF slug
+	Slug  string
 	Token string
 }
 
@@ -772,6 +794,17 @@ type CTFChallenge struct {
 	CustomScore *int
 	// Challenge display order
 	DisplayOrder int
+}
+
+type CTFScore struct {
+	ID       string
+	Username string
+	Score    int64
+	Solves   []string
+	// Optional team ID for team-based CTFs
+	TeamID *string
+	// Optional team name for team-based CTFs
+	Teamname *string
 }
 
 type SubmissionStats struct {

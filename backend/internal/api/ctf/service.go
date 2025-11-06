@@ -34,9 +34,10 @@ func (s *Service) Get(ctx context.Context, req *spec.GetPayload) (*spec.CTFInfo,
 		return nil, err
 	}
 
-	// manuel query för att få theme
+	// manuel query för att få theme och freeze times
 	var theme sql.NullString
-	err = s.db.QueryRowContext(ctx, "SELECT theme FROM ctfs WHERE slug = $1", req.Slug).Scan(&theme)
+	var freezeStart, freezeEnd sql.NullTime
+	err = s.db.QueryRowContext(ctx, "SELECT theme, scoreboard_freeze_start, scoreboard_freeze_end FROM ctfs WHERE slug = $1", req.Slug).Scan(&theme, &freezeStart, &freezeEnd)
 	if err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
@@ -46,7 +47,7 @@ func (s *Service) Get(ctx context.Context, req *spec.GetPayload) (*spec.CTFInfo,
 		themePtr = &theme.String
 	}
 
-	return &spec.CTFInfo{
+	result := &spec.CTFInfo{
 		ID:          ctf.ID,
 		Name:        ctf.Name,
 		Description: ctf.Description,
@@ -55,7 +56,18 @@ func (s *Service) Get(ctx context.Context, req *spec.GetPayload) (*spec.CTFInfo,
 		Slug:        ctf.Slug,
 		TeamBased:   ctf.TeamBased,
 		Theme:       themePtr,
-	}, nil
+	}
+	
+	if freezeStart.Valid {
+		freezeStartStr := freezeStart.Time.Format(time.RFC3339)
+		result.ScoreboardFreezeStart = &freezeStartStr
+	}
+	if freezeEnd.Valid {
+		freezeEndStr := freezeEnd.Time.Format(time.RFC3339)
+		result.ScoreboardFreezeEnd = &freezeEndStr
+	}
+	
+	return result, nil
 }
 
 func (s *Service) RegisterUser(ctx context.Context, req *spec.RegisterUserPayload) (*spec.CTFUser, error) {
@@ -213,6 +225,17 @@ func (s *Service) GetUserSolves(ctx context.Context, req *spec.GetUserSolvesPayl
 	if err != nil {
 		return nil, err
 	}
+	
+	// check
+	var freezeStart, freezeEnd sql.NullTime
+	err = s.db.QueryRowContext(ctx, "SELECT scoreboard_freeze_start, scoreboard_freeze_end FROM ctfs WHERE id = $1", ctf.ID).Scan(&freezeStart, &freezeEnd)
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+	isFrozen := freezeStart.Valid && freezeEnd.Valid && now.After(freezeStart.Time) && now.Before(freezeEnd.Time)
+	
 	var res []*spec.CTFUserSolve
 	var username string
 	if ctf.TeamBased {
@@ -225,12 +248,22 @@ func (s *Service) GetUserSolves(ctx context.Context, req *spec.GetUserSolvesPayl
 			return nil, err
 		}
 		username = team.Teamname
-		rows, err := s.db.QueryContext(ctx, `
-					   SELECT DISTINCT ON (s.challenge_id) s.challenge_id, s.created_at
-					   FROM ctf_solves s
-					   WHERE s.ctf_id = $1 AND s.team_id = $2
-					   ORDER BY s.challenge_id, s.created_at ASC
-			   `, ctf.ID, req.ID)
+		
+		solveQuery := `
+			SELECT DISTINCT ON (s.challenge_id) s.challenge_id, s.created_at
+			FROM ctf_solves s
+			WHERE s.ctf_id = $1 AND s.team_id = $2`
+		if isFrozen {
+			solveQuery += ` AND s.created_at < $3`
+		}
+		solveQuery += ` ORDER BY s.challenge_id, s.created_at ASC`
+		
+		var rows *sql.Rows
+		if isFrozen {
+			rows, err = s.db.QueryContext(ctx, solveQuery, ctf.ID, req.ID, freezeStart.Time)
+		} else {
+			rows, err = s.db.QueryContext(ctx, solveQuery, ctf.ID, req.ID)
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -255,7 +288,20 @@ func (s *Service) GetUserSolves(ctx context.Context, req *spec.GetUserSolvesPayl
 			return nil, err
 		}
 		username = user.Username
-		solves, err := models.CTFSolves(models.CTFSolfWhere.UserID.EQ(user.ID), models.CTFSolfWhere.CTFID.EQ(ctf.ID)).All(ctx, s.db)
+		
+		var solves []*models.CTFSolf
+		if isFrozen {
+			solves, err = models.CTFSolves(
+				models.CTFSolfWhere.UserID.EQ(user.ID),
+				models.CTFSolfWhere.CTFID.EQ(ctf.ID),
+				models.CTFSolfWhere.CreatedAt.LT(freezeStart.Time),
+			).All(ctx, s.db)
+		} else {
+			solves, err = models.CTFSolves(
+				models.CTFSolfWhere.UserID.EQ(user.ID),
+				models.CTFSolfWhere.CTFID.EQ(ctf.ID),
+			).All(ctx, s.db)
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -333,6 +379,17 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	}
 	challengeIDsSQL := strings.Join(challengeIDList, ",")
 
+	// check
+	var freezeStart, freezeEnd sql.NullTime
+	err = s.db.QueryRowContext(ctx, "SELECT scoreboard_freeze_start, scoreboard_freeze_end FROM ctfs WHERE id = $1", ctf.ID).Scan(&freezeStart, &freezeEnd)
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+	isFrozen := freezeStart.Valid && freezeEnd.Valid && now.After(freezeStart.Time) && now.Before(freezeEnd.Time)
+	freezeTime := freezeStart.Time
+
 	solveCounts := make(map[string]int)
 	teamSolveCounts := make(map[string]int)
 	userTeamSolveCounts := make(map[string]int)
@@ -340,16 +397,26 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	userTeamSolved := make(map[string]bool)
 
 	if len(challengeIDs) > 0 {
+		timeFilter := ""
+		if isFrozen {
+			timeFilter = " AND created_at < $2"
+		}
+		
 		solveCountQuery := `
 			SELECT 
 				challenge_id,
 				COUNT(1) as total_solves,
 				COUNT(DISTINCT CASE WHEN team_id IS NOT NULL THEN team_id END) as team_solves
 			FROM ctf_solves 
-			WHERE ctf_id = $1 AND challenge_id IN (` + challengeIDsSQL + `)
+			WHERE ctf_id = $1 AND challenge_id IN (` + challengeIDsSQL + `)` + timeFilter + `
 			GROUP BY challenge_id`
 
-		rows, err := s.db.QueryContext(ctx, solveCountQuery, ctf.ID)
+		var rows *sql.Rows
+		if isFrozen {
+			rows, err = s.db.QueryContext(ctx, solveCountQuery, ctf.ID, freezeTime)
+		} else {
+			rows, err = s.db.QueryContext(ctx, solveCountQuery, ctf.ID)
+		}
 		if err == nil {
 			defer rows.Close()
 			for rows.Next() {
@@ -358,6 +425,44 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				if err := rows.Scan(&challengeID, &totalSolves, &teamSolves); err == nil {
 					solveCounts[challengeID] = totalSolves
 					teamSolveCounts[challengeID] = teamSolves
+				}
+			}
+		}
+
+		if isFrozen && user != nil {
+			var postFreezeSolvesQuery string
+			if ctf.TeamBased && teamID != nil {
+				postFreezeSolvesQuery = `
+					SELECT challenge_id, COUNT(DISTINCT user_id) as user_solves
+					FROM ctf_solves
+					WHERE ctf_id = $1 AND challenge_id IN (` + challengeIDsSQL + `) 
+						AND team_id = $2 AND created_at >= $3
+					GROUP BY challenge_id`
+				rows, err = s.db.QueryContext(ctx, postFreezeSolvesQuery, ctf.ID, *teamID, freezeTime)
+			} else {
+				postFreezeSolvesQuery = `
+					SELECT challenge_id, COUNT(1) as user_solves
+					FROM ctf_solves
+					WHERE ctf_id = $1 AND challenge_id IN (` + challengeIDsSQL + `) 
+						AND user_id = $2 AND created_at >= $3
+					GROUP BY challenge_id`
+				rows, err = s.db.QueryContext(ctx, postFreezeSolvesQuery, ctf.ID, user.ID, freezeTime)
+			}
+			if err == nil {
+				defer rows.Close()
+				for rows.Next() {
+					var challengeID string
+					var postFreezeSolves int
+					if err := rows.Scan(&challengeID, &postFreezeSolves); err == nil {
+						if ctf.TeamBased {
+							if solveCounts[challengeID] == 0 || teamSolveCounts[challengeID] == 0 {
+								teamSolveCounts[challengeID]++
+							}
+							solveCounts[challengeID] += postFreezeSolves
+						} else {
+							solveCounts[challengeID] += postFreezeSolves
+						}
+					}
 				}
 			}
 		}
@@ -435,20 +540,31 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 	challengeIDsSQL = strings.Join(challengeIDList, ",")
 
 	if len(challengeIDs) > 0 {
+		// bara visa solves innan
+		solverTimeFilter := ""
+		if isFrozen {
+			solverTimeFilter = " AND s.created_at < $2"
+		}
+		
 		solversQuery := `
 			WITH ranked_solves AS (
 				SELECT s.challenge_id, u.id, u.username, s.created_at,
 					   ROW_NUMBER() OVER (PARTITION BY s.challenge_id ORDER BY s.created_at ASC) as rn
 				FROM ctf_solves s
 				INNER JOIN ctf_users u ON u.id = s.user_id
-				WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `)
+				WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `)` + solverTimeFilter + `
 			)
 			SELECT challenge_id, id, username, created_at
 			FROM ranked_solves
 			WHERE rn <= 5
 			ORDER BY challenge_id, created_at ASC`
 
-		rows, err := s.db.QueryContext(ctx, solversQuery, ctf.ID)
+		var rows *sql.Rows
+		if isFrozen {
+			rows, err = s.db.QueryContext(ctx, solversQuery, ctf.ID, freezeTime)
+		} else {
+			rows, err = s.db.QueryContext(ctx, solversQuery, ctf.ID)
+		}
 		if err == nil {
 			defer rows.Close()
 			for rows.Next() {
@@ -469,11 +585,16 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 
 		// Batch query for team solvers (first 5 teams per challenge)
 		if ctf.TeamBased {
+			teamTimeFilter := ""
+			if isFrozen {
+				teamTimeFilter = " AND s.created_at < $2"
+			}
+			
 			teamSolversQuery := `
 				WITH first_team_solves AS (
 					SELECT s.challenge_id, s.team_id, MIN(s.created_at) as first_solve_time
 					FROM ctf_solves s
-					WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `) AND s.team_id IS NOT NULL
+					WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `) AND s.team_id IS NOT NULL` + teamTimeFilter + `
 					GROUP BY s.challenge_id, s.team_id
 				),
 				ranked_team_solves AS (
@@ -487,7 +608,11 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 				WHERE rts.rn <= 5
 				ORDER BY rts.challenge_id, rts.first_solve_time ASC`
 
-			rows, err = s.db.QueryContext(ctx, teamSolversQuery, ctf.ID)
+			if isFrozen {
+				rows, err = s.db.QueryContext(ctx, teamSolversQuery, ctf.ID, freezeTime)
+			} else {
+				rows, err = s.db.QueryContext(ctx, teamSolversQuery, ctf.ID)
+			}
 			if err == nil {
 				defer rows.Close()
 				for rows.Next() {
@@ -507,22 +632,32 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 			}
 		}
 
-		// Batch query for solvers in user's team
+		// Batch query for solvers in user's team (pre-freeze only if frozen)
 		if ctf.TeamBased && user != nil && user.TeamID.Valid {
+			teamMemberTimeFilter := ""
+			if isFrozen {
+				teamMemberTimeFilter = " AND s.created_at < $3"
+			}
+			
 			teamSolversQuery := `
 				WITH ranked_team_member_solves AS (
 					SELECT s.challenge_id, u.id, u.username, s.created_at,
 						   ROW_NUMBER() OVER (PARTITION BY s.challenge_id ORDER BY s.created_at ASC) as rn
 					FROM ctf_solves s
 					INNER JOIN ctf_users u ON u.id = s.user_id
-					WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `) AND s.team_id = $2
+					WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `) AND s.team_id = $2` + teamMemberTimeFilter + `
 				)
 				SELECT challenge_id, id, username, created_at
 				FROM ranked_team_member_solves
 				WHERE rn <= 5
 				ORDER BY challenge_id, created_at ASC`
 
-			rows, err = s.db.QueryContext(ctx, teamSolversQuery, ctf.ID, user.TeamID.String)
+			var rows *sql.Rows
+			if isFrozen {
+				rows, err = s.db.QueryContext(ctx, teamSolversQuery, ctf.ID, user.TeamID.String, freezeTime)
+			} else {
+				rows, err = s.db.QueryContext(ctx, teamSolversQuery, ctf.ID, user.TeamID.String)
+			}
 			if err == nil {
 				defer rows.Close()
 				for rows.Next() {
@@ -537,6 +672,91 @@ func (s *Service) ListChallenges(ctx context.Context, req *spec.ListChallengesPa
 							FullName: username,
 							SolvedAt: solvedAt.Unix(),
 						})
+					}
+				}
+			}
+		}
+
+		if isFrozen && user != nil {
+			if ctf.TeamBased && teamID != nil {
+				postFreezeTeamSolversQuery := `
+					SELECT s.challenge_id, u.id, u.username, s.created_at
+					FROM ctf_solves s
+					INNER JOIN ctf_users u ON u.id = s.user_id
+					WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `) 
+						AND s.team_id = $2 AND s.created_at >= $3
+					ORDER BY s.created_at ASC`
+				rows, err := s.db.QueryContext(ctx, postFreezeTeamSolversQuery, ctf.ID, *teamID, freezeTime)
+				if err == nil {
+					defer rows.Close()
+					teamFirstSolve := make(map[string]time.Time)
+					for rows.Next() {
+						var challengeID, id, username string
+						var solvedAt time.Time
+						if err := rows.Scan(&challengeID, &id, &username, &solvedAt); err == nil {
+							if _, exists := teamFirstSolve[challengeID]; !exists {
+								teamFirstSolve[challengeID] = solvedAt
+							}
+							
+							if allSolversInTeam[challengeID] == nil {
+								allSolversInTeam[challengeID] = make([]*spec.SsmSolver, 0)
+							}
+							allSolversInTeam[challengeID] = append(allSolversInTeam[challengeID], &spec.SsmSolver{
+								ID:       id,
+								FullName: username,
+								SolvedAt: solvedAt.Unix(),
+							})
+							
+							if allSolvers[challengeID] == nil {
+								allSolvers[challengeID] = make([]*spec.SsmSolver, 0)
+							}
+							allSolvers[challengeID] = append(allSolvers[challengeID], &spec.SsmSolver{
+								ID:       id,
+								FullName: username,
+								SolvedAt: solvedAt.Unix(),
+							})
+						}
+					}
+					
+					if len(teamFirstSolve) > 0 {
+						var teamname string
+						err = s.db.QueryRowContext(ctx, "SELECT teamname FROM ctf_teams WHERE id = $1", *teamID).Scan(&teamname)
+						if err == nil {
+							for challengeID, firstSolveTime := range teamFirstSolve {
+								if allTeamSolvers[challengeID] == nil {
+									allTeamSolvers[challengeID] = make([]*spec.SsmSolver, 0)
+								}
+								allTeamSolvers[challengeID] = append(allTeamSolvers[challengeID], &spec.SsmSolver{
+									ID:       *teamID,
+									FullName: teamname,
+									SolvedAt: firstSolveTime.Unix(),
+								})
+							}
+						}
+					}
+				}
+			} else {
+				postFreezeSolversQuery := `
+					SELECT s.challenge_id, s.created_at
+					FROM ctf_solves s
+					WHERE s.ctf_id = $1 AND s.challenge_id IN (` + challengeIDsSQL + `) 
+						AND s.user_id = $2 AND s.created_at >= $3`
+				rows, err := s.db.QueryContext(ctx, postFreezeSolversQuery, ctf.ID, user.ID, freezeTime)
+				if err == nil {
+					defer rows.Close()
+					for rows.Next() {
+						var challengeID string
+						var solvedAt time.Time
+						if err := rows.Scan(&challengeID, &solvedAt); err == nil {
+							if allSolvers[challengeID] == nil {
+								allSolvers[challengeID] = make([]*spec.SsmSolver, 0)
+							}
+							allSolvers[challengeID] = append(allSolvers[challengeID], &spec.SsmSolver{
+								ID:       user.ID,
+								FullName: user.Username,
+								SolvedAt: solvedAt.Unix(),
+							})
+						}
 					}
 				}
 			}
@@ -642,9 +862,183 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 		return nil, err
 	}
 
+	// Check if scoreboard is frozen
+	var freezeStart, freezeEnd sql.NullTime
+	err = s.db.QueryRowContext(ctx, "SELECT scoreboard_freeze_start, scoreboard_freeze_end FROM ctfs WHERE id = $1", ctf.ID).Scan(&freezeStart, &freezeEnd)
+	if err != nil {
+		return nil, err
+	}
+
+	now := time.Now()
+	isFrozen := freezeStart.Valid && freezeEnd.Valid && now.After(freezeStart.Time) && now.Before(freezeEnd.Time)
+	var freezeTime time.Time
+	if isFrozen {
+		freezeTime = freezeStart.Time
+	}
+
 	if ctf.TeamBased {
 		// Team scoreboard: sum team scores, only count each challenge once per team
-		teams, err := s.db.QueryContext(ctx, `SELECT id, teamname FROM ctf_teams WHERE ctf_id = $1`, ctf.ID)
+		teamQuery := `SELECT id, teamname FROM ctf_teams WHERE ctf_id = $1`
+		teams, err := s.db.QueryContext(ctx, teamQuery, ctf.ID)
+		if err != nil {
+			return nil, err
+		}
+		defer teams.Close()
+		var scores []*spec.CTFScore
+		for teams.Next() {
+			var teamID, teamName string
+			if err := teams.Scan(&teamID, &teamName); err != nil {
+				return nil, err
+			}
+			solveQuery := `SELECT DISTINCT challenge_id FROM ctf_solves WHERE ctf_id = $1 AND team_id = $2`
+			var rows *sql.Rows
+			if isFrozen {
+				solveQuery += ` AND created_at < $3`
+				rows, err = s.db.QueryContext(ctx, solveQuery, ctf.ID, teamID, freezeTime)
+			} else {
+				rows, err = s.db.QueryContext(ctx, solveQuery, ctf.ID, teamID)
+			}
+			if err != nil {
+				return nil, err
+			}
+			var challengeIDs []string
+			for rows.Next() {
+				var challID string
+				if err := rows.Scan(&challID); err != nil {
+					rows.Close()
+					return nil, err
+				}
+				challengeIDs = append(challengeIDs, challID)
+			}
+			rows.Close()
+			var score int64
+			var solves []string
+			for _, challID := range challengeIDs {
+				var solver string
+				solverQuery := `SELECT u.username FROM ctf_solves s INNER JOIN ctf_users u ON u.id = s.user_id WHERE s.ctf_id = $1 AND s.team_id = $2 AND s.challenge_id = $3`
+				if isFrozen {
+					solverQuery += ` AND s.created_at < $4`
+					err = s.db.QueryRowContext(ctx, solverQuery + ` ORDER BY s.created_at ASC LIMIT 1`, ctf.ID, teamID, challID, freezeTime).Scan(&solver)
+				} else {
+					err = s.db.QueryRowContext(ctx, solverQuery + ` ORDER BY s.created_at ASC LIMIT 1`, ctf.ID, teamID, challID).Scan(&solver)
+				}
+				if err != nil {
+					return nil, err
+				}
+				solves = append(solves, challID+":"+solver)
+				var challScore sql.NullInt64
+				err = s.db.QueryRowContext(ctx, `SELECT COALESCE(cc.custom_score, ch.static_score) FROM challenges ch LEFT JOIN ctf_challenges cc ON cc.ctf_id = $1 AND cc.challenge_id = ch.id WHERE ch.id = $2`, ctf.ID, challID).Scan(&challScore)
+				if err != nil {
+					return nil, err
+				}
+				if challScore.Valid {
+					score += challScore.Int64
+				}
+			}
+			scores = append(scores, &spec.CTFScore{
+				ID:       teamID,
+				Username: teamName,
+				Score:    score,
+				Solves:   solves,
+			})
+		}
+		// Sort by score desc, then teamname asc
+		sort.Slice(scores, func(i, j int) bool {
+			if scores[i].Score == scores[j].Score {
+				return scores[i].Username < scores[j].Username
+			}
+			return scores[i].Score > scores[j].Score
+		})
+		return scores, nil
+	} else {
+		// Individual scoreboard (filter by freeze time if frozen)
+		scoreboardQuery := `
+			SELECT u.id, u.username, COALESCE(SUM(COALESCE(cc.custom_score, ch.static_score)), 0) as score,
+				MAX(s.created_at) as last_solve
+			FROM ctf_users u
+			LEFT JOIN (
+				SELECT DISTINCT ON (user_id, challenge_id) *
+				FROM ctf_solves
+				WHERE ctf_id = $1`
+		if isFrozen {
+			scoreboardQuery += ` AND created_at < $2`
+		}
+		scoreboardQuery += `
+				ORDER BY user_id, challenge_id, created_at ASC
+			) s ON u.id = s.user_id AND s.ctf_id = $1
+			LEFT JOIN challenges ch ON s.challenge_id = ch.id
+			LEFT JOIN ctf_challenges cc ON cc.ctf_id = $1 AND cc.challenge_id = ch.id
+			WHERE u.ctf_id = $1
+			GROUP BY u.id, u.username
+			ORDER BY score DESC, last_solve ASC NULLS LAST, u.username ASC
+		`
+		var rows *sql.Rows
+		if isFrozen {
+			rows, err = s.db.QueryContext(ctx, scoreboardQuery, ctf.ID, freezeTime)
+		} else {
+			rows, err = s.db.QueryContext(ctx, scoreboardQuery, ctf.ID)
+		}
+		if err != nil {
+			return nil, err
+		}
+		defer rows.Close()
+		var scores []*spec.CTFScore
+		for rows.Next() {
+			var userID string
+			var username string
+			var score int64
+			var lastSolve sql.NullTime
+			if err := rows.Scan(&userID, &username, &score, &lastSolve); err != nil {
+				return nil, err
+			}
+			solvesQuery := `
+				SELECT DISTINCT s.challenge_id
+				FROM ctf_solves s
+				INNER JOIN ctf_users u ON u.id = s.user_id
+				WHERE s.ctf_id = $1 AND u.username = $2`
+			if isFrozen {
+				solvesQuery += ` AND s.created_at < $3`
+			}
+			var solvesRows *sql.Rows
+			if isFrozen {
+				solvesRows, err = s.db.QueryContext(ctx, solvesQuery, ctf.ID, username, freezeTime)
+			} else {
+				solvesRows, err = s.db.QueryContext(ctx, solvesQuery, ctf.ID, username)
+			}
+			if err != nil {
+				return nil, err
+			}
+			var solves []string
+			for solvesRows.Next() {
+				var challID string
+				if err := solvesRows.Scan(&challID); err != nil {
+					solvesRows.Close()
+					return nil, err
+				}
+				solves = append(solves, challID)
+			}
+			solvesRows.Close()
+			scores = append(scores, &spec.CTFScore{
+				ID:       userID,
+				Username: username,
+				Score:    score,
+				Solves:   solves,
+			})
+		}
+		return scores, nil
+	}
+}
+
+func (s *Service) ScoreboardNoFreeze(ctx context.Context, slug string) ([]*spec.CTFScore, error) {
+	// admin bypass
+	ctf, err := models.CTFS(models.CTFWhere.Slug.EQ(slug)).One(ctx, s.db)
+	if err != nil {
+		return nil, err
+	}
+
+	if ctf.TeamBased {
+		teamQuery := `SELECT id, teamname FROM ctf_teams WHERE ctf_id = $1`
+		teams, err := s.db.QueryContext(ctx, teamQuery, ctf.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -656,7 +1050,8 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 				return nil, err
 			}
 			// Get unique challenge_ids solved by any member of the team
-			rows, err := s.db.QueryContext(ctx, `SELECT DISTINCT challenge_id FROM ctf_solves WHERE ctf_id = $1 AND team_id = $2`, ctf.ID, teamID)
+			solveQuery := `SELECT DISTINCT challenge_id FROM ctf_solves WHERE ctf_id = $1 AND team_id = $2`
+			rows, err := s.db.QueryContext(ctx, solveQuery, ctf.ID, teamID)
 			if err != nil {
 				return nil, err
 			}
@@ -675,7 +1070,8 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 			for _, challID := range challengeIDs {
 				// Get the first solver for this challenge in this team
 				var solver string
-				err := s.db.QueryRowContext(ctx, `SELECT u.username FROM ctf_solves s INNER JOIN ctf_users u ON u.id = s.user_id WHERE s.ctf_id = $1 AND s.team_id = $2 AND s.challenge_id = $3 ORDER BY s.created_at ASC LIMIT 1`, ctf.ID, teamID, challID).Scan(&solver)
+				solverQuery := `SELECT u.username FROM ctf_solves s INNER JOIN ctf_users u ON u.id = s.user_id WHERE s.ctf_id = $1 AND s.team_id = $2 AND s.challenge_id = $3 ORDER BY s.created_at ASC LIMIT 1`
+				err = s.db.QueryRowContext(ctx, solverQuery, ctf.ID, teamID, challID).Scan(&solver)
 				if err != nil {
 					return nil, err
 				}
@@ -707,7 +1103,7 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 		return scores, nil
 	} else {
 		// Individual scoreboard
-		rows, err := s.db.QueryContext(ctx, `
+		scoreboardQuery := `
 			SELECT u.id, u.username, COALESCE(SUM(COALESCE(cc.custom_score, ch.static_score)), 0) as score,
 				MAX(s.created_at) as last_solve
 			FROM ctf_users u
@@ -722,7 +1118,8 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 			WHERE u.ctf_id = $1
 			GROUP BY u.id, u.username
 			ORDER BY score DESC, last_solve ASC NULLS LAST, u.username ASC
-		`, ctf.ID)
+		`
+		rows, err := s.db.QueryContext(ctx, scoreboardQuery, ctf.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -736,12 +1133,12 @@ func (s *Service) Scoreboard(ctx context.Context, req *spec.ScoreboardPayload) (
 			if err := rows.Scan(&userID, &username, &score, &lastSolve); err != nil {
 				return nil, err
 			}
-			solvesRows, err := s.db.QueryContext(ctx, `
+			solvesQuery := `
 				SELECT DISTINCT s.challenge_id
 				FROM ctf_solves s
 				INNER JOIN ctf_users u ON u.id = s.user_id
-				WHERE s.ctf_id = $1 AND u.username = $2
-			`, ctf.ID, username)
+				WHERE s.ctf_id = $1 AND u.username = $2`
+			solvesRows, err := s.db.QueryContext(ctx, solvesQuery, ctf.ID, username)
 			if err != nil {
 				return nil, err
 			}

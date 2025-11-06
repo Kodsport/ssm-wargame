@@ -270,6 +270,8 @@ var CTF = Type("CTF", func() {
 	Attribute("theme", String, "The theme CSS filename for the CTF", func() {
 		Example("ctf-theme")
 	})
+	Attribute("scoreboard_freeze_start", String, "Scoreboard freeze start time")
+	Attribute("scoreboard_freeze_end", String, "Scoreboard freeze end time")
 	Required("id", "name", "description", "slug", "start_time", "end_time", "challenges", "team_based")
 })
 
@@ -286,6 +288,8 @@ var CTFInfo = Type("CTFInfo", func() {
 	Attribute("theme", String, "The theme CSS filename for the CTF", func() {
 		Example("ctf-theme")
 	})
+	Attribute("scoreboard_freeze_start", String, "Scoreboard freeze start time")
+	Attribute("scoreboard_freeze_end", String, "Scoreboard freeze end time")
 	Required("id", "name", "description", "slug", "start_time", "end_time", "challenge_ids", "team_based")
 })
 
@@ -364,6 +368,8 @@ var CTFCreate = Type("CTFCreate", func() {
 	Attribute("password", String, "CTF password", func() { Example("password") })
 	Attribute("team_based", Boolean, "Is the CTF team-based?", func() { Example(false) })
 	Attribute("theme", String, "The theme CSS filename for the CTF", func() { Example("ctf-theme") })
+	Attribute("scoreboard_freeze_start", Int64, "Scoreboard freeze start time")
+	Attribute("scoreboard_freeze_end", Int64, "Scoreboard freeze end time")
 	Required("name", "description", "start_time", "end_time", "slug", "challenges", "team_based")
 })
 
@@ -385,6 +391,8 @@ var CTFUpdate = Type("CTFUpdate", func() {
 	Attribute("password", String, "CTF password", func() { Example("password") })
 	Attribute("team_based", Boolean, "Is the CTF team-based?", func() { Example(false) })
 	Attribute("theme", String, "The theme CSS filename for the CTF", func() { Example("ctf-theme") })
+	Attribute("scoreboard_freeze_start", Int64, "Scoreboard freeze start time")
+	Attribute("scoreboard_freeze_end", Int64, "Scoreboard freeze end time")
 	Required("name", "description", "start_time", "end_time", "slug", "challenges")
 })
 

@@ -373,6 +373,19 @@ var _ = Service("admin", func() {
 			Response(StatusOK)
 		})
 	})
+	Method("AdminScoreboard", func() {
+		Description("Visa scoreboard som bypassar freeze")
+		Payload(func() {
+			Extend(TokenPayload)
+			Attribute("slug", String, "CTF slug")
+			Required("slug")
+		})
+		Result(ArrayOf(CTFScore))
+		HTTP(func() {
+			GET("/ctfs/{slug}/scoreboard")
+			Response(StatusOK)
+		})
+	})
 	Method("CreateChallengeGroup", func() {
 		Payload(func() {
 			Extend(TokenPayload)

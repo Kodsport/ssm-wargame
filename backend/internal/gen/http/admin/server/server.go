@@ -48,6 +48,7 @@ type Server struct {
 	UpdateCTF                 http.Handler
 	DeleteCTF                 http.Handler
 	ListCTFs                  http.Handler
+	AdminScoreboard           http.Handler
 	CreateChallengeGroup      http.Handler
 	UpdateChallengeGroup      http.Handler
 	DeleteChallengeGroup      http.Handler
@@ -125,6 +126,7 @@ func New(
 			{"UpdateCTF", "PUT", "/admin/ctfs/{id}"},
 			{"DeleteCTF", "DELETE", "/admin/ctfs/{id}"},
 			{"ListCTFs", "GET", "/admin/ctfs"},
+			{"AdminScoreboard", "GET", "/admin/ctfs/{slug}/scoreboard"},
 			{"CreateChallengeGroup", "POST", "/admin/challenge_groups"},
 			{"UpdateChallengeGroup", "PUT", "/admin/challenge_groups/{id}"},
 			{"DeleteChallengeGroup", "DELETE", "/admin/challenge_groups/{id}"},
@@ -168,6 +170,7 @@ func New(
 		UpdateCTF:                 NewUpdateCTFHandler(e.UpdateCTF, mux, decoder, encoder, errhandler, formatter),
 		DeleteCTF:                 NewDeleteCTFHandler(e.DeleteCTF, mux, decoder, encoder, errhandler, formatter),
 		ListCTFs:                  NewListCTFsHandler(e.ListCTFs, mux, decoder, encoder, errhandler, formatter),
+		AdminScoreboard:           NewAdminScoreboardHandler(e.AdminScoreboard, mux, decoder, encoder, errhandler, formatter),
 		CreateChallengeGroup:      NewCreateChallengeGroupHandler(e.CreateChallengeGroup, mux, decoder, encoder, errhandler, formatter),
 		UpdateChallengeGroup:      NewUpdateChallengeGroupHandler(e.UpdateChallengeGroup, mux, decoder, encoder, errhandler, formatter),
 		DeleteChallengeGroup:      NewDeleteChallengeGroupHandler(e.DeleteChallengeGroup, mux, decoder, encoder, errhandler, formatter),
@@ -218,6 +221,7 @@ func (s *Server) Use(m func(http.Handler) http.Handler) {
 	s.UpdateCTF = m(s.UpdateCTF)
 	s.DeleteCTF = m(s.DeleteCTF)
 	s.ListCTFs = m(s.ListCTFs)
+	s.AdminScoreboard = m(s.AdminScoreboard)
 	s.CreateChallengeGroup = m(s.CreateChallengeGroup)
 	s.UpdateChallengeGroup = m(s.UpdateChallengeGroup)
 	s.DeleteChallengeGroup = m(s.DeleteChallengeGroup)
@@ -264,6 +268,7 @@ func Mount(mux goahttp.Muxer, h *Server) {
 	MountUpdateCTFHandler(mux, h.UpdateCTF)
 	MountDeleteCTFHandler(mux, h.DeleteCTF)
 	MountListCTFsHandler(mux, h.ListCTFs)
+	MountAdminScoreboardHandler(mux, h.AdminScoreboard)
 	MountCreateChallengeGroupHandler(mux, h.CreateChallengeGroup)
 	MountUpdateChallengeGroupHandler(mux, h.UpdateChallengeGroup)
 	MountDeleteChallengeGroupHandler(mux, h.DeleteChallengeGroup)
@@ -1738,6 +1743,57 @@ func NewListCTFsHandler(
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
 		ctx = context.WithValue(ctx, goa.MethodKey, "ListCTFs")
+		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
+		payload, err := decodeRequest(r)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		res, err := endpoint(ctx, payload)
+		if err != nil {
+			if err := encodeError(ctx, w, err); err != nil {
+				errhandler(ctx, w, err)
+			}
+			return
+		}
+		if err := encodeResponse(ctx, w, res); err != nil {
+			errhandler(ctx, w, err)
+		}
+	})
+}
+
+// MountAdminScoreboardHandler configures the mux to serve the "admin" service
+// "AdminScoreboard" endpoint.
+func MountAdminScoreboardHandler(mux goahttp.Muxer, h http.Handler) {
+	f, ok := h.(http.HandlerFunc)
+	if !ok {
+		f = func(w http.ResponseWriter, r *http.Request) {
+			h.ServeHTTP(w, r)
+		}
+	}
+	mux.Handle("GET", "/admin/ctfs/{slug}/scoreboard", f)
+}
+
+// NewAdminScoreboardHandler creates a HTTP handler which loads the HTTP
+// request and calls the "admin" service "AdminScoreboard" endpoint.
+func NewAdminScoreboardHandler(
+	endpoint goa.Endpoint,
+	mux goahttp.Muxer,
+	decoder func(*http.Request) goahttp.Decoder,
+	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
+	errhandler func(context.Context, http.ResponseWriter, error),
+	formatter func(err error) goahttp.Statuser,
+) http.Handler {
+	var (
+		decodeRequest  = DecodeAdminScoreboardRequest(mux, decoder)
+		encodeResponse = EncodeAdminScoreboardResponse(encoder)
+		encodeError    = EncodeAdminScoreboardError(encoder, formatter)
+	)
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
+		ctx = context.WithValue(ctx, goa.MethodKey, "AdminScoreboard")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "admin")
 		payload, err := decodeRequest(r)
 		if err != nil {

@@ -161,6 +161,10 @@ type CreateCTFRequestBody struct {
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *int64 `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *int64 `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // UpdateCTFRequestBody is the type of the "admin" service "UpdateCTF" endpoint
@@ -186,6 +190,10 @@ type UpdateCTFRequestBody struct {
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *int64 `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *int64 `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // CreateChallengeGroupRequestBody is the type of the "admin" service
@@ -304,6 +312,10 @@ type CreateCTFResponseBody struct {
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // UpdateCTFResponseBody is the type of the "admin" service "UpdateCTF"
@@ -321,11 +333,19 @@ type UpdateCTFResponseBody struct {
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // ListCTFsResponseBody is the type of the "admin" service "ListCTFs" endpoint
 // HTTP response body.
 type ListCTFsResponseBody []*CTFResponse
+
+// AdminScoreboardResponseBody is the type of the "admin" service
+// "AdminScoreboard" endpoint HTTP response body.
+type AdminScoreboardResponseBody []*CTFScoreResponse
 
 // CreateChallengeGroupResponseBody is the type of the "admin" service
 // "CreateChallengeGroup" endpoint HTTP response body.
@@ -1994,6 +2014,60 @@ type ListCTFsBadRequestResponseBody struct {
 	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
 }
 
+// AdminScoreboardUnauthorizedResponseBody is the type of the "admin" service
+// "AdminScoreboard" endpoint HTTP response body for the "unauthorized" error.
+type AdminScoreboardUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// AdminScoreboardNotFoundResponseBody is the type of the "admin" service
+// "AdminScoreboard" endpoint HTTP response body for the "not_found" error.
+type AdminScoreboardNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
+// AdminScoreboardBadRequestResponseBody is the type of the "admin" service
+// "AdminScoreboard" endpoint HTTP response body for the "bad_request" error.
+type AdminScoreboardBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID *string `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message *string `form:"message,omitempty" json:"message,omitempty" xml:"message,omitempty"`
+	// Is the error temporary?
+	Temporary *bool `form:"temporary,omitempty" json:"temporary,omitempty" xml:"temporary,omitempty"`
+	// Is the error a timeout?
+	Timeout *bool `form:"timeout,omitempty" json:"timeout,omitempty" xml:"timeout,omitempty"`
+	// Is the error a server-side fault?
+	Fault *bool `form:"fault,omitempty" json:"fault,omitempty" xml:"fault,omitempty"`
+}
+
 // CreateChallengeGroupUnauthorizedResponseBody is the type of the "admin"
 // service "CreateChallengeGroup" endpoint HTTP response body for the
 // "unauthorized" error.
@@ -2887,6 +2961,10 @@ type CTFResponse struct {
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // CTFChallengeResponse is used to define fields on response body types.
@@ -2897,6 +2975,18 @@ type CTFChallengeResponse struct {
 	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
 	// Challenge display order
 	DisplayOrder *int `form:"display_order,omitempty" json:"display_order,omitempty" xml:"display_order,omitempty"`
+}
+
+// CTFScoreResponse is used to define fields on response body types.
+type CTFScoreResponse struct {
+	ID       *string  `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Username *string  `form:"username,omitempty" json:"username,omitempty" xml:"username,omitempty"`
+	Score    *int64   `form:"score,omitempty" json:"score,omitempty" xml:"score,omitempty"`
+	Solves   []string `form:"solves,omitempty" json:"solves,omitempty" xml:"solves,omitempty"`
+	// Optional team ID for team-based CTFs
+	TeamID *string `form:"team_id,omitempty" json:"team_id,omitempty" xml:"team_id,omitempty"`
+	// Optional team name for team-based CTFs
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
 }
 
 // ChallengeGroupResponse is used to define fields on response body types.
@@ -3156,15 +3246,17 @@ func NewUpdateCourseRequestBody(p *admin.UpdateCoursePayload) *UpdateCourseReque
 // "CreateCTF" endpoint of the "admin" service.
 func NewCreateCTFRequestBody(p *admin.CreateCTFPayload) *CreateCTFRequestBody {
 	body := &CreateCTFRequestBody{
-		Name:        p.Name,
-		Description: p.Description,
-		StartTime:   p.StartTime,
-		EndTime:     p.EndTime,
-		Slug:        p.Slug,
-		Private:     p.Private,
-		Password:    p.Password,
-		TeamBased:   p.TeamBased,
-		Theme:       p.Theme,
+		Name:                  p.Name,
+		Description:           p.Description,
+		StartTime:             p.StartTime,
+		EndTime:               p.EndTime,
+		Slug:                  p.Slug,
+		Private:               p.Private,
+		Password:              p.Password,
+		TeamBased:             p.TeamBased,
+		Theme:                 p.Theme,
+		ScoreboardFreezeStart: p.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   p.ScoreboardFreezeEnd,
 	}
 	if p.Challenges != nil {
 		body.Challenges = make([]*CTFChallengeRequestBody, len(p.Challenges))
@@ -3179,15 +3271,17 @@ func NewCreateCTFRequestBody(p *admin.CreateCTFPayload) *CreateCTFRequestBody {
 // "UpdateCTF" endpoint of the "admin" service.
 func NewUpdateCTFRequestBody(p *admin.UpdateCTFPayload) *UpdateCTFRequestBody {
 	body := &UpdateCTFRequestBody{
-		Name:        p.Name,
-		Description: p.Description,
-		StartTime:   p.StartTime,
-		EndTime:     p.EndTime,
-		Slug:        p.Slug,
-		Private:     p.Private,
-		Password:    p.Password,
-		TeamBased:   p.TeamBased,
-		Theme:       p.Theme,
+		Name:                  p.Name,
+		Description:           p.Description,
+		StartTime:             p.StartTime,
+		EndTime:               p.EndTime,
+		Slug:                  p.Slug,
+		Private:               p.Private,
+		Password:              p.Password,
+		TeamBased:             p.TeamBased,
+		Theme:                 p.Theme,
+		ScoreboardFreezeStart: p.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   p.ScoreboardFreezeEnd,
 	}
 	if p.Challenges != nil {
 		body.Challenges = make([]*CTFChallengeRequestBody, len(p.Challenges))
@@ -4521,14 +4615,16 @@ func NewUpdateCourseBadRequest(body *UpdateCourseBadRequestResponseBody) *goa.Se
 // from a HTTP "Created" response.
 func NewCreateCTFCTFCreated(body *CreateCTFResponseBody) *admin.CTF {
 	v := &admin.CTF{
-		ID:          *body.ID,
-		Name:        *body.Name,
-		Description: *body.Description,
-		StartTime:   *body.StartTime,
-		EndTime:     *body.EndTime,
-		Slug:        *body.Slug,
-		TeamBased:   *body.TeamBased,
-		Theme:       body.Theme,
+		ID:                    *body.ID,
+		Name:                  *body.Name,
+		Description:           *body.Description,
+		StartTime:             *body.StartTime,
+		EndTime:               *body.EndTime,
+		Slug:                  *body.Slug,
+		TeamBased:             *body.TeamBased,
+		Theme:                 body.Theme,
+		ScoreboardFreezeStart: body.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   body.ScoreboardFreezeEnd,
 	}
 	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
 	for i, val := range body.Challenges {
@@ -4587,14 +4683,16 @@ func NewCreateCTFBadRequest(body *CreateCTFBadRequestResponseBody) *goa.ServiceE
 // a HTTP "OK" response.
 func NewUpdateCTFCTFOK(body *UpdateCTFResponseBody) *admin.CTF {
 	v := &admin.CTF{
-		ID:          *body.ID,
-		Name:        *body.Name,
-		Description: *body.Description,
-		StartTime:   *body.StartTime,
-		EndTime:     *body.EndTime,
-		Slug:        *body.Slug,
-		TeamBased:   *body.TeamBased,
-		Theme:       body.Theme,
+		ID:                    *body.ID,
+		Name:                  *body.Name,
+		Description:           *body.Description,
+		StartTime:             *body.StartTime,
+		EndTime:               *body.EndTime,
+		Slug:                  *body.Slug,
+		TeamBased:             *body.TeamBased,
+		Theme:                 body.Theme,
+		ScoreboardFreezeStart: body.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   body.ScoreboardFreezeEnd,
 	}
 	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
 	for i, val := range body.Challenges {
@@ -4737,6 +4835,62 @@ func NewListCTFsNotFound(body *ListCTFsNotFoundResponseBody) *goa.ServiceError {
 // NewListCTFsBadRequest builds a admin service ListCTFs endpoint bad_request
 // error.
 func NewListCTFsBadRequest(body *ListCTFsBadRequestResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewAdminScoreboardCTFScoreOK builds a "admin" service "AdminScoreboard"
+// endpoint result from a HTTP "OK" response.
+func NewAdminScoreboardCTFScoreOK(body []*CTFScoreResponse) []*admin.CTFScore {
+	v := make([]*admin.CTFScore, len(body))
+	for i, val := range body {
+		v[i] = unmarshalCTFScoreResponseToAdminCTFScore(val)
+	}
+
+	return v
+}
+
+// NewAdminScoreboardUnauthorized builds a admin service AdminScoreboard
+// endpoint unauthorized error.
+func NewAdminScoreboardUnauthorized(body *AdminScoreboardUnauthorizedResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewAdminScoreboardNotFound builds a admin service AdminScoreboard endpoint
+// not_found error.
+func NewAdminScoreboardNotFound(body *AdminScoreboardNotFoundResponseBody) *goa.ServiceError {
+	v := &goa.ServiceError{
+		Name:      *body.Name,
+		ID:        *body.ID,
+		Message:   *body.Message,
+		Temporary: *body.Temporary,
+		Timeout:   *body.Timeout,
+		Fault:     *body.Fault,
+	}
+
+	return v
+}
+
+// NewAdminScoreboardBadRequest builds a admin service AdminScoreboard endpoint
+// bad_request error.
+func NewAdminScoreboardBadRequest(body *AdminScoreboardBadRequestResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
 		Name:      *body.Name,
 		ID:        *body.ID,
@@ -7779,6 +7933,78 @@ func ValidateListCTFsBadRequestResponseBody(body *ListCTFsBadRequestResponseBody
 	return
 }
 
+// ValidateAdminScoreboardUnauthorizedResponseBody runs the validations defined
+// on AdminScoreboard_unauthorized_Response_Body
+func ValidateAdminScoreboardUnauthorizedResponseBody(body *AdminScoreboardUnauthorizedResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateAdminScoreboardNotFoundResponseBody runs the validations defined on
+// AdminScoreboard_not_found_Response_Body
+func ValidateAdminScoreboardNotFoundResponseBody(body *AdminScoreboardNotFoundResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
+// ValidateAdminScoreboardBadRequestResponseBody runs the validations defined
+// on AdminScoreboard_bad_request_Response_Body
+func ValidateAdminScoreboardBadRequestResponseBody(body *AdminScoreboardBadRequestResponseBody) (err error) {
+	if body.Name == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("name", "body"))
+	}
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Message == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("message", "body"))
+	}
+	if body.Temporary == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("temporary", "body"))
+	}
+	if body.Timeout == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("timeout", "body"))
+	}
+	if body.Fault == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("fault", "body"))
+	}
+	return
+}
+
 // ValidateCreateChallengeGroupUnauthorizedResponseBody runs the validations
 // defined on CreateChallengeGroup_unauthorized_Response_Body
 func ValidateCreateChallengeGroupUnauthorizedResponseBody(body *CreateChallengeGroupUnauthorizedResponseBody) (err error) {
@@ -9040,6 +9266,23 @@ func ValidateCTFChallengeResponse(body *CTFChallengeResponse) (err error) {
 	}
 	if body.DisplayOrder == nil {
 		err = goa.MergeErrors(err, goa.MissingFieldError("display_order", "body"))
+	}
+	return
+}
+
+// ValidateCTFScoreResponse runs the validations defined on CTFScoreResponse
+func ValidateCTFScoreResponse(body *CTFScoreResponse) (err error) {
+	if body.ID == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("id", "body"))
+	}
+	if body.Username == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("username", "body"))
+	}
+	if body.Score == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("score", "body"))
+	}
+	if body.Solves == nil {
+		err = goa.MergeErrors(err, goa.MissingFieldError("solves", "body"))
 	}
 	return
 }
