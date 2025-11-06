@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useCTFStore } from "~/store/ctf";
-import * as moment from "moment";
+import moment from "moment";
 
 const ctfStore = useCTFStore();
 

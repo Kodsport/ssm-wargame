@@ -53,7 +53,7 @@ const challSlug = route.params.challslug as string;
 const data = await http(`/ctfs/${slug}/user/${userId}/solves`);
 const username = ref(data.username);
 const solves = ref<Array<{ challenge_id: string; solved_at: number }>>(
-  data.solves
+  data.solves || []
 );
 
 const chall = computed(() => {
