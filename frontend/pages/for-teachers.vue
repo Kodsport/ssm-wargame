@@ -7,7 +7,7 @@
     </p>
     <h1 class="text-primary">Föreläsningar för gymnasiet!</h1>
     <p>
-        Vi kommer gärna och föreläser för era studenter! Vi förklarar hur man hackar, vad cybersoldater lär sig och hur man kommer in i svenska hackinglandslaget! Kontakta sakerhetssm@kodsport.se för att boka! 
+        Vi kommer gärna och föreläser för era studenter! Vi förklarar hur man hackar och hur man kommer in i svenska hackinglandslaget! Kontakta sakerhetssm@kodsport.se för att boka! 
     </p>
 
 </template>
