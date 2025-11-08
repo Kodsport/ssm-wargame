@@ -25,7 +25,7 @@
                         </li>
                         <li>
                             <span class="material-symbols-outlined">emoji_events</span>
-                            Final i Stockholm <b>19-22 februari 2026</b>
+                            Final i Stockholm <b>12-15 mars 2026</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">azm</span>
@@ -35,7 +35,7 @@
                 </div>
                 <p>
                     Registrera dig på tävlingsplatformen för att delta!
-                    <a class="btn btn-primary" href="https://ctf.sakerhetssm.se/signin">Till tävlingsplatformen</a>
+                    <a class="btn btn-primary" href="https://ctf.sakerhetssm.se/">Till tävlingsplatformen</a>
                 </p>
                 <p>
                     Joina gärna
