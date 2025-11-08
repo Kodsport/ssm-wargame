@@ -21,7 +21,7 @@
                         </li>
                         <li>
                             <span class="material-symbols-outlined">swords</span>
-                            Kval online <b>24-25 januari 2026</b>
+                            Kval online <b>23-25 januari 2026</b>
                         </li>
                         <li>
                             <span class="material-symbols-outlined">emoji_events</span>
