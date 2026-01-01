@@ -219,11 +219,14 @@ func (s *service) sendDiscordWebhook(userName, discordID, monthlyName string, us
 	}
 
 	var mention string
+	mention = userName // discord privacy smh
+	/*
 	if userInDiscord && discordID != "" {
 		mention = fmt.Sprintf("<@%s>", discordID)
 	} else {
 		mention = userName
 	}
+		*/
 
 	var title, description string
 	var color int
@@ -240,7 +243,7 @@ func (s *service) sendDiscordWebhook(userName, discordID, monthlyName string, us
 		if rand.Intn(10) == 0 {
 			title = ":wolf: Ny Månadslösning!" // :P
 		}
-		description = fmt.Sprintf("Bra jobbat %s som löst **%s**!", mention, monthlyName)
+		description = fmt.Sprintf("Grattis till **%s** som löst **%s**!", mention, monthlyName)
 		color = 0x002c36
 	}
 
