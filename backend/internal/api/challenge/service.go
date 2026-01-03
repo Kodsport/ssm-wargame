@@ -20,18 +20,48 @@ import (
 
 type service struct {
 	spec.Auther
-	db  *sql.DB
-	log *zap.Logger
-	s3  *s3.S3
+	db   *sql.DB
+	log  *zap.Logger
+	s3   *s3.S3
 }
 
 func NewService(conn *sql.DB, log *zap.Logger, auther spec.Auther, s3c *s3.S3) spec.Service {
-	return &service{
+	svc := &service{
 		Auther: auther,
 		db:     conn,
 		log:    log,
 		s3:     s3c,
 	}
+	ticker := time.NewTicker(10 * time.Minute)
+	go func() {
+		for range ticker.C {
+			ctx := context.Background()
+			currentMonthly, err := models.MonthlyChallenges(qm.Where("start_date <= ? AND end_date > ?", time.Now(), time.Now())).One(ctx, svc.db)
+			if err != nil {
+				if !errors.Is(err, sql.ErrNoRows) {
+					svc.log.Error("failed to get current monthly challenge", zap.Error(err))
+				}
+				continue
+			}
+
+			lastMonthly, err := models.MonthlyChallenges(
+				models.MonthlyChallengeWhere.EndDate.LT(currentMonthly.StartDate),
+				qm.OrderBy("end_date DESC"),
+			).One(ctx, svc.db)
+			if err != nil {
+				if !errors.Is(err, sql.ErrNoRows) {
+					svc.log.Error("failed to get last monthly challenge", zap.Error(err))
+				}
+				continue
+			}
+
+			if err := svc.ClearMonthlyRolesForPrevious(ctx, lastMonthly.ChallengeID, currentMonthly.ChallengeID); err != nil {
+				svc.log.Error("failed to clear monthly roles for previous", zap.Error(err), zap.String("previous_challenge_id", lastMonthly.ChallengeID), zap.String("current_challenge_id", currentMonthly.ChallengeID))
+			}
+		}
+	}()
+
+	return svc
 }
 
 func (s *service) GetCurrentMonthlyChallenge(ctx context.Context, req *spec.GetCurrentMonthlyChallengePayload) (*spec.SsmUserMonthlyChallenge, error) {

@@ -113,12 +113,23 @@ func (s *service) SubmitFlag(ctx context.Context, req *spec.SubmitFlagPayload) e
 				return err
 			}
 		}
-	}
+		
+		err = tx.Commit()
+		if err != nil {
+			s.log.Error("could not commit", zap.Error(err), utils.C(ctx))
+			return err
+		}
 
-	err = tx.Commit()
-	if err != nil {
-		s.log.Error("could not commit", zap.Error(err), utils.C(ctx))
-		return err
+		err = s.HandleMonthlySolve(ctx, user, challID)
+		if err != nil {
+			s.log.Error("failed to handle monthly solve", zap.Error(err), utils.C(ctx))
+		}
+	} else {
+		err = tx.Commit()
+		if err != nil {
+			s.log.Error("kunde inte commita", zap.Error(err), utils.C(ctx))
+			return err
+		}
 	}
 
 	if !flagCorrect {
