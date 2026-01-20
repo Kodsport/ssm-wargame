@@ -1,7 +1,32 @@
 <template>
   <div class="container">
     <div>
-      <div v-if="monthly.status.value == 'success'">
+        <div>
+          <h2 class="text-primary ">Vad är månadens problem?</h2>
+        </div>
+        <div class="bg-dark rounded col pt-md-0 mb-4">
+          <div class="pt-md-2 d-flex justify-content-between bg-body-hover pointer-cursor rounded p-4">
+            <div class="rounded p-3 d-flex justify-content-center align-items-start" style="width:48%;">
+              <div>
+                <h4 class="text-primary mb-1 text-center">Beskrivning</h4>
+                <p class="text-white">Månadens problem är en utmaning i varierande svårighetsgrad skapad av medlemmar i CTF-gemenskapen.</p>
+                <p class="text-white">Den första varje månad 16:00 publiceras månadens utmaning. Pris ges ut till den första lösaren och en slumpmässig vald lösare i slutet av månaden.</p>
+                <p class="text-white">Som lösare får du en speciell roll på <a :href="discordUrl" target="_blank">Kodsports Discordserver</a>. Rollen är enbart aktiv under månaden.</p>
+              </div>
+            </div>
+
+            <div class="rounded p-3 d-flex justify-content-center align-items-start" style="width:48%;">
+              <div>
+                <h4 class="text-primary mb-1 text-center">Regler</h4>
+                <p class="text-white">För att vara behörig till pris behöver lösaren vara i grund eller gymnasieålder.</p>
+                <p class="test-white">Det går inte att vinna mer än ett pris under samma månad.</p>
+                <p class="text-white">Vill du vara med och skapa nästa månadens utmaning? Kontakta då Allan (<a :href="monthlyOrg" target="_blank">@alanoo079</a> på Discord) så kokar vi ihop något roligt!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="monthly.status.value == 'success'">
         <h1 class="text-primary">
           Månadens utmaning - {{ monthly.data.value.display_month }}
         </h1>
@@ -47,10 +72,6 @@
           />
         </div>
       </div>
-      <p class="mt-4">
-        Om du vill hjälpa till och skapa nästa månadens utmaning, kontakta
-        Movitz (@mvtz på discord)!
-      </p>
     </div>
   </div>
 </template>
@@ -60,6 +81,9 @@ import { useAuthStore } from "../store/auth";
 
 const http = useHttp();
 const auth = useAuthStore();
+
+const discordUrl = 'https://discord.gg/edKFKKU'
+const monthlyOrg = 'https://discord.com/users/468779292705161216'
 
 const monthly = await useAsyncData("monthly", () =>
   http("/current_monthly_challenge")

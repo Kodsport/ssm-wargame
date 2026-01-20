@@ -161,6 +161,10 @@ type CreateCTFRequestBody struct {
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *int64 `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *int64 `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // UpdateCTFRequestBody is the type of the "admin" service "UpdateCTF" endpoint
@@ -186,6 +190,10 @@ type UpdateCTFRequestBody struct {
 	TeamBased *bool `form:"team_based,omitempty" json:"team_based,omitempty" xml:"team_based,omitempty"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *int64 `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *int64 `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // CreateChallengeGroupRequestBody is the type of the "admin" service
@@ -304,6 +312,10 @@ type CreateCTFResponseBody struct {
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // UpdateCTFResponseBody is the type of the "admin" service "UpdateCTF"
@@ -321,11 +333,19 @@ type UpdateCTFResponseBody struct {
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // ListCTFsResponseBody is the type of the "admin" service "ListCTFs" endpoint
 // HTTP response body.
 type ListCTFsResponseBody []*CTFResponse
+
+// AdminScoreboardResponseBody is the type of the "admin" service
+// "AdminScoreboard" endpoint HTTP response body.
+type AdminScoreboardResponseBody []*CTFScoreResponse
 
 // CreateChallengeGroupResponseBody is the type of the "admin" service
 // "CreateChallengeGroup" endpoint HTTP response body.
@@ -1988,6 +2008,60 @@ type ListCTFsBadRequestResponseBody struct {
 	Fault bool `form:"fault" json:"fault" xml:"fault"`
 }
 
+// AdminScoreboardUnauthorizedResponseBody is the type of the "admin" service
+// "AdminScoreboard" endpoint HTTP response body for the "unauthorized" error.
+type AdminScoreboardUnauthorizedResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminScoreboardNotFoundResponseBody is the type of the "admin" service
+// "AdminScoreboard" endpoint HTTP response body for the "not_found" error.
+type AdminScoreboardNotFoundResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// AdminScoreboardBadRequestResponseBody is the type of the "admin" service
+// "AdminScoreboard" endpoint HTTP response body for the "bad_request" error.
+type AdminScoreboardBadRequestResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // CreateChallengeGroupUnauthorizedResponseBody is the type of the "admin"
 // service "CreateChallengeGroup" endpoint HTTP response body for the
 // "unauthorized" error.
@@ -2845,6 +2919,10 @@ type CTFResponse struct {
 	TeamBased bool `form:"team_based" json:"team_based" xml:"team_based"`
 	// The theme CSS filename for the CTF
 	Theme *string `form:"theme,omitempty" json:"theme,omitempty" xml:"theme,omitempty"`
+	// Scoreboard freeze start time
+	ScoreboardFreezeStart *string `form:"scoreboard_freeze_start,omitempty" json:"scoreboard_freeze_start,omitempty" xml:"scoreboard_freeze_start,omitempty"`
+	// Scoreboard freeze end time
+	ScoreboardFreezeEnd *string `form:"scoreboard_freeze_end,omitempty" json:"scoreboard_freeze_end,omitempty" xml:"scoreboard_freeze_end,omitempty"`
 }
 
 // CTFChallengeResponse is used to define fields on response body types.
@@ -2855,6 +2933,18 @@ type CTFChallengeResponse struct {
 	CustomScore *int `form:"custom_score,omitempty" json:"custom_score,omitempty" xml:"custom_score,omitempty"`
 	// Challenge display order
 	DisplayOrder int `form:"display_order" json:"display_order" xml:"display_order"`
+}
+
+// CTFScoreResponse is used to define fields on response body types.
+type CTFScoreResponse struct {
+	ID       string   `form:"id" json:"id" xml:"id"`
+	Username string   `form:"username" json:"username" xml:"username"`
+	Score    int64    `form:"score" json:"score" xml:"score"`
+	Solves   []string `form:"solves" json:"solves" xml:"solves"`
+	// Optional team ID for team-based CTFs
+	TeamID *string `form:"team_id,omitempty" json:"team_id,omitempty" xml:"team_id,omitempty"`
+	// Optional team name for team-based CTFs
+	Teamname *string `form:"teamname,omitempty" json:"teamname,omitempty" xml:"teamname,omitempty"`
 }
 
 // ChallengeGroupResponse is used to define fields on response body types.
@@ -3078,14 +3168,16 @@ func NewSsmAdminCourseResponseCollection(res adminviews.SsmAdminCourseCollection
 // the "CreateCTF" endpoint of the "admin" service.
 func NewCreateCTFResponseBody(res *admin.CTF) *CreateCTFResponseBody {
 	body := &CreateCTFResponseBody{
-		ID:          res.ID,
-		Name:        res.Name,
-		Description: res.Description,
-		StartTime:   res.StartTime,
-		EndTime:     res.EndTime,
-		Slug:        res.Slug,
-		TeamBased:   res.TeamBased,
-		Theme:       res.Theme,
+		ID:                    res.ID,
+		Name:                  res.Name,
+		Description:           res.Description,
+		StartTime:             res.StartTime,
+		EndTime:               res.EndTime,
+		Slug:                  res.Slug,
+		TeamBased:             res.TeamBased,
+		Theme:                 res.Theme,
+		ScoreboardFreezeStart: res.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   res.ScoreboardFreezeEnd,
 	}
 	if res.Challenges != nil {
 		body.Challenges = make([]*CTFChallengeResponseBody, len(res.Challenges))
@@ -3100,14 +3192,16 @@ func NewCreateCTFResponseBody(res *admin.CTF) *CreateCTFResponseBody {
 // the "UpdateCTF" endpoint of the "admin" service.
 func NewUpdateCTFResponseBody(res *admin.CTF) *UpdateCTFResponseBody {
 	body := &UpdateCTFResponseBody{
-		ID:          res.ID,
-		Name:        res.Name,
-		Description: res.Description,
-		StartTime:   res.StartTime,
-		EndTime:     res.EndTime,
-		Slug:        res.Slug,
-		TeamBased:   res.TeamBased,
-		Theme:       res.Theme,
+		ID:                    res.ID,
+		Name:                  res.Name,
+		Description:           res.Description,
+		StartTime:             res.StartTime,
+		EndTime:               res.EndTime,
+		Slug:                  res.Slug,
+		TeamBased:             res.TeamBased,
+		Theme:                 res.Theme,
+		ScoreboardFreezeStart: res.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   res.ScoreboardFreezeEnd,
 	}
 	if res.Challenges != nil {
 		body.Challenges = make([]*CTFChallengeResponseBody, len(res.Challenges))
@@ -3124,6 +3218,16 @@ func NewListCTFsResponseBody(res []*admin.CTF) ListCTFsResponseBody {
 	body := make([]*CTFResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalAdminCTFToCTFResponse(val)
+	}
+	return body
+}
+
+// NewAdminScoreboardResponseBody builds the HTTP response body from the result
+// of the "AdminScoreboard" endpoint of the "admin" service.
+func NewAdminScoreboardResponseBody(res []*admin.CTFScore) AdminScoreboardResponseBody {
+	body := make([]*CTFScoreResponse, len(res))
+	for i, val := range res {
+		body[i] = marshalAdminCTFScoreToCTFScoreResponse(val)
 	}
 	return body
 }
@@ -4490,6 +4594,48 @@ func NewListCTFsBadRequestResponseBody(res *goa.ServiceError) *ListCTFsBadReques
 	return body
 }
 
+// NewAdminScoreboardUnauthorizedResponseBody builds the HTTP response body
+// from the result of the "AdminScoreboard" endpoint of the "admin" service.
+func NewAdminScoreboardUnauthorizedResponseBody(res *goa.ServiceError) *AdminScoreboardUnauthorizedResponseBody {
+	body := &AdminScoreboardUnauthorizedResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminScoreboardNotFoundResponseBody builds the HTTP response body from
+// the result of the "AdminScoreboard" endpoint of the "admin" service.
+func NewAdminScoreboardNotFoundResponseBody(res *goa.ServiceError) *AdminScoreboardNotFoundResponseBody {
+	body := &AdminScoreboardNotFoundResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewAdminScoreboardBadRequestResponseBody builds the HTTP response body from
+// the result of the "AdminScoreboard" endpoint of the "admin" service.
+func NewAdminScoreboardBadRequestResponseBody(res *goa.ServiceError) *AdminScoreboardBadRequestResponseBody {
+	body := &AdminScoreboardBadRequestResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
 // NewCreateChallengeGroupUnauthorizedResponseBody builds the HTTP response
 // body from the result of the "CreateChallengeGroup" endpoint of the "admin"
 // service.
@@ -5389,15 +5535,17 @@ func NewUpdateCoursePayload(body *UpdateCourseRequestBody, id string, token stri
 // NewCreateCTFPayload builds a admin service CreateCTF endpoint payload.
 func NewCreateCTFPayload(body *CreateCTFRequestBody, token string) *admin.CreateCTFPayload {
 	v := &admin.CreateCTFPayload{
-		Name:        *body.Name,
-		Description: *body.Description,
-		StartTime:   *body.StartTime,
-		EndTime:     *body.EndTime,
-		Slug:        *body.Slug,
-		Private:     body.Private,
-		Password:    body.Password,
-		TeamBased:   *body.TeamBased,
-		Theme:       body.Theme,
+		Name:                  *body.Name,
+		Description:           *body.Description,
+		StartTime:             *body.StartTime,
+		EndTime:               *body.EndTime,
+		Slug:                  *body.Slug,
+		Private:               body.Private,
+		Password:              body.Password,
+		TeamBased:             *body.TeamBased,
+		Theme:                 body.Theme,
+		ScoreboardFreezeStart: body.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   body.ScoreboardFreezeEnd,
 	}
 	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
 	for i, val := range body.Challenges {
@@ -5411,15 +5559,17 @@ func NewCreateCTFPayload(body *CreateCTFRequestBody, token string) *admin.Create
 // NewUpdateCTFPayload builds a admin service UpdateCTF endpoint payload.
 func NewUpdateCTFPayload(body *UpdateCTFRequestBody, id string, token string) *admin.UpdateCTFPayload {
 	v := &admin.UpdateCTFPayload{
-		Name:        *body.Name,
-		Description: *body.Description,
-		StartTime:   *body.StartTime,
-		EndTime:     *body.EndTime,
-		Slug:        *body.Slug,
-		Private:     body.Private,
-		Password:    body.Password,
-		TeamBased:   body.TeamBased,
-		Theme:       body.Theme,
+		Name:                  *body.Name,
+		Description:           *body.Description,
+		StartTime:             *body.StartTime,
+		EndTime:               *body.EndTime,
+		Slug:                  *body.Slug,
+		Private:               body.Private,
+		Password:              body.Password,
+		TeamBased:             body.TeamBased,
+		Theme:                 body.Theme,
+		ScoreboardFreezeStart: body.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   body.ScoreboardFreezeEnd,
 	}
 	v.Challenges = make([]*admin.CTFChallenge, len(body.Challenges))
 	for i, val := range body.Challenges {
@@ -5443,6 +5593,16 @@ func NewDeleteCTFPayload(id string, token string) *admin.DeleteCTFPayload {
 // NewListCTFsPayload builds a admin service ListCTFs endpoint payload.
 func NewListCTFsPayload(token string) *admin.ListCTFsPayload {
 	v := &admin.ListCTFsPayload{}
+	v.Token = token
+
+	return v
+}
+
+// NewAdminScoreboardPayload builds a admin service AdminScoreboard endpoint
+// payload.
+func NewAdminScoreboardPayload(slug string, token string) *admin.AdminScoreboardPayload {
+	v := &admin.AdminScoreboardPayload{}
+	v.Slug = slug
 	v.Token = token
 
 	return v

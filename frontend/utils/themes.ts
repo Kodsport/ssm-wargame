@@ -3,6 +3,7 @@ export function getAvailableThemes() {
         'default.css', // lägg till theme filename när du vill lägga till mer :D
         'purple.css',
         'dark.css',
+        'kodcentrum.css',
     ];
 
     return themeFiles.map(file => {

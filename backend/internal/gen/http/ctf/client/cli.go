@@ -34,7 +34,7 @@ func BuildRegisterUserPayload(ctfRegisterUserBody string, ctfRegisterUserSlug st
 	{
 		err = json.Unmarshal([]byte(ctfRegisterUserBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"team_code\": \"Reiciendis modi eum necessitatibus atque.\",\n      \"username\": \"Minus et quas ut temporibus repellat.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"team_code\": \"Sed qui dolorem omnis quia neque.\",\n      \"username\": \"Similique dolores dolores magnam tenetur.\"\n   }'")
 		}
 	}
 	var slug string

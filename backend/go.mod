@@ -1,11 +1,12 @@
 module github.com/sakerhetsm/ssm-wargame
 
-go 1.18
+go 1.24.0
 
 require (
 	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb
 	github.com/aws/aws-sdk-go v1.42.30
 	github.com/bwmarrin/discordgo v0.23.2
+	github.com/dustin/go-humanize v1.0.1
 	github.com/friendsofgo/errors v0.9.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.3.0
@@ -17,8 +18,8 @@ require (
 	go.uber.org/zap v1.17.0
 	goa.design/goa/v3 v3.5.2
 	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d
-
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
+	golang.org/x/sync v0.19.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 

@@ -156,6 +156,11 @@ func ListCTFsAdminPath() string {
 	return "/admin/ctfs"
 }
 
+// AdminScoreboardAdminPath returns the URL path to the admin service AdminScoreboard HTTP endpoint.
+func AdminScoreboardAdminPath(slug string) string {
+	return fmt.Sprintf("/admin/ctfs/%v/scoreboard", slug)
+}
+
 // CreateChallengeGroupAdminPath returns the URL path to the admin service CreateChallengeGroup HTTP endpoint.
 func CreateChallengeGroupAdminPath() string {
 	return "/admin/challenge_groups"

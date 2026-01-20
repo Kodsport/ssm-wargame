@@ -1,0 +1,168 @@
+[data-bs-theme=light] {
+    --bs-primary: #b3002d !important; /* julröd */
+    --bs-secondary: #0a5b29 !important; /* mörk grangrön */
+    --bs-success: #0f6b2d !important; /* frisk grön för solved */
+    --bs-info: #d4af37 !important; /* guld för accent */
+    --bs-warning: #ffd700 !important; /* klar gulton */
+    --bs-danger: #8b0000 !important; /* djup röd */
+    --bs-light: #ffffff !important;
+    --bs-dark: #07221a !important; /* nästan svartgrön */
+
+    --bs-primary-rgb: 179, 0, 45 !important;
+    --bs-secondary-rgb: 10, 91, 41 !important;
+    --bs-success-rgb: 15, 107, 45 !important;
+    --bs-info-rgb: 212, 175, 55 !important;
+    --bs-dark-rgb: 7, 34, 26 !important;
+
+    --bs-body-color: #ffffff !important;
+    --bs-body-color-rgb: 255, 255, 255 !important;
+    --bs-body-bg: #0a3b1f !important; /* mörkgrön bakgrund i preview */
+
+    --bs-heading-color: inherit !important;
+    --bs-link-color: #ffd07e !important;
+    --bs-link-color-rgb: 255, 208, 126 !important;
+
+    --bs-code-color: #00ad28 !important;
+    --bs-border-color: #ddd6b8 !important; /* mjuk guldaktig border */
+}
+
+.challenge-preview-bg::before {
+    background-image: none !important;
+}
+
+
+/* tidslinjens rubriker */
+.timeline-labels {
+    color: #ffffff !important;
+}
+
+.timeline-progress {
+    background: linear-gradient(270deg, #b3002d, #0a5b29) !important;
+}
+
+.bg-dark {
+    --bs-bg-opacity: 1;
+    background-color: rgba(0,0,0) !important;
+}
+
+/* border mellan kategorier: guldaktig */
+.gradient-border {
+    -o-border-image: linear-gradient(to right, #ff72af, #f475ac) 1 !important;
+    border-image: linear-gradient(to right, #ff72af, #f475ac) 1 !important;
+}
+
+/* knappar, tex "Gå till utmaningar, logga in" */
+.btn-primary {
+    --bs-btn-color: #fff !important;
+    --bs-btn-bg: #b3002d !important; /* röd */
+    --bs-btn-border-color: var(--bs-btn-bg) !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: #8b001f !important;
+    --bs-btn-hover-border-color: #77001a !important;
+    --bs-btn-active-color: #fff !important;
+    --bs-btn-active-bg: #7a0018 !important;
+    --bs-btn-active-border-color: #77001a !important;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0,0,0,.2) !important;
+    --bs-btn-disabled-color: #fff !important;
+    --bs-btn-disabled-bg: var(--bs-btn-bg) !important;
+    --bs-btn-disabled-border-color: var(--bs-btn-bg) !important;
+}
+
+/* knappar, tex "logga ut" */
+.btn-danger {
+    --bs-btn-color: #fff !important;
+    --bs-btn-bg: #0a5b29 !important; /* grangrön */
+    --bs-btn-border-color: var(--bs-btn-bg) !important;
+    --bs-btn-hover-color: #fff !important;
+    --bs-btn-hover-bg: #07471f !important;
+    --bs-btn-hover-border-color: #063c1b !important;
+    --bs-btn-active-color: #fff !important;
+    --bs-btn-active-bg: #053317 !important;
+    --bs-btn-active-border-color: #042a13 !important;
+    --bs-btn-disabled-color: #fff !important;
+    --bs-btn-disabled-bg: var(--bs-btn-bg) !important;
+    --bs-btn-disabled-border-color: var(--bs-btn-bg) !important;
+}
+
+.hover {
+    text-align: center;
+    display: inline-block;
+    padding: 0 10px;
+    color: rgba(0,0,0,0);
+    background: rgba(0,0,0,0.57);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.hover:hover {
+    color: white;
+    background: rgba(0,0,0,0.24);
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #ffd700 !important; /* guld fokus */
+    box-shadow: 0 0 0 .25rem rgba(255,215,0,0.12) !important;
+}
+
+.ctf-gradient-bg {
+    background: 
+        url(https://alanoo.dev/assets/3.png) center/cover no-repeat !important;
+    min-height: 100vh;
+    position: relative;
+}
+
+
+
+.border-primary {
+    --bs-border-opacity: 1;
+    border-color: rgb(255 215 0) !important; /* guld */
+}
+
+.navbar-nav {
+    --bs-nav-link-color: #ffffff !important;
+}
+
+.card {
+    --bs-card-bg: 10, 91, 41 !important; /* grönaktig kortbakgrund */
+}
+
+.bg-dark {
+    --bs-bg-opacity: 1 !important;
+    background-color: rgb(8, 34, 26) !important;
+}
+
+.bg-warning {
+    --bs-bg-opacity: 1;
+    background-color: rgba(255,215,0,0.79) !important;
+}
+
+.bg-info {
+    --bs-bg-opacity: 1;
+    background-color: #08332e !important;
+}
+
+.bg-success {
+    --bs-bg-opacity: 1;
+    background-color: rgb(15, 107, 45) !important;
+}
+
+.text-primary,
+.material-symbols-outlined {
+    --bs-text-opacity: 1;
+    color: #fff !important;
+}
+
+
+.modal-content {
+    background-color: #00261d !important;
+    background: 
+        url(https://alanoo.dev/assets/1.png) calc(100% - 20px) calc(100% - 50px)/30% auto no-repeat,
+        #00261d !important;
+    min-height: 100vh;
+    position: relative;
+}
+.form-control {
+    background-color: #00261d !important;
+}

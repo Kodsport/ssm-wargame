@@ -75,11 +75,6 @@
             </ul>
           </li>
           <li class="nav-item">
-            <nuxt-link active-class="active" class="nav-link" to="/knackkoden">
-              Knäck Koden
-            </nuxt-link>
-          </li>
-          <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/learn">
               Läroresurser
             </nuxt-link>
@@ -159,6 +154,11 @@
                 >
               </li>
             </ul>
+          </li>
+          <li class="nav-item">
+            <nuxt-link active-class="active" class="nav-link" to="/for-teachers">
+              För lärare
+            </nuxt-link>
           </li>
           <li class="nav-item">
             <nuxt-link active-class="active" class="nav-link" to="/about">

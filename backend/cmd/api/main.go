@@ -101,8 +101,10 @@ func realMain() error {
 		s.Use(goahttpmid.RequestID())
 		auth_server.Mount(mux, s)
 	}
+	ctfSvc := ctf_service.NewService(db)
+	
 	{
-		svc := admin_service.NewService(db, log, auther, s3c, cfg)
+		svc := admin_service.NewService(db, log, auther, s3c, cfg, ctfSvc)
 		endpoints := admin_transport.NewEndpoints(svc)
 		s := admin_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
@@ -116,8 +118,7 @@ func realMain() error {
 		user_server.Mount(mux, s)
 	}
 	{
-		svc := ctf_service.NewService(db)
-		endpoints := ctf_transport.NewEndpoints(svc)
+		endpoints := ctf_transport.NewEndpoints(ctfSvc)
 		s := ctf_server.New(endpoints, mux, goahttp.RequestDecoder, goahttp.ResponseEncoder, nil, nil)
 		s.Use(goahttpmid.RequestID())
 		ctf_server.Mount(mux, s)

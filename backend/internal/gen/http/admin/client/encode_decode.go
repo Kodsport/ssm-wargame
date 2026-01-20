@@ -3591,6 +3591,144 @@ func DecodeListCTFsResponse(decoder func(*http.Response) goahttp.Decoder, restor
 	}
 }
 
+// BuildAdminScoreboardRequest instantiates a HTTP request object with method
+// and path set to call the "admin" service "AdminScoreboard" endpoint
+func (c *Client) BuildAdminScoreboardRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	var (
+		slug string
+	)
+	{
+		p, ok := v.(*admin.AdminScoreboardPayload)
+		if !ok {
+			return nil, goahttp.ErrInvalidType("admin", "AdminScoreboard", "*admin.AdminScoreboardPayload", v)
+		}
+		slug = p.Slug
+	}
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: AdminScoreboardAdminPath(slug)}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, goahttp.ErrInvalidURL("admin", "AdminScoreboard", u.String(), err)
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
+
+	return req, nil
+}
+
+// EncodeAdminScoreboardRequest returns an encoder for requests sent to the
+// admin AdminScoreboard server.
+func EncodeAdminScoreboardRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+	return func(req *http.Request, v interface{}) error {
+		p, ok := v.(*admin.AdminScoreboardPayload)
+		if !ok {
+			return goahttp.ErrInvalidType("admin", "AdminScoreboard", "*admin.AdminScoreboardPayload", v)
+		}
+		{
+			head := p.Token
+			if !strings.Contains(head, " ") {
+				req.Header.Set("Authorization", "Bearer "+head)
+			} else {
+				req.Header.Set("Authorization", head)
+			}
+		}
+		return nil
+	}
+}
+
+// DecodeAdminScoreboardResponse returns a decoder for responses returned by
+// the admin AdminScoreboard endpoint. restoreBody controls whether the
+// response body should be restored after having been read.
+// DecodeAdminScoreboardResponse may return the following errors:
+//   - "unauthorized" (type *goa.ServiceError): http.StatusForbidden
+//   - "not_found" (type *goa.ServiceError): http.StatusNotFound
+//   - "bad_request" (type *goa.ServiceError): http.StatusBadRequest
+//   - error: internal error
+func DecodeAdminScoreboardResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+	return func(resp *http.Response) (interface{}, error) {
+		if restoreBody {
+			b, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				return nil, err
+			}
+			resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			defer func() {
+				resp.Body = ioutil.NopCloser(bytes.NewBuffer(b))
+			}()
+		} else {
+			defer resp.Body.Close()
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			var (
+				body AdminScoreboardResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "AdminScoreboard", err)
+			}
+			for _, e := range body {
+				if e != nil {
+					if err2 := ValidateCTFScoreResponse(e); err2 != nil {
+						err = goa.MergeErrors(err, err2)
+					}
+				}
+			}
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "AdminScoreboard", err)
+			}
+			res := NewAdminScoreboardCTFScoreOK(body)
+			return res, nil
+		case http.StatusForbidden:
+			var (
+				body AdminScoreboardUnauthorizedResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "AdminScoreboard", err)
+			}
+			err = ValidateAdminScoreboardUnauthorizedResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "AdminScoreboard", err)
+			}
+			return nil, NewAdminScoreboardUnauthorized(&body)
+		case http.StatusNotFound:
+			var (
+				body AdminScoreboardNotFoundResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "AdminScoreboard", err)
+			}
+			err = ValidateAdminScoreboardNotFoundResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "AdminScoreboard", err)
+			}
+			return nil, NewAdminScoreboardNotFound(&body)
+		case http.StatusBadRequest:
+			var (
+				body AdminScoreboardBadRequestResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("admin", "AdminScoreboard", err)
+			}
+			err = ValidateAdminScoreboardBadRequestResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("admin", "AdminScoreboard", err)
+			}
+			return nil, NewAdminScoreboardBadRequest(&body)
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return nil, goahttp.ErrInvalidResponse("admin", "AdminScoreboard", resp.StatusCode, string(body))
+		}
+	}
+}
+
 // BuildCreateChallengeGroupRequest instantiates a HTTP request object with
 // method and path set to call the "admin" service "CreateChallengeGroup"
 // endpoint
@@ -5652,14 +5790,16 @@ func unmarshalCTFChallengeResponseBodyToAdminCTFChallenge(v *CTFChallengeRespons
 // value of type *CTFResponse.
 func unmarshalCTFResponseToAdminCTF(v *CTFResponse) *admin.CTF {
 	res := &admin.CTF{
-		ID:          *v.ID,
-		Name:        *v.Name,
-		Description: *v.Description,
-		StartTime:   *v.StartTime,
-		EndTime:     *v.EndTime,
-		Slug:        *v.Slug,
-		TeamBased:   *v.TeamBased,
-		Theme:       v.Theme,
+		ID:                    *v.ID,
+		Name:                  *v.Name,
+		Description:           *v.Description,
+		StartTime:             *v.StartTime,
+		EndTime:               *v.EndTime,
+		Slug:                  *v.Slug,
+		TeamBased:             *v.TeamBased,
+		Theme:                 v.Theme,
+		ScoreboardFreezeStart: v.ScoreboardFreezeStart,
+		ScoreboardFreezeEnd:   v.ScoreboardFreezeEnd,
 	}
 	res.Challenges = make([]*admin.CTFChallenge, len(v.Challenges))
 	for i, val := range v.Challenges {
@@ -5676,6 +5816,24 @@ func unmarshalCTFChallengeResponseToAdminCTFChallenge(v *CTFChallengeResponse) *
 		ID:           *v.ID,
 		CustomScore:  v.CustomScore,
 		DisplayOrder: *v.DisplayOrder,
+	}
+
+	return res
+}
+
+// unmarshalCTFScoreResponseToAdminCTFScore builds a value of type
+// *admin.CTFScore from a value of type *CTFScoreResponse.
+func unmarshalCTFScoreResponseToAdminCTFScore(v *CTFScoreResponse) *admin.CTFScore {
+	res := &admin.CTFScore{
+		ID:       *v.ID,
+		Username: *v.Username,
+		Score:    *v.Score,
+		TeamID:   v.TeamID,
+		Teamname: v.Teamname,
+	}
+	res.Solves = make([]string, len(v.Solves))
+	for i, val := range v.Solves {
+		res.Solves[i] = val
 	}
 
 	return res

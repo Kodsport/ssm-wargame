@@ -133,6 +133,10 @@ type Client struct {
 	// endpoint.
 	ListCTFsDoer goahttp.Doer
 
+	// AdminScoreboard Doer is the HTTP client used to make requests to the
+	// AdminScoreboard endpoint.
+	AdminScoreboardDoer goahttp.Doer
+
 	// CreateChallengeGroup Doer is the HTTP client used to make requests to the
 	// CreateChallengeGroup endpoint.
 	CreateChallengeGroupDoer goahttp.Doer
@@ -234,6 +238,7 @@ func NewClient(
 		UpdateCTFDoer:                 doer,
 		DeleteCTFDoer:                 doer,
 		ListCTFsDoer:                  doer,
+		AdminScoreboardDoer:           doer,
 		CreateChallengeGroupDoer:      doer,
 		UpdateChallengeGroupDoer:      doer,
 		DeleteChallengeGroupDoer:      doer,
@@ -946,6 +951,30 @@ func (c *Client) ListCTFs() goa.Endpoint {
 		resp, err := c.ListCTFsDoer.Do(req)
 		if err != nil {
 			return nil, goahttp.ErrRequestError("admin", "ListCTFs", err)
+		}
+		return decodeResponse(resp)
+	}
+}
+
+// AdminScoreboard returns an endpoint that makes HTTP requests to the admin
+// service AdminScoreboard server.
+func (c *Client) AdminScoreboard() goa.Endpoint {
+	var (
+		encodeRequest  = EncodeAdminScoreboardRequest(c.encoder)
+		decodeResponse = DecodeAdminScoreboardResponse(c.decoder, c.RestoreResponseBody)
+	)
+	return func(ctx context.Context, v interface{}) (interface{}, error) {
+		req, err := c.BuildAdminScoreboardRequest(ctx, v)
+		if err != nil {
+			return nil, err
+		}
+		err = encodeRequest(req, v)
+		if err != nil {
+			return nil, err
+		}
+		resp, err := c.AdminScoreboardDoer.Do(req)
+		if err != nil {
+			return nil, goahttp.ErrRequestError("admin", "AdminScoreboard", err)
 		}
 		return decodeResponse(resp)
 	}
