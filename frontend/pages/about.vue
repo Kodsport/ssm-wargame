@@ -20,7 +20,7 @@
         <h1 class="text-primary">Föreningen</h1>
         <p>
           <a href="https://www.kodsport.se/">Kodsport</a> är en ideell förening
-          som arbetar för att lyfta Sverige som IT-nation. Föreningen arrangerar
+          som främjar teknisk excellens. Föreningen arrangerar
           tävlingar och träningsläger i tävlingsprogrammering och Capture The
           Flag (datorsäkerhet).
         </p>
