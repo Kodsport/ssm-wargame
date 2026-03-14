@@ -31,7 +31,7 @@
               to="https://ctf.sakerhetssm.se"
               external
             >
-              Säkerhets-SM Kval 2026
+              Säkerhets-SM Final 2026
             </nuxt-link>
           </li>
           <li class="nav-item dropdown hover-drop-down">
