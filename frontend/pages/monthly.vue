@@ -10,7 +10,7 @@
               <div>
                 <h4 class="text-primary mb-1 text-center">Beskrivning</h4>
                 <p class="text-white">Månadens problem är en utmaning i varierande svårighetsgrad skapad av medlemmar i CTF-gemenskapen.</p>
-                <p class="text-white">Den första varje månad 16:00 publiceras månadens utmaning. Pris ges ut till den första lösaren och en slumpmässig vald lösare i slutet av månaden.</p>
+                <p class="text-white">Den första varje månad 16:00 publiceras månadens utmaning. Pris ges ut en eller flera slumpmässigt valda lösare i slutet av månaden.</p>
                 <p class="text-white">Som lösare får du en speciell roll på <a :href="discordUrl" target="_blank">Kodsports Discordserver</a>. Rollen är enbart aktiv under månaden.</p>
               </div>
             </div>
