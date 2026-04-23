@@ -1,0 +1,247 @@
+[data-bs-theme=light] {
+    /*På strecken mellan categorierna bestämmer den vänstra färgen*/
+    --bs-primary: #ff006e !important;
+
+    --bs-secondary: #24639b !important;
+    --bs-success: #202e26 !important;
+    --bs-info: #008eae !important;
+    --bs-warning: #ffab1c !important;
+    --bs-danger: #fc6500 !important;
+    --bs-light: #f8f9fa !important;
+    --bs-dark: #1c5562 !important;
+
+    /*categori titlar och i chall previewn bestämmer den: Titeln, alla symboler, backgrunden till categorin */
+    --bs-primary-rgb: 255, 114, 175 !important;
+
+
+    --bs-secondary-rgb: 108, 117, 125 !important;
+
+    /* avklarad chall*/
+    --bs-success-rgb: 32, 195, 10 !important;
+
+    /*olösta flaggor*/
+    --bs-info-rgb: 0, 142, 174 !important;
+
+
+    /*övren bannern*/
+    --bs-dark-rgb: 0, 44, 54 !important;
+
+
+    /*text färgen för titeln, flagnamnen och poängen samt brödtexten i chall preview*/
+    --bs-body-color: #aea109 !important;
+
+    --bs-body-color-rgb: 255, 255, 255 !important;
+
+    /*chall preview background*/
+    --bs-body-bg: #51b443 !important;
+
+
+    /*fuckar med nåt asså, en hel del text lite osäkert*/
+    --bs-heading-color: inherit !important;
+
+    /*länkar*/
+    --bs-link-color: #f3e112 !important;
+
+    /*link hover*/
+    --bs-link-color-rgb: 255, 208, 126 !important;
+
+
+    /*emphassis färgen när SSM{...} skrivs i textens*/
+    --bs-code-color: #00ad28 !important;
+
+
+    /*inlämnings lådans border*/
+    --bs-border-color: #dee2e6 !important;
+
+
+    /*oklara challs
+    --bs-info-rgb: #dee2e6;*/
+
+}
+
+.challenge-preview-bg::before {
+    background-image: url() !important;
+}
+
+
+.body {
+    background-color: #161942 !important;
+}
+
+
+/*tidslinjens rubriker*/
+.timeline-labels {
+    color: #ffffff !important;
+}
+
+/*tidslin jens färger*/
+.timeline-progress {
+    background: linear-gradient(270deg, #00c600, #000000) !important;
+}
+
+
+
+
+/*knappar, tex "Gå till utmaningar, logga in"*/
+.btn-primary {
+    /*texten*/
+    --bs-btn-color: #000000 !important;
+
+    /*primära backgrund*/
+    --bs-btn-bg: #f3e112 !important;
+
+    /*border färg*/
+    --bs-btn-border-color: var(--bs-btn-bg) !important;
+
+    /*textens hover färg*/
+    --bs-btn-hover-color: #000 !important;
+
+    /*kroppens hover färg*/
+    --bs-btn-hover-bg: #f3e112 !important;
+
+    /*border hover färg*/
+    --bs-btn-hover-border-color: #f3e112 !important;
+
+
+
+    /*text förg vid klick*/
+    --bs-btn-active-color: #000 !important;
+
+    /*kropp färg vid klick*/
+    --bs-btn-active-bg: #f3e112 !important;
+
+    /*border förg vid klick*/
+    --bs-btn-active-border-color: var(--bs-btn-hover-border-color:) !important;
+
+
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, .125) !important;
+    --bs-btn-disabled-color: #000 !important;
+    --bs-btn-disabled-bg: var(--bs-btn-bg) !important;
+    --bs-btn-disabled-border-color: var(--bs-btn-bg) !important;
+}
+
+/*knappar, tex "logga ut"*/
+
+
+.btn-danger {
+
+    /*texten*/
+    --bs-btn-color: #000 !important;
+
+    /*primära backgrund*/
+    --bs-btn-bg: #937b6b !important;
+
+    /*border färg*/
+    --bs-btn-border-color: var(--bs-btn-bg) !important;
+
+    /*textens hover färg*/
+    --bs-btn-hover-color: #000 !important;
+
+    /*kroppens hover färg*/
+    --bs-btn-hover-bg: #fc7c26 !important;
+
+    /*border hover färg*/
+    --bs-btn-hover-border-color: #ff812e !important;
+
+    /*text förg vis klick*/
+    --bs-btn-active-color: #000 !important;
+
+    /*kropp färg vid klick*/
+    --bs-btn-active-bg: #fd8433 !important;
+
+
+    --bs-btn-active-border-color: #fc741a !important;
+    --bs-btn-disabled-color: #000 !important;
+    --bs-btn-disabled-bg: var(--bs-btn-bg) !important;
+    --bs-btn-disabled-border-color: var(--bs-btn-bg) !important;
+}
+
+/*dolda lösenordet*/
+.hover {
+    text-align: center;
+    display: inline-block;
+    padding: 0 10px;
+    color: #00000000;
+    background: #00000091;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.hover:hover {
+    color: white;
+    background: #0000003b;
+    transition: all 0.2s ease-in-out;
+}
+
+/*inlämnings låda border*/
+.form-control:focus {
+    border-color: #f3e112 !important;
+}
+
+/*background*/
+.ctf-gradient-bg {
+    background: #222664 !important;
+    min-height: 100vh;
+}
+
+.border-primary {
+    --bs-border-opacity: 1;
+    border-color: rgb(255 255 255) !important;
+}
+
+.navbar-nav {
+    --bs-nav-link-color: #ffffff !important;
+}
+
+.card {
+    --bs-card-bg: 0, 142, 174 !important;
+}
+
+.bg-dark {
+    --bs-bg-opacity: 1 !important;
+    background-color: #161942 !important;
+}
+
+
+.bg-warning {
+    --bs-bg-opacity: 1;
+    background-color: #f3e112 !important;
+}
+
+.bg-info {
+    --bs-bg-opacity: 1;
+    background-color: #161942 !important;
+}
+
+.bg-success {
+    --bs-bg-opacity: 1;
+    background-color: rgba(5, 125, 15, 0.559) !important;
+}
+
+.text-primary,
+.material-symbols-outlined {
+    --bs-text-opacity: 1;
+    color: #f3e112 !important;
+}
+
+.modal-content {
+    background-color: #161942 !important;
+    background: 
+        url(https://final.snht.se/files/77a81d2bef8998325bc63a8da9a45ed7/snht-logo.png) calc(100% - 150px) calc(100% - 70px)/20% auto no-repeat,
+        #161942 !important;
+    min-height: 80vh;
+    position: relative;
+}
+
+.modal-content {
+    background-color: #161942 !important;
+}
+
+.bg-primary {
+    background-color: rgb(16, 29, 100) !important;
+}
+
+.form-control {
+    background-color: #161942 !important;
+}

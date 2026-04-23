@@ -4,6 +4,7 @@ export function getAvailableThemes() {
         'purple.css',
         'dark.css',
         'kodcentrum.css',
+        'snht.css',
     ];
 
     return themeFiles.map(file => {
