@@ -122,7 +122,7 @@ func (s *service) UserScoreboard(ctx context.Context, req *spec.UserScoreboardPa
 		}
 
 		for _, v2 := range v.R.UserSolves {
-			res[i].Score += int(challScores[v2.ChallengeID])
+			res[i].Score += max(int(challScores[v2.ChallengeID]), 0)
 		}
 	}
 
