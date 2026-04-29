@@ -20,9 +20,9 @@ import (
 
 type service struct {
 	spec.Auther
-	db   *sql.DB
-	log  *zap.Logger
-	s3   *s3.S3
+	db  *sql.DB
+	log *zap.Logger
+	s3  *s3.S3
 }
 
 func NewService(conn *sql.DB, log *zap.Logger, auther spec.Auther, s3c *s3.S3) spec.Service {
@@ -236,5 +236,6 @@ func dynamicScore(init, min, solvers float64) int {
 		return int(init)
 	}
 	decay := 25.0
-	return int(init + ((min-init)/math.Pow(decay, 2))*math.Pow(solvers-1, 2))
+	score := int(init + ((min-init)/math.Pow(decay, 2))*math.Pow(solvers-1, 2))
+	return max(0, score)
 }
