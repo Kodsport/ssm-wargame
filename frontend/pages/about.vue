@@ -42,22 +42,22 @@
 <script setup lang="ts">
 const people = [
   {
-    name: "Movitz Sunar",
+    name: "Teo",
     role: "Projektledare",
-    url: "/movitz.jpg",
-    mail: "movitz.sunar@kodsport.se",
+    url: "/placeholder.png",
+    mail: "teo@kodsport.se",
   },
   {
-    name: "Liam Thorell",
+    name: "Allan Al-Salihi",
     role: "Tävlingsansvarig",
-    url: "/liam.jpg",
-    mail: "liam.thorell@kodsport.se",
+    url: "/allan.png",
+    mail: "allan.alsalihi@kodsport.se",
   },
   {
-    name: "Sofia Wallgren",
+    name: "Elmer Brännström",
     role: "Eventansvarig",
-    url: "/sofia.jpg",
-    mail: "sofia.wallgren@kodsport.se",
+    url: "/elmer.png",
+    mail: "elmer.brannstrom@kodsport.se",
   },
 ];
 

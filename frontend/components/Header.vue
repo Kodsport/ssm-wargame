@@ -24,16 +24,6 @@
           >SSM</nuxt-link
         >
         <ul class="navbar-nav me-auto">
-          <li class="nav-item">
-            <nuxt-link
-              active-class="active"
-              class="nav-link"
-              to="https://ctf.sakerhetssm.se"
-              external
-            >
-              Säkerhets-SM Final 2026
-            </nuxt-link>
-          </li>
           <li class="nav-item dropdown hover-drop-down">
             <nuxt-link
               to="/challenges"
