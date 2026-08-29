@@ -24,7 +24,7 @@
             </li>
             <li>
               <span class="material-symbols-outlined">emoji_events</span>
-              Final i Stockholm <b>25-28 februari 2027</b>
+              Final i Stockholm <b>18-21 februari 2027</b>
             </li>
             <li>
               <span class="material-symbols-outlined">azm</span>

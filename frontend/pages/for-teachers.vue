@@ -1,9 +1,9 @@
 <template>
     <h1 class="text-primary">Knäck Koden</h1>
     <p>
-        Knäck koden är en tävling för mellanstadieelever som vill lära sig mer om hacking och cybersäkerhet.
+        Knäck koden är en återkommande tävling i cybersäkerhet för grundskolan. Eleverna arbetar tillsammans i klassrummet för att träna digital hygien, problemlösning och digital handlingskompetens genom att arbeta med uppdrag och lösa utmaningar. Allt anpassat efter Lgr-22. Varje år har tävlingen ett nytt tema som kopplar cybersäkerhet till aktuella samhällsfrågor.
         Vill du ha Knäck Koden-lektioner i din skola? Spana in <a
-            href="https://www.cyberarena.se/knackkoden">informationen hos Kodcentrum!</a>
+            href="https://kodcentrum.se/knack-koden">informationen hos Kodcentrum!</a>
     </p>
     <h1 class="text-primary">Föreläsningar för gymnasiet!</h1>
     <p>
